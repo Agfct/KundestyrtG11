@@ -13,12 +13,13 @@ import javafx.stage.Stage;
 
 /**
  * @author Anders Lunde, Magnus Gundersen
- *
+ *Singleton
  *This class controls the controllers for each fxml, 
  *and is the access point for everything that is needed from the GUI
  */
 public class MainGUIController {
 	
+	private static MainGUIController mainGUIController;
 	//The primary stage which all screens are shown.
 	Stage primaryStage;
 
@@ -34,12 +35,19 @@ public class MainGUIController {
 	 * The constructor of the MainGUIController starts by creating an instance of the mainScreen.
 	 * The mainScreen is the first window the user sees when he starts the application.
 	 */
-	public MainGUIController(Stage primaryStage) throws IOException{
+	private MainGUIController(Stage primaryStage) throws IOException{
 		this.primaryStage = primaryStage;
 		
 		mainScreen = new MainScreen();
 		primaryStage.setScene(mainScreen.getScene());
 		primaryStage.show();
+	}
+	
+	public static MainGUIController getInstance(Stage primaryStage) throws IOException{
+		if(mainGUIController == null){
+			mainGUIController = new MainGUIController(primaryStage);
+		}
+		return mainGUIController;
 	}
 
 

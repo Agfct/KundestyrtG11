@@ -23,10 +23,10 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			//Initializes the Modules and base models, running the default setup phase.
-			mainModuleController = new MainModuleController();
+			mainModuleController = MainModuleController.getInstance();
 			
 			//Initializes the GUI part of the software, initializing the mainScene onto the stage and adding the fxml.
-			mainGUIController = new MainGUIController(primaryStage);
+			mainGUIController = MainGUIController.getInstance(primaryStage);
 			
 
 		} catch(Exception e) {
