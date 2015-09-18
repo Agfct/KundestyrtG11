@@ -64,6 +64,7 @@ public class MainScreen implements Screen {
 		
 		@FXML private Button testButton;
 		
+		//This method is ran when you press the test button in the GUI
 		@FXML protected void testButtonPressed(ActionEvent event) {
 			System.out.println("Button has been pressed");
 		}
