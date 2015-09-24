@@ -25,6 +25,7 @@ public class MainGUIController {
 
 	//The different screens
 	MainScreen mainScreen;
+	MainScreen AdvancedScreen;
 	
 	
 	/**
@@ -43,11 +44,28 @@ public class MainGUIController {
 		primaryStage.show();
 	}
 	
+	/**
+	 * Returns the running instance of the mainGUIController, 
+	 * if an instance does not exists it creates one.
+	 * @param primaryStage
+	 * @return
+	 * @throws IOException
+	 */
 	public static MainGUIController getInstance(Stage primaryStage) throws IOException{
 		if(mainGUIController == null){
 			mainGUIController = new MainGUIController(primaryStage);
 		}
 		return mainGUIController;
+	}
+	
+	/**
+	 * Changes the screen based on class.
+	 * @param newScreen
+	 */
+	public void changeScreen(Screen newScreen){
+		//TODO: What shoud this method have as argument ? IDs ? Class ? screen?
+		primaryStage.setScene(mainScreen.getScene());
+		primaryStage.show();
 	}
 
 

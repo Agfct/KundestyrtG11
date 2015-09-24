@@ -8,7 +8,8 @@ import modules.MainModuleController;
 /**
  * 
  * @author Anders Lunde, Magnus Gundersen
- *
+ * The Main class is simply the starting point of the software and initializes the
+ * two main controllers; mainGUIController and mainModuleController.
  */
 
 public class Main extends Application {

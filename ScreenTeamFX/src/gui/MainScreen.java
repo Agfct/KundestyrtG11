@@ -40,7 +40,7 @@ public class MainScreen implements Screen {
 			e.printStackTrace();
 		}
 		
-		screenScene = new Scene(rootPane,1200,700);
+		screenScene = new Scene(rootPane,1200,700); //TODO: Get size from global size ?
 //		screenScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 	}
 	
@@ -64,10 +64,27 @@ public class MainScreen implements Screen {
 		
 		@FXML private Button testButton;
 		
-		//This method is ran when you press the test button in the GUI
-		@FXML protected void testButtonPressed(ActionEvent event) {
+		/**
+		 * This method is ran when you press a button in the main screen
+		 * @param event
+		 */
+		@FXML protected void buttonPressed(ActionEvent event) {
 			System.out.println("Button has been pressed");
+			
+			if(((Button)event.getSource()).getId().equals("testBtn") ){
+				//If the test button is pressed
+				
+			}else if(((Button)event.getSource()).getId().equals("advSrcBtn")){
+				//If the advanced screen button is pressed the MainGUIController changes the screen to be the advanced screen
+//				MainGUIController.getInstance(primaryStage)
+				//TODO: getinstance needs a primary stage all the time, this was needed for the first init but not good for futher use.
+				//TODO: We need to find a way for the screens to contanct the MainGUIController (many ways, but we need to choose).
+				
+			}
 		}
+		
+		//TODO: one method for all buttons or one method pr button ?
+
 		
 	}
 

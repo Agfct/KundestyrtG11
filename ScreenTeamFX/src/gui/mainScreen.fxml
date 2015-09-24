@@ -16,6 +16,7 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Button onAction="#testButtonPressed" alignment="CENTER" mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+      <Button id="testBtn" onAction="#buttonPressed" alignment="CENTER" mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+      <Button id="advScrBtn" onAction="#buttonPressed" alignment="CENTER" mnemonicParsing="false" text="AdvancedScreen" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
    </children>
 </GridPane>
