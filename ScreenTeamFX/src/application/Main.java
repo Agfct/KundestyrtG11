@@ -23,11 +23,14 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			
+			//Initializes the GUI part of the software, initializing the mainScene onto the stage and adding the fxml.
+			mainGUIController = MainGUIController.initialize(primaryStage);
+			
 			//Initializes the Modules and base models, running the default setup phase.
 			mainModuleController = MainModuleController.getInstance();
 			
-			//Initializes the GUI part of the software, initializing the mainScene onto the stage and adding the fxml.
-			mainGUIController = MainGUIController.getInstance(primaryStage);
+
 			
 
 		} catch(Exception e) {
@@ -38,9 +41,5 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
-	
-	/**
-	 * Methods for getting main controller?
-	 */
+
 }

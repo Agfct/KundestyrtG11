@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gui;
 
 import java.io.IOException;
@@ -8,23 +5,29 @@ import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import modules.MainModuleController;
 
 /**
  * @author Anders Lunde, Magnus Gunde
+ * Singelton  class
  * MainScreen is the handler for the main screen in the software.
  * Main screen is the first screen the user sees when he/she starts the software.
  */
 public class MainScreen implements Screen {
-
+	
+	//Singleton:
+	private static MainScreen mainScreen;
+	
 	GridPane rootPane;
 	Scene screenScene;
 	MainScreenController screenController;
 	
-	public MainScreen(){
+	private MainScreen(){
 		
 		//Creating a new controller for use in the fxml
 		screenController = new MainScreenController();
@@ -44,6 +47,12 @@ public class MainScreen implements Screen {
 //		screenScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 	}
 	
+	public static MainScreen getInstance() {
+		if(mainScreen == null){
+			mainScreen = new MainScreen();
+		}
+		return mainScreen;
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -74,16 +83,14 @@ public class MainScreen implements Screen {
 			if(((Button)event.getSource()).getId().equals("testBtn") ){
 				//If the test button is pressed
 				
-			}else if(((Button)event.getSource()).getId().equals("advSrcBtn")){
+			}else if(((Button)event.getSource()).getId().equals("advScrBtn")){
+				System.out.println("Pressing advanced screen btn");
 				//If the advanced screen button is pressed the MainGUIController changes the screen to be the advanced screen
-//				MainGUIController.getInstance(primaryStage)
-				//TODO: getinstance needs a primary stage all the time, this was needed for the first init but not good for futher use.
-				//TODO: We need to find a way for the screens to contanct the MainGUIController (many ways, but we need to choose).
+				MainGUIController.getInstance().changeScreen(SCREENTYPE.ADVANCEDSCREEN);
 				
 			}
 		}
 		
-		//TODO: one method for all buttons or one method pr button ?
 
 		
 	}
