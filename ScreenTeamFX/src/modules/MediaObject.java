@@ -1,7 +1,7 @@
 package modules;
 /**
  * 
- * @author ole-s
+ * @author BEO
  * This class contains information about a video or a stream.
  *
  *
@@ -11,7 +11,11 @@ public abstract class MediaObject {
 	protected String url;
 	protected String name;
 	
-
+	/**
+	 * 
+	 * @param url
+	 * @param name
+	 */
 	public MediaObject(String url, String name) {
 		super();
 		this.url = url;
