@@ -9,10 +9,9 @@ package modules;
 public class MediaObjectVideo extends MediaObject {
 	
 	//Start- and end points for the videoplayback.
-	private float startTime;
-	private float endTime;
+	private int endTime;
 	//Length of the entire video file
-	private float length;
+	private int length;
 	
 	
 	/**
@@ -25,30 +24,21 @@ public class MediaObjectVideo extends MediaObject {
 	 * 
 	 * TODO: How do we find the length?
 	 */
-	public MediaObjectVideo(String url, String name, float startTime, float endTime, float length) {
-		super(url, name);
-		this.startTime = startTime;
+	public MediaObjectVideo(String url, String name, int startTime, int endTime, int length) {
+		super(url, name, startTime);
 		this.endTime = endTime;
 		this.length = length;
 	}
 
-	public float getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(float startTime) {
-		this.startTime = startTime;
-	}
-
-	public float getEndTime() {
+	public int getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(float endTime) {
+	public void setEndTime(int endTime) {
 		this.endTime = endTime;
 	}
 
-	public float getLength() {
+	public int getLength() {
 		return length;
 	}
 

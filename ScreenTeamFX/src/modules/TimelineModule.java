@@ -1,6 +1,7 @@
 package modules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 
 /**
@@ -73,7 +74,20 @@ public class TimelineModule {
 		//TODO: first run buildPerformance, then starts running the stack
 	}
 	public void buildPerformance(){
-		//TODO: create the stack with all the events by going into all timelines and get out when videos start, end and change
+		//Add all Events to list, then sort it
+		performancestack = new ArrayList<Event>();
+		
+		for (TimelineModel timeline : timelines){
+			for (MediaObject mediaobject : timeline.getMediaObjects()){
+				Event event = new Event(mediaobject.getStartTime(), timeline.getID(), Action.PLAY);
+				performancestack.add(event);
+				if (mediaobject instanceof MediaObjectVideo){
+					event = new Event(((MediaObjectVideo)mediaobject).getEndTime(), timeline.getID(), Action.STOP);
+					performancestack.add(event);
+				}
+			}
+		}
+		performancestack.sort(Event.EventTimeComperator);
 	}
 	
 	public void playOne(Integer display){
