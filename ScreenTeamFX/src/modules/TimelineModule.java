@@ -82,7 +82,7 @@ public class TimelineModule {
 				Event event = new Event(mediaobject.getStartTime(), timeline.getID(), Action.PLAY);
 				performancestack.add(event);
 				if (mediaobject instanceof MediaObjectVideo){
-					event = new Event(((MediaObjectVideo)mediaobject).getEndTime(), timeline.getID(), Action.STOP);
+					event = new Event(((MediaObjectVideo)mediaobject).getEndVideo(), timeline.getID(), Action.STOP);
 					performancestack.add(event);
 				}
 			}
