@@ -31,7 +31,7 @@ public class LoadingScreen implements Screen {
 		
 		// The constructor will try to fetch the fxml 
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("loadScreen.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("LoadScreen.fxml"));
 			fxmlLoader.setController(screenController);
 			fxmlLoader.load();
 			rootPane = fxmlLoader.getRoot();

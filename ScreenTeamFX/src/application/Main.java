@@ -1,3 +1,8 @@
+/**
+ * This software is made by (Screen Team):
+ * Anders Lunde, Mangus Gundersen, Kristian Midtgård, 
+ * Baptiste Masselin, Ole Steinar Lillestøl Skrede and Eirik Zimmer Wold.
+ */
 package application;
 	
 import gui.MainGUIController;

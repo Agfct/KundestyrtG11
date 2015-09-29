@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
@@ -21,26 +22,31 @@ public class AdvancedScreen implements Screen{
 		//Singleton:
 		private static AdvancedScreen advancedScreen;
 		
-		Pane rootPane;
+		GridPane rootPane;
 		Scene screenScene;
 		AdvancedScreenController screenController;
 		
 		private AdvancedScreen(){
+			
+			//Screen (this) configurations
+			
 			
 			//Creating a new controller for use in the fxml
 			screenController = new AdvancedScreenController();
 			
 			// The constructor will try to fetch the fxml 
 			try {
-				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("loadScreen.fxml"));
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("AdvancedScreen.fxml"));
 				fxmlLoader.setController(screenController);
 				fxmlLoader.load();
 				rootPane = fxmlLoader.getRoot();
+				rootPane.setGridLinesVisible(true); //TODO: REMOVE Development purposes Only
 			} catch (IOException e) {
 				System.out.println("Failed to load AdvancedScreen FXML");
 				e.printStackTrace();
 			}
 			
+//			screenScene = new Scene(rootPane,1200,700); //TODO: Get size from global size ?
 			screenScene = new Scene(rootPane,1200,700); //TODO: Get size from global size ?
 //			screenScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		}
