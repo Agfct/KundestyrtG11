@@ -27,15 +27,32 @@ public class TimelineModel {
 		return id;
 	}
 	
+	public ArrayList<Event> getTimelineStack(){
+		return timelineStack;
+	}
+	/**
+	 * add a new mediaObject to the timeline
+	 * 
+	 * @param m
+	 */
 	public void addMediaObject(MediaObject m){
 		mediaObjects.add(m);
 		timelinechanged();
 	}
-	
+	/**
+	 * removes a mediaObject from the timeline
+	 * 
+	 * @param m
+	 */
 	public void removeMediaObject(MediaObject m){
 		mediaObjects.remove(m);
 		timelinechanged();
 	}
+	
+	/**
+	 * goes through all mediaObjects in the timeline and creates the new stack
+	 * 
+	 */
 	public void timelinechanged(){
 		timelineStack.clear();
 		MediaObject mO;

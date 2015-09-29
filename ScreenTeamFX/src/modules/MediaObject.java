@@ -14,7 +14,7 @@ public abstract class MediaObject {
 	
 	/**
 	 * 
-	 * @param url
+	 * @param url 
 	 * @param name
 	 * @param startTime	
 	 */
@@ -28,7 +28,13 @@ public abstract class MediaObject {
 	public int getStartTime() {
 		return startTime;
 	}
-
+	
+	/**
+	 * set when the mediaobject should be shown
+	 * note this is the global time the media should start
+	 * 
+	 * @param startTime
+	 */
 	public void setStartTime(int startTime) {
 		this.startTime = startTime;
 	}
