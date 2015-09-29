@@ -33,7 +33,7 @@ public class TimelineModel {
 	}
 	
 	public void removeMediaObject(MediaObject m){
-		mediaObjects.add(m);
+		mediaObjects.remove(m);
 		timelinechanged();
 	}
 	public void timelinechanged(){
@@ -45,7 +45,7 @@ public class TimelineModel {
 			mO = mediaObjects.get(i);
 			if (mO instanceof MediaObjectVideo){
 				start = new Event(((MediaObjectVideo) mO).getStartTime(), id, Action.PLAY);
-				end = new Event(((MediaObjectVideo) mO).getEndVideo(), id, Action.PLAY);
+				end = new Event(((MediaObjectVideo) mO).getEndVideo(), id, Action.STOP);
 				timelineStack.add(start);
 				timelineStack.add(end);
 			}
