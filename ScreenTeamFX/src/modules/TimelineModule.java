@@ -26,7 +26,7 @@ public class TimelineModule {
 		//TODO: Implement constructor
 	}
 	
-	public TimelineModule getInstance(){
+	public static TimelineModule getInstance(){
 		if (timelinemodule == null){
 			timelinemodule = new TimelineModule();
 		}
