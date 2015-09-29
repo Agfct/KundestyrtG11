@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -25,7 +26,7 @@ public class AdvancedScreen implements Screen{
 		GridPane rootPane;
 		Scene screenScene;
 		AdvancedScreenController screenController;
-		
+
 		private AdvancedScreen(){
 			
 			//Screen (this) configurations
@@ -40,7 +41,6 @@ public class AdvancedScreen implements Screen{
 				fxmlLoader.setController(screenController);
 				fxmlLoader.load();
 				rootPane = fxmlLoader.getRoot();
-				rootPane.setGridLinesVisible(true); //TODO: REMOVE Development purposes Only
 			} catch (IOException e) {
 				System.out.println("Failed to load AdvancedScreen FXML");
 				e.printStackTrace();
@@ -76,24 +76,25 @@ public class AdvancedScreen implements Screen{
 		private class AdvancedScreenController {
 			
 			@FXML private Button testButton;
+			@FXML private TimelineVBox timelineContainer;
 			
 			/**
-			 * This method is ran when you press a button in the main screen
+			 * This method is ran when you press a button in the advanced screen top layout (Not inside the timelines).
+			 * It assumes that all buttons has in id. if they do not have an id this method gives a null pointer exception.
 			 * @param event
 			 */
 			@FXML protected void buttonPressed(ActionEvent event) {
 				System.out.println("Button has been pressed");
 				
-				if(((Button)event.getSource()).getId().equals("testBtn") ){
-					//If the test button is pressed
+				if(((Button)event.getSource()).getId().equals("menuBtn") ){
+					//If the menu screen button is pressed the MainGUIController changes the screen to be the menu screen
+					MainGUIController.getInstance().changeScreen(SCREENTYPE.MAINMENU);
 					
-				}else if(((Button)event.getSource()).getId().equals("advSrcBtn")){
-					//If the advanced screen button is pressed the MainGUIController changes the screen to be the advanced screen
-					MainGUIController.getInstance().changeScreen(SCREENTYPE.ADVANCEDSCREEN);
+				}else if(((Button)event.getSource()).getId().equals("addTimeline")){
+					timelineContainer.addEmptyTimeline();
 					
 				}
-			}
-			
+			}			
 
 			
 		}
