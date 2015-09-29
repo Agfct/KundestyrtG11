@@ -6,6 +6,7 @@ public class TimelineModel {
 	
 	private ArrayList<MediaObject> mediaObjects;
 	private final int id;
+
 	public TimelineModel(ArrayList<MediaObject> mediaObjects, int id) {
 		super();
 		this.mediaObjects = mediaObjects;
