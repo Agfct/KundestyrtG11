@@ -13,13 +13,16 @@ import java.util.Dictionary;
 public class TimelineModule {
 	
 	private static TimelineModule timelinemodule;
+
+	//private VLCController vlccontroller;
+	//private StorageController storagecontroller;
 	
 	// Each display can have one or zero timelines
 	private Dictionary<Integer, TimelineModel> displays;
 	private ArrayList<TimelineModel> timelines;
-	//private VLCController vlccontroller;
-	//private StorageController storagecontroller;
+	// Timer for the timeline
 	private int globaltime;
+	// Queue used when playing timelines
 	private ArrayList<Event> performancestack;
 	
 	private TimelineModule() {
@@ -56,18 +59,58 @@ public class TimelineModule {
 	
 	public void unassignTimeline(TimelineModel tlm){
 		//TODO: Go through all displays and remove the tlm timeline if it is assigned
+		int i;
+		//Test to know is no screen is display
+		if(displays.isEmpty()){
+		}
+		else{
+			//Check every displays
+			for(i=0; i<displays.size(); i++){
+				if(displays.get(i)==tlm){
+					displays.remove(i);
+				}
+			}		
+		}
 	}
 	
 	public void assignTimeline(Integer display, TimelineModel tlm){
 		//TODO: Check that this is legal. If so: add tlm to display in displays.
+		int i;
+		if(displays.isEmpty()){
+		}
+		else{
+			//Check every displays	
+			for(i=0; i<displays.size(); i++){
+				if(displays.keys().equals(display)){
+					displays.put(display,tlm);
+					break;
+				}
+			}
+			System.out.println("\nNo place: "+display);
+		}
 	}
 	
+	// !!!! I put Timeline Model because I can't create a new display without TimelineModel
 	public void addDisplay(Integer display){
 		//TODO: add display to displays, assign none (timeline)
+		displays.put(display, null);
 	}
 	
 	public void removeDisplay(Integer display){
 		//TODO: check if the display have any timelines assigned, handle it and remove the display..
+		int i;
+		if(displays.isEmpty()){
+		}
+		else{
+			//Check every displays
+			for(i=0; i<displays.size(); i++){
+				if(displays.keys().equals(display)){
+					displays.remove(display);
+					break;
+				}
+			}
+			System.out.println("\nNo display to remove: "+display);
+		}
 	}
 	
 	public void playAll(){

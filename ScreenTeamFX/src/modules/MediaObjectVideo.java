@@ -29,9 +29,23 @@ public class MediaObjectVideo extends MediaObject {
 	public MediaObjectVideo(String url, String name, int startTime, int startVideo, int endVideo, int length) {
 		super(url, name, startTime);
 		
-		this.startVideo = startVideo;
-		this.endVideo = endVideo;
-		this.length = length;
+		//Protection endVideo
+		if(endVideo>=0){
+			this.endVideo = endVideo;
+		}
+		else {
+			this.endVideo = 0;
+			System.out.println("\n In MediaObjectVideo: endVideo is negative !");
+		}
+		
+		//Protection length
+		if(length>=0){
+			this.length = length;
+		}
+		else {
+			this.length = 0;
+			System.out.println("\n In MediaObjectVideo: length is negative !");
+		}
 	}
 
 	public int getStartVideo() {
@@ -47,11 +61,13 @@ public class MediaObjectVideo extends MediaObject {
 	}
 
 	public void setEndVideo(int endVideo) {
+		//Protection endVideo
 		if(endVideo <= length){
 			this.endVideo = endVideo;
 		}
 		else{
-			System.out.println("\n Length of the video inferior of the endVideo ");		
+			this.endVideo = 0;
+			System.out.println("\n In MediaObjectVideo: endVideo is negative ");		
 		}
 	}
 
