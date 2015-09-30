@@ -25,6 +25,7 @@ public class TimelineModule {
 	private float globaltime;
 	//Stack to know wich order we need to display
 	private ArrayList<Event> performancestack;
+		
 	
 	private TimelineModule() {
 		//TODO: Implement constructor
@@ -40,10 +41,8 @@ public class TimelineModule {
 	public void addTimeline(TimelineModel tlm){
 		timelines.add(tlm);
 	}
-	
-	
-	// TODO: We are not sure which removeTimeline to use per now.
-	
+		
+	// TODO: We are not sure which removeTimeline to use per now.	
 	public void removeTimeline(int id){
 		// Find the timeline in the timelines list and remove it
 		for(int i=0; i<timelines.size(); i++){
@@ -121,7 +120,20 @@ public class TimelineModule {
 		//TODO: first run buildPerformance, then starts running the stack
 	}
 	public void buildPerformance(){
-		//TODO: create the stack with all the events by going into all timelines and get out when videos start, end and change
+		//Add all Events to list, then sort it
+		performancestack = new ArrayList<Event>();
+		
+		for (TimelineModel timeline : timelines){
+			for (MediaObject mediaobject : timeline.getMediaObjects()){
+				Event event = new Event(mediaobject.getStartTime(), timeline.getID(), Action.PLAY);
+				performancestack.add(event);
+				if (mediaobject instanceof MediaObjectVideo){
+					event = new Event(((MediaObjectVideo)mediaobject).getEndVideo(), timeline.getID(), Action.STOP);
+					performancestack.add(event);
+				}
+			}
+		}
+		performancestack.sort(Event.EventTimeComperator);
 	}
 	
 	public void playOne(Integer display){

@@ -13,6 +13,14 @@ public class TimelineModel {
 		this.id = id;
 	}
 	
+	public ArrayList<MediaObject> getMediaObjects() {
+		return mediaObjects;
+	}
+
+	public void setMediaObjects(ArrayList<MediaObject> mediaObjects) {
+		this.mediaObjects = mediaObjects;
+	}
+	
 	public int getID() {
 		return id;
 	}

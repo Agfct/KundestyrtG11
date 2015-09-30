@@ -9,10 +9,9 @@ package modules;
 public class MediaObjectVideo extends MediaObject {
 	
 	//Start- and end points for the videoplayback.
-	private float startTime;
-	private float endTime;
+	private int endVideo;
 	//Length of the entire video file
-	private float length;
+	private int length;
 	
 	
 	/**
@@ -25,30 +24,44 @@ public class MediaObjectVideo extends MediaObject {
 	 * 
 	 * TODO: How do we find the length?
 	 */
-	public MediaObjectVideo(String url, String name, float startTime, float endTime, float length) {
-		super(url, name);
-		this.startTime = startTime;
-		this.endTime = endTime;
-		this.length = length;
+	public MediaObjectVideo(String url, String name, int startTime, int endVideo, int length) {
+		super(url, name, startTime);
+		
+		//Protection endVideo
+		if(endVideo>=0){
+			this.endVideo = endVideo;
+		}
+		else {
+			this.endVideo = 0;
+			System.out.println("\n In MediaObjectVideo: endVideo is negative !");
+		}
+		
+		//Protection length
+		if(length>=0){
+			this.length = length;
+		}
+		else {
+			this.length = 0;
+			System.out.println("\n In MediaObjectVideo: length is negative !");
+		}
 	}
 
-	public float getStartTime() {
-		return startTime;
+	public int getEndVideo() {
+		return endVideo;
 	}
 
-	public void setStartTime(float startTime) {
-		this.startTime = startTime;
+	public void setEndTime(int endVideo) {
+		//Protection endVideo
+		if(endVideo <= length){
+			this.endVideo = endVideo;
+		}
+		else{
+			this.endVideo = 0;
+			System.out.println("\n In MediaObjectVideo: endVideo is negative ");		
+		}
 	}
 
-	public float getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(float endTime) {
-		this.endTime = endTime;
-	}
-
-	public float getLength() {
+	public int getLength() {
 		return length;
 	}
 
