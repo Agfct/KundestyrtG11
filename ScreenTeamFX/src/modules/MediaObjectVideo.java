@@ -9,6 +9,7 @@ package modules;
 public class MediaObjectVideo extends MediaObject {
 	
 	//Start- and end points for the videoplayback.
+	private int startVideo;
 	private int endVideo;
 	//Length of the entire video file
 	private int length;
@@ -19,12 +20,13 @@ public class MediaObjectVideo extends MediaObject {
 	 * @param url
 	 * @param name
 	 * @param startTime
+	 * @param startVideo
 	 * @param endTime
 	 * @param length
 	 * 
 	 * TODO: How do we find the length?
 	 */
-	public MediaObjectVideo(String url, String name, int startTime, int endVideo, int length) {
+	public MediaObjectVideo(String url, String name, int startTime, int startVideo, int endVideo, int length) {
 		super(url, name, startTime);
 		
 		//Protection endVideo
@@ -46,11 +48,19 @@ public class MediaObjectVideo extends MediaObject {
 		}
 	}
 
+	public int getStartVideo() {
+		return startVideo;
+	}
+
+	public void setStartVideo(int startVideo) {
+		this.startVideo = startVideo;
+	}
+
 	public int getEndVideo() {
 		return endVideo;
 	}
 
-	public void setEndTime(int endVideo) {
+	public void setEndVideo(int endVideo) {
 		//Protection endVideo
 		if(endVideo <= length){
 			this.endVideo = endVideo;
@@ -63,6 +73,15 @@ public class MediaObjectVideo extends MediaObject {
 
 	public int getLength() {
 		return length;
+	}
+
+	public int getPlayLength() {
+		int result = this.endVideo - this.startVideo;
+		if ( result < 0 ){
+			System.out.println("MediaObjectVideo.getPlayLength: result " + result + " is less than 0!");
+			return 0;
+		}
+		return result;
 	}
 
 }

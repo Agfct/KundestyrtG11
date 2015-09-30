@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 /**
  * 
- * @author Ole
+ * @author O
  * Events that happens on a timeline during a performance. An Event can be START or STOP of MediaObjects.
  */
 public class Event implements Comparable<Event>{
@@ -15,18 +15,21 @@ public class Event implements Comparable<Event>{
 	private int time;
 	private int timelineid;
 	private Action action;
+	private MediaObject mediaobject;
 	
 	/**
 	 * 
-	 * @param time			the time that should pass before this event kicks in. Given in milliseconds.
+	 * @param time			the time that should pass before this event kicks in. Given in milliseconds. Relative to the global time and absolute to 00:00:000
 	 * @param timelineid
 	 * @param action
+	 * @param mediaobject	The mediaobject that this event is associated with.
 	 */
-	public Event(int time, int timelineid, Action action) {
+	public Event(int time, int timelineid, Action action, MediaObject mediaobject) {
 		super();
 		this.time = time;
 		this.timelineid = timelineid;
 		this.action = action;
+		this.mediaobject = mediaobject;
 	}
 
 	public int getTime() {
@@ -34,6 +37,10 @@ public class Event implements Comparable<Event>{
 	}
 
 	public void setTime(int time) {
+		if (time < 0){
+			System.out.println("Tried to set Event time to "+time+". Ignored this and did not update Event.time.");
+			return;
+		}
 		this.time = time;
 	}
 

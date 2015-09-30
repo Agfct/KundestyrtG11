@@ -1,6 +1,7 @@
 package modules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 
 /**
@@ -12,26 +13,23 @@ import java.util.Dictionary;
 public class TimelineModule {
 	
 	private static TimelineModule timelinemodule;
-	
-	// Each display can have one or zero timelines
+
 	//private VLCController vlccontroller;
 	//private StorageController storagecontroller;
 	
-	//Table to display on the screen. Integer= screen; TimelineModel= Time line
+	// Each display can have one or zero timelines
 	private Dictionary<Integer, TimelineModel> displays;
-	//Table Of the time line to display on the software
 	private ArrayList<TimelineModel> timelines;
-	// Timer for the time line
-	private float globaltime;
-	//Stack to know wich order we need to display
+	// Timer for the timeline
+	private int globaltime;
+	// Queue used when playing timelines
 	private ArrayList<Event> performancestack;
-		
 	
 	private TimelineModule() {
 		//TODO: Implement constructor
 	}
 	
-	public TimelineModule getInstance(){
+	public static TimelineModule getInstance(){
 		if (timelinemodule == null){
 			timelinemodule = new TimelineModule();
 		}
@@ -41,8 +39,9 @@ public class TimelineModule {
 	public void addTimeline(TimelineModel tlm){
 		timelines.add(tlm);
 	}
-		
-	// TODO: We are not sure which removeTimeline to use per now.	
+	
+	
+	// TODO: We are not sure which removeTimeline to use per now.
 	public void removeTimeline(int id){
 		// Find the timeline in the timelines list and remove it
 		for(int i=0; i<timelines.size(); i++){
@@ -72,7 +71,6 @@ public class TimelineModule {
 				}
 			}		
 		}
-	
 	}
 	
 	public void assignTimeline(Integer display, TimelineModel tlm){
@@ -96,7 +94,6 @@ public class TimelineModule {
 	public void addDisplay(Integer display){
 		//TODO: add display to displays, assign none (timeline)
 		displays.put(display, null);
-		
 	}
 	
 	public void removeDisplay(Integer display){
@@ -119,17 +116,42 @@ public class TimelineModule {
 	public void playAll(){
 		//TODO: first run buildPerformance, then starts running the stack
 	}
+	@SuppressWarnings("unused")
 	public void buildPerformance(){
 		//Add all Events to list, then sort it
 		performancestack = new ArrayList<Event>();
 		
 		for (TimelineModel timeline : timelines){
 			for (MediaObject mediaobject : timeline.getMediaObjects()){
-				Event event = new Event(mediaobject.getStartTime(), timeline.getID(), Action.PLAY);
-				performancestack.add(event);
+				// Videos have start and stop time, // TODO: Streams might be handled differently
 				if (mediaobject instanceof MediaObjectVideo){
-					event = new Event(((MediaObjectVideo)mediaobject).getEndVideo(), timeline.getID(), Action.STOP);
-					performancestack.add(event);
+					// If the video starts after the globaltime, add both an PLAY and STOP Event
+					if (mediaobject.getStartTime() > globaltime){
+						Event event = new Event(mediaobject.getStartTime(), timeline.getID(), Action.PLAY, mediaobject);
+						performancestack.add(event);
+						
+						int eventtime = mediaobject.getStartTime()+((MediaObjectVideo)mediaobject).getEndVideo();
+						event = new Event(eventtime, timeline.getID(), Action.STOP, mediaobject);
+						performancestack.add(event);
+					}
+					// If the globaltime is between the start and stop of the video, we need both PLAY and STOP, but should start video at globaltime+startVideo
+					else if ( ((MediaObjectVideo)mediaobject).getStartTime() < globaltime 
+							&& globaltime < (((MediaObjectVideo)mediaobject).getStartTime())+((MediaObjectVideo)mediaobject).getPlayLength() ){
+						Event event = new Event(globaltime, timeline.getID(), Action.PLAY_WITH_OFFSET, mediaobject);
+						performancestack.add(event);
+						
+						int eventtime = mediaobject.getStartTime()+((MediaObjectVideo)mediaobject).getEndVideo();
+						event = new Event(eventtime, timeline.getID(), Action.STOP, mediaobject);
+						performancestack.add(event);
+					}
+					// Else: the video stops before globaltime, so no need to do anything.
+				}
+				else {
+					/**
+					 * TODO: Handle streams here. (Do they have both a start and end time? Might want to change between
+					 * two streams on one timeline??
+					 */
+					System.out.println("Adding events for streams is not implemented in TimelineModule.java: buildPerformance() yet.");
 				}
 			}
 		}
