@@ -16,7 +16,7 @@ import javafx.scene.layout.Pane;
 
 /**
  * @author Anders Lunde,  Magnus Gunde
- *
+ *The AdvancedScreen class represents the view/Screen where you can create a new session that will be displayed on the screens.
  */
 public class AdvancedScreen implements Screen{
 		
