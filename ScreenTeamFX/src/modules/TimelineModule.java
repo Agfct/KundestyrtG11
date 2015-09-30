@@ -19,7 +19,7 @@ public class TimelineModule {
 	private ArrayList<TimelineModel> timelines;
 	//private VLCController vlccontroller;
 	//private StorageController storagecontroller;
-	private float globaltime;
+	private int globaltime;
 	private ArrayList<Event> performancestack;
 	
 	private TimelineModule() {
@@ -73,17 +73,42 @@ public class TimelineModule {
 	public void playAll(){
 		//TODO: first run buildPerformance, then starts running the stack
 	}
+	@SuppressWarnings("unused")
 	public void buildPerformance(){
 		//Add all Events to list, then sort it
 		performancestack = new ArrayList<Event>();
 		
 		for (TimelineModel timeline : timelines){
 			for (MediaObject mediaobject : timeline.getMediaObjects()){
-				Event event = new Event(mediaobject.getStartTime(), timeline.getID(), Action.PLAY);
-				performancestack.add(event);
+				// Videos have start and stop time, // TODO: Streams might be handled differently
 				if (mediaobject instanceof MediaObjectVideo){
-					event = new Event(((MediaObjectVideo)mediaobject).getEndVideo(), timeline.getID(), Action.STOP);
-					performancestack.add(event);
+					// If the video starts after the globaltime, add both an PLAY and STOP Event
+					if (mediaobject.getStartTime() > globaltime){
+						Event event = new Event(mediaobject.getStartTime(), timeline.getID(), Action.PLAY, mediaobject);
+						performancestack.add(event);
+						
+						int eventtime = mediaobject.getStartTime()+((MediaObjectVideo)mediaobject).getEndVideo();
+						event = new Event(eventtime, timeline.getID(), Action.STOP, mediaobject);
+						performancestack.add(event);
+					}
+					// If the globaltime is between the start and stop of the video, we need both PLAY and STOP, but should start video at globaltime+startVideo
+					else if ( ((MediaObjectVideo)mediaobject).getStartTime() < globaltime 
+							&& globaltime < (((MediaObjectVideo)mediaobject).getStartTime())+((MediaObjectVideo)mediaobject).getPlayLength() ){
+						Event event = new Event(globaltime, timeline.getID(), Action.PLAY_WITH_OFFSET, mediaobject);
+						performancestack.add(event);
+						
+						int eventtime = mediaobject.getStartTime()+((MediaObjectVideo)mediaobject).getEndVideo();
+						event = new Event(eventtime, timeline.getID(), Action.STOP, mediaobject);
+						performancestack.add(event);
+					}
+					// Else: the video stops before globaltime, so no need to do anything.
+				}
+				else {
+					/**
+					 * TODO: Handle streams here. (Do they have both a start and end time? Might want to change between
+					 * two streams on one timeline??
+					 */
+					System.out.println("Adding events for streams is not implemented in TimelineModule.java: buildPerformance() yet.");
 				}
 			}
 		}
