@@ -76,7 +76,7 @@ public class AdvancedScreen implements Screen{
 		private class AdvancedScreenController {
 			
 			@FXML private Button testButton;
-			@FXML private TimelineVBox timelineContainer;
+//			@FXML private GridPane timelineContainer;
 			
 			/**
 			 * This method is ran when you press a button in the advanced screen top layout (Not inside the timelines).
@@ -91,7 +91,7 @@ public class AdvancedScreen implements Screen{
 					MainGUIController.getInstance().changeScreen(SCREENTYPE.MAINMENU);
 					
 				}else if(((Button)event.getSource()).getId().equals("addTimeline")){
-					timelineContainer.addEmptyTimeline();
+					//TODO: Create a new instance of a controller class.
 					
 				}
 			}			
