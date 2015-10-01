@@ -3,7 +3,10 @@ package gui;
 import java.io.IOException;
 
 import gui.AdvancedScreen.AdvancedScreenController;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
@@ -39,6 +42,29 @@ public class TimelineLineController implements FXMLController{
 			System.out.println("Failed to load TimelineLine FXML");
 			e.printStackTrace();
 		}
+		//TODO: REMOVE, TESTING ONLY
+		rootPane.getChildren().add(new MediaObjectController());
+		
+		rootPane.setOnDragOver(new EventHandler<DragEvent>() {
+		    public void handle(DragEvent event) {
+		    	System.out.println("Dropped");
+		        /* data is dragged over the target */
+		        /* accept it only if it is not dragged from the same node 
+		         * and if it has a string data */
+//		        if (event.getGestureSource() != this &&
+//		                event.getDragboard().hasString()) {
+//		            /* allow for both copying and moving, whatever user chooses */
+//		            event.acceptTransferModes(TransferMode.MOVE);
+//		        }
+		        if (event.getGestureSource() != this){
+		        	System.out.println("Dropped");
+		        event.acceptTransferModes(TransferMode.MOVE);
+		        }
+		        
+		        event.consume();
+		    }
+		});
+		//end of TEST
 		
 	}
 
