@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,7 +16,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -35,7 +39,12 @@ public class AdvancedScreen implements Screen{
 		
 		
 		//variable to keep track of the media files imported
-		ObservableList<File> importedMediaFiles = FXCollections.observableArrayList();
+		ObservableList<String> importedMediaFiles = FXCollections.observableArrayList();
+		
+		//Autoupdatable listproperty for use on the listview
+		protected ListProperty<String> listProperty = new SimpleListProperty<>();
+		
+
 		
 		
 
@@ -85,11 +94,11 @@ public class AdvancedScreen implements Screen{
 		/*
 		 * (non-Javadoc)
 		 * @ functionality for the file chooser
+		 * The filechooser adds the file to the arraylist, and updates the on-screen listView
 		 */
 		public void fileChosen(File file){
-			System.out.println("File chosen: "+ file.toString());
-			importedMediaFiles.add(file);
-			System.out.println(importedMediaFiles.toString());
+			importedMediaFiles.add(file.toString());
+			listProperty.set(importedMediaFiles);
 			
 		}
 		
@@ -104,6 +113,15 @@ public class AdvancedScreen implements Screen{
 			
 			@FXML private Button testButton;
 //			@FXML private GridPane timelineContainer;
+			
+			
+			
+			// A pointer to the fx:id in the fxml
+			@FXML private ListView fileListView;
+			
+
+			
+			
 			
 			/**
 			 * This method is ran when you press a button in the advanced screen top layout (Not inside the timelines).
@@ -122,13 +140,16 @@ public class AdvancedScreen implements Screen{
 					
 				}
 				else if(((Button)event.getSource()).getId().equals("importMedia")){
-					//TODO: Create a popup file-chooser to select the files you want
-					System.out.println("import!");
+					// If the user chooses the import media button, he will get a windows-file-chooser
 					FileChooser fileChooser = new FileChooser();
-					fileChooser.setTitle("Open Resource File");
+					fileChooser.setTitle("Open media file");
 					File file=fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
-					System.out.println(fileChooser.getInitialFileName());
+					
+					//binds the items of the listView to the listProperty. This should probably be done somewhere else
+					fileListView.itemsProperty().bind(listProperty);
 					fileChosen(file);
+			        
+
 				}
 			}			
 

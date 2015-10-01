@@ -35,12 +35,7 @@
         	<Button id="menuBtn" mnemonicParsing="true" onAction="#buttonPressed" text="_Menu" />
         	<Button id="addTimeLineBtn" mnemonicParsing="true" onAction="#buttonPressed" text="_Add timeline" GridPane.rowIndex="2" />
             <Button id="importMedia" mnemonicParsing="true" onAction="#buttonPressed" text="_Import media files" GridPane.columnIndex="1" />
-            <TableView id="fileTable" GridPane.columnIndex="1" GridPane.rowIndex="1">
-			     <columns>
-			          <TableColumn text="File Location">
-			          </TableColumn>
-			     </columns>    
-			</TableView>
+            <ListView fx:id="fileListView" GridPane.rowIndex="1" GridPane.columnIndex="1" />
         </children>
       </GridPane>
 		<!-- This is the Scroll pane that contains the GridPane that has TimeLines in it -->
