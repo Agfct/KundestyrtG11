@@ -8,19 +8,20 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane  gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
+<GridPane gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
   <!-- ColumConstrains: There is one constraint per column and one per row. these needs to be configured to suit the GUI elements -->
   <columnConstraints>
-		<ColumnConstraints percentWidth="100"/>
+		<ColumnConstraints percentWidth="100.0" />
+      <ColumnConstraints />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints percentHeight="32" minHeight="10.0" prefHeight="140.0" vgrow="NEVER" />
+    <RowConstraints minHeight="10.0" percentHeight="32" prefHeight="140.0" vgrow="NEVER" />
     <RowConstraints maxHeight="25" minHeight="20" prefHeight="25" vgrow="NEVER" />
-    <RowConstraints percentHeight="66" minHeight="10.0" vgrow="ALWAYS" />
+    <RowConstraints minHeight="10.0" percentHeight="66" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
    <!-- This is the top GridPane, containing all the GUI elements in the top part of the advanced screen -->
-         <GridPane  gridLinesVisible="true" GridPane.columnSpan="2">
+         <GridPane gridLinesVisible="true" GridPane.columnSpan="2">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -31,25 +32,32 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
         <children>
-        <Button id="menuBtn" text="_Menu" onAction="#buttonPressed" mnemonicParsing="true" />
-        <Button id="addTimeLineBtn" text="_Add" onAction="#buttonPressed" mnemonicParsing="true" GridPane.rowIndex="2"/>
+        	<Button id="menuBtn" mnemonicParsing="true" onAction="#buttonPressed" text="_Menu" />
+        	<Button id="addTimeLineBtn" mnemonicParsing="true" onAction="#buttonPressed" text="_Add timeline" GridPane.rowIndex="2" />
+            <Button id="importMedia" mnemonicParsing="true" onAction="#buttonPressed" text="_Import media files" GridPane.columnIndex="1" />
+            <TableView id="fileTable" GridPane.columnIndex="1" GridPane.rowIndex="1">
+			     <columns>
+			          <TableColumn text="File Location">
+			          </TableColumn>
+			     </columns>    
+			</TableView>
         </children>
       </GridPane>
 		<!-- This is the Scroll pane that contains the GridPane that has TimeLines in it -->
-      <ScrollPane GridPane.columnSpan="2" GridPane.rowIndex="2" >
+      <ScrollPane GridPane.columnSpan="2" GridPane.rowIndex="2">
          <content>
          <!-- The Timelines are controlled by at TimelineController  -->
-            <GridPane gridLinesVisible="true" >
+            <GridPane gridLinesVisible="true">
             	<columnConstraints>
-                	<ColumnConstraints minWidth="200" prefWidth="200" maxWidth="200"/>
-            		<ColumnConstraints minWidth="900" hgrow="NEVER" maxWidth="Infinity"/>
+                	<ColumnConstraints maxWidth="200" minWidth="200" prefWidth="200" />
+            		<ColumnConstraints hgrow="NEVER" maxWidth="Infinity" minWidth="900" />
             	</columnConstraints>
             	<rowConstraints>
    					 <RowConstraints maxHeight="150" minHeight="150" prefHeight="150" />
    					 <RowConstraints maxHeight="150" minHeight="150" prefHeight="150" />
     			</rowConstraints>
     			<children>
-    			<Button GridPane.rowIndex="1" >Hello</Button>
+    			<Button GridPane.rowIndex="1">Hello</Button>
     			</children>
             </GridPane>
          </content>

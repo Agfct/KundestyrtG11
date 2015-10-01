@@ -3,7 +3,12 @@
  */
 package gui;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +18,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 
 /**
  * @author Anders Lunde,  Magnus Gunde
@@ -26,6 +32,12 @@ public class AdvancedScreen implements Screen{
 		GridPane rootPane;
 		Scene screenScene;
 		AdvancedScreenController screenController;
+		
+		
+		//variable to keep track of the media files imported
+		ObservableList<File> importedMediaFiles = FXCollections.observableArrayList();
+		
+		
 
 		private AdvancedScreen(){
 			
@@ -34,6 +46,7 @@ public class AdvancedScreen implements Screen{
 			
 			//Creating a new controller for use in the fxml
 			screenController = new AdvancedScreenController();
+			
 			
 			// The constructor will try to fetch the fxml 
 			try {
@@ -67,6 +80,20 @@ public class AdvancedScreen implements Screen{
 			return screenScene;
 		}
 		
+		
+		// - change log: magnus 0110 - 
+		/*
+		 * (non-Javadoc)
+		 * @ functionality for the file chooser
+		 */
+		public void fileChosen(File file){
+			System.out.println("File chosen: "+ file.toString());
+			importedMediaFiles.add(file);
+			System.out.println(importedMediaFiles.toString());
+			
+		}
+		
+		
 		/**
 		 * 
 		 * @author Anders Lunde
@@ -93,6 +120,15 @@ public class AdvancedScreen implements Screen{
 				}else if(((Button)event.getSource()).getId().equals("addTimeline")){
 					//TODO: Create a new instance of a controller class.
 					
+				}
+				else if(((Button)event.getSource()).getId().equals("importMedia")){
+					//TODO: Create a popup file-chooser to select the files you want
+					System.out.println("import!");
+					FileChooser fileChooser = new FileChooser();
+					fileChooser.setTitle("Open Resource File");
+					File file=fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
+					System.out.println(fileChooser.getInitialFileName());
+					fileChosen(file);
 				}
 			}			
 
