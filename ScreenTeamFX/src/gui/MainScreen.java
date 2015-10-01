@@ -23,6 +23,7 @@ public class MainScreen implements Screen {
 	//Singleton:
 	private static MainScreen mainScreen;
 	
+	FXMLLoader fxmlLoader;
 	GridPane rootPane;
 	Scene screenScene;
 	MainScreenController screenController;
@@ -34,7 +35,7 @@ public class MainScreen implements Screen {
 		
 		// The constructor will try to fetch the fxml 
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
+			fxmlLoader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
 			fxmlLoader.setController(screenController);
 			fxmlLoader.load();
 			rootPane = fxmlLoader.getRoot();
@@ -69,7 +70,7 @@ public class MainScreen implements Screen {
 	 * The controller for the FXML of the mainScreen.
 	 * The MainScreenController listens to all the input from the objects (buttons, textFields, mouseClicks) in the fxml scene.
 	 */
-	private class MainScreenController {
+	private class MainScreenController implements FXMLController {
 		
 		@FXML private Button testButton;
 		
@@ -89,6 +90,14 @@ public class MainScreen implements Screen {
 				MainGUIController.getInstance().changeScreen(SCREENTYPE.ADVANCEDSCREEN);
 				
 			}
+		}
+
+		/* (non-Javadoc)
+		 * @see gui.FXMLController#getFXMLLoader()
+		 */
+		@Override
+		public FXMLLoader getFXMLLoader() {
+			return fxmlLoader;
 		}
 		
 
