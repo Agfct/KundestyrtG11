@@ -69,6 +69,10 @@ public class AdvancedScreen implements Screen{
 			return screenScene;
 		}
 		
+		public AdvancedScreenController getScreenController() {
+			return screenController;
+		}
+		
 		
 		// - change log: magnus 0110 - 
 		/*
@@ -185,10 +189,7 @@ public class AdvancedScreen implements Screen{
 
 		}//end AdvancedScreenController
 
-		public AdvancedScreenController getScreenController() {
-			return screenController;
-		}
-		
+
 
 
 }
