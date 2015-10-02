@@ -51,6 +51,8 @@
 					mnemonicParsing="true" />
 				<Button id="addTimeLineBtn" text="_Add" onAction="#buttonPressed"
 					mnemonicParsing="true" GridPane.rowIndex="2" />
+					<Button id="importMedia" mnemonicParsing="true" onAction="#buttonPressed" text="_Import media files" GridPane.columnIndex="1" />
+            <ListView fx:id="fileListView" GridPane.rowIndex="1" GridPane.columnIndex="1" />
 			</children>
 		</GridPane>
 		<!-- This is the Scroll pane that contains the GridPane that has TimeLines 

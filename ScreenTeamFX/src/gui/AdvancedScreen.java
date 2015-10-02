@@ -3,19 +3,21 @@
  */
 package gui;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 
 /**
  * @author Anders Lunde,  Magnus Gunde
@@ -27,9 +29,18 @@ public class AdvancedScreen implements Screen{
 		//Singleton:
 		private static AdvancedScreen advancedScreen;
 		
+
 		private Scene screenScene;
 		private AdvancedScreenController screenController;
+
+		GridPane rootPane;
 		
+		
+		//variable to keep track of the media files imported
+		ObservableList<String> importedMediaFiles = FXCollections.observableArrayList();
+		
+		//Autoupdatable listproperty for use on the listview
+		protected ListProperty<String> listProperty = new SimpleListProperty<>();
 
 		private AdvancedScreen(){
 			
@@ -58,6 +69,20 @@ public class AdvancedScreen implements Screen{
 			return screenScene;
 		}
 		
+		
+		// - change log: magnus 0110 - 
+		/*
+		 * (non-Javadoc)
+		 * @ functionality for the file chooser
+		 * The filechooser adds the file to the arraylist, and updates the on-screen listView
+		 */
+		public void fileChosen(File file){
+			importedMediaFiles.add(file.toString());
+			listProperty.set(importedMediaFiles);
+			
+		}
+		
+		
 		/**
 		 * 
 		 * @author Anders Lunde
@@ -66,14 +91,17 @@ public class AdvancedScreen implements Screen{
 		 */
 		public class AdvancedScreenController implements FXMLController {
 			
+
 			//List of all Children controllers
 			private ArrayList<FXMLController> childControllers;
 
 			private FXMLLoader fxmlLoader;
 			private GridPane rootPane;
 
-			
+			// Pointers to the fx:id in the fxml
 			@FXML private GridPane timelineContainer;
+			@FXML private Button testButton;
+			@FXML private ListView fileListView;
 			
 			public AdvancedScreenController(){
 
@@ -111,6 +139,17 @@ public class AdvancedScreen implements Screen{
 					System.out.println("Adding a TimeLine");
 					addTimeline();
 					
+				}else if(((Button)event.getSource()).getId().equals("importMedia")){
+					// If the user chooses the import media button, he will get a windows-file-chooser
+					FileChooser fileChooser = new FileChooser();
+					fileChooser.setTitle("Open media file");
+					File file=fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
+					
+					//binds the items of the listView to the listProperty. This should probably be done somewhere else
+					fileListView.itemsProperty().bind(listProperty);
+					fileChosen(file);
+			        
+
 				}
 			}	
 			
@@ -142,7 +181,6 @@ public class AdvancedScreen implements Screen{
 				timelineContainer.add(tempTimeController.getTimelineLineController().getFXMLLoader().getRoot(), 1, (childControllers.size()-1));
 			}
 
-			
 		}//end AdvancedScreenController
 
 		public AdvancedScreenController getScreenController() {
