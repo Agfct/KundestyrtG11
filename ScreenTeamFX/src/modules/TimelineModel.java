@@ -1,16 +1,18 @@
 package modules;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class TimelineModel {
 	
 	private ArrayList<MediaObject> mediaObjects;
 	private final int id;
-
+	private ArrayList<Event> timelineStack;
 	public TimelineModel(ArrayList<MediaObject> mediaObjects, int id) {
 		super();
 		this.mediaObjects = mediaObjects;
 		this.id = id;
+		this.timelineStack = new ArrayList<Event>();
 	}
 	
 	public ArrayList<MediaObject> getMediaObjects() {
@@ -20,9 +22,53 @@ public class TimelineModel {
 	public void setMediaObjects(ArrayList<MediaObject> mediaObjects) {
 		this.mediaObjects = mediaObjects;
 	}
-	
+
 	public int getID() {
 		return id;
 	}
+	
+	public ArrayList<Event> getTimelineStack(){
+		return timelineStack;
+	}
+	/**
+	 * add a new mediaObject to the timeline
+	 * 
+	 * @param m
+	 */
+	public void addMediaObject(MediaObject m){
+		mediaObjects.add(m);
+		timelinechanged();
+	}
+	/**
+	 * removes a mediaObject from the timeline
+	 * 
+	 * @param m
+	 */
+	public void removeMediaObject(MediaObject m){
+		mediaObjects.remove(m);
+		timelinechanged();
+	}
+	
+	/**
+	 * goes through all mediaObjects in the timeline and creates the new stack
+	 * 
+	 */
+	public void timelinechanged(){
+		timelineStack.clear();
+		MediaObject mO;
+		Event start;
+		Event end;
+		for(int i=0;i>=mediaObjects.size();i++){
+			mO = mediaObjects.get(i);
+			if (mO instanceof MediaObjectVideo){
+				start = new Event(((MediaObjectVideo) mO).getStartTime(), id, Action.PLAY,mO);
+				end = new Event(((MediaObjectVideo) mO).getEndVideo(), id, Action.STOP,mO);
+				timelineStack.add(start);
+				timelineStack.add(end);
+			}
+		Collections.sort(timelineStack);
+		}
+	}
 		
 }
+

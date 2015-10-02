@@ -23,12 +23,12 @@ public class MediaObjectVideo extends MediaObject {
 	 * @param startVideo
 	 * @param endTime
 	 * @param length
+	 * @param start
 	 * 
 	 * TODO: How do we find the length?
 	 */
 	public MediaObjectVideo(String url, String name, int startTime, int startVideo, int endVideo, int length) {
 		super(url, name, startTime);
-		
 		//Protection endVideo
 		if(endVideo>=0){
 			this.endVideo = endVideo;
@@ -37,7 +37,6 @@ public class MediaObjectVideo extends MediaObject {
 			this.endVideo = 0;
 			System.out.println("\n In MediaObjectVideo: endVideo is negative !");
 		}
-		
 		//Protection length
 		if(length>=0){
 			this.length = length;
@@ -51,7 +50,11 @@ public class MediaObjectVideo extends MediaObject {
 	public int getStartVideo() {
 		return startVideo;
 	}
-
+	/**
+	 * set at what point the video should begin
+	 * 
+	 * @param start
+	 */
 	public void setStartVideo(int startVideo) {
 		this.startVideo = startVideo;
 	}
@@ -59,7 +62,14 @@ public class MediaObjectVideo extends MediaObject {
 	public int getEndVideo() {
 		return endVideo;
 	}
-
+	
+	/**
+	 * set when the video should be stopped playing
+	 * note this is not at what point in the video it should stop
+	 * but what global time it should stop.
+	 * 
+	 * @param endVideo
+	 */
 	public void setEndVideo(int endVideo) {
 		//Protection endVideo
 		if(endVideo <= length){
