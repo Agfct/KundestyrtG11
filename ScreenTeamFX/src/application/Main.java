@@ -1,3 +1,8 @@
+/**
+ * This software is made by (Screen Team):
+ * Anders Lunde, Mangus Gundersen, Kristian Midtgård, 
+ * Baptiste Masselin, Ole Steinar Lillestøl Skrede and Eirik Zimmer Wold.
+ */
 package application;
 	
 import gui.MainGUIController;
@@ -8,7 +13,8 @@ import modules.MainModuleController;
 /**
  * 
  * @author Anders Lunde, Magnus Gundersen
- *
+ * The Main class is simply the starting point of the software and initializes the
+ * two main controllers; mainGUIController and mainModuleController.
  */
 
 public class Main extends Application {
@@ -16,17 +22,20 @@ public class Main extends Application {
 	MainModuleController mainModuleController;
 	
 	/**
-	 * Start initialises the main GUI controller for the GUI, 
-	 * and the main java controller "MainJavaController" for the java parts of the application. 
+	 * Start initializes the main GUI controller for the GUI, 
+	 * and the main module controller "MainModuleController" for the java parts of the application. 
 	 */
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			//Initializes the Modules and base models, running the default setup phase.
-			mainModuleController = new MainModuleController();
 			
 			//Initializes the GUI part of the software, initializing the mainScene onto the stage and adding the fxml.
-			mainGUIController = new MainGUIController(primaryStage);
+			mainGUIController = MainGUIController.initialize(primaryStage);
+			
+			//Initializes the Modules and base models, running the default setup phase.
+			mainModuleController = MainModuleController.getInstance();
+			
+
 			
 
 		} catch(Exception e) {
@@ -37,9 +46,5 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
-	
-	/**
-	 * Methods for getting main controller?
-	 */
+
 }
