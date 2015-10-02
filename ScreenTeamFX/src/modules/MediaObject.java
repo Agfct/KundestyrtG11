@@ -8,9 +8,10 @@ package modules;
  */
 public abstract class MediaObject {
 
-	private String url;
+	private String path;
 	private String name;
-	private int startTime;
+	private int length;
+	private MediaSourceType type;;
 	
 	/**
 	 * 
@@ -18,27 +19,13 @@ public abstract class MediaObject {
 	 * @param name
 	 * @param startTime	
 	 */
-	public MediaObject(String url, String name, int startTime) {
+	public MediaObject(String path, String name, MediaSourceType type) {
 		super();
-		this.url = url;
+		this.path = path;
 		this.name = name;
-		this.startTime = startTime;
-	}
-
-	public int getStartTime() {
-		return startTime;
+		this.setType(type);
 	}
 	
-	/**
-	 * set when the mediaobject should be shown
-	 * note this is the global time the media should start
-	 * 
-	 * @param startTime
-	 */
-	public void setStartTime(int startTime) {
-		this.startTime = startTime;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -47,12 +34,28 @@ public abstract class MediaObject {
 		this.name = name;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getPath() {
+		return path;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public MediaSourceType getType() {
+		return type;
+	}
+
+	public void setType(MediaSourceType type) {
+		this.type = type;
 	}
 	
 }

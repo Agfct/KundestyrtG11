@@ -15,7 +15,7 @@ public class Event implements Comparable<Event>{
 	private int time;
 	private int timelineid;
 	private Action action;
-	private MediaObject mediaobject;
+	private TimelineMediaObject timelineMediaObject;
 	
 	/**
 	 * 
@@ -24,12 +24,12 @@ public class Event implements Comparable<Event>{
 	 * @param action
 	 * @param mediaobject	The mediaobject that this event is associated with.
 	 */
-	public Event(int time, int timelineid, Action action, MediaObject mediaobject) {
+	public Event(int time, int timelineid, Action action, TimelineMediaObject timelineMediaObject) {
 		super();
 		this.time = time;
 		this.timelineid = timelineid;
 		this.action = action;
-		this.mediaobject = mediaobject;
+		this.setTimelineMediaObject(timelineMediaObject);
 	}
 
 	public int getTime() {
@@ -92,6 +92,14 @@ public class Event implements Comparable<Event>{
 		// return compareTime - this.time;
 	}
 	
+	public TimelineMediaObject getTimelineMediaObject() {
+		return timelineMediaObject;
+	}
+
+	public void setTimelineMediaObject(TimelineMediaObject timelineMediaObject) {
+		this.timelineMediaObject = timelineMediaObject;
+	}
+
 	public static Comparator<Event> EventTimeComperator = new Comparator<Event>() {
 		
 		public int compare(Event event1, Event event2){
