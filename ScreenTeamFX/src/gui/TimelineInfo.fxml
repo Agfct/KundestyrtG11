@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane maxHeight="150" maxWidth="-Infinity" minHeight="150" minWidth="-Infinity" prefHeight="150" prefWidth="200" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
+  <columnConstraints>
+    <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="5" prefHeight="30.0" vgrow="NEVER" />
+    <RowConstraints minHeight="5" prefHeight="30.0" vgrow="NEVER" />
+    <RowConstraints minHeight="5" prefHeight="30.0" vgrow="NEVER" />
+  </rowConstraints>
+   <children>
+      <Label text="Enabled: " GridPane.rowIndex="1" />
+      <CheckBox mnemonicParsing="false" selected="true" text="CheckBox" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <ChoiceBox prefWidth="150.0" />
+   </children>
+</GridPane>

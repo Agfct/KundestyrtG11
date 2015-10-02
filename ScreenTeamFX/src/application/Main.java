@@ -22,8 +22,8 @@ public class Main extends Application {
 	MainModuleController mainModuleController;
 	
 	/**
-	 * Start initialises the main GUI controller for the GUI, 
-	 * and the main java controller "MainJavaController" for the java parts of the application. 
+	 * Start initializes the main GUI controller for the GUI, 
+	 * and the main module controller "MainModuleController" for the java parts of the application. 
 	 */
 	@Override
 	public void start(Stage primaryStage) {
