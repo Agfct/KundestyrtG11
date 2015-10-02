@@ -147,7 +147,9 @@ public class AdvancedScreen implements Screen{
 					
 					//binds the items of the listView to the listProperty. This should probably be done somewhere else
 					fileListView.itemsProperty().bind(listProperty);
-					fileChosen(file);
+					if(file != null){
+						fileChosen(file);
+					}
 			        
 
 				}
