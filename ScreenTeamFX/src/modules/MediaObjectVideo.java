@@ -9,11 +9,10 @@ package modules;
 public class MediaObjectVideo extends MediaObject {
 	
 	//Start- and end points for the videoplayback.
+	private int startVideo;
 	private int endVideo;
 	//Length of the entire video file
 	private int length;
-	//point in video to begin
-	private int startVideo;
 	
 	
 	/**
@@ -21,30 +20,49 @@ public class MediaObjectVideo extends MediaObject {
 	 * @param url
 	 * @param name
 	 * @param startTime
+	 * @param startVideo
 	 * @param endTime
 	 * @param length
 	 * @param start
 	 * 
 	 * TODO: How do we find the length?
 	 */
-	public MediaObjectVideo(String url, String name, int startTime, int endVideo, int length,int start) {
+	public MediaObjectVideo(String url, String name, int startTime, int startVideo, int endVideo, int length) {
 		super(url, name, startTime);
-		this.endVideo = endVideo;
-		this.length = length;
-		this.startVideo = start;
+		//Protection endVideo
+		if(endVideo>=0){
+			this.endVideo = endVideo;
+		}
+		else {
+			this.endVideo = 0;
+			System.out.println("\n In MediaObjectVideo: endVideo is negative !");
+		}
+		//Protection length
+		if(length>=0){
+			this.length = length;
+		}
+		else {
+			this.length = 0;
+			System.out.println("\n In MediaObjectVideo: length is negative !");
+		}
 	}
 
-	public int getEndVideo() {
-		return endVideo;
+	public int getStartVideo() {
+		return startVideo;
 	}
 	/**
 	 * set at what point the video should begin
 	 * 
 	 * @param start
 	 */
-	public void setstartVideo(int start){
-		startVideo= start;
+	public void setStartVideo(int startVideo) {
+		this.startVideo = startVideo;
 	}
+
+	public int getEndVideo() {
+		return endVideo;
+	}
+	
 	/**
 	 * set when the video should be stopped playing
 	 * note this is not at what point in the video it should stop
@@ -52,17 +70,28 @@ public class MediaObjectVideo extends MediaObject {
 	 * 
 	 * @param endVideo
 	 */
-	public void setEndTime(int endVideo) {
+	public void setEndVideo(int endVideo) {
+		//Protection endVideo
 		if(endVideo <= length){
 			this.endVideo = endVideo;
 		}
 		else{
-			System.out.println("\n Length of the video inferior of the endVideo ");		
+			this.endVideo = 0;
+			System.out.println("\n In MediaObjectVideo: endVideo is negative ");		
 		}
 	}
 
 	public int getLength() {
 		return length;
+	}
+
+	public int getPlayLength() {
+		int result = this.endVideo - this.startVideo;
+		if ( result < 0 ){
+			System.out.println("MediaObjectVideo.getPlayLength: result " + result + " is less than 0!");
+			return 0;
+		}
+		return result;
 	}
 
 }

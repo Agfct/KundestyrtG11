@@ -14,7 +14,7 @@ public class TimelineModel {
 		this.id = id;
 		this.timelineStack = new ArrayList<Event>();
 	}
-
+	
 	public ArrayList<MediaObject> getMediaObjects() {
 		return mediaObjects;
 	}
@@ -61,8 +61,8 @@ public class TimelineModel {
 		for(int i=0;i>=mediaObjects.size();i++){
 			mO = mediaObjects.get(i);
 			if (mO instanceof MediaObjectVideo){
-				start = new Event(((MediaObjectVideo) mO).getStartTime(), id, Action.PLAY);
-				end = new Event(((MediaObjectVideo) mO).getEndVideo(), id, Action.STOP);
+				start = new Event(((MediaObjectVideo) mO).getStartTime(), id, Action.PLAY,mO);
+				end = new Event(((MediaObjectVideo) mO).getEndVideo(), id, Action.STOP,mO);
 				timelineStack.add(start);
 				timelineStack.add(end);
 			}
@@ -71,3 +71,4 @@ public class TimelineModel {
 	}
 		
 }
+
