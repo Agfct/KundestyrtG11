@@ -22,6 +22,7 @@ public class MediaObjectController extends GridPane{
 		setMinHeight(75);
 		setMinWidth(100);
 		
+		//TODO: This
 		setOnDragDetected(new EventHandler<MouseEvent>() {
 		    public void handle(MouseEvent event) {
 		    	System.out.println("Dragged");
