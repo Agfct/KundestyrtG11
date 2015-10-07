@@ -1,7 +1,7 @@
 package modules;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
+import java.util.HashMap;
 
 /**
  * 
@@ -17,30 +17,49 @@ public class TimelineModule {
 	private StorageController storagecontroller;
 	
 	// Each display can have one or zero timelines
-	private Dictionary<Integer, TimelineModel> displays;
+	private HashMap<Integer, TimelineModel> displays;
 	private ArrayList<TimelineModel> timelines;
 	// Timer for the timeline
 	private int globaltime;
 	// Queue used when playing timelines
 	private ArrayList<Event> performancestack;
+	//counter for the id of the timelineModels
+	private int tlmID;
+	
 	
 	private TimelineModule() {
-		//TODO: Implement constructor
+		//TODO: Implement constructor take in list of displays?
+		this.timelines = new ArrayList<TimelineModel>();
+		this.timelines.add(new TimelineModel(0));
+		this.globaltime = 0;
+		this.performancestack = new ArrayList<Event>();
+		this.tlmID =0;
+		this.displays = new HashMap<Integer,TimelineModel>();
 	}
-	
+	/**
+	 * singleton call method instead of new to get the same instance of timelinemodule
+	 * @return instance of timelinemodule
+	 */
 	public static TimelineModule getInstance(){
 		if (timelinemodule == null){
 			timelinemodule = new TimelineModule();
 		}
 		return timelinemodule;
 	}
-	
-	public void addTimeline(TimelineModel tlm){
+	/**
+	 * add a new timeline to the list of timelines
+	 * @param tlm
+	 */
+	public int addTimeline(){
+		tlmID +=1;
+		TimelineModel tlm = new TimelineModel(tlmID);
 		timelines.add(tlm);
+		return tlmID;
 	}
 	
 	
-	// TODO: We are not sure which removeTimeline to use per now.
+	// TODO: We are not sure which removeTimeline to use per now. depends on
+	// what the gui knows. either id of timeline or the timelinemodel itself
 	public void removeTimeline(int id){
 		// Find the timeline in the timelines list and remove it
 		for(int i=0; i<timelines.size(); i++){
@@ -50,16 +69,11 @@ public class TimelineModule {
 			}
 		}
 	}
-	public void removeTimeline(TimelineModel tlm){
-		unassignTimeline(tlm);
-		timelines.remove(tlm);
-	}
-	
 	
 	public void unassignTimeline(TimelineModel tlm){
 		//TODO: Go through all displays and remove the tlm timeline if it is assigned
 		int i;
-		//Test to know is no screen is display
+		//Test to know that we have at least 1 display
 		if(displays.isEmpty()){
 		}
 		else{
@@ -74,18 +88,10 @@ public class TimelineModule {
 	
 	public void assignTimeline(Integer display, TimelineModel tlm){
 		//TODO: Check that this is legal. If so: add tlm to display in displays.
-		int i;
 		if(displays.isEmpty()){
 		}
 		else{
-			//Check every displays	
-			for(i=0; i<displays.size(); i++){
-				if(displays.keys().equals(display)){
-					displays.put(display,tlm);
-					break;
-				}
-			}
-			System.out.println("\nNo place: "+display);
+			TimelineModel prevtlm = displays.put(display,tlm);
 		}
 	}
 	
@@ -97,18 +103,10 @@ public class TimelineModule {
 	
 	public void removeDisplay(Integer display){
 		//TODO: check if the display have any timelines assigned, handle it and remove the display..
-		int i;
 		if(displays.isEmpty()){
 		}
 		else{
-			//Check every displays
-			for(i=0; i<displays.size(); i++){
-				if(displays.keys().equals(display)){
-					displays.remove(display);
-					break;
-				}
-			}
-			System.out.println("\nNo display to remove: "+display);
+			displays.remove(display);
 		}
 	}
 	
@@ -116,6 +114,10 @@ public class TimelineModule {
 		//TODO: first run buildPerformance, then starts running the stack
 	}
 	
+	/**
+	 * Goes through all timelines, get all their mediaobjects and sort them based on when they 
+	 * begin and end. Also check where we are on the globaltime.
+	 */
 	public void buildPerformance(){
 		//Add all Events to list, then sort it
 		performancestack = new ArrayList<Event>();

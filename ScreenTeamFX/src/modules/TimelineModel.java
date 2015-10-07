@@ -8,9 +8,10 @@ public class TimelineModel {
 	private ArrayList<TimelineMediaObject> timelineMediaObjects;
 	private final int id;
 	private ArrayList<Event> timelineStack;
-	public TimelineModel(ArrayList<TimelineMediaObject> timelineMediaObjects, int id) {
+	
+	public TimelineModel(int id) {
 		super();
-		this.timelineMediaObjects = timelineMediaObjects;
+		this.timelineMediaObjects = new ArrayList<TimelineMediaObject>();
 		this.id = id;
 		this.timelineStack = new ArrayList<Event>();
 	}
