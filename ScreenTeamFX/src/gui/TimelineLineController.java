@@ -76,5 +76,12 @@ public class TimelineLineController implements FXMLController{
 		return fxmlLoader;
 	}
 	
+	public void setRootOnDragOver( EventHandler<DragEvent> event){
+		rootPane.setOnDragOver(event);
+	}
+	
+	public void setRootOnDropped( EventHandler<DragEvent> event){
+		rootPane.setOnDragDropped(event);
+	}
 
 }

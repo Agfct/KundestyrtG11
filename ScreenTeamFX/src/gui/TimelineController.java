@@ -2,8 +2,13 @@ package gui;
 
 import java.io.IOException;
 
+import org.omg.CORBA.INITIALIZE;
+
 import gui.AdvancedScreen.AdvancedScreenController;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.input.DragEvent;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -18,6 +23,8 @@ public class TimelineController implements FXMLController {
 	private AdvancedScreenController parentController;
 	private TimelineLineController childController;
 	private GridPane rootPane;
+	
+	
 	
 	/**
 	 *TODO: Add a timelineModel to this controller, and also add its model the the module.
@@ -41,9 +48,22 @@ public class TimelineController implements FXMLController {
 			e.printStackTrace();
 		}
 
+		//Initialize drag and drop
+		initialize();
+		
 		//Creates the actual timeline line (right side of the timeline) using this controller as parent controller
 		childController = new TimelineLineController(this);
 		
+	}
+	
+	private void initialize(){
+		
+		
+		//Drag&drop functionality
+		mDragOverIcon = new MediaObjectIcon();
+		mDragOverIcon.setVisible(false);
+		mDragOverIcon.setOpacity(0.65);
+		rootPane.getChildren().add(mDragOverIcon);
 	}
 
 	/* (non-Javadoc)

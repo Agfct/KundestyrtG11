@@ -65,7 +65,7 @@ public class MediaObjectController extends GridPane{
 	}
 	
 	/**
-	 * This method is ran when the FXML is initialized
+	 * This method is ran when the object is initialized (created) i the FXML
 	 */
 	@FXML
 	private void initialize() {
@@ -93,19 +93,29 @@ public class MediaObjectController extends GridPane{
 	 */
 	public void setType (MediaObjectType type) {
 		mType = type;
+		
+		getStyleClass().clear();
+		getStyleClass().add("dragicon");
+		
 		if(mType == MediaObjectType.SOUND){
-//			getStyleClass();
+			getStyleClass().add("icon-sound");
 		}else{
-//			getStyleClass().add();
+			getStyleClass().add("icon-video");
 		}
 		
 	}
 	
 	public void buildNodeDragHandlers() {
 		
+
+		/**
+		 * This is the method for handling dragging over the same
+		 * Parent
+		 */
 		mContextDragOver = new EventHandler <DragEvent>() {
 
-			//dragover to handle node dragging in the right pane view
+			//dragover to handle dragging the MediaObject
+			//TODO: needs to add stuff to this
 			@Override
 			public void handle(DragEvent event) {		
 		
@@ -116,12 +126,15 @@ public class MediaObjectController extends GridPane{
 			}
 		};
 		
-		//dragdrop for node dragging
+		/**
+		 * This is the method for handling dropping of the MediaObject
+		 */
 		mContextDragDropped = new EventHandler <DragEvent> () {
 	
 			@Override
 			public void handle(DragEvent event) {
 			
+				//TODO: parent ? bottom pane ?
 				getParent().setOnDragOver(null);
 				getParent().setOnDragDropped(null);
 				
@@ -141,12 +154,18 @@ public class MediaObjectController extends GridPane{
 //			
 //		});
 		
-		//drag detection for node dragging
+		/**
+		 * When you drag the MediaObject it triggers setOnDragDetected
+		 */
 		setOnDragDetected ( new EventHandler <MouseEvent> () {
 
 			@Override
 			public void handle(MouseEvent event) {
 			
+				/* Drag was detected, start a drag-and-drop gesture */
+				/* allow any transfer mode */
+				
+				
 				getParent().setOnDragOver(null);
 				getParent().setOnDragDropped(null);
 
@@ -160,11 +179,15 @@ public class MediaObjectController extends GridPane{
                 		new Point2D(event.getSceneX(), event.getSceneY())
                 		);
                 
+                //The clipboard contains all content that are to be transfered in the drag
                 ClipboardContent content = new ClipboardContent();
-//				DragContainer container = new DragContainer();
-				
-//				container.addData ("type", mType.toString());
-//				content.put(DragContainer.AddNode, container);
+                
+                //creating a container with all the data of the media object
+				MediaObjectContainer container = new MediaObjectContainer();			
+				container.addData ("type", mType.toString());
+                
+                //Putting the data container onto the content
+				content.put(MediaObjectContainer.AddNode, container);
 				
                 startDragAndDrop (TransferMode.ANY).setContent(content);                
                 
