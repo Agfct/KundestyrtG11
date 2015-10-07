@@ -1,13 +1,11 @@
 package gui;
 
 import java.io.IOException;
-
-import org.omg.CORBA.INITIALIZE;
-
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.input.DragEvent;
 import javafx.scene.layout.GridPane;
 
@@ -49,22 +47,22 @@ public class TimelineController implements FXMLController {
 		}
 
 		//Initialize drag and drop
-		initialize();
+//		initialize();
 		
 		//Creates the actual timeline line (right side of the timeline) using this controller as parent controller
 		childController = new TimelineLineController(this);
 		
 	}
 	
-	private void initialize(){
-		
-		
-		//Drag&drop functionality
-		mDragOverIcon = new MediaObjectIcon();
-		mDragOverIcon.setVisible(false);
-		mDragOverIcon.setOpacity(0.65);
-		rootPane.getChildren().add(mDragOverIcon);
-	}
+//	private void initialize(){
+//		
+//		
+//		//Drag&drop functionality
+//		mDragOverIcon = new MediaObjectIcon();
+//		mDragOverIcon.setVisible(false);
+//		mDragOverIcon.setOpacity(0.65);
+//		rootPane.getChildren().add(mDragOverIcon);
+//	}
 
 	/* (non-Javadoc)
 	 * @see gui.FXMLController#getFXMLLoader()
@@ -76,6 +74,16 @@ public class TimelineController implements FXMLController {
 	
 	public TimelineLineController getTimelineLineController(){
 		return childController;
+	}
+
+	/**
+	 * Receives and add/places a mediaObject to the timeline based on the coordinates p
+	 * @param node
+	 * @param p
+	 */
+	public void addMediaObject(MediaObjectController node, Point2D p) {
+		rootPane.getChildren().add(node); //TODO: REMOVE TEMP
+		
 	}
 	
 	

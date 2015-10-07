@@ -65,6 +65,13 @@ public class MediaObjectController extends GridPane{
 	}
 	
 	/**
+	 * Extracts the information from the container and adds it to the mediaObjectController
+	 * @param container
+	 */
+	public void initializeMediaObject(MediaObjectContainer container){
+		
+	}
+	/**
 	 * This method is ran when the object is initialized (created) i the FXML
 	 */
 	@FXML

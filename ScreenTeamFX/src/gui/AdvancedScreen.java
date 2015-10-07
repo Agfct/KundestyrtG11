@@ -25,6 +25,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 
 /**
@@ -215,7 +216,7 @@ public class AdvancedScreen implements Screen{
 			}
 			
 			/**
-			 * 
+			 * Defines what the EventHandlers are supposed to do.
 			 */
 			private void buildDragHandlers() {
 				
@@ -225,22 +226,31 @@ public class AdvancedScreen implements Screen{
 					@Override
 					public void handle(DragEvent event) {
 						
-						Point2D p = right_pane.sceneToLocal(event.getSceneX(), event.getSceneY());
-
-						//turn on transfer mode and track in the right-pane's context 
-						//if (and only if) the mouse cursor falls within the right pane's bounds.
-						if (!right_pane.boundsInLocalProperty().get().contains(p)) {
-							
-							event.acceptTransferModes(TransferMode.ANY);
-							mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
-							return;
+//						Point2D p = right_pane.sceneToLocal(event.getSceneX(), event.getSceneY());
+						
+						//Get timelines and add dragBehavior
+						for (FXMLController timelineController : childControllers) {
+							Pane timelineLinePane = ((TimelineController)timelineController).getTimelineLineController().getRoot();
+							Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());;
+						
+							/**
+							 *TODO: Redefine, what is this doing ?
+							 * Turns of the transfering of mediaObject if the user is inside timline?
+							 */
+							if (!timelineLinePane.boundsInLocalProperty().get().contains(p)) {
+								
+								event.acceptTransferModes(TransferMode.ANY);
+								mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
+								return;
+							}
 						}
+						
 
 						event.consume();
 					}
 				};
 				
-				mIconDragOverRightPane = new EventHandler <DragEvent> () {
+				mIconDragOverTimeline = new EventHandler <DragEvent> () {
 
 					@Override
 					public void handle(DragEvent event) {
@@ -259,57 +269,79 @@ public class AdvancedScreen implements Screen{
 					}
 				};
 						
+				/**
+				 * When the mediaObject is TODO:...
+				 */
 				mIconDragDropped = new EventHandler <DragEvent> () {
 
 					@Override
 					public void handle(DragEvent event) {
 						
-						DragContainer container = 
-								(DragContainer) event.getDragboard().getContent(DragContainer.AddNode);
+						MediaObjectContainer container = 
+								(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.AddNode);
 						
 						container.addData("scene_coords", 
 								new Point2D(event.getSceneX(), event.getSceneY()));
 						
 						ClipboardContent content = new ClipboardContent();
-						content.put(DragContainer.AddNode, container);
+						content.put(MediaObjectContainer.AddNode, container);
 						
 						event.getDragboard().setContent(content);
 						event.setDropCompleted(true);
 					}
 				};
 				
-				this.setOnDragDone (new EventHandler <DragEvent> (){
+				/**
+				 * When the drag is complete, we clean up the drag operation. and add the node to the timeline
+				 */
+				rootPane.setOnDragDone (new EventHandler <DragEvent> (){
 					
 					@Override
 					public void handle (DragEvent event) {
 						
-						right_pane.removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverRightPane);
-						right_pane.removeEventHandler(DragEvent.DRAG_DROPPED, mIconDragDropped);
-						base_pane.removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverRoot);
+
+
+						rootPane.removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverRoot);
 										
 						mDragOverIcon.setVisible(false);
 						
-						DragContainer container = 
-								(DragContainer) event.getDragboard().getContent(DragContainer.AddNode);
+						MediaObjectContainer container = 
+								(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.AddNode);
 						
 						if (container != null) {
+							//If the drop is inside the view
 							if (container.getValue("scene_coords") != null) {
 							
-								DraggableNode node = new DraggableNode();
+								MediaObjectController node = new MediaObjectController();
 								
-								node.setType(DragIconType.valueOf(container.getValue("type")));
-								right_pane.getChildren().add(node);
+//								node.setType(MediaObjectType.valueOf(container.getValue("type")));
+								node.initializeMediaObject(container);
+								
+								for (FXMLController timelineController : childControllers) {
+									((TimelineController)timelineController).getTimelineLineController().getRoot().removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverTimeline);
+								}
+								
+								//We need to check which timeline the container is dropped upon
+								for (FXMLController timelineController : childControllers) {
+									Pane timelineLinePane = ((TimelineController)timelineController).getTimelineLineController().getRoot();
+									Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());;
+									if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
+										((TimelineController)timelineController).addMediaObject(node,p);
+//										timelineLinePane.getChildren().add(node);
+									}
+								}
+								
 
-								Point2D cursorPoint = container.getValue("scene_coords");
-
-								node.relocateToPoint(
-										new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32)
-										);
+//								Point2D cursorPoint = container.getValue("scene_coords");
+//
+//								node.relocateToPoint(
+//										new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32)
+//										);
 							}
 						}
 						
 						container = 
-								(DragContainer) event.getDragboard().getContent(DragContainer.DragNode);
+								(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.DragNode);
 						
 						if (container != null) {
 							if (container.getValue("type") != null)
