@@ -1,12 +1,18 @@
 package modules;
 
+import java.io.Serializable;
+
 /**
  * 
  * @author BEO
  *
  */
-public class TimelineMediaObject {
+public class TimelineMediaObject implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4037987577895540692L;
 	// Start and duration of the TimelineMediaObject, given in milliseconds.
 	private int start;
 	private int duration;

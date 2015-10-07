@@ -1,4 +1,7 @@
 package modules;
+
+import java.io.Serializable;
+
 /**
  * 
  * @author BEO
@@ -6,8 +9,12 @@ package modules;
  *
  *
  */
-public abstract class MediaObject {
+public class MediaObject implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4023233269937165070L;
 	private String path;
 	private String name;
 	private int length;
