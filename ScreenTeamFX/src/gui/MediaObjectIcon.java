@@ -41,9 +41,12 @@ public class MediaObjectIcon extends GridPane{
 	
 	public void relocateToPoint (Point2D p) {
 
+	
 		//relocates the object to a point that has been converted to
 		//scene coordinates
 		Point2D localCoords = getParent().sceneToLocal(p);
+		
+		System.out.println("Relocate to point: X:"+localCoords.getX()+"Y: "+localCoords.getY());
 		
 		relocate ( 
 				(int) (localCoords.getX() - (getBoundsInLocal().getWidth() / 2)),
