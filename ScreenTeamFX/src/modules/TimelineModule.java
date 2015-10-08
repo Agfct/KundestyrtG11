@@ -19,6 +19,14 @@ public class TimelineModule {
 	// Each display can have one or zero timelines
 	private Dictionary<Integer, TimelineModel> displays;
 	private ArrayList<TimelineModel> timelines;
+	public ArrayList<TimelineModel> getTimelines() {
+		return timelines;
+	}
+
+	public void setTimelines(ArrayList<TimelineModel> timelines) {
+		this.timelines = timelines;
+	}
+
 	// Timer for the timeline
 	private int globaltime;
 	// Queue used when playing timelines

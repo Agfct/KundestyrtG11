@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * 
@@ -18,14 +19,14 @@ public class StorageController {
 	
 	File storageFile;
 	ArrayList<MediaObject> mediaObjects;
-	TimelineModule timeLineModule;
+	TimelineModule timelineModule;
 	
 	private static StorageController instance = null;
 	
 	protected StorageController() {
 		storageFile = new File("default_session_save.data");
 		mediaObjects = new ArrayList<MediaObject>();
-		timeLineModule = null;
+		timelineModule = null;
 	}
 	
 	public static StorageController getInstance() {
@@ -64,11 +65,6 @@ public class StorageController {
 		return storageSuccess;
 	}
 	
-	/**
-	 * Example for class parameter: String.class, MediaObject.class, int.class
-	 * 
-	 * @return Object
-	 */
 	public boolean loadSession(String file){
 		// Check that the requested file exists
 		if(!new File(file).exists()){
@@ -76,7 +72,6 @@ public class StorageController {
 			return false;
 		}
 		
-		boolean loadSuccess = false;
 		FileInputStream f_in_stream = null;	
 		ObjectInputStream obj_in_stream = null;
 		
@@ -89,8 +84,9 @@ public class StorageController {
 			
 			temp_tlm = obj_in_stream.readObject();
 			temp_mo = obj_in_stream.readObject();
-			loadSuccess = true;
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} finally {
 			try {
@@ -102,41 +98,53 @@ public class StorageController {
 			}
 		}
 		
+		// Check that we have retrieved the correct objects
 		if ( temp_tlm instanceof TimelineModule ) {
-			this.timeLineModule = (TimelineModule)temp_tlm;
+			this.timelineModule = (TimelineModule)temp_tlm;
 			
-			if
+			if (temp_mo instanceof ArrayList<?>){
+				if ( ((ArrayList<?>)temp_mo).size() > 0 ){
+					if ( ((ArrayList<?>)temp_mo).get(0) instanceof MediaObject ) {
+						this.mediaObjects = (ArrayList<MediaObject>)temp_mo;
+						this.synchronizeMediaObjects();
+						return true;
+					}
+				}
+			}
 		}
 		
-		// Cast the retrieved objects
-		if (return_object == null){
-			System.out.println("Could not load object from " + file);
-			return null;
-		} 
-		else if (return_object instanceof TimelineModule){
-			return (TimelineModule)return_object;
-		} 
-		else if (return_object instanceof ArrayList<?>) {
-			if ( ((ArrayList<?>)return_object).size() > 0 ){
-				if ( ((ArrayList<?>)return_object).get(0) instanceof MediaObject ) {
-					return (ArrayList<MediaObject>)return_object;
-				}
-				else {
-					System.out.println("The ArrayList loaded from " + file 
-										+ " contains some other type of object than MediaObjects");
-					return null;
+		return false;
+	}
+	
+	/**
+	 * Ensures that the loaded MediaObjects in TimlineModule and ArrayList<MediaObject> are the same after loading them.
+	 * Goes through all the TimelineMediaObjects in the TimelineModule, and updates the parents to the ones in
+	 * ArrayList<MediaObject> (this.mediaObjects)
+	 */
+	private void synchronizeMediaObjects(){
+		// Go through all timelines in TimelineModule
+		ArrayList<TimelineModel> timelines = timelineModule.getTimelines(); 
+		for (int i=0; i<timelines.size(); i++) {
+			
+			// Go through all TimelineMediaObjects in each timeline
+			ArrayList<TimelineMediaObject> mo = timelines.get(i).getTimelineMediaObjects();
+			for (int j=0; j<mo.size(); j++){
+				
+				// Find the correct MediaObject parent for for the TimelineMediaObject
+				MediaObject parent = mo.get(j).getParent();
+				for (int k=0; k<this.mediaObjects.size(); k++){
+					
+					// Replace the parent with the MediaObject with the same path.
+					if ( (parent.getPath()).equals(this.mediaObjects.get(k).getPath()) ) {
+						mo.get(j).setParent(this.mediaObjects.get(k));
+					}
+					
+					if ( k==this.mediaObjects.size()-1 ) {
+						// Have found no parent!
+						// TODO: handle this. maybe add the parent to the media objects?
+					}
 				}
 			}
-			else {
-				// System.out.println("The ArrayList loaded from " + file + " is empty.");
-				return (ArrayList<MediaObject>)return_object;
-			}
-		}
-		else {
-			System.out.println("Tried to load an object from " + file
-								+", but the retrieved object was not an instance of ArrayList or TimelineModule.");
-			return null;
 		}
 	}
-
 }
