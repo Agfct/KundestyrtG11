@@ -2,10 +2,12 @@ package gui;
 
 import java.io.IOException;
 import gui.AdvancedScreen.AdvancedScreenController;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
 import javafx.scene.layout.GridPane;
 
@@ -22,6 +24,8 @@ public class TimelineController implements FXMLController {
 	private TimelineLineController childController;
 	private GridPane rootPane;
 	
+	@FXML
+	Button removeTimelineBtn;
 	
 	
 	/**
@@ -31,6 +35,8 @@ public class TimelineController implements FXMLController {
 	 *It also creates an instance of the TimeLineLineController which contains the TimelineLine.fxml.
 	 */
 	public TimelineController (){
+		
+
 		
 		//Fetches the parent controller. In this case it is the controller in the advancedScreen class.'
 		parentController = AdvancedScreen.getInstance().getScreenController();
@@ -64,6 +70,23 @@ public class TimelineController implements FXMLController {
 //		rootPane.getChildren().add(mDragOverIcon);
 //	}
 
+	
+	/**
+	 * This method is ran when you press a button in the TimelineInfo screen (Left side of timeline).
+	 * It assumes that all buttons has in id. if they do not have an id this method gives a null pointer exception.
+	 * @param event
+	 */
+	@FXML protected void buttonPressed(ActionEvent event) {
+		System.out.println("AdvancedScreen:" + event.getSource().toString() + "has been pressed");
+		
+		if(((Button)event.getSource()).getId().equals("removeTimelineBtn") ){
+			//Removes the timeline from the AdvanceScreen Children list
+			parentController.removeTimeline(this);
+			
+		}
+		
+		
+	}
 	/* (non-Javadoc)
 	 * @see gui.FXMLController#getFXMLLoader()
 	 */
@@ -75,16 +98,12 @@ public class TimelineController implements FXMLController {
 	public TimelineLineController getTimelineLineController(){
 		return childController;
 	}
-
-	/**
-	 * Receives and add/places a mediaObject to the timeline based on the coordinates p
-	 * @param node
-	 * @param p
-	 */
-	public void addMediaObject(MediaObjectController node, Point2D p) {
-		rootPane.getChildren().add(node); //TODO: REMOVE TEMP
-		
+	
+	public GridPane getRoot(){
+		return rootPane;
 	}
+
+
 	
 	
 

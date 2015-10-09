@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import modules.MainModuleController;
@@ -24,7 +25,7 @@ public class MainScreen implements Screen {
 	private static MainScreen mainScreen;
 	
 	FXMLLoader fxmlLoader;
-	GridPane rootPane;
+	AnchorPane rootPane;
 	Scene screenScene;
 	MainScreenController screenController;
 	

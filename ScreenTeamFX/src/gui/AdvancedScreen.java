@@ -104,7 +104,7 @@ public class AdvancedScreen implements Screen{
 			
 
 			//List of all Children controllers
-			private ArrayList<FXMLController> childControllers;
+			private ArrayList<TimelineController> timelineControllers;
 
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
@@ -127,7 +127,7 @@ public class AdvancedScreen implements Screen{
 			public AdvancedScreenController(){
 
 				//Instantiating controller list
-				childControllers = new ArrayList<FXMLController>();
+				timelineControllers = new ArrayList<TimelineController>();
 
 				// The constructor will try to fetch the fxml 
 				try {
@@ -145,6 +145,8 @@ public class AdvancedScreen implements Screen{
 
 			}
 			
+
+
 			/**
 			 * Initializes a dummy icon that will be displayed when dragging
 			 * accross panes.
@@ -163,12 +165,12 @@ public class AdvancedScreen implements Screen{
 				addDragDetection(icn);
 				icn.setType(MediaObjectType.VIDEO);
 				topGrid.add(icn,1,1);
+				
 				buildDragHandlers();
 			}
 			
 			/**
-			 * adding drag detection to a MediaObjectIcon
-			 * 
+			 * adding drag detection to a MediaObjectIcon.
 			 * @param dragIcon
 			 */
 			private void addDragDetection(MediaObjectIcon dragIcon) {
@@ -183,14 +185,14 @@ public class AdvancedScreen implements Screen{
 						//TODO: One of these are handling the drag over wrong, should not be allowed to drop on root.
 						rootPane.setOnDragOver(mIconDragOverRoot);
 //						
-//						//Get timelines and add dragBehavior
-//						for (FXMLController timelineController : childControllers) {
+						//Get timelines and add dragBehavior
+//						for (FXMLController timelineController : timelineControllers) {
 //							((TimelineController)timelineController).getTimelineLineController().setRootOnDragOver(mIconDragOverTimeline);
 //						}
 //						//Get timelines and add dropBehavior
-//						for (FXMLController timelineController : childControllers) {
-//							((TimelineController)timelineController).getTimelineLineController().setRootOnDropped(mIconDragDropped);
-//						}
+						for (FXMLController timelineController : timelineControllers) {
+							((TimelineController)timelineController).getTimelineLineController().setRootOnDropped(mIconDragDropped);
+						}
 						
 						// get a reference to the clicked DragIcon object
 						MediaObjectIcon icn = (MediaObjectIcon) event.getSource();
@@ -198,9 +200,8 @@ public class AdvancedScreen implements Screen{
 						//TODO: add all advanced information here
 						//Sets the type of the drag icon based on the icon of the triggering MediaObject (Video/Sound)
 						mDragOverIcon.setType(icn.getType());
-						//Moves the icon to the point
+						//Moves the icon to the point where you start the drag event
 						mDragOverIcon.relocateToPoint(new Point2D (event.getSceneX(), event.getSceneY()));
-//						mDragOverIcon.relocateToPoint(new Point2D (80, 80));
 
 						
 						//Creates a javafx clipboard and creates a new DragContainer for the mediaObject
@@ -233,7 +234,7 @@ public class AdvancedScreen implements Screen{
 //						Point2D p = right_pane.sceneToLocal(event.getSceneX(), event.getSceneY());
 						
 						//Get timelines and add dragBehavior
-//						for (FXMLController timelineController : childControllers) {
+//						for (FXMLController timelineController : timelineControllers) {
 //							Pane timelineLinePane = ((TimelineController)timelineController).getTimelineLineController().getRoot();
 //							Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());;
 //						
@@ -250,6 +251,7 @@ public class AdvancedScreen implements Screen{
 //						}
 						
 						event.acceptTransferModes(TransferMode.ANY);
+						//This methods is moving the actuall icon around
 						mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
 						return;
 //						event.consume();
@@ -276,16 +278,19 @@ public class AdvancedScreen implements Screen{
 				};
 						
 				/**
-				 * When the mediaObject is TODO:...
+				 * When the mediaObject is dropped onto a timeline TODO:...
 				 */
 				mIconDragDropped = new EventHandler <DragEvent> () {
 
 					@Override
 					public void handle(DragEvent event) {
+						System.out.println("DragDropped");
 						
 						MediaObjectContainer container = 
 								(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.AddNode);
 						
+						Point2D pk = new Point2D(event.getSceneX(),event.getSceneY());
+						System.out.println("Dropped scene coords: X:" +pk.getX() + "Y:"+ pk.getY());
 						container.addData("scene_coords", 
 								new Point2D(event.getSceneX(), event.getSceneY()));
 						
@@ -304,10 +309,17 @@ public class AdvancedScreen implements Screen{
 					
 					@Override
 					public void handle (DragEvent event) {
-						
+						System.out.println("Drag DONE");
 
 
+						//Cleaning up the DragEvents
 						rootPane.removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverRoot);
+						for (FXMLController timelineController : timelineControllers) {
+							((TimelineController)timelineController).getTimelineLineController().getRoot().removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverTimeline);
+						}
+						for (FXMLController timelineController : timelineControllers) {
+							((TimelineController)timelineController).getTimelineLineController().getRoot().removeEventHandler(DragEvent.DRAG_DROPPED, mIconDragDropped);
+						}
 										
 						mDragOverIcon.setVisible(false);
 						
@@ -317,22 +329,28 @@ public class AdvancedScreen implements Screen{
 						if (container != null) {
 							//If the drop is inside the view
 							if (container.getValue("scene_coords") != null) {
+								System.out.println("Not EMPTY");
 							
 								MediaObjectController node = new MediaObjectController();
 								
-//								node.setType(MediaObjectType.valueOf(container.getValue("type")));
+								//Sends the container containing all the information about the mediaObject
+								//To the newly created MediaObject for initialization
 								node.initializeMediaObject(container);
 								
-								for (FXMLController timelineController : childControllers) {
-									((TimelineController)timelineController).getTimelineLineController().getRoot().removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverTimeline);
-								}
-								
+				
 								//We need to check which timeline the container is dropped upon
-								for (FXMLController timelineController : childControllers) {
-									Pane timelineLinePane = ((TimelineController)timelineController).getTimelineLineController().getRoot();
-									Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());;
+								for (FXMLController timelineController : timelineControllers) {
+									TimelineLineController currentTimelineLineController = ((TimelineController)timelineController).getTimelineLineController();
+									AnchorPane timelineLinePane = currentTimelineLineController.getRoot();
+									Point2D containerPoints = (Point2D)container.getValue("scene_coords");
+									Point2D p = timelineLinePane.sceneToLocal(containerPoints);
+									System.out.println("Pane:" + timelineLinePane);
+									System.out.println("Point: X: " + p.getX() + " Y: " + p.getY());
+									System.out.println(" Container Point: X: " + ((Point2D) container.getValue("scene_coords")).getX() + " Y: " + ((Point2D) container.getValue("scene_coords")).getY());
 									if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
-										((TimelineController)timelineController).addMediaObject(node,p);
+										currentTimelineLineController.addMediaObject(node,p);
+										System.out.println(" WE ARE DONE !!!");
+										break;
 //										timelineLinePane.getChildren().add(node);
 									}
 								}
@@ -346,6 +364,9 @@ public class AdvancedScreen implements Screen{
 							}
 						}
 						
+						
+						//If the NODE IS A DRAG NODE, THAT IS: ITS AN EXISTING MEDIA OBJECT INSDIE AN EXISTING TIMELINE
+						//TODO: If we are dragging from timeline to timeline, then we need this.
 						container = 
 								(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.DragNode);
 						
@@ -393,13 +414,25 @@ public class AdvancedScreen implements Screen{
 			
 			/**
 			 * Adds a new timeline to the advancedScreen
-			 * TODO: add arguments and models
+			 * TODO: add arguments and java models
 			 */
 			private void addTimeline(){
 				TimelineController tempTimeController = new TimelineController();
-				childControllers.add(tempTimeController);
+				timelineControllers.add(tempTimeController);
 				addTimelineControllerToScreen(tempTimeController);
 				
+			}
+			
+			/**
+			 * Adds the given TimelineController to the timelineContainer (GridPane)
+			 * First adding the info to the left, then adding the actual timeline to the right.
+			 * @param newController
+			 */
+			private void addTimelineControllerToScreen(TimelineController tempTimeController){
+				System.out.println("Adding Timeline: timelineControllers.size(): " + timelineControllers.size());
+				timelineContainer.add(tempTimeController.getFXMLLoader().getRoot(), 0, (timelineControllers.size()-1));
+				timelineContainer.add(tempTimeController.getTimelineLineController().getFXMLLoader().getRoot(), 1, (timelineControllers.size()-1));
+				System.out.println("Adding Timeline: timelineContainer.getChildren(): " + timelineContainer.getChildren());
 			}
 			
 			/* (non-Javadoc)
@@ -411,16 +444,16 @@ public class AdvancedScreen implements Screen{
 			public GridPane getRoot(){
 				return rootGrid;
 			}
-			
-			/**
-			 * Adds the given TimelineController to the timelineContainer (GridPane)
-			 * First adding the info to the left, then adding the actual timeline to the right.
-			 * @param newController
-			 */
-			private void addTimelineControllerToScreen(TimelineController tempTimeController){
-				timelineContainer.add(tempTimeController.getFXMLLoader().getRoot(), 0, (childControllers.size()-1));
-				timelineContainer.add(tempTimeController.getTimelineLineController().getFXMLLoader().getRoot(), 1, (childControllers.size()-1));
+	
+			public void removeTimeline(TimelineController timeline){
+				timelineContainer.getChildren().remove(timeline.getRoot());
+				timelineContainer.getChildren().remove(timeline.getTimelineLineController().getRoot());
+				timelineControllers.remove(timeline);
+				System.out.println("RemovingTimeline TimeLineControllers.size(): " + timelineControllers.size());
+				System.out.println("Adding Timeline: timelineContainer.getChildren(): " + timelineContainer.getChildren());
 			}
+			
+	
 
 		}//end AdvancedScreenController
 

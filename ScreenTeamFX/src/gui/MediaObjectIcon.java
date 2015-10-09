@@ -46,8 +46,6 @@ public class MediaObjectIcon extends GridPane{
 		//scene coordinates
 		Point2D localCoords = getParent().sceneToLocal(p);
 		
-		System.out.println("Relocate to point: X:"+localCoords.getX()+"Y: "+localCoords.getY());
-		
 		relocate ( 
 				(int) (localCoords.getX() - (getBoundsInLocal().getWidth() / 2)),
 				(int) (localCoords.getY() - (getBoundsInLocal().getHeight() / 2))

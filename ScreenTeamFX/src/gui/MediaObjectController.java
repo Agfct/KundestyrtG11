@@ -69,16 +69,16 @@ public class MediaObjectController extends GridPane{
 	 * @param container
 	 */
 	public void initializeMediaObject(MediaObjectContainer container){
-		
+		setType(MediaObjectType.valueOf(container.getValue("type")));
 	}
 	/**
 	 * This method is ran when the object is initialized (created) i the FXML
 	 */
-	@FXML
-	private void initialize() {
-		System.out.println("init MediaHandlers");
-		buildNodeDragHandlers();
-	}
+//	@FXML
+//	private void initialize() {
+//		System.out.println("init MediaHandlers");
+//		buildNodeDragHandlers();
+//	}
 	
 	public MediaObjectType getType () { return mType; }
 	
