@@ -10,6 +10,8 @@ import java.util.Iterator;
 
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,13 +22,16 @@ import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 /**
@@ -103,11 +108,12 @@ public class AdvancedScreen implements Screen{
 		public class AdvancedScreenController implements FXMLController {
 			
 
-			//List of all Children controllers
+			//List of all TimelineControllers within the advancedScreen
 			private ArrayList<TimelineController> timelineControllers;
 
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
+			@FXML private GridPane rootGrid;
 			
 			//Drag&drop
 			private MediaObjectIcon mDragOverIcon = null;
@@ -116,13 +122,14 @@ public class AdvancedScreen implements Screen{
 			private EventHandler<DragEvent> mIconDragOverTimeline = null;
 
 			// Pointers to the fx:id in the fxml
-			@FXML private GridPane timelineContainer;
+			@FXML private VBox timelineContainer;
 			@FXML private Button testButton;
 			@FXML private ListView fileListView;
+			@FXML private ScrollBar timelineLineScrollBar;
 			
 			//TEST
 			@FXML private GridPane topGrid;
-			@FXML private GridPane rootGrid;
+	
 			
 			public AdvancedScreenController(){
 
@@ -140,11 +147,35 @@ public class AdvancedScreen implements Screen{
 					e.printStackTrace();
 				}
 				
+				//InitializeScrollBar values
+				initializeScrollBar();
+				
 				//Drag&drop functionality
 				initialize();
 
 			}
 			
+
+
+			/**
+			 * initializes the Scroll bar and its listener
+			 * The listener moves the timelineLines.
+			 * TODO: Keep current scroll value to update newly added timlines, also make shure the scroll does not cover the info window.
+			 */
+			private void initializeScrollBar() {
+				timelineLineScrollBar.valueProperty().addListener(new ChangeListener<Number>() {
+		            public void changed(ObservableValue<? extends Number> ov,
+		                Number old_val, Number new_val) {
+		            	System.out.println("Scrolling: Old value: "+ old_val.doubleValue()+" NewValue: "+ new_val.doubleValue());
+		            	for (TimelineController timelineController : timelineControllers) {
+		            		timelineController.getTimelineLineController().moveTimeline(-new_val.doubleValue());;
+						}
+
+		            }
+		        });
+				
+			}
+
 
 
 			/**
@@ -414,25 +445,22 @@ public class AdvancedScreen implements Screen{
 			
 			/**
 			 * Adds a new timeline to the advancedScreen
+			 * First adding the TimelineController to the advanceScreen controller list
+			 * then adding the GridPane of the TimelineController to the VBox container.
 			 * TODO: add arguments and java models
 			 */
 			private void addTimeline(){
 				TimelineController tempTimeController = new TimelineController();
 				timelineControllers.add(tempTimeController);
 				addTimelineControllerToScreen(tempTimeController);
-				
 			}
 			
 			/**
-			 * Adds the given TimelineController to the timelineContainer (GridPane)
-			 * First adding the info to the left, then adding the actual timeline to the right.
+			 * Adds the given TimelineController to the timelineContainer (VBox).
 			 * @param newController
 			 */
 			private void addTimelineControllerToScreen(TimelineController tempTimeController){
-				System.out.println("Adding Timeline: timelineControllers.size(): " + timelineControllers.size());
-				timelineContainer.add(tempTimeController.getFXMLLoader().getRoot(), 0, (timelineControllers.size()-1));
-				timelineContainer.add(tempTimeController.getTimelineLineController().getFXMLLoader().getRoot(), 1, (timelineControllers.size()-1));
-				System.out.println("Adding Timeline: timelineContainer.getChildren(): " + timelineContainer.getChildren());
+				timelineContainer.getChildren().add(tempTimeController.getRoot());
 			}
 			
 			/* (non-Javadoc)
@@ -445,12 +473,14 @@ public class AdvancedScreen implements Screen{
 				return rootGrid;
 			}
 	
+			/**
+			 * Removes the TimelineControllers GridPane from the VBox container
+			 * and the TimelineController from the advanceScreens controller list.
+			 * @param timeline
+			 */
 			public void removeTimeline(TimelineController timeline){
 				timelineContainer.getChildren().remove(timeline.getRoot());
-				timelineContainer.getChildren().remove(timeline.getTimelineLineController().getRoot());
 				timelineControllers.remove(timeline);
-				System.out.println("RemovingTimeline TimeLineControllers.size(): " + timelineControllers.size());
-				System.out.println("Adding Timeline: timelineContainer.getChildren(): " + timelineContainer.getChildren());
 			}
 			
 	
