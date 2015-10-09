@@ -1,7 +1,7 @@
 package modules;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
+import java.util.HashMap;
 
 /**
  * 
@@ -10,37 +10,41 @@ import java.util.Dictionary;
  * Controls the timelines and their connections to displays. Talks to VLCController and StorageController.
  */
 public class TimelineModule {
-	
-	private static TimelineModule timelinemodule;
-
 	//private VLCController vlccontroller;
-	private StorageController storagecontroller;
-	
 	// Each display can have one or zero timelines
-	private Dictionary<Integer, TimelineModel> displays;
+	private HashMap<Integer, TimelineModel> displays;
 	private ArrayList<TimelineModel> timelines;
 	// Timer for the timeline
 	private int globaltime;
 	// Queue used when playing timelines
 	private ArrayList<Event> performancestack;
+	//counter for the id of the timelineModels
+	private int tlmID;
 	
-	private TimelineModule() {
-		//TODO: Implement constructor
+	
+	public TimelineModule() {
+		this.timelines = new ArrayList<TimelineModel>();
+		this.timelines.add(new TimelineModel(0));
+		this.globaltime = 0;
+		this.performancestack = new ArrayList<Event>();
+		this.tlmID =0;
+		this.displays = new HashMap<Integer,TimelineModel>();
 	}
-	
-	public static TimelineModule getInstance(){
-		if (timelinemodule == null){
-			timelinemodule = new TimelineModule();
-		}
-		return timelinemodule;
-	}
-	
-	public void addTimeline(TimelineModel tlm){
+
+	/**
+	 * add a new timeline to the list of timelines
+	 * @param tlm
+	 */
+	public int addTimeline(){
+		tlmID +=1;
+		TimelineModel tlm = new TimelineModel(tlmID);
 		timelines.add(tlm);
+		return tlmID;
 	}
 	
 	
-	// TODO: We are not sure which removeTimeline to use per now.
+	// TODO: We are not sure which removeTimeline to use per now. depends on
+	// what the gui knows. either id of timeline or the timelinemodel itself
 	public void removeTimeline(int id){
 		// Find the timeline in the timelines list and remove it
 		for(int i=0; i<timelines.size(); i++){
@@ -50,16 +54,11 @@ public class TimelineModule {
 			}
 		}
 	}
-	public void removeTimeline(TimelineModel tlm){
-		unassignTimeline(tlm);
-		timelines.remove(tlm);
-	}
-	
 	
 	public void unassignTimeline(TimelineModel tlm){
 		//TODO: Go through all displays and remove the tlm timeline if it is assigned
 		int i;
-		//Test to know is no screen is display
+		//Test to know that we have at least 1 display
 		if(displays.isEmpty()){
 		}
 		else{
@@ -74,18 +73,10 @@ public class TimelineModule {
 	
 	public void assignTimeline(Integer display, TimelineModel tlm){
 		//TODO: Check that this is legal. If so: add tlm to display in displays.
-		int i;
 		if(displays.isEmpty()){
 		}
 		else{
-			//Check every displays	
-			for(i=0; i<displays.size(); i++){
-				if(displays.keys().equals(display)){
-					displays.put(display,tlm);
-					break;
-				}
-			}
-			System.out.println("\nNo place: "+display);
+			TimelineModel prevtlm = displays.put(display,tlm);
 		}
 	}
 	
@@ -97,18 +88,10 @@ public class TimelineModule {
 	
 	public void removeDisplay(Integer display){
 		//TODO: check if the display have any timelines assigned, handle it and remove the display..
-		int i;
 		if(displays.isEmpty()){
 		}
 		else{
-			//Check every displays
-			for(i=0; i<displays.size(); i++){
-				if(displays.keys().equals(display)){
-					displays.remove(display);
-					break;
-				}
-			}
-			System.out.println("\nNo display to remove: "+display);
+			displays.remove(display);
 		}
 	}
 	
@@ -116,36 +99,35 @@ public class TimelineModule {
 		//TODO: first run buildPerformance, then starts running the stack
 	}
 	
+	/**
+	 * Goes through all timelines on displays, get all their stacks of events and sort them based on when they 
+	 * begin and end. Also check where we are on the globaltime.
+	 */
 	public void buildPerformance(){
 		//Add all Events to list, then sort it
 		performancestack = new ArrayList<Event>();
+		//TODO change to only the timelines that is assigned to a display??
+		// maybe for (Integer dis : displays.keyset())
 		
-		for (TimelineModel timeline : timelines){
-			for (TimelineMediaObject timelineMediaObject : timeline.getTimelineMediaObjects()){
-				// Videos have start and stop time, // TODO: Streams might be handled differently
-				if (timelineMediaObject.getParent().getType() == MediaSourceType.VIDEO){
-					// If the video starts after the globaltime, add both an PLAY and STOP Event
-					if (timelineMediaObject.getStart() > globaltime){
-						Event event = new Event(timelineMediaObject.getStart(), timeline.getID(), Action.PLAY, timelineMediaObject);
-						performancestack.add(event);
-						
-						int eventtime = timelineMediaObject.getStart()+ timelineMediaObject.getEnd();
-						event = new Event(eventtime, timeline.getID(), Action.STOP, timelineMediaObject);
-						performancestack.add(event);
+		for(Integer dis : displays.keySet()){
+			for(Event ev : displays.get(dis).getTimelineStack()){
+				if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.VIDEO){
+					if(ev.getAction() == Action.PLAY){
+						if(ev.getTime()>globaltime){
+							performancestack.add(ev);
+						}
+						else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
+							ev.setAction(Action.PLAY_WITH_OFFSET);
+							performancestack.add(ev);
+						}
 					}
-					// If the globaltime is between the start and stop of the video, we need both PLAY and STOP, but should start video at globaltime+startVideo
-					else if ( timelineMediaObject.getStart() < globaltime 
-							&& globaltime < timelineMediaObject.getStart()+timelineMediaObject.getDuration() ){
-						Event event = new Event(globaltime, timeline.getID(), Action.PLAY_WITH_OFFSET, timelineMediaObject);
-						performancestack.add(event);
-						
-						int eventtime = timelineMediaObject.getStart()+timelineMediaObject.getEnd();
-						event = new Event(eventtime, timeline.getID(), Action.STOP, timelineMediaObject);
-						performancestack.add(event);
+					else if(ev.getAction()==Action.STOP){
+						if (ev.getTime()>globaltime){
+							performancestack.add(ev);
+						}
 					}
-					// Else: the video stops before globaltime, so no need to do anything.
 				}
-				else if (timelineMediaObject.getParent().getType() == MediaSourceType.STREAM){
+				else if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.STREAM){
 					/**
 					 * TODO: Handle streams here. (Do they have both a start and end time? Might want to change between
 					 * two streams on one timeline??
@@ -167,5 +149,11 @@ public class TimelineModule {
 	
 	public void pauseOne(Integer display){
 		//TODO: Pause the timeline for this display
+	}
+	public ArrayList<TimelineModel> getTimelines() {
+		return timelines;
+	}
+	public void setTimelines(ArrayList<TimelineModel> timelines) {
+		this.timelines = timelines;
 	}
 }

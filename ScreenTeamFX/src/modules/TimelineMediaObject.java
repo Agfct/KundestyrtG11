@@ -1,14 +1,21 @@
 package modules;
 
+import java.io.Serializable;
+
 /**
  * 
  * @author BEO
  *
  */
-public class TimelineMediaObject {
+public class TimelineMediaObject implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4037987577895540692L;
 	// Start and duration of the TimelineMediaObject, given in milliseconds.
 	private int start;
+	private int startPoint = 0;
 	private int duration;
 	private int timelineid;
 	private MediaObject parent;
@@ -16,9 +23,9 @@ public class TimelineMediaObject {
 	
 	/**
 	 * 
-	 * @param start
-	 * @param duration
-	 * @param timelineid
+	 * @param start			when on timeline this object should start
+	 * @param duration		length this object should play
+	 * @param timelineid	id of the timeline this object belongs to
 	 * @param parent		pointer to a MediaObject, with info about the video (path and length)
 	 * 
 	 */
@@ -30,6 +37,22 @@ public class TimelineMediaObject {
 		this.parent = parent;
 	}
 
+	/**
+	 * 
+	 * @param start			when on timeline this object should start
+	 * @param spoint		what point in the video, the video should start at
+	 * @param duration		length this object should play
+	 * @param timelineid	id of the timeline this object belongs to
+	 * @param parent		pointer to a MediaObject, with info about the video (path and length)
+	 */
+	public TimelineMediaObject(int start, int spoint, int duration, int timelineid, 
+			MediaObject parent){
+			this.start = start;
+			this.startPoint = spoint;
+			this.duration = duration;
+			this.timelineid = timelineid;
+			this.parent = parent;
+		}
 
 	public int getStart() {
 		return start;
@@ -74,5 +97,12 @@ public class TimelineMediaObject {
 	public void setParent(MediaObject parent) {
 		this.parent = parent;
 	}
+	
+	public int getStartPoint(){
+		return startPoint;
+	}
 
+	public void setStartPoint(int spoint){
+		this.startPoint = spoint;
+	}
 }
