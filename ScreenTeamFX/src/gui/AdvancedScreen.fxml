@@ -9,12 +9,17 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
 	minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
 	prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
 	<children>
-		<GridPane fx:id="rootGrid" gridLinesVisible="true" layoutX="163.0" layoutY="62.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<GridPane fx:id="rootGrid" gridLinesVisible="true" layoutX="163.0"
+			layoutY="62.0" prefHeight="400.0" prefWidth="600.0"
+			AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<!-- ColumConstrains: There is one constraint per column and one per row. 
 				these needs to be configured to suit the GUI elements -->
 			<columnConstraints>
@@ -66,17 +71,20 @@
 					GridPane.rowIndex="2">
 					<content>
 						<!-- The Timelines are controlled by at TimelineController -->
-						<GridPane fx:id="timelineContainer" gridLinesVisible="true">
-							<columnConstraints>
-								<ColumnConstraints minWidth="200" prefWidth="200"
-									maxWidth="200" />
-								<ColumnConstraints hgrow="NEVER" maxWidth="Infinity" />
-							</columnConstraints>
-							<children>
-								<!-- Here is where the timeLineInfo and Lines will be added through 
-									java code -->
-							</children>
-						</GridPane>
+						<!-- <GridPane fx:id="timelineContainer" gridLinesVisible="true"> -->
+						<!-- <columnConstraints> -->
+						<!-- <ColumnConstraints minWidth="200" prefWidth="200" -->
+						<!-- maxWidth="200" /> -->
+						<!-- <ColumnConstraints hgrow="NEVER" maxWidth="Infinity" /> -->
+						<!-- </columnConstraints> -->
+						<!-- <children> -->
+						<!-- Here is where the timeLineInfo and Lines will be added through java code -->
+
+						<!-- </children> -->
+						<!-- </GridPane> -->
+						<VBox fx:id="timelineContainer">
+						
+						</VBox>
 					</content>
 				</ScrollPane>
 				<!-- This is the Scroll Bar at the bottom of the screen that vertically 
@@ -93,7 +101,7 @@
 							prefHeight="25" vgrow="NEVER" />
 					</rowConstraints>
 					<children>
-						<ScrollBar GridPane.columnIndex="1" />
+						<ScrollBar fx:id="timelineLineScrollBar"  GridPane.columnIndex="1" />
 					</children>
 				</GridPane>
 			</children>

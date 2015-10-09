@@ -44,6 +44,11 @@ public class TimelineLineController implements FXMLController{
 			System.out.println("Failed to load TimelineLine FXML");
 			e.printStackTrace();
 		}
+		
+		//Puts this TimelineLine onto the info (parent) controller
+//		parentController.timelineContainer.add(this.rootPane, 1, 0);
+		parentController.timelineLineContainer.getChildren().add(this.rootPane);
+		
 		//TODO: REMOVE, TESTING ONLY
 //		rootPane.getChildren().add(new MediaObjectController());
 //		
@@ -98,6 +103,11 @@ public class TimelineLineController implements FXMLController{
 	public void addMediaObject(MediaObjectController node, Point2D p) {
 		rootPane.getChildren().add(node); //TODO: REMOVE TEMPorarly fix
 		
+	}
+	
+	protected void moveTimeline(Double newPosition){
+		System.out.println("TimelineLineController Moving the Root");
+		rootPane.setLayoutX(newPosition);
 	}
 
 }

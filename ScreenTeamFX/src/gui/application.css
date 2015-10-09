@@ -8,3 +8,9 @@
 .icon-video {
 	-fx-background-color: orange;
 }
+
+.background-timeline {
+	-fx-background-image: url("../../resources/timelineLineTempBck.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+}

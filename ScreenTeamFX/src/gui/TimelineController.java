@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -24,8 +25,10 @@ public class TimelineController implements FXMLController {
 	private TimelineLineController childController;
 	private GridPane rootPane;
 	
-	@FXML
-	Button removeTimelineBtn;
+	@FXML Button removeTimelineBtn;
+	@FXML GridPane timelineInfo;
+	@FXML GridPane timelineContainer;
+	@FXML AnchorPane timelineLineContainer;
 	
 	
 	/**
@@ -101,6 +104,10 @@ public class TimelineController implements FXMLController {
 	
 	public GridPane getRoot(){
 		return rootPane;
+	}
+	
+	public GridPane getTimelineInfo(){
+		return timelineInfo;
 	}
 
 
