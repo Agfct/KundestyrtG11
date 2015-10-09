@@ -9,12 +9,13 @@ import java.io.Serializable;
  *
  *
  */
-public abstract class MediaObject  implements Serializable{
+
+public class MediaObject implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4948583258019192531L;
+	private static final long serialVersionUID = -4023233269937165070L;
 	private String path;
 	private String name;
 	private int length;
