@@ -13,27 +13,34 @@ import java.util.Iterator;
 /**
  * 
  * @author ole-s
- * Class responsible for saving and loading objects to disk.
+ * Class responsible for saving and loading sessions to disk.
+ * Use storeSession() and loadSession() to save and load. After calling loadSession() successfully, you can retrieve 
+ * ArrayList<MediaObject> mediaObjects and TimelineModule timelineModule by using the getters for these.
  */
 public class StorageController {
 	
+	// storageFile is the savefile used if no file is specified. 
 	File storageFile;
+	// The list of MediaObjects. Every class that uses mediaObjects should use the same list, so they are always in sync
 	ArrayList<MediaObject> mediaObjects;
+	// Set after it is loaded, can then be retrieved.
 	TimelineModule timelineModule;
 	
 	private static StorageController instance = null;
 	
 	protected StorageController() {
-		storageFile = new File("default_session_save.data");
+		storageFile = new File("default_save.data");
 		mediaObjects = new ArrayList<MediaObject>();
 		timelineModule = null;
 	}
 	
-	public static StorageController getInstance() {
-		if (instance == null) {
-			instance = new StorageController();
-		}
-		return instance;
+	public boolean storeSession(TimelineModule tlm){
+		return storeSession(tlm, this.storageFile);
+	}
+	
+	public boolean storeSession(TimelineModule tlm, String fileString){
+		File saveFile = new File(fileString);
+		return storeSession(tlm, saveFile);
 	}
 	
 	public boolean storeSession(TimelineModule tlm, File file){
@@ -65,10 +72,28 @@ public class StorageController {
 		return storageSuccess;
 	}
 	
-	public boolean loadSession(String file){
+	public boolean loadSession(){
+		return loadSession(this.storageFile);
+	}
+	
+	public boolean loadSession(String fileString){
+		File saveFile = new File(fileString);
+		return loadSession(saveFile);
+	}
+	
+	/**
+	 * Tries to load ArrayList<MediaObject> and TimelineModule from the specified file. If it succeeds, the MediaObjects that
+	 * exist in TimelineModule->TimelineModel->TimelineMediaObject.parent->MediaObject are synchronized with the MediaObjects
+	 * in ArrayList<MediaObject> to ensure that there is only one MediaObject instance per actual MediaObject (each file that is).
+	 * The timelinemodule and the mediaobjects are then set as object members in this StorageController and can be retrieved 
+	 * with their getters and setters.
+	 * @param file
+	 * @return
+	 */
+	public boolean loadSession(File file){
 		// Check that the requested file exists
-		if(!new File(file).exists()){
-			System.out.println("File " + file + " not found.");
+		if(!file.exists()){
+			System.out.println("File: " + file + ", not found.");
 			return false;
 		}
 		
@@ -146,5 +171,36 @@ public class StorageController {
 				}
 			}
 		}
+	}
+	
+	public File getStorageFile() {
+		return storageFile;
+	}
+
+	public void setStorageFile(File storageFile) {
+		this.storageFile = storageFile;
+	}
+
+	public ArrayList<MediaObject> getMediaObjects() {
+		return mediaObjects;
+	}
+
+	public void setMediaObjects(ArrayList<MediaObject> mediaObjects) {
+		this.mediaObjects = mediaObjects;
+	}
+
+	public TimelineModule getTimelineModule() {
+		return timelineModule;
+	}
+
+	public void setTimelineModule(TimelineModule timelineModule) {
+		this.timelineModule = timelineModule;
+	}
+
+	public static StorageController getInstance() {
+		if (instance == null) {
+			instance = new StorageController();
+		}
+		return instance;
 	}
 }

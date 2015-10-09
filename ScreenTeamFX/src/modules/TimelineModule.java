@@ -1,5 +1,6 @@
 package modules;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Dictionary;
 
@@ -9,12 +10,17 @@ import java.util.Dictionary;
  * Singleton
  * Controls the timelines and their connections to displays. Talks to VLCController and StorageController.
  */
-public class TimelineModule {
+public class TimelineModule implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5765311042293853590L;
+
 	private static TimelineModule timelinemodule;
 
 	//private VLCController vlccontroller;
-	private StorageController storagecontroller;
+	//private StorageController storagecontroller;
 	
 	// Each display can have one or zero timelines
 	private Dictionary<Integer, TimelineModel> displays;
@@ -33,7 +39,7 @@ public class TimelineModule {
 	private ArrayList<Event> performancestack;
 	
 	private TimelineModule() {
-		//TODO: Implement constructor
+		timelines = new ArrayList<TimelineModel>();
 	}
 	
 	public static TimelineModule getInstance(){

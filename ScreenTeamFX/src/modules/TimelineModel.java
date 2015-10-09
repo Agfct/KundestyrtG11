@@ -1,10 +1,15 @@
 package modules;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class TimelineModel {
+public class TimelineModel implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1075691266821671733L;
 	private ArrayList<TimelineMediaObject> timelineMediaObjects;
 	private final int id;
 	private ArrayList<Event> timelineStack;
