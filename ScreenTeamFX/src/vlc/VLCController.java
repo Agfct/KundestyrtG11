@@ -67,9 +67,11 @@ public class VLCController {
 	/**
 	 * Display mp on the display only if display is not already in use * @param mp * @param display */
 	public boolean setDisplay(VLCMediaPlayer mp, int display){
+		System.out.println(mediaPlayerDisplayConnections);
+		System.out.println(availableDisplays);
 		if(availableDisplays.contains((Integer)display)){
 			availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
-			availableDisplays.remove(display);
+			availableDisplays.remove((Integer)display);
 			mediaPlayerDisplayConnections.remove(mp);
 			mediaPlayerDisplayConnections.put(mp, display);
 			mp.setDisplay(display);

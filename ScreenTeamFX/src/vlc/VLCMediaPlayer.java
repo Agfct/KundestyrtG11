@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 
+import java.awt.Color;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
@@ -39,8 +40,6 @@ public class VLCMediaPlayer {
 	public void play(){
 		if(mediaChanged){
 			mp.getMediaPlayer().startMedia(mediaPath);
-			mp.getMediaPlayer().pause();
-			System.out.println(getTime());
 			mediaChanged = false;
 		}
 		else if(getTime() > 0){
@@ -66,6 +65,7 @@ public class VLCMediaPlayer {
 			mediaChanged = false;
 		}
 		else if(getTime() > -1){
+			mp.getMediaPlayer().pause();
 			mp.getMediaPlayer().setTime(time);
 		}
 		else{
