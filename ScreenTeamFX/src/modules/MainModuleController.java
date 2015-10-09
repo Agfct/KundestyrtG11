@@ -20,8 +20,10 @@ public class MainModuleController {
 	
 	
 	private MainModuleController(){
-		//TODO create storage, load previous session and save it as timelinemodule, or create new
-		//timelinemodule. also add vlcController
+		this.storage = StorageController.getInstance();
+		//TODO check if storage loads last session without problem, if so set timelinemodule to last session
+		//this.timelinemodule = this.storage.gettimelineModule
+		this.timelinemodule = new TimelineModule();
 		
 		//This tells the MainGUIController that the initialization is done
 		MainGUIController.getInstance().finishedLoadingModules();
