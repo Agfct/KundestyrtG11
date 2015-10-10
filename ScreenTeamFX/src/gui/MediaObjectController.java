@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 
 /**
  * @author Anders
@@ -24,9 +25,10 @@ import javafx.scene.layout.GridPane;
 public class MediaObjectController extends GridPane{
 
 	private FXMLLoader fxmlLoader;
-	private AdvancedScreenController parentController;
+	private TimelineLineController parentController;
 
 	//Variables used for dragging/dropping
+	private AnchorPane masterRootPane;
 	private EventHandler <DragEvent> mContextDragOver;
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
@@ -46,22 +48,9 @@ public class MediaObjectController extends GridPane{
 			e.printStackTrace();
 		}
 		
-//		//TODO: This
-//		setOnDragDetected(new EventHandler<MouseEvent>() {
-//		    public void handle(MouseEvent event) {
-//		    	System.out.println("Dragged");
-//		        /* drag was detected, start a drag-and-drop gesture*/
-//		        /* allow any transfer mode */
-//		        Dragboard db = startDragAndDrop(TransferMode.MOVE);
-//		        
-//		        /* Put a string on a dragboard */
-////		        ClipboardContent content = new ClipboardContent();
-////		        content.putString(getText());
-////		        db.setContent(content);
-////		        
-//		        event.consume();
-//		    }
-//		});
+		//Sets the master root pane for drag and drop
+		masterRootPane = AdvancedScreen.getInstance().getScreenController().getMasterRoot();
+	
 	}
 	
 	/**
@@ -71,14 +60,15 @@ public class MediaObjectController extends GridPane{
 	public void initializeMediaObject(MediaObjectContainer container){
 		setType(MediaObjectType.valueOf(container.getValue("type")));
 	}
+	
 	/**
 	 * This method is ran when the object is initialized (created) i the FXML
 	 */
-//	@FXML
-//	private void initialize() {
-//		System.out.println("init MediaHandlers");
-//		buildNodeDragHandlers();
-//	}
+	@FXML
+	private void initialize() {
+		System.out.println("init MediaHandlers");
+		buildNodeDragHandlers();
+	}
 	
 	public MediaObjectType getType () { return mType; }
 	
@@ -93,6 +83,7 @@ public class MediaObjectController extends GridPane{
 				(int) (localCoords.getY() - mDragOffset.getY())
 			);
 	}
+	
 	/**
 	 * Sets the type (video or sound) of the media object
 	 * this is only a visual representation for the drag and drop
@@ -126,8 +117,20 @@ public class MediaObjectController extends GridPane{
 			@Override
 			public void handle(DragEvent event) {		
 		
-				event.acceptTransferModes(TransferMode.ANY);				
-				relocateToPoint(new Point2D( event.getSceneX(), event.getSceneY()));
+				//TODO: find a way to prevent it from dragging outside of timeline (AnchorPane seems to expand itself when dragging outside of it)
+				AnchorPane timelineLinePane = parentController.getParentController().timelineLineContainer;
+				Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());
+//				System.out.println("[MediaObject] sceneX: "+event.getSceneX()+" LocalX: "+ p.getX());
+//				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
+//				System.out.println("Bounds: "+timelineLinePane.boundsInLocalProperty().get());
+				//Prevents you from dragging outside timeline boundaries
+				if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
+//					System.out.println("[MediaObject], yes its TRUE p is inside the panel");
+					event.acceptTransferModes(TransferMode.ANY);
+					relocateToPoint(new Point2D( event.getSceneX(), event.getSceneY()));
+				}
+//				event.acceptTransferModes(TransferMode.ANY);				
+//				relocateToPoint(new Point2D( event.getSceneX(), event.getSceneY()));
 
 				event.consume();
 			}
@@ -142,8 +145,8 @@ public class MediaObjectController extends GridPane{
 			public void handle(DragEvent event) {
 			
 				//TODO: parent ? bottom pane ?
-				getParent().setOnDragOver(null);
-				getParent().setOnDragDropped(null);
+				masterRootPane.setOnDragOver(null);
+				masterRootPane.setOnDragDropped(null);
 				
 				event.setDropCompleted(true);
 				
@@ -171,13 +174,18 @@ public class MediaObjectController extends GridPane{
 			
 				/* Drag was detected, start a drag-and-drop gesture */
 				/* allow any transfer mode */
+				System.out.println("MediaObjectController: Drag event started");
 				
-				
-				getParent().setOnDragOver(null);
-				getParent().setOnDragDropped(null);
+//				getParent().setOnDragOver(null);
+//				getParent().setOnDragDropped(null);
+//
+//				getParent().setOnDragOver (mContextDragOver);
+//				getParent().setOnDragDropped (mContextDragDropped);
+				masterRootPane.setOnDragOver(null);
+				masterRootPane.setOnDragDropped(null);
 
-				getParent().setOnDragOver (mContextDragOver);
-				getParent().setOnDragDropped (mContextDragDropped);
+				masterRootPane.setOnDragOver (mContextDragOver);
+				masterRootPane.setOnDragDropped (mContextDragDropped);
 
                 //begin drag ops
                 mDragOffset = new Point2D(event.getX(), event.getY());
@@ -194,14 +202,28 @@ public class MediaObjectController extends GridPane{
 				container.addData ("type", mType.toString());
                 
                 //Putting the data container onto the content
-				content.put(MediaObjectContainer.AddNode, container);
+				content.put(MediaObjectContainer.DragNode, container); //TODO: AddNode ??
 				
-                startDragAndDrop (TransferMode.ANY).setContent(content);                
+                startDragAndDrop (TransferMode.MOVE).setContent(content);    //TODO: TransferMode.Copy ??             
                 
                 event.consume();					
 			}
 			
 		});		
+	}
+
+	/**
+	 * @return the parentController
+	 */
+	public TimelineLineController getParentController() {
+		return parentController;
+	}
+
+	/**
+	 * @param parentController the parentController to set
+	 */
+	public void setParentController(TimelineLineController parentController) {
+		this.parentController = parentController;
 	}		
 	
 	//Shoud this be a controller ? or shoud it be a Pane ? or other ?

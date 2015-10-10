@@ -17,6 +17,7 @@ import javafx.scene.layout.Pane;
  * @author Anders Lunde
  * The TimelineLineController is the controller of the line you see at the right side, 
  * containing all the media objects.
+ * The controller handles all internal drag and drop operations
  */
 public class TimelineLineController implements FXMLController{
 	
@@ -24,6 +25,11 @@ public class TimelineLineController implements FXMLController{
 	private FXMLLoader fxmlLoader;
 	private TimelineController parentController;
 	private AnchorPane rootPane;
+	
+	//Drag&drop
+	private MediaObjectIcon mDragOverIcon = null;
+	private EventHandler<DragEvent> mIconDragOverRoot = null;
+	private EventHandler<DragEvent> mIconDragDropped = null;
 	
 	/**
 	 * 
@@ -49,31 +55,11 @@ public class TimelineLineController implements FXMLController{
 //		parentController.timelineContainer.add(this.rootPane, 1, 0);
 		parentController.timelineLineContainer.getChildren().add(this.rootPane);
 		
-		//TODO: REMOVE, TESTING ONLY
-//		rootPane.getChildren().add(new MediaObjectController());
-//		
-//		rootPane.setOnDragOver(new EventHandler<DragEvent>() {
-//		    public void handle(DragEvent event) {
-//		    	System.out.println("Dropped");
-//		        /* data is dragged over the target */
-//		        /* accept it only if it is not dragged from the same node 
-//		         * and if it has a string data */
-////		        if (event.getGestureSource() != this &&
-////		                event.getDragboard().hasString()) {
-////		            /* allow for both copying and moving, whatever user chooses */
-////		            event.acceptTransferModes(TransferMode.MOVE);
-////		        }
-//		        if (event.getGestureSource() != this){
-//		        	System.out.println("Dropped");
-//		        event.acceptTransferModes(TransferMode.MOVE);
-//		        }
-//		        
-//		        event.consume();
-//		    }
-//		});
-//		//end of TEST
+		//Drag&drop functionality
 		
 	}
+	
+
 
 	/* (non-Javadoc)
 	 * @see gui.FXMLController#getFXMLLoader()
@@ -95,6 +81,10 @@ public class TimelineLineController implements FXMLController{
 		return rootPane;
 	}
 	
+	public TimelineController getParentController(){
+		return parentController;
+	}
+	
 	/**
 	 * Receives and add/places a mediaObject to the timelineLine based on the coordinates p
 	 * @param node
@@ -102,6 +92,7 @@ public class TimelineLineController implements FXMLController{
 	 */
 	public void addMediaObject(MediaObjectController node, Point2D p) {
 		rootPane.getChildren().add(node); //TODO: REMOVE TEMPorarly fix
+		node.setParentController(this);
 		
 	}
 	

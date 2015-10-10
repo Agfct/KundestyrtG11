@@ -213,7 +213,6 @@ public class AdvancedScreen implements Screen{
 
 						// Sets the drag handler for the rootPane.
 						// Telling the root how to handle the dragIcon
-						//TODO: One of these are handling the drag over wrong, should not be allowed to drop on root.
 						rootPane.setOnDragOver(mIconDragOverRoot);
 //						
 						//Get timelines and add dragBehavior
@@ -228,18 +227,22 @@ public class AdvancedScreen implements Screen{
 						// get a reference to the clicked DragIcon object
 						MediaObjectIcon icn = (MediaObjectIcon) event.getSource();
 						
-						//TODO: add all advanced information here
+						
 						//Sets the type of the drag icon based on the icon of the triggering MediaObject (Video/Sound)
+						//Here one can alternativly set text that shoud be displayed on the icon while you drag it.
 						mDragOverIcon.setType(icn.getType());
+						
 						//Moves the icon to the point where you start the drag event
 						mDragOverIcon.relocateToPoint(new Point2D (event.getSceneX(), event.getSceneY()));
 
-						
 						//Creates a javafx clipboard and creates a new DragContainer for the mediaObject
 						ClipboardContent content = new ClipboardContent();
 						MediaObjectContainer container = new MediaObjectContainer();
 //						
+						//TODO: add all advanced information about the MediaObject is added here (seperate method ? )
 						container.addData ("type", mDragOverIcon.getType().toString());
+						
+						//Container is put onto the clipboard
 						content.put(MediaObjectContainer.AddNode, container);
 
 						mDragOverIcon.startDragAndDrop (TransferMode.ANY).setContent(content);
@@ -252,43 +255,34 @@ public class AdvancedScreen implements Screen{
 			
 			/**
 			 * Defines what the EventHandlers are supposed to do.
-			 * Ex: how the rootpane should handle the drag icon
+			 * For example: how the rootpane should handle the drag icon
 			 */
 			private void buildDragHandlers() {
 				
-				//drag over transition to move widget from MediaObjectView
+				//drag over transition to move widget from MediaObjectView over the AnchorPane
 				mIconDragOverRoot = new EventHandler <DragEvent>() {
 
 					@Override
 					public void handle(DragEvent event) {
 						
-//						Point2D p = right_pane.sceneToLocal(event.getSceneX(), event.getSceneY());
 						
-						//Get timelines and add dragBehavior
-//						for (FXMLController timelineController : timelineControllers) {
-//							Pane timelineLinePane = ((TimelineController)timelineController).getTimelineLineController().getRoot();
-//							Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());;
-//						
-//							/**
-//							 *TODO: Redefine, what is this doing ?
-//							 * Turns of the transfering of mediaObject if the user is inside timline?
-//							 */
-//							if (!timelineLinePane.boundsInLocalProperty().get().contains(p)) {
-//								
-//								event.acceptTransferModes(TransferMode.ANY);
-//								mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
-//								return;
-//							}
-//						}
+						//We only want the drop icon to display "ok to drop here" when you are hovering over a timeline.
+						for (FXMLController timelineController : timelineControllers) {
+							Pane timelineLinePane = ((TimelineController)timelineController).getTimelineLineController().getRoot();
+							Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());
 						
-						event.acceptTransferModes(TransferMode.ANY);
-						//This methods is moving the actuall icon around
+							//If the drag event goes inside the boundaries of the Timeline you are ok to transfer
+							if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
+								event.acceptTransferModes(TransferMode.ANY);
+							}
+						}
+						
 						mDragOverIcon.relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
-						return;
-//						event.consume();
+						event.consume();
 					}
 				};
 				
+				//TODO: NOT USED ? REVISIT
 				mIconDragOverTimeline = new EventHandler <DragEvent> () {
 
 					@Override
@@ -309,7 +303,9 @@ public class AdvancedScreen implements Screen{
 				};
 						
 				/**
-				 * When the mediaObject is dropped onto a timeline TODO:...
+				 * When the mediaObjectIcon is dropped onto a timeline this handler
+				 * gets the drop point and adds it to a new mediaObjectContainer which is set as the
+				 * content on the final clipboard and then it sets the 
 				 */
 				mIconDragDropped = new EventHandler <DragEvent> () {
 
@@ -320,8 +316,11 @@ public class AdvancedScreen implements Screen{
 						MediaObjectContainer container = 
 								(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.AddNode);
 						
+						//TODO: TESTING REMOVE THE pk point and sysout
 						Point2D pk = new Point2D(event.getSceneX(),event.getSceneY());
 						System.out.println("Dropped scene coords: X:" +pk.getX() + "Y:"+ pk.getY());
+						
+						//Adds the coordinates where the icon was dropped to the MediaObjectContainer
 						container.addData("scene_coords", 
 								new Point2D(event.getSceneX(), event.getSceneY()));
 						
@@ -329,12 +328,15 @@ public class AdvancedScreen implements Screen{
 						content.put(MediaObjectContainer.AddNode, container);
 						
 						event.getDragboard().setContent(content);
+						
+						//Setting drop Completed to true indicates that the Drag-Drop was successful.
 						event.setDropCompleted(true);
 					}
 				};
 				
 				/**
-				 * When the drag is complete, we clean up the drag operation. and add the node to the timeline
+				 * When the drag is complete we clean up the drag operation, 
+				 * and add the node to the timeline that was dropped upon.
 				 */
 				rootPane.setOnDragDone (new EventHandler <DragEvent> (){
 					
@@ -345,9 +347,9 @@ public class AdvancedScreen implements Screen{
 
 						//Cleaning up the DragEvents
 						rootPane.removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverRoot);
-						for (FXMLController timelineController : timelineControllers) {
-							((TimelineController)timelineController).getTimelineLineController().getRoot().removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverTimeline);
-						}
+//						for (FXMLController timelineController : timelineControllers) {
+//							((TimelineController)timelineController).getTimelineLineController().getRoot().removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverTimeline);
+//						}
 						for (FXMLController timelineController : timelineControllers) {
 							((TimelineController)timelineController).getTimelineLineController().getRoot().removeEventHandler(DragEvent.DRAG_DROPPED, mIconDragDropped);
 						}
@@ -382,29 +384,22 @@ public class AdvancedScreen implements Screen{
 										currentTimelineLineController.addMediaObject(node,p);
 										System.out.println(" WE ARE DONE !!!");
 										break;
-//										timelineLinePane.getChildren().add(node);
 									}
 								}
 								
-
-//								Point2D cursorPoint = container.getValue("scene_coords");
-//
-//								node.relocateToPoint(
-//										new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32)
-//										);
 							}
 						}
 						
 						
 						//If the NODE IS A DRAG NODE, THAT IS: ITS AN EXISTING MEDIA OBJECT INSDIE AN EXISTING TIMELINE
 						//TODO: If we are dragging from timeline to timeline, then we need this.
-						container = 
-								(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.DragNode);
-						
-						if (container != null) {
-							if (container.getValue("type") != null)
-								System.out.println ("Moved node " + container.getValue("type"));
-						}
+//						container = 
+//								(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.DragNode);
+//						
+//						if (container != null) {
+//							if (container.getValue("type") != null)
+//								System.out.println ("Moved node " + container.getValue("type"));
+//						}
 						
 						event.consume();
 					}
@@ -471,6 +466,9 @@ public class AdvancedScreen implements Screen{
 			}
 			public GridPane getRoot(){
 				return rootGrid;
+			}
+			public AnchorPane getMasterRoot(){
+				return rootPane;
 			}
 	
 			/**
