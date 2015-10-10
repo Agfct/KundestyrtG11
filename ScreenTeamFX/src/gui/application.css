@@ -33,3 +33,9 @@
 	-fx-font-family: Helvetica;
 	-fx-font-size: 72;
 }
+
+.header-smal {
+	-fx-fill: linear-gradient(cyan,white);
+	-fx-font-family: Helvetica;
+	-fx-font-size: 48;
+}

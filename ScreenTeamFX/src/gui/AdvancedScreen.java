@@ -36,6 +36,7 @@ import javafx.stage.FileChooser;
 
 /**
  * @author Anders Lunde,  Magnus Gunde
+ * Singleton class
  *The AdvancedScreen class represents the view/Screen where you can create a new session that will be displayed on the screens.
  *This is the most important screen in the application and it will contain most of the applications functionallity.
  */
@@ -62,7 +63,6 @@ public class AdvancedScreen implements Screen{
 			
 //			screenScene = new Scene(rootPane,1200,700); //TODO: Get size from global size ?
 			screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700); //TODO: Get size from global size ?
-//			screenScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		}
 		
 		public static AdvancedScreen getInstance() {
