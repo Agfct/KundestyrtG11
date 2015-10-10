@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+
+<fx:root fx:id="root_pane" maxHeight="75" maxWidth="-Infinity" minHeight="75" minWidth="-Infinity" prefHeight="75" prefWidth="100" type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+	<!-- TODO Add Nodes -->
+</fx:root>

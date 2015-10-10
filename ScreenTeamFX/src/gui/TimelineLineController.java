@@ -5,8 +5,10 @@ import java.io.IOException;
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
@@ -15,13 +17,19 @@ import javafx.scene.layout.Pane;
  * @author Anders Lunde
  * The TimelineLineController is the controller of the line you see at the right side, 
  * containing all the media objects.
+ * The controller handles all internal drag and drop operations
  */
 public class TimelineLineController implements FXMLController{
 	
 	
 	private FXMLLoader fxmlLoader;
 	private TimelineController parentController;
-	private Pane rootPane;
+	private AnchorPane rootPane;
+	
+	//Drag&drop
+	private MediaObjectIcon mDragOverIcon = null;
+	private EventHandler<DragEvent> mIconDragOverRoot = null;
+	private EventHandler<DragEvent> mIconDragDropped = null;
 	
 	/**
 	 * 
@@ -42,31 +50,16 @@ public class TimelineLineController implements FXMLController{
 			System.out.println("Failed to load TimelineLine FXML");
 			e.printStackTrace();
 		}
-		//TODO: REMOVE, TESTING ONLY
-		rootPane.getChildren().add(new MediaObjectController());
 		
-		rootPane.setOnDragOver(new EventHandler<DragEvent>() {
-		    public void handle(DragEvent event) {
-		    	System.out.println("Dropped");
-		        /* data is dragged over the target */
-		        /* accept it only if it is not dragged from the same node 
-		         * and if it has a string data */
-//		        if (event.getGestureSource() != this &&
-//		                event.getDragboard().hasString()) {
-//		            /* allow for both copying and moving, whatever user chooses */
-//		            event.acceptTransferModes(TransferMode.MOVE);
-//		        }
-		        if (event.getGestureSource() != this){
-		        	System.out.println("Dropped");
-		        event.acceptTransferModes(TransferMode.MOVE);
-		        }
-		        
-		        event.consume();
-		    }
-		});
-		//end of TEST
+		//Puts this TimelineLine onto the info (parent) controller
+//		parentController.timelineContainer.add(this.rootPane, 1, 0);
+		parentController.timelineLineContainer.getChildren().add(this.rootPane);
+		
+		//Drag&drop functionality
 		
 	}
+	
+
 
 	/* (non-Javadoc)
 	 * @see gui.FXMLController#getFXMLLoader()
@@ -76,5 +69,36 @@ public class TimelineLineController implements FXMLController{
 		return fxmlLoader;
 	}
 	
+	public void setRootOnDragOver( EventHandler<DragEvent> event){
+		rootPane.setOnDragOver(event);
+	}
+	
+	public void setRootOnDropped( EventHandler<DragEvent> event){
+		rootPane.setOnDragDropped(event);
+	}
+	
+	public AnchorPane getRoot(){
+		return rootPane;
+	}
+	
+	public TimelineController getParentController(){
+		return parentController;
+	}
+	
+	/**
+	 * Receives and add/places a mediaObject to the timelineLine based on the coordinates p
+	 * @param node
+	 * @param p
+	 */
+	public void addMediaObject(MediaObjectController node, Point2D p) {
+		rootPane.getChildren().add(node); //TODO: REMOVE TEMPorarly fix
+		node.setParentController(this);
+		
+	}
+	
+	protected void moveTimeline(Double newPosition){
+		System.out.println("TimelineLineController Moving the Root");
+		rootPane.setLayoutX(newPosition);
+	}
 
 }

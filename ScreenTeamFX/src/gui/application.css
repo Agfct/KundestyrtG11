@@ -1,1 +1,16 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+.dragicon {
+	-fx-background-radius: 10; 
+}
+
+.icon-sound {
+	-fx-background-color: blue;
+}
+.icon-video {
+	-fx-background-color: orange;
+}
+
+.background-timeline {
+	-fx-background-image: url("../../resources/timelineLineTempBck.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+}
