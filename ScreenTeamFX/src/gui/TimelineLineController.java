@@ -102,6 +102,7 @@ public class TimelineLineController implements FXMLController{
                 }else if(button==MouseButton.MIDDLE){
                 	System.out.println("MIDDLE button clicked");
                 }
+                event.consume(); //Consumes the event so it wont go deeper down into the hierarchy 
             }
         });
 
