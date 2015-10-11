@@ -6,20 +6,23 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.image.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
-	minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-	prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
+<AnchorPane stylesheets="@application.css" styleClass="background-main"
+	maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+	minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
+	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
+
 	<GridPane fx:id="rootGrid" gridLinesVisible="true" layoutX="163.0"
 		layoutY="62.0" prefHeight="400.0" prefWidth="600.0"
 		AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
 		AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 		<columnConstraints>
-			<ColumnConstraints hgrow="SOMETIMES" maxWidth="295.0"
+			<ColumnConstraints hgrow="NEVER" percentWidth="25"
 				minWidth="10.0" prefWidth="135.0" />
-			<ColumnConstraints hgrow="SOMETIMES" maxWidth="479.0"
+			<ColumnConstraints hgrow="SOMETIMES" percentWidth="50"
 				minWidth="10.0" prefWidth="164.0" />
-			<ColumnConstraints hgrow="SOMETIMES" maxWidth="496.0"
+			<ColumnConstraints hgrow="NEVER" percentWidth="25"
 				minWidth="10.0" prefWidth="426.0" />
 		</columnConstraints>
 		<rowConstraints>
@@ -29,16 +32,29 @@
 				vgrow="SOMETIMES" />
 			<RowConstraints minHeight="10.0" prefHeight="30.0"
 				vgrow="SOMETIMES" />
+			<RowConstraints minHeight="10.0" prefHeight="30.0"
+				vgrow="SOMETIMES" />
+			<RowConstraints minHeight="10.0" prefHeight="30.0"
+				vgrow="SOMETIMES" />
 		</rowConstraints>
 		<children>
-		<Text GridPane.columnIndex="1"
-				GridPane.halignment="CENTER" > Cribrum</Text>
-			<Button id="testBtn" onAction="#buttonPressed" alignment="CENTER"
-				mnemonicParsing="false" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="1"
-				GridPane.halignment="CENTER" />
+			<Text styleClass="header-large" GridPane.columnIndex="1"
+				GridPane.halignment="CENTER"> Cribrum</Text>
 			<Button id="advScrBtn" onAction="#buttonPressed" alignment="CENTER"
-				mnemonicParsing="false" text="AdvancedScreen" GridPane.columnIndex="2"  GridPane.rowIndex="1"
-				GridPane.halignment="CENTER" />
+				maxWidth="200" maxHeight="100" mnemonicParsing="false" text="Session Builder"
+				GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.halignment="CENTER" />
+			<Button id="testBtn" onAction="#buttonPressed" alignment="CENTER"
+				mnemonicParsing="false" text="Button" GridPane.columnIndex="1"
+				GridPane.rowIndex="3" GridPane.halignment="CENTER" />
+			<Button id="exitBtn" onAction="#buttonPressed" alignment="CENTER"
+				mnemonicParsing="false" text="Exit" GridPane.columnIndex="2"
+				GridPane.rowIndex="4" GridPane.halignment="CENTER" />
+			<Button id="optionsBtn" styleClass="icon-cog" onAction="#buttonPressed"
+				alignment="CENTER" mnemonicParsing="false" GridPane.columnIndex="0"
+				prefWidth="32" prefHeight="32" GridPane.rowIndex="0"
+				GridPane.halignment="CENTER">
+			</Button>
+
 		</children>
 	</GridPane>
 </AnchorPane> 

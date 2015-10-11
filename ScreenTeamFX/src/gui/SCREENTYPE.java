@@ -9,6 +9,6 @@ package gui;
  */
 public enum SCREENTYPE {
 	
-	MAINMENU,ADVANCEDSCREEN;
+	MAINMENU,ADVANCEDSCREEN,OPTIONS;
 
 }

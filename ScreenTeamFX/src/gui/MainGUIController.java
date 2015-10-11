@@ -30,6 +30,7 @@ public class MainGUIController {
 	LoadingScreen loadingScreen;
 	MainScreen mainScreen;
 	AdvancedScreen advancedScreen;
+	OptionsScreen optionsScreen;
 	
 	//Screen size
 	
@@ -86,9 +87,13 @@ public class MainGUIController {
 		}else if(screenType == SCREENTYPE.ADVANCEDSCREEN){
 			primaryStage.setScene(advancedScreen.getScene());
 			primaryStage.show();
+			
+		}else if(screenType == SCREENTYPE.OPTIONS){
+			primaryStage.setScene(optionsScreen.getScene());
+			primaryStage.show();
 		}
 		
-		centerScreen();
+//		centerScreen(); //Centers the screen every time it changes
 	}
 
 	/**
@@ -100,6 +105,7 @@ public class MainGUIController {
 			
 			mainScreen = MainScreen.getInstance();
 			advancedScreen = AdvancedScreen.getInstance();
+			optionsScreen = OptionsScreen.getInstance();
 			primaryStage.hide();
 			primaryStage.setScene(mainScreen.getScene());
 			primaryStage.show();

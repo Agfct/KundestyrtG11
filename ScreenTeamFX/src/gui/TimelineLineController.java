@@ -1,12 +1,18 @@
 package gui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import gui.AdvancedScreen.AdvancedScreenController;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -25,11 +31,15 @@ public class TimelineLineController implements FXMLController{
 	private FXMLLoader fxmlLoader;
 	private TimelineController parentController;
 	private AnchorPane rootPane;
+	private final ContextMenu contextMenu = new ContextMenu();
 	
 	//Drag&drop
 	private MediaObjectIcon mDragOverIcon = null;
 	private EventHandler<DragEvent> mIconDragOverRoot = null;
 	private EventHandler<DragEvent> mIconDragDropped = null;
+	
+	//TODO: dummy list ? should it be this way ?
+	private ArrayList<MediaObjectController> mediaObjects;
 	
 	/**
 	 * 
@@ -39,6 +49,9 @@ public class TimelineLineController implements FXMLController{
 		
 		//Fetches the parent controller. In this case it is the controller in the advancedScreen class.'
 		this.parentController = parentController;
+		
+		//initializes empty mediaObjectList
+		mediaObjects = new ArrayList<>();
 		
 		// The constructor will try to fetch the fxml 
 		try {
@@ -51,6 +64,9 @@ public class TimelineLineController implements FXMLController{
 			e.printStackTrace();
 		}
 		
+		//Mouse Functionallity
+		initializeMouse();
+		
 		//Puts this TimelineLine onto the info (parent) controller
 //		parentController.timelineContainer.add(this.rootPane, 1, 0);
 		parentController.timelineLineContainer.getChildren().add(this.rootPane);
@@ -58,7 +74,39 @@ public class TimelineLineController implements FXMLController{
 		//Drag&drop functionality
 		
 	}
-	
+	/**
+	 * Initializes all the mouse gesture controls, and also initializes the right click pop up menu.
+	 */
+	private void initializeMouse(){
+		//Adds different right click options to the ContextMenu that pops up on mouse click.
+		MenuItem cut = new MenuItem("Cut");
+		MenuItem copy = new MenuItem("Copy");
+		MenuItem paste = new MenuItem("Paste");
+		contextMenu.getItems().addAll(cut, copy, paste);
+		cut.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent event) {
+		        System.out.println("Cut...");
+		    }
+		});
+		rootPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			 
+            @Override
+            public void handle(MouseEvent event) {
+                MouseButton button = event.getButton();
+                if(button==MouseButton.PRIMARY){
+                    System.out.println("PRIMARY button clicked");
+                }else if(button==MouseButton.SECONDARY){
+                	System.out.println("SECONDARY button clicked");
+                	contextMenu.show(rootPane, event.getScreenX(), event.getScreenY());
+                }else if(button==MouseButton.MIDDLE){
+                	System.out.println("MIDDLE button clicked");
+                }
+                event.consume(); //Consumes the event so it wont go deeper down into the hierarchy 
+            }
+        });
+
+	}
 
 
 	/* (non-Javadoc)
@@ -92,6 +140,7 @@ public class TimelineLineController implements FXMLController{
 	 */
 	public void addMediaObject(MediaObjectController node, Point2D p) {
 		rootPane.getChildren().add(node); //TODO: REMOVE TEMPorarly fix
+		mediaObjects.add(node);
 		node.setParentController(this);
 		
 	}

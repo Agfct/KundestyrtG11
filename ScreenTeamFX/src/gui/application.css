@@ -9,8 +9,33 @@
 	-fx-background-color: orange;
 }
 
+.icon-cog {
+	-fx-background-image: url("../../resources/Icon_cog.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-background-size: cover;
+}
+
 .background-timeline {
 	-fx-background-image: url("../../resources/timelineLineTempBck.png");
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: cover;
+}
+
+.background-main {
+	-fx-background-image: url("../../resources/background_dokkhuset.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+}
+
+.header-large {
+	-fx-fill: linear-gradient(palegreen,seagreen);
+	-fx-font-family: Helvetica;
+	-fx-font-size: 72;
+}
+
+.header-smal {
+	-fx-fill: linear-gradient(cyan,white);
+	-fx-font-family: Helvetica;
+	-fx-font-size: 48;
 }
