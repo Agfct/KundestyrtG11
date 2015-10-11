@@ -128,7 +128,7 @@ public class AdvancedScreen implements Screen{
 			@FXML private ScrollBar timelineLineScrollBar;
 			
 			//TEST
-			@FXML private GridPane topGrid;
+			// @FXML private GridPane topGrid;
 	
 			
 			public AdvancedScreenController(){
@@ -195,7 +195,7 @@ public class AdvancedScreen implements Screen{
 				MediaObjectIcon icn = new MediaObjectIcon();
 				addDragDetection(icn);
 				icn.setType(MediaObjectType.VIDEO);
-				topGrid.add(icn,1,1);
+				//topGrid.add(icn,1,1);
 				
 				buildDragHandlers();
 			}
@@ -406,37 +406,7 @@ public class AdvancedScreen implements Screen{
 				});		
 			}
 			
-			/**
-			 * This method is ran when you press a button in the advanced screen top layout (Not inside the timelines).
-			 * It assumes that all buttons has in id. if they do not have an id this method gives a null pointer exception.
-			 * @param event
-			 */
-			@FXML protected void buttonPressed(ActionEvent event) {
-				System.out.println("AdvancedScreen:" + event.getSource().toString() + "has been pressed");
-				
-				if(((Button)event.getSource()).getId().equals("menuBtn") ){
-					//If the menu screen button is pressed the MainGUIController changes the screen to be the menu screen
-					MainGUIController.getInstance().changeScreen(SCREENTYPE.MAINMENU);
-					
-				}else if(((Button)event.getSource()).getId().equals("addTimeLineBtn")){
-					System.out.println("Adding a TimeLine");
-					addTimeline();
-					
-				}else if(((Button)event.getSource()).getId().equals("importMedia")){
-					// If the user chooses the import media button, he will get a windows-file-chooser
-					FileChooser fileChooser = new FileChooser();
-					fileChooser.setTitle("Open media file");
-					File file=fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
-					
-					//binds the items of the listView to the listProperty. This should probably be done somewhere else
-					fileListView.itemsProperty().bind(listProperty);
-					if(file != null){
-						fileChosen(file);
-					}
-			        
-
-				}
-			}	
+			
 			
 			/**
 			 * Adds a new timeline to the advancedScreen
