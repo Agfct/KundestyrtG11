@@ -6,6 +6,7 @@ package gui;
 import java.io.File;
 import java.util.ArrayList;
 
+import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -13,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
@@ -32,13 +34,17 @@ public class HeaderController implements FXMLController{
 	private FXMLLoader fxmlLoader;
 	
 	// The parent pane and controller (rootPane)
-	private GridPane rootPane;
-	private FXMLController parentController;
-	//Parent topGrid
-	GridPane topGrid;
+	private GridPane parentPane;  //might not need this?
+	private AdvancedScreenController parentController;
+	
+	//Parent topGrid NB: Might not need this
+//	GridPane topGrid;
 	
 	//Pointers to the fx:ids in the FXML
 	@FXML private Button testButton;
+	
+	//The rootGrid that lies at the bottom of this FXML
+	@FXML private GridPane rootPane;
 	
 	
 	
@@ -52,23 +58,16 @@ public class HeaderController implements FXMLController{
 
 	
 	
-	public HeaderController() {
+	public HeaderController(AdvancedScreenController AdvParentController) {
+		this.parentController=AdvParentController;
+	
 		
-		//Fetches the parent controller. In this case it is the controller in the advancedScreen class.'
-		parentController = AdvancedScreen.getInstance().getScreenController();
-		
-		//Fetches the top grid from the parent
-		
-				
-		
-		// Trying to fetch the FXML
+//		 Trying to fetch the FXML
 		try {
 			fxmlLoader = new FXMLLoader(getClass().getResource("Header.fxml"));
 			fxmlLoader.setController(this);
-			//fxmlLoader.load();
+			fxmlLoader.load();
 			rootPane = fxmlLoader.getRoot();
-			//Fetches the parent controller. In this case it is the controller in the advancedScreen class.'
-			parentController = AdvancedScreen.getInstance().getScreenController();
 		} catch (Exception e) {
 			System.out.println("Exception in the headerController");
 			e.printStackTrace();
@@ -77,8 +76,7 @@ public class HeaderController implements FXMLController{
 	
 	@Override
 	public FXMLLoader getFXMLLoader() {
-		// TODO Auto-generated method stub
-		return null;
+		return fxmlLoader;
 	}
 	// TODO: explain
 	@FXML protected void buttonPressed(ActionEvent event) {
@@ -90,7 +88,9 @@ public class HeaderController implements FXMLController{
 			
 		}else if(((Button)event.getSource()).getId().equals("addTimeLineBtn")){
 			System.out.println("Adding a TimeLine");
-			//this.parentController.action(); TODO: Implement this? 
+			System.out.println(parentController);
+			System.out.println("PARENT?");
+			this.parentController.addTimeline(); 
 			
 		}else if(((Button)event.getSource()).getId().equals("importMedia")){
 			// If the user clicks the import media button, he will get a windows file-chooser
@@ -99,6 +99,10 @@ public class HeaderController implements FXMLController{
 			File file=fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
 			
 		}
+	}
+
+	public GridPane getRoot() {
+		return this.rootPane;
 	}	
 	
 	
@@ -110,4 +114,5 @@ public class HeaderController implements FXMLController{
 //	}
 	//binds the items of the listView to the listProperty. This should probably be done somewhere else
 	
+
 }

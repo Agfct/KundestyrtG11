@@ -132,7 +132,7 @@ public class AdvancedScreen implements Screen{
 	
 			
 			public AdvancedScreenController(){
-
+				System.out.println("RUNNING CONSTRUCTOR ADVANCEDSCREEN CTRL");
 				//Instantiating controller list
 				timelineControllers = new ArrayList<TimelineController>();
 
@@ -152,6 +152,9 @@ public class AdvancedScreen implements Screen{
 				
 				//Drag&drop functionality
 				initialize();
+				
+				// Initialize the header
+				initHeader(this);
 
 			}
 			
@@ -414,7 +417,7 @@ public class AdvancedScreen implements Screen{
 			 * then adding the GridPane of the TimelineController to the VBox container.
 			 * TODO: add arguments and java models
 			 */
-			private void addTimeline(){
+			public void addTimeline(){
 				TimelineController tempTimeController = new TimelineController();
 				timelineControllers.add(tempTimeController);
 				addTimelineControllerToScreen(tempTimeController);
@@ -449,6 +452,16 @@ public class AdvancedScreen implements Screen{
 			public void removeTimeline(TimelineController timeline){
 				timelineContainer.getChildren().remove(timeline.getRoot());
 				timelineControllers.remove(timeline);
+			}
+			
+			
+			/*
+			 * Initializes the header
+			 */
+			public void initHeader(AdvancedScreenController self){
+				HeaderController headerController = new HeaderController(self);
+				System.out.println("INITING THE HEADER: ");
+				rootGrid.getChildren().add(headerController.getRoot());
 			}
 			
 	

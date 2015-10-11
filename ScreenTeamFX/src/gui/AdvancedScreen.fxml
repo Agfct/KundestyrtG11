@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import java.lang.*?>
+
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.control.Button?>
@@ -36,7 +36,7 @@
 					prefHeight="25" vgrow="NEVER" />
 			</rowConstraints>
 			<children>
-				
+				<!-- The header will be inserted here in javacode -->
 				<!-- This is the Scroll pane that contains the GridPane that has TimeLines 
 					in it -->
 				<ScrollPane hbarPolicy="NEVER" GridPane.columnSpan="2"
