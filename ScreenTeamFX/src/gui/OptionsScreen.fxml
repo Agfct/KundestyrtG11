@@ -6,12 +6,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 
-<AnchorPane stylesheets="@application.css" styleClass="background-main" maxHeight="-Infinity"
-	maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-	prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
-	xmlns="http://javafx.com/javafx/8.0.40">
+<AnchorPane stylesheets="@application.css" styleClass="background-main"
+	maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+	minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
+	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
 
 	<GridPane fx:id="rootGrid" gridLinesVisible="true" layoutX="163.0"
 		layoutY="62.0" prefHeight="400.0" prefWidth="600.0"
@@ -34,14 +35,30 @@
 				vgrow="SOMETIMES" />
 			<RowConstraints minHeight="10.0" prefHeight="30.0"
 				vgrow="SOMETIMES" />
+			<RowConstraints minHeight="10.0" prefHeight="30.0"
+				vgrow="SOMETIMES" />
 		</rowConstraints>
 		<children>
 			<Text styleClass="header-smal" GridPane.columnIndex="1"
 				GridPane.halignment="CENTER"> Options</Text>
 			<Button id="mainMenuBtn" onAction="#buttonPressed" alignment="CENTER"
-				maxWidth="200" maxHeight="100" mnemonicParsing="false" text="MainMenu"
-				GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.halignment="CENTER" />
-
+				mnemonicParsing="false" text="MainMenu" GridPane.columnIndex="1"
+				GridPane.rowIndex="2" GridPane.halignment="CENTER" />
+			<TextFlow GridPane.columnIndex="2" GridPane.rowIndex="1"
+				GridPane.halignment="CENTER" lineSpacing="10.0" maxHeight="-Infinity"
+				maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+				textAlignment="CENTER">
+				<children>
+					<Text style="-fx-font-size: 20; -fx-fill: darkred;" text="Credits" />
+					<Text text="&#10;DevelopmentTeam:" />
+					<Text text="&#10;Anders Lunde" />
+					<Text text="&#10;Baptiste Masselin" />
+					<Text text="&#10;Kristian Midtgård" />
+					<Text text="&#10;Magnus Gundersen" />
+					<Text text="&#10;Eirik Zimmer Wold" />
+					<Text text="&#10;Ole Steinar L. Skrede" />
+				</children>
+			</TextFlow>
 		</children>
 	</GridPane>
 </AnchorPane> 

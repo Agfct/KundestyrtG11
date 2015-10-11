@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 
 /**
  * @author Anders
@@ -58,8 +59,10 @@ public class OptionsScreen implements Screen {
 		
 		private FXMLLoader fxmlLoader;
 		private AnchorPane rootPane;
+		private AnchorPane creditsRootPane;
+		private boolean credits = false;
 		
-		@FXML private Button testButton;
+		@FXML private GridPane rootGrid;
 		
 		public OptionsScreenController(){
 			
@@ -73,6 +76,7 @@ public class OptionsScreen implements Screen {
 				System.out.println("Failed to load OptionsScreen FXML");
 				e.printStackTrace();
 			}
+			
 		}
 		
 		/**
@@ -86,9 +90,6 @@ public class OptionsScreen implements Screen {
 				System.out.println("Pressing mainMenu screen btn");
 				//If the mainMenu screen button is pressed the MainGUIController changes the screen to be the mainMenu screen
 				MainGUIController.getInstance().changeScreen(SCREENTYPE.MAINMENU);
-				
-			}else if(((Button)event.getSource()).getId().equals("lolzor")){
-	
 				
 			}
 		}
