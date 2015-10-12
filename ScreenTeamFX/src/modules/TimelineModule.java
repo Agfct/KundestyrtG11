@@ -3,6 +3,8 @@ package modules;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import vlc.VLCController;
+
 /**
  * 
  * @author BEO
@@ -10,7 +12,7 @@ import java.util.HashMap;
  * Controls the timelines and their connections to displays. Talks to VLCController and StorageController.
  */
 public class TimelineModule {
-	//private VLCController vlccontroller;
+	private VLCController vlccontroller;
 	// Each display can have one or zero timelines
 	private HashMap<Integer, TimelineModel> displays;
 	private ArrayList<TimelineModel> timelines;
@@ -22,13 +24,14 @@ public class TimelineModule {
 	private int tlmID;
 	
 	
-	public TimelineModule() {
+	public TimelineModule(VLCController vlc) {
 		this.timelines = new ArrayList<TimelineModel>();
 		this.timelines.add(new TimelineModel(0));
 		this.globaltime = 0;
 		this.performancestack = new ArrayList<Event>();
 		this.tlmID =0;
 		this.displays = new HashMap<Integer,TimelineModel>();
+		this.vlccontroller =vlc;
 	}
 
 	/**
@@ -39,6 +42,7 @@ public class TimelineModule {
 		tlmID +=1;
 		TimelineModel tlm = new TimelineModel(tlmID);
 		timelines.add(tlm);
+		vlccontroller.createMediaPlayer(tlmID);
 		return tlmID;
 	}
 	

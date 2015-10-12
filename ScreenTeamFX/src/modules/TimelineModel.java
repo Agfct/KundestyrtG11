@@ -3,17 +3,21 @@ package modules;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import vlc.VLCMediaPlayer;
+
 public class TimelineModel {
 	
 	private ArrayList<TimelineMediaObject> timelineMediaObjects;
 	private final int id;
 	private ArrayList<Event> timelineStack;
+	private int mp;
 	
 	public TimelineModel(int id) {
 		super();
 		this.timelineMediaObjects = new ArrayList<TimelineMediaObject>();
 		this.id = id;
 		this.timelineStack = new ArrayList<Event>();
+		
 	}
 
 	public int getID() {

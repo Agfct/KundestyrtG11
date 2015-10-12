@@ -24,8 +24,8 @@ public class VLCController {
 	 * Creates a new VLC controller and opens a file chooser to select the 64bit VLC path.
 	 * Searches for all displays available on the computer and adds them to an ArrayList.
 	 */
-	public VLCController(){
-		vlcPath = "C:\\Program Files\\VideoLAN\\VLC64";
+	public VLCController(String vlcP){
+		this.vlcPath = vlcP;
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath); //Gives vlcj access to the VLC client on the PC
 		prerunCheckPlayer = new VLCMediaPlayer();
 		findDisplays();
