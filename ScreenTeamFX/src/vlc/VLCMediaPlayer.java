@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 
-import java.awt.Color;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
@@ -15,10 +14,12 @@ public class VLCMediaPlayer {
 	private String mediaPath = "";
 	private static GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 	private int display;
+	private int ID;
 	private boolean mediaChanged = false;
 	
-	public VLCMediaPlayer(int display){
+	public VLCMediaPlayer(int display, int ID){
 		this.display = display;
+		this.ID = ID;
 		mp = new EmbeddedMediaPlayerComponent();
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,6 +96,10 @@ public class VLCMediaPlayer {
 	
 	public int getDisplay(){
 		return this.display;
+	}
+	
+	public int getID(){
+		return this.ID;
 	}
 	
 	public long getTime(){
