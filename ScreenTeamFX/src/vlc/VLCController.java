@@ -115,6 +115,10 @@ public class VLCController {
 		toPlayer(mp).seek(time);
 	}
 	
+	public void stopOne(int mp){
+		toPlayer(mp).stop();
+	}
+	
 	/** * Play all the media of all media players at the exact same time.
 	 * @throws BrokenBarrierException 
 	 * @throws InterruptedException */	

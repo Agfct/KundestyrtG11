@@ -93,28 +93,14 @@ public class MainScreen implements Screen {
 				String path3 = "videos\\Silicon.Valley.S02E04.HDTV.x264-ASAP.mp4";
 				String path4 = "videos\\Silicon.Valley.S02E01.HDTV.x264-ASAP.mp4";
 				String logo = "ScreenTeam_logo.png";
-				VLCController vlcc = new VLCController();
-				VLCMediaPlayer mp1 = vlcc.createMediaPlayer(0);
-				vlcc.setMedia(mp1, path3);
-
-						
-//				vlcc.setMedia(mp3, path1);
-//				vlcc.playAll();
-//				Thread.sleep(7000);
-//				vlcc.pauseAll();
-//				Thread.sleep(5000);
-//				vlcc.playAll();
-//				Thread.sleep(2000);
-//				Map<VLCMediaPlayer, Long> map = new HashMap<VLCMediaPlayer, Long>();
-//				map.put(mp1, 547460l);
-//				map.put(mp2, 81720l);
-//				map.put(mp3, 124000l);
-//				vlcc.SeekMultiple(map);
-//				Thread.sleep(3000);
-//				vlcc.setMedia(mp2, path4);
-//				vlcc.playOne(mp2);
-//				vlcc.pauseOne(mp3);
-
+				VLCController vlcc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
+				vlcc.createMediaPlayer(0);
+				vlcc.setMedia(0, path1);
+				vlcc.playAll();
+				Thread.sleep(3000);
+				vlcc.stopOne(0);
+				Thread.sleep(2000);
+				vlcc.playAll();
 				
 				
 			}else if(((Button)event.getSource()).getId().equals("advScrBtn")){

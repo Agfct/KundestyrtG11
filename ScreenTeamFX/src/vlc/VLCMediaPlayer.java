@@ -47,7 +47,7 @@ public class VLCMediaPlayer {
 			mp.getMediaPlayer().start();
 		}
 	    else{
-	        throw new RuntimeException("No Video Found");
+	        System.out.println("No video attached");
 	    }
 		
 	}
@@ -70,7 +70,7 @@ public class VLCMediaPlayer {
 			mp.getMediaPlayer().setTime(time);
 		}
 		else{
-			throw new RuntimeException("No Video Found");
+			System.out.println("No video attached");
 		}
 	}	
 	
