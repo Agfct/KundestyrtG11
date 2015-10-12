@@ -2,16 +2,13 @@ package vlc;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 import com.sun.jna.NativeLibrary;
-import com.sun.media.sound.InvalidFormatException;
 
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
@@ -67,8 +64,6 @@ public class VLCController {
 	/**
 	 * Display mp on the display only if display is not already in use * @param mp * @param display */
 	public boolean setDisplay(VLCMediaPlayer mp, int display){
-		System.out.println(mediaPlayerDisplayConnections);
-		System.out.println(availableDisplays);
 		if(availableDisplays.contains((Integer)display)){
 			availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
 			availableDisplays.remove((Integer)display);
