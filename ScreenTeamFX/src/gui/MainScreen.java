@@ -1,6 +1,8 @@
 package gui;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,6 +13,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import modules.MainModuleController;
+import vlc.VLCController;
+import vlc.VLCMediaPlayer;
 
 /**
  * @author Anders Lunde, Magnus Gunde
@@ -77,12 +81,41 @@ public class MainScreen implements Screen {
 		/**
 		 * This method is ran when you press a button in the main screen
 		 * @param event
+		 * @throws InterruptedException 
 		 */
-		@FXML protected void buttonPressed(ActionEvent event) {
+		@FXML protected void buttonPressed(ActionEvent event) throws InterruptedException {
 			System.out.println("Button has been pressed");
 			
 			if(((Button)event.getSource()).getId().equals("testBtn") ){
 				//If the test button is pressed
+				String path1 = "videos\\Silicon.Valley.S02E08.HDTV.x264-KILLERS.mp4";
+				String path2 = "videos\\Silicon.Valley.S02E06.HDTV.x264-ASAP.mp4";
+				String path3 = "videos\\Silicon.Valley.S02E04.HDTV.x264-ASAP.mp4";
+				String path4 = "videos\\Silicon.Valley.S02E01.HDTV.x264-ASAP.mp4";
+				String logo = "ScreenTeam_logo.png";
+				VLCController vlcc = new VLCController();
+				VLCMediaPlayer mp1 = vlcc.createMediaPlayer(0);
+				vlcc.setMedia(mp1, path3);
+
+						
+//				vlcc.setMedia(mp3, path1);
+//				vlcc.playAll();
+//				Thread.sleep(7000);
+//				vlcc.pauseAll();
+//				Thread.sleep(5000);
+//				vlcc.playAll();
+//				Thread.sleep(2000);
+//				Map<VLCMediaPlayer, Long> map = new HashMap<VLCMediaPlayer, Long>();
+//				map.put(mp1, 547460l);
+//				map.put(mp2, 81720l);
+//				map.put(mp3, 124000l);
+//				vlcc.SeekMultiple(map);
+//				Thread.sleep(3000);
+//				vlcc.setMedia(mp2, path4);
+//				vlcc.playOne(mp2);
+//				vlcc.pauseOne(mp3);
+
+				
 				
 			}else if(((Button)event.getSource()).getId().equals("advScrBtn")){
 				System.out.println("Pressing advanced screen btn");

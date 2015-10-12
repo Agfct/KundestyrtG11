@@ -2,7 +2,6 @@ package vlc;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 import com.sun.jna.NativeLibrary;
-import com.sun.media.sound.InvalidFormatException;
 
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
@@ -24,12 +22,11 @@ public class VLCController {
 	
 	/**
 	 * Creates a new VLC controller and opens a file chooser to select the 64bit VLC path.
-	 * Searches for all displays available on the computer and adds them to an ArratList.
+	 * Searches for all displays available on the computer and adds them to an ArrayList.
 	 */
 	public VLCController(){
 		vlcPath = "C:\\Program Files\\VideoLAN\\VLC64";
-		//vlcPath = new FileChooser().selectVLCPath();
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath); //Gives vlcj access to the VLC client on the PC
 		prerunCheckPlayer = new VLCMediaPlayer();
 		findDisplays();
 	}
@@ -43,7 +40,8 @@ public class VLCController {
 	    displays = gs;
 	}
 	
-	/** * Create a VLC instance to be displayed on the specified display * @param display */
+	/** * Create a VLC instance to be displayed on the specified display 
+	 * @param display */
 	public VLCMediaPlayer createMediaPlayer(int display){
 		if(availableDisplays.contains((Integer)display)){
 			VLCMediaPlayer mp = new VLCMediaPlayer(display);
@@ -55,13 +53,20 @@ public class VLCController {
 		return null;
 	}
 	
+	public void deleteMediaPlayer(VLCMediaPlayer mp){
+		if(mediaPlayerList.contains(mp)){
+			mediaPlayerList.remove(mp);
+			availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
+			mediaPlayerDisplayConnections.remove(mp);
+		}
+	}
 	
 	/**
 	 * Display mp on the display only if display is not already in use * @param mp * @param display */
 	public boolean setDisplay(VLCMediaPlayer mp, int display){
 		if(availableDisplays.contains((Integer)display)){
 			availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
-			availableDisplays.remove(display);
+			availableDisplays.remove((Integer)display);
 			mediaPlayerDisplayConnections.remove(mp);
 			mediaPlayerDisplayConnections.put(mp, display);
 			mp.setDisplay(display);
@@ -74,24 +79,33 @@ public class VLCController {
 		mp.setMedia(mediaPath);
 	}
 	
-	public void seek(VLCMediaPlayer mp, long time){
-		mp.seek(time);
-	}
+	/**
+	 * Seeks to time in the specified media player.
+	 * @param mp
+	 * @param time
+	 */
 	
-	/** * Plays one specific media player. mp corresponds to a time line * @param mp */
+	/** * Plays one specific media player.
+	 * @param mp */
 	public void playOne(VLCMediaPlayer mp){
 		mp.play();
 	}
-	
-	/** * Pauses one specific media player. mp corresponds to a time line * @param mp */
+
+	/** * Pauses one specific media player. 
+	 * * @param mp */
 	public void pauseOne(VLCMediaPlayer mp){
 		mp.pause();
 	}
 	
-	/** * Play all the media of all media players from their current time 
+	public void seekOne(VLCMediaPlayer mp, long time){
+		mp.seek(time);
+	}
+	
+	/** * Play all the media of all media players at the exact same time.
 	 * @throws BrokenBarrierException 
 	 * @throws InterruptedException */	
-	public void playAll(){
+	public void playAll() throws InterruptedException{
+		ArrayList<Thread> threads = new ArrayList<Thread>();
 		final CyclicBarrier gate = new CyclicBarrier(mediaPlayerList.size() + 1);
 		for(VLCMediaPlayer mp: mediaPlayerList){
 			Thread t = new Thread(){
@@ -103,16 +117,21 @@ public class VLCController {
 				}
 			};
 			t.start();
+			threads.add(t);
 		}
 		try {
 			gate.await();
 		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+		for(int i= 0; i < threads.size(); i++){
+			threads.get(i).join();
+		}
 	}
 	
-	/** * Pause all the media players. 
+	/** * Pause all the media players at the exact same time. 
 	 * @throws BrokenBarrierException 
 	 * @throws InterruptedException */
-	public void pauseAll(){
+	public void pauseAll() throws InterruptedException{
+		ArrayList<Thread> threads = new ArrayList<Thread>();
 		final CyclicBarrier gate = new CyclicBarrier(mediaPlayerList.size() + 1);
 		for(VLCMediaPlayer mp: mediaPlayerList){
 			Thread t = new Thread(){
@@ -124,10 +143,37 @@ public class VLCController {
 				}
 			};
 			t.start();
+			threads.add(t);
 		}
 		try {
 			gate.await();
 		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+		for(int i= 0; i < threads.size(); i++){
+			threads.get(i).join();
+		}
+	}
+	
+	public void SeekMultiple(Map<VLCMediaPlayer, Long> map) throws InterruptedException{
+		ArrayList<Thread> threads = new ArrayList<Thread>();
+		final CyclicBarrier gate = new CyclicBarrier(map.size() + 1);
+		for(VLCMediaPlayer mp : map.keySet()){
+			Thread t = new Thread(){
+				public void run(){
+					try {
+						gate.await();
+					} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+					mp.seek(map.get(mp));
+				}
+			};
+			t.start();
+			threads.add(t);
+		}
+		try {
+			gate.await();
+		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+		for(int i= 0; i < threads.size(); i++){
+			threads.get(i).join();
+		}
 	}
 	
 	public boolean prerunCheck(String mediaPath){
