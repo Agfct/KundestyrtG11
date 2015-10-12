@@ -14,9 +14,9 @@ public class TimelineMediaObject implements Serializable {
 	 */
 	private static final long serialVersionUID = -4037987577895540692L;
 	// Start and duration of the TimelineMediaObject, given in milliseconds.
-	private int start;
-	private int startPoint = 0;
-	private int duration;
+	private long start;
+	private long startPoint = 0;
+	private long duration;
 	private int timelineid;
 	private MediaObject parent;
 	
@@ -29,7 +29,7 @@ public class TimelineMediaObject implements Serializable {
 	 * @param parent		pointer to a MediaObject, with info about the video (path and length)
 	 * 
 	 */
-	public TimelineMediaObject(int start, int duration, int timelineid, 
+	public TimelineMediaObject(long start, long duration, int timelineid, 
 								MediaObject parent){
 		this.start = start;
 		this.duration = duration;
@@ -54,7 +54,7 @@ public class TimelineMediaObject implements Serializable {
 			this.parent = parent;
 		}
 
-	public int getStart() {
+	public long getStart() {
 		return start;
 	}
 
@@ -64,7 +64,7 @@ public class TimelineMediaObject implements Serializable {
 	}
 
 
-	public int getDuration() {
+	public long getDuration() {
 		return duration;
 	}
 
@@ -84,7 +84,7 @@ public class TimelineMediaObject implements Serializable {
 	}
 
 
-	public int getEnd() {
+	public long getEnd() {
 		return start+duration;
 	}
 
@@ -98,7 +98,7 @@ public class TimelineMediaObject implements Serializable {
 		this.parent = parent;
 	}
 	
-	public int getStartPoint(){
+	public long getStartPoint(){
 		return startPoint;
 	}
 

@@ -10,7 +10,6 @@ public class TimelineModel {
 	private ArrayList<TimelineMediaObject> timelineMediaObjects;
 	private final int id;
 	private ArrayList<Event> timelineStack;
-	private int mp;
 	
 	public TimelineModel(int id) {
 		super();
@@ -36,6 +35,13 @@ public class TimelineModel {
 		timelineMediaObjects.add(m);
 		timelinechanged();
 	}
+	
+	public void addTimelineMediaObject(long start, long dur, MediaObject parent){
+		TimelineMediaObject temp = new TimelineMediaObject(start,dur,this.id,parent);
+		timelineMediaObjects.add(temp);
+		timelinechanged();
+	}
+	
 	/**
 	 * removes a timelineMediaObject from the timeline
 	 * 
