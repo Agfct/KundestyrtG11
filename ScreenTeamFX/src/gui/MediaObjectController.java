@@ -122,8 +122,8 @@ public class MediaObjectController extends GridPane{
 				AnchorPane timelineLinePane = parentController.getRoot();
 				Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());
 //				System.out.println("[MediaObject] sceneX: "+event.getSceneX()+" LocalX: "+ p.getX());
-//				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
-//				System.out.println("Bounds: "+timelineLinePane.boundsInLocalProperty().get());
+				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
+				System.out.println("[MediaObject] Bounds: "+timelineLinePane.boundsInLocalProperty().get());
 				//Prevents you from dragging outside timeline boundaries
 				if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
 //					if (timelineLinePane.boundsInLocalProperty().get().intersects(root.getLayoutX(), root.getLayoutY(), root.getLayoutX() + root.getWidth(), root.getLayoutY()+ root.getHeight())) {

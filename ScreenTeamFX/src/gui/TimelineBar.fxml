@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
-<fx:root fx:id="root_pane" maxHeight="25" maxWidth="-Infinity" minHeight="25" minWidth="-Infinity" prefHeight="25" prefWidth="100" type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
+<fx:root fx:id="root_pane" maxHeight="25" maxWidth="1200" minHeight="25" minWidth="1200" prefHeight="25" prefWidth="1200" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+	<ImageView  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" >
+			<Image fx:id="barImage"  url="@../../resources/ScreenTeam_logo.png"/>
+	</ImageView>
 </fx:root>

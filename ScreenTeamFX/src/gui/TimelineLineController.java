@@ -63,7 +63,11 @@ public class TimelineLineController implements FXMLController{
 			System.out.println("Failed to load TimelineLine FXML");
 			e.printStackTrace();
 		}
-		addMediaObject(new MediaObjectController(), new Point2D(0,0));
+		
+		//TODO: TESTING ONLY
+		MediaObjectController testController = new MediaObjectController();
+		testController.setType(MediaObjectType.VIDEO);
+		addMediaObject(testController, new Point2D(0,0));
 		//Mouse Functionallity
 		initializeMouse();
 		
