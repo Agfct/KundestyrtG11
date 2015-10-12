@@ -17,9 +17,10 @@
 }
 
 .background-timeline {
-	-fx-background-image: url("../../resources/timelineLineTempBck.png");
+	/*-fx-background-image: url("../../resources/timelineLineTempBck.png");
 	-fx-background-repeat: no-repeat;
-	-fx-background-size: cover;
+	-fx-background-size: cover;*/
+	-fx-background-color: RED; 
 }
 
 .background-main {

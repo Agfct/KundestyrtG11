@@ -28,7 +28,7 @@ public class TimelineController implements FXMLController {
 	@FXML Button removeTimelineBtn;
 	@FXML GridPane timelineInfo;
 	@FXML GridPane timelineContainer;
-	@FXML AnchorPane timelineLineContainer;
+//	@FXML AnchorPane timelineLineContainer;
 	
 	
 	/**

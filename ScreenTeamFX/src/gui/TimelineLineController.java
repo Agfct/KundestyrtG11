@@ -63,13 +63,13 @@ public class TimelineLineController implements FXMLController{
 			System.out.println("Failed to load TimelineLine FXML");
 			e.printStackTrace();
 		}
-		
+		addMediaObject(new MediaObjectController(), new Point2D(0,0));
 		//Mouse Functionallity
 		initializeMouse();
 		
 		//Puts this TimelineLine onto the info (parent) controller
-//		parentController.timelineContainer.add(this.rootPane, 1, 0);
-		parentController.timelineLineContainer.getChildren().add(this.rootPane);
+		parentController.timelineContainer.add(this.rootPane, 1, 0);
+//		parentController.timelineLineContainer.getChildren().add(this.rootPane);
 		
 		//Drag&drop functionality
 		

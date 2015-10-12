@@ -28,7 +28,7 @@
 			<rowConstraints>
 				<RowConstraints percentHeight="32" minHeight="10.0"
 					prefHeight="140.0" vgrow="NEVER" />
-				<RowConstraints maxHeight="25" minHeight="20"
+				<RowConstraints maxHeight="25" minHeight="25"
 					prefHeight="25" vgrow="NEVER" />
 				<RowConstraints maxHeight="Infinity" minHeight="10.0"
 					vgrow="ALWAYS" />
@@ -38,8 +38,7 @@
 			<children>
 				<!-- This is the top GridPane, containing all the GUI elements in the 
 					top part of the advanced screen -->
-				<GridPane fx:id="topGrid" gridLinesVisible="true"
-					GridPane.columnSpan="2">
+				<GridPane fx:id="topGrid" gridLinesVisible="true">
 					<columnConstraints>
 						<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
 							prefWidth="100.0" />
@@ -65,25 +64,28 @@
 							GridPane.columnIndex="1" />
 					</children>
 				</GridPane>
+				<GridPane fx:id="barGrid" gridLinesVisible="true" GridPane.rowIndex="1">
+					<columnConstraints>
+						<ColumnConstraints minWidth="200" prefWidth="200"
+							maxWidth="200" />
+						<ColumnConstraints hgrow="NEVER" maxWidth="Infinity" />
+					</columnConstraints>
+					<rowConstraints>
+					<RowConstraints minHeight="25" prefHeight="25"
+							vgrow="NEVER" />
+					</rowConstraints>
+					<children>
+					</children>
+				</GridPane>
 				<!-- This is the Scroll pane that contains the GridPane that has TimeLines 
 					in it -->
-				<ScrollPane hbarPolicy="NEVER" GridPane.columnSpan="2"
+				<ScrollPane hbarPolicy="NEVER" 
 					GridPane.rowIndex="2">
 					<content>
 						<!-- The Timelines are controlled by at TimelineController -->
-						<!-- <GridPane fx:id="timelineContainer" gridLinesVisible="true"> -->
-						<!-- <columnConstraints> -->
-						<!-- <ColumnConstraints minWidth="200" prefWidth="200" -->
-						<!-- maxWidth="200" /> -->
-						<!-- <ColumnConstraints hgrow="NEVER" maxWidth="Infinity" /> -->
-						<!-- </columnConstraints> -->
-						<!-- <children> -->
-						<!-- Here is where the timeLineInfo and Lines will be added through java code -->
-
-						<!-- </children> -->
-						<!-- </GridPane> -->
 						<VBox fx:id="timelineContainer">
-						
+							<!-- Here is where the timeLineInfo and Lines will be added through 
+								java code -->
 						</VBox>
 					</content>
 				</ScrollPane>
@@ -101,7 +103,8 @@
 							prefHeight="25" vgrow="NEVER" />
 					</rowConstraints>
 					<children>
-						<ScrollBar fx:id="timelineLineScrollBar"  GridPane.columnIndex="1" />
+						<ScrollBar fx:id="timelineLineScrollBar"
+							GridPane.columnIndex="1" />
 					</children>
 				</GridPane>
 			</children>

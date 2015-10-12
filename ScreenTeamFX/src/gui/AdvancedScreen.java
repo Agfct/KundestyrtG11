@@ -110,10 +110,12 @@ public class AdvancedScreen implements Screen{
 
 			//List of all TimelineControllers within the advancedScreen
 			private ArrayList<TimelineController> timelineControllers;
+			private TimelineBarController timelineBarController;
 
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
 			@FXML private GridPane rootGrid;
+			@FXML private GridPane barGrid;
 			
 			//Drag&drop
 			private MediaObjectIcon mDragOverIcon = null;
@@ -147,11 +149,15 @@ public class AdvancedScreen implements Screen{
 					e.printStackTrace();
 				}
 				
+				
+				timelineBarController = new TimelineBarController(this);
+				barGrid.add(timelineBarController,1,0);
+				
 				//InitializeScrollBar values
 				initializeScrollBar();
 				
 				//Drag&drop functionality
-				initialize();
+//				initialize();
 
 			}
 			
@@ -210,6 +216,7 @@ public class AdvancedScreen implements Screen{
 
 					@Override
 					public void handle(MouseEvent event) {
+						System.out.println("[AdvancedScreen] Drag started");
 
 						// Sets the drag handler for the rootPane.
 						// Telling the root how to handle the dragIcon
@@ -264,7 +271,7 @@ public class AdvancedScreen implements Screen{
 
 					@Override
 					public void handle(DragEvent event) {
-						
+						System.out.println("[AdvancedScreen] Dargging over root");
 						
 						//We only want the drop icon to display "ok to drop here" when you are hovering over a timeline.
 						for (FXMLController timelineController : timelineControllers) {
@@ -311,7 +318,7 @@ public class AdvancedScreen implements Screen{
 
 					@Override
 					public void handle(DragEvent event) {
-						System.out.println("DragDropped");
+						System.out.println("[AdvancedScreen] DragDropped");
 						
 						MediaObjectContainer container = 
 								(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.AddNode);
@@ -342,7 +349,7 @@ public class AdvancedScreen implements Screen{
 					
 					@Override
 					public void handle (DragEvent event) {
-						System.out.println("Drag DONE");
+						System.out.println("[AdvancedScreen] Drag DONE");
 
 
 						//Cleaning up the DragEvents
@@ -374,7 +381,7 @@ public class AdvancedScreen implements Screen{
 								//We need to check which timeline the container is dropped upon
 								for (FXMLController timelineController : timelineControllers) {
 									TimelineLineController currentTimelineLineController = ((TimelineController)timelineController).getTimelineLineController();
-									AnchorPane timelineLinePane = currentTimelineLineController.getRoot();
+									Pane timelineLinePane = currentTimelineLineController.getRoot();
 									Point2D containerPoints = (Point2D)container.getValue("scene_coords");
 									Point2D p = timelineLinePane.sceneToLocal(containerPoints);
 									System.out.println("Pane:" + timelineLinePane);
