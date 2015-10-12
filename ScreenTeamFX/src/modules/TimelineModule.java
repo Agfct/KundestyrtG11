@@ -100,8 +100,40 @@ public class TimelineModule {
 		}
 	}
 	
-	public void playAll(){
+	public void playAll(long gbltime){
 		//TODO: first run buildPerformance, then starts running the stack
+		this.globaltime = gbltime;
+		buildPerformance();
+		long startp = System.currentTimeMillis();
+		long playp = System.currentTimeMillis();
+		while (!performancestack.isEmpty()){
+			playp = System.currentTimeMillis();
+			if (performancestack.get(0).getTime()<= playp-startp){
+				ArrayList<Event> temp = new ArrayList<Event>();
+				temp.add(performancestack.remove(0));
+				while (performancestack.get(0).getTime()==temp.get(0).getTime()){
+					temp.add(performancestack.remove(0));
+				}
+				
+				for (Event ev2 : temp){
+					if (ev2.getAction()==Action.PLAY){
+						vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+						vlccontroller.seekOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
+					}
+					else if(ev2.getAction()==Action.STOP){
+						vlccontroller.stopOne(ev2.getTimelineid());
+					}
+					else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
+						vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+						long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
+						vlccontroller.seekOne(ev2.getTimelineid(), spoint);
+					}
+					
+				}
+				vlccontroller.playAll();
+			}
+		}
+	}
 	}
 	
 	/**
@@ -143,7 +175,11 @@ public class TimelineModule {
 		}
 		performancestack.sort(Event.EventTimeComperator);
 	}
-	
+	/**
+	 * 
+	 * @param display
+	 * @param glbtime
+	 */
 	public void playOne(Integer display, int glbtime){
 		this.globaltime = glbtime;
 		performancestack.clear();
@@ -165,14 +201,24 @@ public class TimelineModule {
 					}
 				}
 			}
-			
-			long startp = System.currentTimeMillis();
-			long playp = System.currentTimeMillis();
-			for (Event ev2 : performancestack){
-				playp = System.currentTimeMillis();
-				if (ev2.getTime()<= playp-startp){
+		}
+		long startp = System.currentTimeMillis();
+		long playp = System.currentTimeMillis();
+		while (!performancestack.isEmpty()){
+			playp = System.currentTimeMillis();
+			if (performancestack.get(0).getTime()<= playp-startp){
+				Event ev2 = performancestack.remove(0);
 					if (ev2.getAction()==Action.PLAY){
+						vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
 						vlccontroller.playOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
+					}
+					else if(ev2.getAction()==Action.STOP){
+						vlccontroller.stopOne(ev2.getTimelineid());
+					}
+					else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
+						vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+						long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
+						vlccontroller.playOne(ev2.getTimelineid(), spoint);
 					}
 				}
 			}
