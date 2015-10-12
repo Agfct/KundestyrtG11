@@ -63,7 +63,9 @@ public class VLCController {
 	}
 	
 	/**
-	 * Display mp on the display only if display is not already in use * @param mp * @param display */
+	 * Display mp on the display only if display is not already in use 
+	 * * @param mp 
+	 * * @param display */
 	public boolean setDisplay(int mp, int display){
 		if(availableDisplays.contains((Integer)display)){
 			availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
@@ -76,6 +78,10 @@ public class VLCController {
 		return false;
 	}
 	
+	/**
+	 * Returns the media player associated with ID.
+	 * @param ID
+	 * @return */
 	public VLCMediaPlayer toPlayer(int ID){
 		return mediaPlayerList.get(ID);
 	}
