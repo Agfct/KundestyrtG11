@@ -9,7 +9,7 @@ import java.util.HashMap;
  * Singleton
  * Controls the timelines and their connections to displays. Talks to VLCController and StorageController.
  */
-public class TimelineModule {
+public class SessionModule {
 	//private VLCController vlccontroller;
 	// Each display can have one or zero timelines
 	private HashMap<Integer, TimelineModel> displays;
@@ -22,7 +22,7 @@ public class TimelineModule {
 	private int tlmID;
 	
 	
-	public TimelineModule() {
+	public SessionModule() {
 		this.timelines = new ArrayList<TimelineModel>();
 		this.timelines.add(new TimelineModel(0));
 		this.globaltime = 0;

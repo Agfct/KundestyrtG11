@@ -12,7 +12,7 @@ import vlc.VLCController;
  */
 public class MainModuleController {
 	private StorageController storage;
-	private TimelineModule timelinemodule;
+	private SessionModule sessionModule;
 	private VLCController vlc;
 	// might need io if that is made
 
@@ -23,7 +23,7 @@ public class MainModuleController {
 		this.storage = StorageController.getInstance();
 		//TODO check if storage loads last session without problem, if so set timelinemodule to last session
 		//this.timelinemodule = this.storage.gettimelineModule
-		this.timelinemodule = new TimelineModule();
+		this.sessionModule = new SessionModule();
 		
 		//This tells the MainGUIController that the initialization is done
 		MainGUIController.getInstance().finishedLoadingModules();
