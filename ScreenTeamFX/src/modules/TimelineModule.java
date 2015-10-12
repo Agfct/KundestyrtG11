@@ -34,6 +34,7 @@ public class TimelineModule {
 		this.displays = new HashMap<Integer,TimelineModel>();
 		this.vlccontroller =vlc;
 		this.pausing = false;
+		vlccontroller.createMediaPlayer(tlmID);
 	}
 
 	/**
@@ -84,6 +85,7 @@ public class TimelineModule {
 		}
 		else{
 			TimelineModel prevtlm = displays.put(display,tlm);
+			vlccontroller.setDisplay(tlm.getID(), display);
 		}
 	}
 	
@@ -244,6 +246,7 @@ public class TimelineModule {
 								if (ev2.getAction()==Action.PLAY){
 									vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
 									vlccontroller.playOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
+									System.out.println("hihi");
 								}
 								else if(ev2.getAction()==Action.STOP){
 									vlccontroller.stopOne(ev2.getTimelineid());

@@ -65,7 +65,7 @@ public class TimelineModel {
 		TimelineMediaObject mO;
 		Event start;
 		Event end;
-		for(int i=0;i>=timelineMediaObjects.size();i++){
+		for(int i=0;i<timelineMediaObjects.size();i++){
 			mO = timelineMediaObjects.get(i);
 			start = new Event(mO.getStart(), id, Action.PLAY, mO);
 			end = new Event(mO.getEnd(), id, Action.STOP, mO);
