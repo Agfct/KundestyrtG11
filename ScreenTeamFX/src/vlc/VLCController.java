@@ -17,7 +17,6 @@ public class VLCController {
 	private Map<Integer, Integer> mediaPlayerDisplayConnections = new HashMap<Integer, Integer>();
 	private ArrayList<Integer> availableDisplays = new ArrayList<Integer>();
 	private String vlcPath;
-	private int ID = 0;
 	private VLCMediaPlayer prerunCheckPlayer;
 	
 	/**
@@ -41,36 +40,34 @@ public class VLCController {
 	
 	/** * Create a VLC instance to be displayed on the specified display 
 	 * @param display */
-	public VLCMediaPlayer createMediaPlayer(int display){
-		if(availableDisplays.contains((Integer)display)){
-			VLCMediaPlayer mp = new VLCMediaPlayer(display, ID);
-			mediaPlayerList.put(ID, mp);
-			availableDisplays.remove((Integer)display);
-			mediaPlayerDisplayConnections.put(mp.getID(), display);
-			ID += 1;
-			return mp;
-		}
-		return null;
+	public VLCMediaPlayer createMediaPlayer( int ID){
+		VLCMediaPlayer mp = new VLCMediaPlayer(ID);
+		mediaPlayerList.put(ID, mp);
+		return mp;
 	}
 	
 	public void deleteMediaPlayer(int mp){
 		if(mediaPlayerList.containsKey((Integer)mp)){
 			toPlayer(mp).close();
 			mediaPlayerList.remove(mp);
-			availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
-			mediaPlayerDisplayConnections.remove(mp);
+			if(mediaPlayerDisplayConnections.containsKey(mp)){
+				availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
+				mediaPlayerDisplayConnections.remove(mp);
+			}
 		}
 	}
 	
 	/**
-	 * Display mp on the display only if display is not already in use 
+	 * Display mp on the display only if display is not already in use. Returns true if a display was set
 	 * * @param mp 
 	 * * @param display */
 	public boolean setDisplay(int mp, int display){
 		if(availableDisplays.contains((Integer)display)){
-			availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
+			if(mediaPlayerDisplayConnections.containsKey(mp)){
+				availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
+				mediaPlayerDisplayConnections.remove(mp);
+			}
 			availableDisplays.remove((Integer)display);
-			mediaPlayerDisplayConnections.remove(mp);
 			mediaPlayerDisplayConnections.put(mp, display);
 			toPlayer(mp).setDisplay(display);
 			return true;
@@ -82,7 +79,7 @@ public class VLCController {
 	 * Returns the media player associated with ID.
 	 * @param ID
 	 * @return */
-	public VLCMediaPlayer toPlayer(int ID){
+	private VLCMediaPlayer toPlayer(int ID){
 		return mediaPlayerList.get(ID);
 	}
 	
@@ -91,11 +88,12 @@ public class VLCController {
 	}
 	
 	
-	/** * Plays one specific media player.
-	 * @param mp */
+	/** * Seek to time and then play the media player. Only plays if time is 0.
+	 * @param mp
+	 * @param time */
 	public void playOne(int mp, long time){
 		if(time != 0){
-			
+			toPlayer(mp).seek(time);
 		}
 		toPlayer(mp).play();
 	}

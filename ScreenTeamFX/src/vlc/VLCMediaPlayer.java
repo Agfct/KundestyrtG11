@@ -13,19 +13,16 @@ public class VLCMediaPlayer {
 	private EmbeddedMediaPlayerComponent mp;
 	private String mediaPath = "";
 	private static GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-	private int display;
+	private int display = -1;
 	private int ID;
 	private boolean mediaChanged = false;
 	
-	public VLCMediaPlayer(int display, int ID){
-		this.display = display;
+	public VLCMediaPlayer(int ID){
 		this.ID = ID;
 		mp = new EmbeddedMediaPlayerComponent();
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);
-		frame.setVisible(true);
-		showOnDisplay(display);
 	}
 	
 	/**
@@ -39,17 +36,18 @@ public class VLCMediaPlayer {
 	}
 	
 	public void play(){
-		if(mediaChanged){
-			mp.getMediaPlayer().startMedia(mediaPath);
-			mediaChanged = false;
+		if(display > -1){
+			if(mediaChanged){
+				mp.getMediaPlayer().startMedia(mediaPath);
+				mediaChanged = false;
+			}
+			else if(getTime() > 0){
+				mp.getMediaPlayer().start();
+			}
+			else{
+				System.out.println("No video attached");
+			}
 		}
-		else if(getTime() > 0){
-			mp.getMediaPlayer().start();
-		}
-	    else{
-	        System.out.println("No video attached");
-	    }
-		
 	}
 	
 	public void pause(){
@@ -108,10 +106,11 @@ public class VLCMediaPlayer {
 	
 	public void showOnDisplay(int display){
 	    if(display > -1 && display < gs.length){
+			frame.setVisible(true);
 	        gs[display].setFullScreenWindow(frame);
 	    }
 	    else{
-	        throw new RuntimeException("No Displays Found");
+	        System.out.println("Display not found");
 	    }
 	}
 	

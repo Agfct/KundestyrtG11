@@ -97,10 +97,8 @@ public class MainScreen implements Screen {
 				vlcc.createMediaPlayer(0);
 				vlcc.setMedia(0, path1);
 				vlcc.playAll();
-				Thread.sleep(3000);
-				vlcc.stopOne(0);
-				Thread.sleep(2000);
-				vlcc.playAll();
+				Thread.sleep(7000);
+				vlcc.setDisplay(0, 0);
 				
 				
 			}else if(((Button)event.getSource()).getId().equals("advScrBtn")){
