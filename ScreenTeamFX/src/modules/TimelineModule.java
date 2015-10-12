@@ -17,7 +17,7 @@ public class TimelineModule {
 	private HashMap<Integer, TimelineModel> displays;
 	private ArrayList<TimelineModel> timelines;
 	// Timer for the timeline
-	private int globaltime;
+	private long globaltime;
 	// Queue used when playing timelines
 	private ArrayList<Event> performancestack;
 	//counter for the id of the timelineModels
@@ -55,6 +55,7 @@ public class TimelineModule {
 			if(id==timelines.get(i).getID()){
 				unassignTimeline(timelines.get(i));
 				timelines.remove(i);
+				vlccontroller.deleteMediaPlayer(id);
 			}
 		}
 	}
@@ -143,7 +144,41 @@ public class TimelineModule {
 		performancestack.sort(Event.EventTimeComperator);
 	}
 	
-	public void playOne(Integer display){
+	public void playOne(Integer display, int glbtime){
+		this.globaltime = glbtime;
+		performancestack.clear();
+		ArrayList<Event> tempstack = displays.get(display).getTimelineStack();
+		for (Event ev : tempstack){
+			if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.VIDEO){
+				if(ev.getAction() == Action.PLAY){
+					if(ev.getTime()>globaltime){
+						performancestack.add(ev);
+					}
+					else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
+						ev.setAction(Action.PLAY_WITH_OFFSET);
+						performancestack.add(ev);
+					}
+				}
+				else if(ev.getAction()==Action.STOP){
+					if (ev.getTime()>globaltime){
+						performancestack.add(ev);
+					}
+				}
+			}
+			
+			long startp = System.currentTimeMillis();
+			long playp = System.currentTimeMillis();
+			for (Event ev2 : performancestack){
+				playp = System.currentTimeMillis();
+				if (ev2.getTime()<= playp-startp){
+					if (ev2.getAction()==Action.PLAY){
+						vlccontroller.playOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
+					}
+				}
+			}
+		}
+		
+		
 		//TODO: Play the timeline for this display
 	}
 	
