@@ -115,25 +115,77 @@ public class HeaderController implements FXMLController{
 		
 	}
 	
+	/*
+	 * TODO: possibly get all mediaObjects from the currentSession first?
+	 */
 	public void updateMediaView(){
 		mediaViewPane.getChildren().addAll(importedMediaObjects);
+		MediaObjectIcon icn = new MediaObjectIcon();
+		icn.setType(MediaObjectType.VIDEO);	
+		this.addMediaObjectIconToView(icn);
 	}
 	
-	public void createNewMediaObject(){
+	/*
+	 * TODO: get the currentSession, and run the method currentSession.
+	 * This function sends the mediaType and Path to the session.CreateNewMediaObject()
+	 */
+	public void createNewMediaObjectFromFile(File file){
+		String path=file.getAbsolutePath();
 		
+		//Checks if the file is a video file, an audio file or a not accepted file
+		ArrayList<String> acceptedVideoFormats = new ArrayList<String>();
+		acceptedVideoFormats.add("avi");
+		acceptedVideoFormats.add("mpg");
+		acceptedVideoFormats.add("mkv");
+		acceptedVideoFormats.add("wmv");
+		ArrayList<String> acceptedAudioFormats = new ArrayList<String>();
+		acceptedAudioFormats.add("mp3");
+		acceptedAudioFormats.add("flac");
+		acceptedAudioFormats.add("wma");
+		acceptedAudioFormats.add("waw");
+		
+		//Checks the validity of the files imported by checking the file extension
+		String extension = "";
+		String fileName = file.getName();
+		int i = fileName.lastIndexOf('.');
+		int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+		if (i > p) {
+		    extension = fileName.substring(i+1);
+		}
+		
+		
+		for(String format:acceptedVideoFormats){
+			if(format.equals(extension)){
+				System.out.println(fileName + " is a video! of type:  "+ format);
+				//TODO: currentSession.createMediaObject(MediaSourceType.VIDEO,path);
+				return;
+			}
+		}
+		for(String format:acceptedAudioFormats){
+			if(format.equals(extension)){
+				System.out.println(fileName + " is a sound! of type:  "+ format);
+				//TODO: currentSession.createMediaObject(MediaSourceType.AUDIO,path);
+				return;
+			}
+		}
+		System.out.println("The file was neither a video nor a sound: " + extension);
 	}
 	
 	/*
 	 * TODO: get the currentSession from advancedScreen, and get the list of mediaObjects from the session. 
-	 * 
+	 *  This method is run by the currentSession when a mediaObject is changed. 
 	 */
 	public void mediaObjectsChanged(){ // Consider rename to fireMediaObjectLstChanged
-		//importedMediaObjects=currentSession.getMediaObjects()
-		//updateMediaView()
+		//TODO: importedMediaObjects=currentSession.getMediaObjects()
+		//TODO: updateMediaView()
 		
 	}
 	
 	//TODO: explain function
+	/*
+	 * This method is run each time the user presses the "import Media From disk"-button
+	 * It pops up a fileChooser, and lets the user pick one or more files
+	 */
 	public void addMediaObjectFromDisk(){
 		//Lets the user choose a file from the disk
 		FileChooser fileChooser;
@@ -142,39 +194,17 @@ public class HeaderController implements FXMLController{
 			fileChooser = new FileChooser();
 			fileChooser.setTitle("Open media files");
 			//TODO: consider making an extentionFilter: fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Video files", "*.avi"));
-			selectedFiles = fileChooser.showOpenMultipleDialog(MainGUIController.getInstance().primaryStage);
+			selectedFiles = fileChooser.showOpenMultipleDialog(MainGUIController.getInstance().primaryStage); //Possibilty to select more files at the time
 		} catch(Exception e) {
 			System.out.println("HeaderController: FileChooser caught an expection");
 		}
-		
-		
-		
+	
+		//Runs through the files imported, and creates a mediaObject from the file
 		for (File file : selectedFiles){
 			if(file != null){
-				System.out.println("Do something with file: " + file.getName());
-				//TODO: parentController.currentSession.createMediaObject(TYPE,PATH)
-				
+				this.createNewMediaObjectFromFile(file);
 			}
-			
-		}
-		
-		
-		MediaObjectIcon icn = new MediaObjectIcon();
-		icn.setType(MediaObjectType.VIDEO);	
-		this.addMediaObjectIconToView(icn);
-		//Checks the validity of the files imported by checking the file extension
-		String extension = "";
-		String fileName = "test"; //file.getName();
-		int i = fileName.lastIndexOf('.');
-		int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
-		if (i > p) {
-		    extension = fileName.substring(i+1);
-		}
-		if(extension.equals("avi")){ //TODO: Make a list over allowed fileextentions, and map this to different mediaTypes
-			System.out.println("AVI");
-		}
-		
-		
+		}		
 	}
 	
 
