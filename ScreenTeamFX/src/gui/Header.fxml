@@ -2,6 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
 <?import java.lang.*?>
 <!-- This is the top GridPane, containing all the GUI elements in the top 
 			part of the advanced screen -->
@@ -23,9 +25,17 @@
 	</rowConstraints>
 	<children>
 				<Button id="menuBtn" text="_MainMenu" onAction="#buttonPressed"
-					mnemonicParsing="true" />
+					mnemonicParsing="true" GridPane.rowIndex="0" GridPane.columnIndex="0" />
 				<Button id="addTimeLineBtn" text="_Add Timeline" onAction="#buttonPressed"
-					mnemonicParsing="true" GridPane.rowIndex="3" />
+					mnemonicParsing="true" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+				<Button id="importMediaFromDisk" text="_Import media from disk" onAction="#buttonPressed"
+					mnemonicParsing="true" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+				<TilePane fx:id="mediaViewPane" GridPane.rowIndex="1" GridPane.columnIndex="1" >
+					<children>
+						
+					</children>
+				</TilePane>
+				
 				
 	</children>
 </GridPane>

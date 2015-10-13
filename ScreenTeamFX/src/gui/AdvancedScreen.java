@@ -207,7 +207,7 @@ public class AdvancedScreen implements Screen{
 			 * adding drag detection to a MediaObjectIcon.
 			 * @param dragIcon
 			 */
-			private void addDragDetection(MediaObjectIcon dragIcon) {
+			public void addDragDetection(MediaObjectIcon dragIcon) {
 				
 				dragIcon.setOnDragDetected (new EventHandler <MouseEvent> () {
 

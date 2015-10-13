@@ -5,6 +5,7 @@ package gui;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.beans.property.ListProperty;
@@ -18,6 +19,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.TilePane;
 import javafx.stage.FileChooser;
 
 /**
@@ -45,6 +47,9 @@ public class HeaderController implements FXMLController{
 	
 	//The rootGrid that lies at the bottom of this FXML
 	@FXML private GridPane rootPane;
+	
+	//The TilePane that has the mediaObjectIcons
+	@FXML private TilePane mediaViewPane;
 	
 	
 	
@@ -92,14 +97,25 @@ public class HeaderController implements FXMLController{
 			System.out.println("PARENT?");
 			this.parentController.addTimeline(); 
 			
-		}else if(((Button)event.getSource()).getId().equals("importMedia")){
+		}else if(((Button)event.getSource()).getId().equals("importMediaFromDisk")){
 			// If the user clicks the import media button, he will get a windows file-chooser
-			FileChooser fileChooser = new FileChooser();
-			fileChooser.setTitle("Open media file");
-			File file=fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
+//			FileChooser fileChooser = new FileChooser();
+//			fileChooser.setTitle("Open media file");
+//			File file=fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
+			MediaObjectIcon icn = new MediaObjectIcon();
+			icn.setType(MediaObjectType.VIDEO);
+			this.addMediaObjectIconToView(icn);
 			
 		}
 	}
+	
+	public void addMediaObjectIconToView(MediaObjectIcon icon){
+		parentController.addDragDetection(icon);
+		mediaViewPane.getChildren().add(icon);
+		
+	}
+	
+
 
 	public GridPane getRoot() {
 		return this.rootPane;
