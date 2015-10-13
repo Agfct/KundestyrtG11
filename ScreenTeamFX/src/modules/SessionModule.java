@@ -14,6 +14,7 @@ public class SessionModule {
 	// Each display can have one or zero timelines
 	private HashMap<Integer, TimelineModel> displays;
 	private ArrayList<TimelineModel> timelines;
+	private ArrayList<MediaObject> mediaObjects;
 	// Timer for the timeline
 	private int globaltime;
 	// Queue used when playing timelines
@@ -25,6 +26,7 @@ public class SessionModule {
 	public SessionModule() {
 		this.timelines = new ArrayList<TimelineModel>();
 		this.timelines.add(new TimelineModel(0));
+		this.mediaObjects = new ArrayList<MediaObject>();
 		this.globaltime = 0;
 		this.performancestack = new ArrayList<Event>();
 		this.tlmID =0;
@@ -150,10 +152,50 @@ public class SessionModule {
 	public void pauseOne(Integer display){
 		//TODO: Pause the timeline for this display
 	}
+	
 	public ArrayList<TimelineModel> getTimelines() {
 		return timelines;
 	}
+	
 	public void setTimelines(ArrayList<TimelineModel> timelines) {
 		this.timelines = timelines;
+	}
+	
+	/**
+	 * Creates a new MediaObject and stores it in the this SessionModule. If a MediaObject with the same path already
+	 * exists, the method will not create a new MediaObject, but return the existing one.
+	 * @param mst
+	 * @param path
+	 */
+	public MediaObject createNewMediaObject(MediaSourceType mst, String path){
+		
+		// Check if this MediaObject is already stored in the list, by comparing paths
+		for (int i=0; i<mediaObjects.size(); i++){
+			if (mediaObjects.get(i).getPath().equals(path)) {
+				// Return the old MediaObject with equal path
+				return mediaObjects.get(i);
+			}
+		}
+		
+		// Did not find an old MediaObject with equal path, so create a new one
+		String name = path.substring(path.lastIndexOf('/')+1);
+		MediaObject mo = new MediaObject(path, name, mst);
+		mediaObjects.add(mo);
+		return mo;
+	}
+
+	public ArrayList<MediaObject> getMediaObjects() {
+		return this.mediaObjects;
+	}
+	
+	/**
+	 * Adds a new TimelineMediaObject to the specified TimelineModel, based on the MediaObject and the startTime.
+	 * @param mediaObject
+	 * @param timeline
+	 * @param startTime
+	 */
+	public String addMediaObjectToTimeline(MediaObject mediaObject, TimelineModel timeline, int startTime){
+		TimelineMediaObject tlmo = new TimelineMediaObject(startTime, mediaObject.getLength(), timeline.getID(), mediaObject);
+		return timeline.addTimelineMediaObject(tlmo);
 	}
 }
