@@ -8,6 +8,8 @@ import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -17,6 +19,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 
 /**
  * @author Anders
@@ -114,22 +117,31 @@ public class MediaObjectController extends GridPane{
 		mContextDragOver = new EventHandler <DragEvent>() {
 
 			//dragover to handle dragging the MediaObject
-			//TODO: needs to add stuff to this
+			//TODO: needs to add correct coords and movement of the mouse (only left and right)
 			@Override
 			public void handle(DragEvent event) {		
 				System.out.println("[MediaObjectController] Dargging over root");
-				//TODO: find a way to prevent it from dragging outside of timeline (AnchorPane seems to expand itself when dragging outside of it)
+				
 				AnchorPane timelineLinePane = parentController.getRoot();
 				Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());
+				
 //				System.out.println("[MediaObject] sceneX: "+event.getSceneX()+" LocalX: "+ p.getX());
-				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
-				System.out.println("[MediaObject] Bounds: "+timelineLinePane.boundsInLocalProperty().get());
+//				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
+				System.out.println("[MediaObject] AnchtorPane Bounds: "+timelineLinePane.boundsInLocalProperty().get());
+				
 				//Prevents you from dragging outside timeline boundaries
-				if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
+				Bounds boundsInParent = getBoundsInParent();
+				Bounds newBounds = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
+					(p.getX() - mDragOffset.getX()) + boundsInParent.getWidth(), (p.getY() - mDragOffset.getY()) + boundsInParent.getHeight());
+				System.out.println("[MediaObject] NewBounds for MediaObject: " +newBounds);
+				
+				if (timelineLinePane.getBoundsInLocal().contains(newBounds)) {
 //					if (timelineLinePane.boundsInLocalProperty().get().intersects(root.getLayoutX(), root.getLayoutY(), root.getLayoutX() + root.getWidth(), root.getLayoutY()+ root.getHeight())) {
 //					System.out.println("[MediaObject], yes its TRUE p is inside the panel");
 					event.acceptTransferModes(TransferMode.MOVE);
-					relocateToPoint(new Point2D( event.getSceneX(), event.getSceneY()));
+					relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
+					System.out.println("[MediaObject New moved Location mediaObject" + root.getLocalToParentTransform());
+//					relocateToPoint(new Point2D(event.getSceneX(), 0));
 				}
 //				event.acceptTransferModes(TransferMode.ANY);				
 //				relocateToPoint(new Point2D( event.getSceneX(), event.getSceneY()));
@@ -212,6 +224,16 @@ public class MediaObjectController extends GridPane{
 			
 		});		
 	}
+	
+//	public Rectangle getRect(){
+//		Rectangle tempRect = new Rectangle(x,y,width,height);
+//		return tempRect;
+//		
+//	}
+//	public Bounds getBounds(){
+//		Bounds tempBounds = new Bounds;
+//		return tempBounds;
+//	}
 
 	/**
 	 * @return the parentController

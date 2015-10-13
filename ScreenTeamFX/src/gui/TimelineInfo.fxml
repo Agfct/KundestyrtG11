@@ -10,7 +10,7 @@
 	<columnConstraints>
 		<ColumnConstraints minWidth="200" prefWidth="200"
 			maxWidth="200" />
-		<ColumnConstraints hgrow="NEVER" maxWidth="400"/>
+		<ColumnConstraints hgrow="NEVER" maxWidth="Infinity"/>
 	</columnConstraints>
 	<children>
 		<GridPane fx:id="timelineInfo"  GridPane.columnIndex="0" maxHeight="150" maxWidth="-Infinity" minHeight="150"
@@ -39,8 +39,8 @@
 					GridPane.rowIndex="0" GridPane.columnIndex="2">X</Button>
 			</children>
 		</GridPane>
-<!-- 		<AnchorPane style="-fx-background-color: cyan" fx:id="timelineLineContainer" GridPane.columnIndex="1"> -->
+		<AnchorPane style="-fx-background-color: cyan" fx:id="timelineLineContainer" GridPane.columnIndex="1">
 		<!-- Here is the timelineLine.fxml -->
-<!-- 		</AnchorPane> -->
+		</AnchorPane>
 	</children>
 </GridPane>

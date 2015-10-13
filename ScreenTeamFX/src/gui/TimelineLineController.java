@@ -34,9 +34,9 @@ public class TimelineLineController implements FXMLController{
 	private final ContextMenu contextMenu = new ContextMenu();
 	
 	//Drag&drop
-	private MediaObjectIcon mDragOverIcon = null;
-	private EventHandler<DragEvent> mIconDragOverRoot = null;
-	private EventHandler<DragEvent> mIconDragDropped = null;
+//	private MediaObjectIcon mDragOverIcon = null;
+//	private EventHandler<DragEvent> mIconDragOverRoot = null;
+//	private EventHandler<DragEvent> mIconDragDropped = null;
 	
 	//TODO: dummy list ? should it be this way ?
 	private ArrayList<MediaObjectController> mediaObjects;
@@ -72,8 +72,8 @@ public class TimelineLineController implements FXMLController{
 		initializeMouse();
 		
 		//Puts this TimelineLine onto the info (parent) controller
-		parentController.timelineContainer.add(this.rootPane, 1, 0);
-//		parentController.timelineLineContainer.getChildren().add(this.rootPane);
+//		parentController.timelineContainer.add(this.rootPane, 1, 0);
+		parentController.timelineLineContainer.getChildren().add(this.rootPane);
 		
 		//Drag&drop functionality
 		

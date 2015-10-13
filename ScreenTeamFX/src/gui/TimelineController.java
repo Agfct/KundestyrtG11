@@ -28,7 +28,7 @@ public class TimelineController implements FXMLController {
 	@FXML Button removeTimelineBtn;
 	@FXML GridPane timelineInfo;
 	@FXML GridPane timelineContainer;
-//	@FXML AnchorPane timelineLineContainer;
+	@FXML AnchorPane timelineLineContainer;
 	
 	
 	/**
@@ -39,7 +39,8 @@ public class TimelineController implements FXMLController {
 	 */
 	public TimelineController (){
 		
-
+			//TODO: Add clipping on anchorPane ??
+//		timelineLineContainer.setClip(value);
 		
 		//Fetches the parent controller. In this case it is the controller in the advancedScreen class.'
 		parentController = AdvancedScreen.getInstance().getScreenController();
