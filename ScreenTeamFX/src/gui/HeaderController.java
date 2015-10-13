@@ -22,6 +22,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
 import javafx.stage.FileChooser;
 
+
 /**
  * @author Magnus Gundersen
  * This class is the controller of the GridPane that is the header of the advancedScreen
@@ -56,7 +57,7 @@ public class HeaderController implements FXMLController{
 	
 	//-----Graphical elements-------//
 	//variable to keep track of the media files imported
-	ObservableList<String> importedMediaObjects = FXCollections.observableArrayList();
+	ObservableList<MediaObjectIcon> importedMediaObjects = FXCollections.observableArrayList();
 	
 	//Autoupdatable listproperty for use on the listview
 	protected ListProperty<String> mediaObjectProperty = new SimpleListProperty<>();
@@ -77,6 +78,7 @@ public class HeaderController implements FXMLController{
 			System.out.println("Exception in the headerController");
 			e.printStackTrace();
 		}
+		mediaViewPane.getChildren().addAll(importedMediaObjects);
 	}
 	
 	@Override
@@ -99,19 +101,79 @@ public class HeaderController implements FXMLController{
 			
 		}else if(((Button)event.getSource()).getId().equals("importMediaFromDisk")){
 			// If the user clicks the import media button, he will get a windows file-chooser
-//			FileChooser fileChooser = new FileChooser();
-//			fileChooser.setTitle("Open media file");
-//			File file=fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
-			MediaObjectIcon icn = new MediaObjectIcon();
-			icn.setType(MediaObjectType.VIDEO);
-			this.addMediaObjectIconToView(icn);
+			this.addMediaObjectFromDisk();
+			
+			
 			
 		}
 	}
 	
 	public void addMediaObjectIconToView(MediaObjectIcon icon){
 		parentController.addDragDetection(icon);
-		mediaViewPane.getChildren().add(icon);
+//		mediaViewPane.getChildren().add(icon);
+		importedMediaObjects.add(icon);
+		
+	}
+	
+	public void updateMediaView(){
+		mediaViewPane.getChildren().addAll(importedMediaObjects);
+	}
+	
+	public void createNewMediaObject(){
+		
+	}
+	
+	/*
+	 * TODO: get the currentSession from advancedScreen, and get the list of mediaObjects from the session. 
+	 * 
+	 */
+	public void mediaObjectsChanged(){ // Consider rename to fireMediaObjectLstChanged
+		//importedMediaObjects=currentSession.getMediaObjects()
+		//updateMediaView()
+		
+	}
+	
+	//TODO: explain function
+	public void addMediaObjectFromDisk(){
+		//Lets the user choose a file from the disk
+		FileChooser fileChooser;
+		List<File> selectedFiles = null;
+		try {
+			fileChooser = new FileChooser();
+			fileChooser.setTitle("Open media files");
+			//TODO: consider making an extentionFilter: fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Video files", "*.avi"));
+			selectedFiles = fileChooser.showOpenMultipleDialog(MainGUIController.getInstance().primaryStage);
+		} catch(Exception e) {
+			System.out.println("HeaderController: FileChooser caught an expection");
+		}
+		
+		
+		
+		for (File file : selectedFiles){
+			if(file != null){
+				System.out.println("Do something with file: " + file.getName());
+				//TODO: parentController.currentSession.createMediaObject(TYPE,PATH)
+				
+			}
+			
+		}
+		
+		
+		MediaObjectIcon icn = new MediaObjectIcon();
+		icn.setType(MediaObjectType.VIDEO);	
+		this.addMediaObjectIconToView(icn);
+		//Checks the validity of the files imported by checking the file extension
+		String extension = "";
+		String fileName = "test"; //file.getName();
+		int i = fileName.lastIndexOf('.');
+		int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+		if (i > p) {
+		    extension = fileName.substring(i+1);
+		}
+		if(extension.equals("avi")){ //TODO: Make a list over allowed fileextentions, and map this to different mediaTypes
+			System.out.println("AVI");
+		}
+		
 		
 	}
 	
