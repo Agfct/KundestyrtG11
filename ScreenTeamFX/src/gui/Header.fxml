@@ -17,11 +17,11 @@
 	</columnConstraints>
 	<rowConstraints>
 		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
+			vgrow="SOMETIMES" percentHeight="33" />
 		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
+			vgrow="SOMETIMES" percentHeight="33" />
 		<RowConstraints minHeight="10.0" prefHeight="30.0"
-			vgrow="SOMETIMES" />
+			vgrow="SOMETIMES" percentHeight="33" />
 	</rowConstraints>
 	<children>
 				<Button id="menuBtn" text="_MainMenu" onAction="#buttonPressed"
@@ -30,11 +30,24 @@
 					mnemonicParsing="true" GridPane.rowIndex="2" GridPane.columnIndex="0" />
 				<Button id="importMediaFromDisk" text="_Import media from disk" onAction="#buttonPressed"
 					mnemonicParsing="true" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-				<TilePane fx:id="mediaViewPane" GridPane.rowIndex="1" GridPane.columnIndex="1" >
-					<children>
+
+				<HBox fx:id="mainPlayerHBox" GridPane.rowIndex="1" GridPane.columnIndex="0" alignment="center" >
+					<Button id="playAllTimelines" text="_Play all timelines" onAction="#buttonPressed"
+						mnemonicParsing="true" />
+					<Button id="pauseAllTimelines" text="_Pause all timelines" onAction="#buttonPressed"
+						mnemonicParsing="true" />
+					
+				
+				</HBox>
+
+
+				<ScrollPane fx:id="mediaViewScrollPane" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.RowSpan="2" fitToWidth="true" >
+					<TilePane fx:id="mediaViewPane"  >
+						<children>
 						
-					</children>
-				</TilePane>
+						</children>
+					</TilePane>
+				</ScrollPane>
 				
 				
 	</children>

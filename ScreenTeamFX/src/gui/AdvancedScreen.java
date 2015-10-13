@@ -49,11 +49,6 @@ public class AdvancedScreen implements Screen{
 		private Scene screenScene;
 		private AdvancedScreenController screenController;	
 		
-		//variable to keep track of the media files imported
-		ObservableList<String> importedMediaFiles = FXCollections.observableArrayList();
-		
-		//Autoupdatable listproperty for use on the listview
-		protected ListProperty<String> listProperty = new SimpleListProperty<>();
 
 		private AdvancedScreen(){
 			
@@ -86,22 +81,11 @@ public class AdvancedScreen implements Screen{
 		}
 		
 		
-		// - change log: magnus 0110 - 
-		/*
-		 * (non-Javadoc)
-		 * @ functionality for the file chooser
-		 * The filechooser adds the file to the arraylist, and updates the on-screen listView
-		 */
-		public void fileChosen(File file){
-			importedMediaFiles.add(file.toString());
-			listProperty.set(importedMediaFiles);
-			
-		}
 		
 		
 		/**
 		 * 
-		 * @author Anders Lunde
+		 * @author Anders Lunde, Magnus Gundersen
 		 * The controller for the FXML of the advancedScreen.
 		 * The MainScreenController listens to all the input from the objects (buttons, textFields, mouseClicks) in the fxml scene.
 		 */
@@ -126,10 +110,7 @@ public class AdvancedScreen implements Screen{
 			@FXML private Button testButton;
 			@FXML private ListView fileListView;
 			@FXML private ScrollBar timelineLineScrollBar;
-			
-			//TEST
-			// @FXML private GridPane topGrid;
-	
+
 			
 			public AdvancedScreenController(){
 				System.out.println("RUNNING CONSTRUCTOR ADVANCEDSCREEN CTRL");
@@ -192,13 +173,6 @@ public class AdvancedScreen implements Screen{
 				mDragOverIcon.setVisible(false);
 				mDragOverIcon.setOpacity(0.65);
 				rootPane.getChildren().add(mDragOverIcon);
-				
-				//TODO: REMOVE TEST ONLY:
-				//Creates a dummy icon
-				MediaObjectIcon icn = new MediaObjectIcon();
-				addDragDetection(icn);
-				icn.setType(MediaObjectType.VIDEO);
-				//topGrid.add(icn,1,1);
 				
 				buildDragHandlers();
 			}

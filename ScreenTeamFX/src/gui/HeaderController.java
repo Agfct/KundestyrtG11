@@ -40,9 +40,6 @@ public class HeaderController implements FXMLController{
 	private GridPane parentPane;  //might not need this?
 	private AdvancedScreenController parentController;
 	
-	//Parent topGrid NB: Might not need this
-//	GridPane topGrid;
-	
 	//Pointers to the fx:ids in the FXML
 	@FXML private Button testButton;
 	
@@ -52,15 +49,9 @@ public class HeaderController implements FXMLController{
 	//The TilePane that has the mediaObjectIcons
 	@FXML private TilePane mediaViewPane;
 	
-	
-	
-	
-	//-----Graphical elements-------//
+
 	//variable to keep track of the media files imported
-	ObservableList<MediaObjectIcon> importedMediaObjects = FXCollections.observableArrayList();
-	
-	//Autoupdatable listproperty for use on the listview
-	protected ListProperty<String> mediaObjectProperty = new SimpleListProperty<>();
+	ObservableList<MediaObjectIcon> importedMediaObjects = FXCollections.observableArrayList(); //NB: Should perhaps be a normal ArrayList
 
 	
 	
@@ -85,7 +76,10 @@ public class HeaderController implements FXMLController{
 	public FXMLLoader getFXMLLoader() {
 		return fxmlLoader;
 	}
-	// TODO: explain
+	
+	/*
+	 * Button-listener for the header. 
+	 */
 	@FXML protected void buttonPressed(ActionEvent event) {
 		System.out.println("Header:" + event.getSource().toString() + "has been pressed");
 		
@@ -94,9 +88,6 @@ public class HeaderController implements FXMLController{
 			MainGUIController.getInstance().changeScreen(SCREENTYPE.MAINMENU);
 			
 		}else if(((Button)event.getSource()).getId().equals("addTimeLineBtn")){
-			System.out.println("Adding a TimeLine");
-			System.out.println(parentController);
-			System.out.println("PARENT?");
 			this.parentController.addTimeline(); 
 			
 		}else if(((Button)event.getSource()).getId().equals("importMediaFromDisk")){
@@ -108,21 +99,17 @@ public class HeaderController implements FXMLController{
 		}
 	}
 	
-	public void addMediaObjectIconToView(MediaObjectIcon icon){
-		parentController.addDragDetection(icon);
-//		mediaViewPane.getChildren().add(icon);
-		importedMediaObjects.add(icon);
-		
-	}
 	
 	/*
 	 * TODO: possibly get all mediaObjects from the currentSession first?
+	 * This method updates the tilePane in the header. This should happen every time the model is changed. 
 	 */
 	public void updateMediaView(){
+		mediaViewPane.getChildren().clear();
 		mediaViewPane.getChildren().addAll(importedMediaObjects);
-		MediaObjectIcon icn = new MediaObjectIcon();
-		icn.setType(MediaObjectType.VIDEO);	
-		this.addMediaObjectIconToView(icn);
+		for(MediaObjectIcon icn:importedMediaObjects){
+			parentController.addDragDetection(icn);
+		}		
 	}
 	
 	/*
@@ -158,6 +145,13 @@ public class HeaderController implements FXMLController{
 			if(format.equals(extension)){
 				System.out.println(fileName + " is a video! of type:  "+ format);
 				//TODO: currentSession.createMediaObject(MediaSourceType.VIDEO,path);
+				//___________DELETE: NOT MVC___________
+				MediaObjectIcon icn = new MediaObjectIcon();
+				icn.setType(MediaObjectType.VIDEO);
+				icn.setTitle(fileName);
+				importedMediaObjects.add(icn);
+				updateMediaView();
+				//--------DELETE FINISHED--------------
 				return;
 			}
 		}
@@ -175,16 +169,17 @@ public class HeaderController implements FXMLController{
 	 * TODO: get the currentSession from advancedScreen, and get the list of mediaObjects from the session. 
 	 *  This method is run by the currentSession when a mediaObject is changed. 
 	 */
-	public void mediaObjectsChanged(){ // Consider rename to fireMediaObjectLstChanged
+	public void mediaObjectsChanged(){ // Consider rename to fireMediaObjectListChanged
 		//TODO: importedMediaObjects=currentSession.getMediaObjects()
+		//  the list of getMediaObject must possibly be converted to mediaObjectIcons 
 		//TODO: updateMediaView()
 		
 	}
 	
-	//TODO: explain function
 	/*
 	 * This method is run each time the user presses the "import Media From disk"-button
-	 * It pops up a fileChooser, and lets the user pick one or more files
+	 * It creates a fileChooser, and lets the user pick one or more files
+	 * 
 	 */
 	public void addMediaObjectFromDisk(){
 		//Lets the user choose a file from the disk
@@ -198,7 +193,6 @@ public class HeaderController implements FXMLController{
 		} catch(Exception e) {
 			System.out.println("HeaderController: FileChooser caught an expection");
 		}
-	
 		//Runs through the files imported, and creates a mediaObject from the file
 		for (File file : selectedFiles){
 			if(file != null){
@@ -208,19 +202,10 @@ public class HeaderController implements FXMLController{
 	}
 	
 
-
+	
 	public GridPane getRoot() {
 		return this.rootPane;
 	}	
-	
-	
-//	public void updateMediaObjectView(){
-//		mediaObjectProperty.itemsProperty().bind(mediaObjectProperty);
-//		if(file != null){
-//			fileChosen(file);
-//		}
-//	}
-	//binds the items of the listView to the listProperty. This should probably be done somewhere else
-	
+
 
 }

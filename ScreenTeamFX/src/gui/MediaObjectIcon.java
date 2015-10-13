@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
@@ -28,7 +29,7 @@ public class MediaObjectIcon extends GridPane{
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
 	private MediaObjectType mType = null;
-	
+
 	public MediaObjectIcon() {
 		
 		FXMLLoader fxmlLoader = new FXMLLoader(
@@ -44,6 +45,14 @@ public class MediaObjectIcon extends GridPane{
 		} catch (IOException exception) {
 		    throw new RuntimeException(exception);
 		}
+
+		
+	}
+	/*
+	 * Method for setting the title of the Icon
+	 */
+	public void setTitle(String s){
+		this.add(new Label(s.substring(0, s.length()-Math.min(s.length(),5))),0,0);
 	}
 	
 	@FXML
