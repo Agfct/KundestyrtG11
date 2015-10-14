@@ -22,6 +22,7 @@ public class user32dll{
 	    public static native boolean ShowWindow(HWND hWnd,int  nCmdShow);
 	    public static native boolean IsWindowVisible(HWND hWnd);
 	    public static native HWND GetDesktopWindow();
+	    public static native boolean MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, boolean bRepaint);
 
 	    public static native int GetWindowThreadProcessId(HWND hWnd, PointerByReference pref);
 	    public static native int GetWindowTextW(HWND hWnd, char[] lpString, int nMaxCount);

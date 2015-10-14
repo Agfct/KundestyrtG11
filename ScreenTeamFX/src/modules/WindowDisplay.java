@@ -3,6 +3,9 @@ import static modules.user32dll.*;
 import static modules.kernel32dll.*;
 import static modules.psapi32dll.*;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Window;
 import java.util.ArrayList;
 
 import com.sun.jna.Native;
@@ -22,6 +25,21 @@ public class WindowDisplay {
 	private static final int MAX_TITLE_LENGTH = 1024;
 	private ArrayList<WindowInfos> AllWIs;
 	
+	public WindowDisplay(String NameWindow, boolean hide, int screen) {
+		
+		WindowInfos WIs= new WindowInfos(null,null,null,null);
+		
+		WIs=getWindows(NameWindow);
+		
+		if(WIs.getProcessFilePath()== null){	
+			System.out.println("No Process File Path");
+		}
+		
+		// GraphicsDevice[] gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+		MoveWindow(WIs.getThWnd(),1,1,30,30,true);
+	}
+	
+	
 	//Principal function	
 	public WindowDisplay(String NameWindow, boolean hide) {
 		WindowInfos WIs= new WindowInfos(null,null,null,null);
@@ -31,6 +49,11 @@ public class WindowDisplay {
 			System.out.println("No Process File Path");
 		}
 		else{
+			//test change data window
+			MoveWindow(WIs.getThWnd(),1500,100,150,150,true);
+			System.out.println("Ancien path");
+			System.out.println("Path"+WIs.getThWnd());
+			
 			if(hide==false){
 				//Show the window
 				ShowWindow(WIs.getThWnd(),1); 
@@ -42,26 +65,8 @@ public class WindowDisplay {
 			else{
 				System.out.println("boolean hide no assigned: "+hide);
 			}
-					
-			
-	//		if(!(SetForegroundWindow(WIs.getThWnd()))){
-	
-	//		}
-	
 		}
  		
-	}
-	public WindowDisplay(String NameWindow,int hide) {
-		WindowInfos WIs= new WindowInfos(null,null,null,null);	
-		WIs=getWindows(NameWindow);		
-		if(WIs.getProcessFilePath()== null){	
-			System.out.println("No Process File Path");
-		}
-		else{
-			//Hide the window
-			ShowWindow(WIs.getThWnd(),2);
-		}
-		
 	}
 	
 	public void addWindowInfos(HWND hWnd){
@@ -76,8 +81,7 @@ public class WindowDisplay {
 			if(title==AllWIs.get(i).getTitle()){
 				unassignWindow(AllWIs.get(i).getTitle());
 				AllWIs.remove(i);
-			}
-			
+			}			
 		}
 	}
 	
@@ -96,7 +100,6 @@ public class WindowDisplay {
 			}		
 		}
 	}
-	
 	private WindowInfos getWindows(String NameTitle)
 	   {
 	       final WindowInfos V = new WindowInfos(null,null,null,null);
@@ -121,12 +124,13 @@ public class WindowDisplay {
 	                       // Make sure the text is not null or blank
 	                       if(!(info.title == null || info.title.trim().equals("")))
 	                       {
-		                    	//System.out.println("title: "+info.getTitle());
-		                		//System.out.println("NameTitle: "+ NameTitle);
-		                   		//System.out.println("Process: "+info.getProcess());
-		                   		//System.out.println("Path: "+info.getProcessFilePath());
-		                   		//System.out.println("hWn: "+ info.getThWnd());
-		                   		
+		                      System.out.println("title: "+info.getTitle());
+		                		System.out.println("NameTitle: "+ info.getTitle());
+		                   		System.out.println("Process: "+info.getProcess());
+		                   		System.out.println("Path: "+info.getProcessFilePath());
+		                   		System.out.println("hWn: "+ info.getThWnd());
+		                   		System.out.println(" ");
+		                  
 		                    	if((info.title.equals(NameTitle))) {
 		                    		System.out.println("Find");
 	                    		   V.setTitle(info.getTitle());

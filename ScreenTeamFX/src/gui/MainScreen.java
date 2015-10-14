@@ -87,15 +87,15 @@ public class MainScreen implements Screen {
 			
 			if(((Button)event.getSource()).getId().equals("testBtn") ){
 				//If the test button is pressed
-				
+				new WindowDisplay("Customer_project",true);
 
 				
 			}else if(((Button)event.getSource()).getId().equals("advScrBtn")){
 				System.out.println("Pressing advanced screen btn");
 				//If the advanced screen button is pressed the MainGUIController changes the screen to be the advanced screen
-				
+				new WindowDisplay("Customer_project", false);
 			
-				MainGUIController.getInstance().changeScreen(SCREENTYPE.ADVANCEDSCREEN);
+				//MainGUIController.getInstance().changeScreen(SCREENTYPE.ADVANCEDSCREEN);
 				
 			}
 		}
