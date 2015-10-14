@@ -17,16 +17,22 @@ public class VLCController {
 	private Map<Integer, Integer> mediaPlayerDisplayConnections = new HashMap<Integer, Integer>();
 	private ArrayList<Integer> availableDisplays = new ArrayList<Integer>();
 	private String vlcPath;
+	private boolean vlcPathSet = false;
 	private VLCMediaPlayer prerunCheckPlayer;
 	
 	/**
-	 * Creates a new VLC controller and opens a file chooser to select the 64bit VLC path.
-	 * Searches for all displays available on the computer and adds them to an ArrayList.
-	 */
-	public VLCController(String vlcP){
-		this.vlcPath = vlcP;
-//		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath); //Gives vlcj access to the VLC client on the PC
-//		prerunCheckPlayer = new VLCMediaPlayer();
+	 * Creates a new VLC controller. vlcPath is the path to the VLC 64-bit client on your computer.
+	 * @param vlcPath */
+	public VLCController(String vlcPath){
+		this.vlcPath = vlcPath;
+		try{
+			NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
+			vlcPathSet = true;
+			prerunCheckPlayer = new VLCMediaPlayer();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 		findDisplays();
 	}
 	
@@ -38,14 +44,24 @@ public class VLCController {
 	    }
 	}
 	
-	/** * Create a VLC instance to be displayed on the specified display 
-	 * @param display */
-	public VLCMediaPlayer createMediaPlayer( int ID){
-		VLCMediaPlayer mp = new VLCMediaPlayer(ID);
-		mediaPlayerList.put(ID, mp);
-		return mp;
+	/** 
+	 * * Create a VLC media player. ID is linked to a timeline. 
+	 * @param ID */
+	public VLCMediaPlayer createMediaPlayer(int ID){
+		if(vlcPathSet){
+			VLCMediaPlayer mp = new VLCMediaPlayer(ID);
+			mediaPlayerList.put(ID, mp);
+			return mp;
+		}
+		else{
+			System.out.println("Can't create a VLC media player. VLC64 path not set");
+		}
+		return null;
 	}
 	
+	/**
+	 * Deletes a media player and frees all its resources. 
+	 * @param mp */
 	public void deleteMediaPlayer(int mp){
 		if(mediaPlayerList.containsKey((Integer)mp)){
 			toPlayer(mp).close();
@@ -58,9 +74,10 @@ public class VLCController {
 	}
 	
 	/**
-	 * Display mp on the display only if display is not already in use. Returns true if a display was set
-	 * * @param mp 
-	 * * @param display */
+	 * Display mp on the display only if display is not already in use.
+	 * Returns true if a display was set
+	 * @param mp 
+	 * @param display */
 	public boolean setDisplay(int mp, int display){
 		if(availableDisplays.contains((Integer)display)){
 			if(mediaPlayerDisplayConnections.containsKey(mp)){
@@ -69,7 +86,18 @@ public class VLCController {
 			}
 			availableDisplays.remove((Integer)display);
 			mediaPlayerDisplayConnections.put(mp, display);
-			toPlayer(mp).setDisplay(display);
+			VLCMediaPlayer vlcmp = toPlayer(mp);
+			if(System.getProperty("os.name").startsWith("Windows 8")){
+				vlcmp.setDisplayWin8(display);
+			}
+			else{
+				vlcmp.setDisplay(display);
+				if(vlcmp.getTime() > 0){
+					long time = vlcmp.getTime();
+					vlcmp.setMedia(vlcmp.getMediaPath());
+					vlcmp.seek(time);
+				}	
+			}
 			return true;
 		}
 		return false;
@@ -169,6 +197,11 @@ public class VLCController {
 		}
 	}
 	
+	/**
+	 * Takes a map of media players and times. 
+	 * Seeks to that time for each media player at the exact same time
+	 * @param map
+	 * @throws InterruptedException */
 	public void SeekMultiple(Map<Integer, Long> map) throws InterruptedException{
 		ArrayList<Thread> threads = new ArrayList<Thread>();
 		final CyclicBarrier gate = new CyclicBarrier(map.size() + 1);
@@ -192,6 +225,10 @@ public class VLCController {
 		}
 	}
 	
+	/**
+	 * Returns true if mediaPath is a valid path and is playable.
+	 * @param mediaPath
+	 * @return */
 	public boolean prerunCheck(String mediaPath){
 		try{
 			if(prerunCheckPlayer.isPlayable(mediaPath)){
@@ -211,4 +248,3 @@ public class VLCController {
 		return availableDisplays;
 	}
 }
-
