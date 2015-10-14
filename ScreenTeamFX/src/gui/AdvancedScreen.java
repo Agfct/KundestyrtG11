@@ -273,7 +273,7 @@ public class AdvancedScreen implements Screen{
 
 					@Override
 					public void handle(DragEvent event) {
-						System.out.println("[AdvancedScreen] Dargging over root");
+//						System.out.println("[AdvancedScreen] Dargging over root");
 						
 						//We only want the drop icon to display "ok to drop here" when you are hovering over a timeline.
 						for (FXMLController timelineController : timelineControllers) {
