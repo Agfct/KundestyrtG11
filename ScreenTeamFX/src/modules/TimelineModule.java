@@ -23,6 +23,7 @@ public class TimelineModule {
 	//counter for the id of the timelineModels
 	private int tlmID;
 	private boolean pausing;
+	private Thread t1;
 	
 	
 	public TimelineModule(VLCController vlc) {
@@ -35,6 +36,7 @@ public class TimelineModule {
 		this.vlccontroller =vlc;
 		this.pausing = false;
 		vlccontroller.createMediaPlayer(tlmID);
+		this.t1 = new Thread();
 	}
 
 	/**
@@ -149,9 +151,19 @@ public class TimelineModule {
 								e.printStackTrace();
 							}
 						}
+						if (!performancestack.isEmpty() && performancestack.get(0).getTime()>= 1000+(playp-startp)){
+							try {
+								System.out.println("sleeping");
+								this.sleep(performancestack.get(0).getTime()-(playp-startp)-1000);
+								System.out.println("wake wake");
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
 						if (pausing){
 							try {
-								wait();
+								this.wait();
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -212,69 +224,69 @@ public class TimelineModule {
 	 * @param glbtime current position of the cursor (0 if at beginning of timeline).
 	 */
 	public void playOne(Integer display, long glbtime){
-		//TODO look over and look for better way to do this, currently constantly checks if the next event is ready to go or not.¨
-		if (!pausing){
-			this.globaltime = glbtime;
-			performancestack.clear();
-			ArrayList<Event> tempstack = displays.get(display).getTimelineStack();
-			for (Event ev : tempstack){
-				if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.VIDEO){
-					if(ev.getAction() == Action.PLAY){
-						if(ev.getTime()>globaltime){
-							performancestack.add(ev);
-						}
-						else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
-							ev.setAction(Action.PLAY_WITH_OFFSET);
-							performancestack.add(ev);
-						}
+		//TODO look over and look for better way to do this, currently constantly checks if the next event is ready to go or not.
+		pausing = false;
+		this.globaltime = glbtime;
+		performancestack.clear();
+		ArrayList<Event> tempstack = displays.get(display).getTimelineStack();
+		for (Event ev2 : tempstack){
+			Event ev = new Event(ev2.getTime(),ev2.getTimelineid(),ev2.getAction(),ev2.getTimelineMediaObject());
+			if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.VIDEO){
+				if(ev.getAction() == Action.PLAY){
+					if(ev.getTime()>=globaltime){
+						performancestack.add(ev);
 					}
-					else if(ev.getAction()==Action.STOP){
-						if (ev.getTime()>globaltime){
-							performancestack.add(ev);
+					else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
+						ev.setAction(Action.PLAY_WITH_OFFSET);
+						performancestack.add(ev);
+					}
+				}
+				else if(ev.getAction()==Action.STOP){
+					if (ev.getTime()>=globaltime){
+						performancestack.add(ev);
+					}
+				}
+			}
+		}
+		t1 = onePlay(glbtime);
+		t1.start();
+	}
+	
+	private synchronized Thread onePlay(long glbtime){
+		Thread t = new Thread(){
+			public void run(){
+				long startp = System.currentTimeMillis();
+				long playp = System.currentTimeMillis();
+				while (!performancestack.isEmpty()&& pausing ==false){
+					playp = System.currentTimeMillis();
+					if (performancestack.get(0).getTime()<= playp-startp){
+						Event ev2 = performancestack.remove(0);
+							if (ev2.getAction()==Action.PLAY){
+								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+								vlccontroller.playOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
+							}
+							else if(ev2.getAction()==Action.STOP){
+								vlccontroller.stopOne(ev2.getTimelineid());
+							}
+							else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
+								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+								long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
+								vlccontroller.playOne(ev2.getTimelineid(), spoint);
+							}
+						}
+					//thread sleeping if its long until next event
+					if (!performancestack.isEmpty() && performancestack.get(0).getTime()>= 1000+(playp-startp)){
+						try {
+							this.sleep(performancestack.get(0).getTime()-(playp-startp)-1000);
+						} catch (InterruptedException e) {
 						}
 					}
 				}
 			}
-			Thread t = new Thread(){
-				public void run(){
-					long startp = System.currentTimeMillis();
-					long playp = System.currentTimeMillis();
-					while (!performancestack.isEmpty()){
-						playp = System.currentTimeMillis();
-						if (performancestack.get(0).getTime()<= playp-startp){
-							Event ev2 = performancestack.remove(0);
-								if (ev2.getAction()==Action.PLAY){
-									vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
-									vlccontroller.playOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
-									System.out.println("hihi");
-								}
-								else if(ev2.getAction()==Action.STOP){
-									vlccontroller.stopOne(ev2.getTimelineid());
-								}
-								else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
-									vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
-									long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
-									vlccontroller.playOne(ev2.getTimelineid(), spoint);
-								}
-							}
-						if (pausing){
-							try {
-								wait();
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-						}
-				}
-			};
-			t.start();
-		}
-		else{
-			notify();
-			pausing = false;
-		}
-		}
+		};
+		
+		return t;
+	}
 	
 	/**
 	 * pause all the displays and timelines.
@@ -293,8 +305,9 @@ public class TimelineModule {
 	 * pause the one timeline that is played with playOne()
 	 * @param display
 	 */
-	public void pauseOne(Integer display){
+	public void pauseOne(Integer display) throws InterruptedException{
 		pausing = true;
+		t1.interrupt();
 		vlccontroller.pauseOne(displays.get(display).getID());
 		//TODO: Pause the timeline for this display
 	}
