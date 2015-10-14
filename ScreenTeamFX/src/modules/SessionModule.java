@@ -43,7 +43,7 @@ public class SessionModule implements Serializable {
 		this.listeners = new ArrayList<Object>();
 		this.vlccontroller = vlc;
 		this.pausing = false;
-//		vlccontroller.createMediaPlayer(tlmID);
+		vlccontroller.createMediaPlayer(tlmID);
 		this.t1 = new Thread();
 	}
 
