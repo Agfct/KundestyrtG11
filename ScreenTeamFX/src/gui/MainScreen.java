@@ -1,5 +1,6 @@
 package gui;
 
+import modules.*;
 import java.io.IOException;
 
 import javafx.event.ActionEvent;
@@ -11,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import modules.MainModuleController;
+import modules.WindowDisplay;
 
 /**
  * @author Anders Lunde, Magnus Gunde
@@ -77,17 +79,23 @@ public class MainScreen implements Screen {
 		/**
 		 * This method is ran when you press a button in the main screen
 		 * @param event
+		 * @throws IOException 
+		 * @throws InterruptedException 
 		 */
-		@FXML protected void buttonPressed(ActionEvent event) {
+		@FXML protected void buttonPressed(ActionEvent event) throws IOException, InterruptedException {
 			System.out.println("Button has been pressed");
 			
 			if(((Button)event.getSource()).getId().equals("testBtn") ){
 				//If the test button is pressed
+				new WindowDisplay("Customer_project",true);
+
 				
 			}else if(((Button)event.getSource()).getId().equals("advScrBtn")){
 				System.out.println("Pressing advanced screen btn");
 				//If the advanced screen button is pressed the MainGUIController changes the screen to be the advanced screen
-				MainGUIController.getInstance().changeScreen(SCREENTYPE.ADVANCEDSCREEN);
+				new WindowDisplay("Customer_project", false);
+			
+				//MainGUIController.getInstance().changeScreen(SCREENTYPE.ADVANCEDSCREEN);
 				
 			}
 		}
