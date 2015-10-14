@@ -23,7 +23,7 @@ public class TimelineBarController extends AnchorPane {
 	private FXMLLoader fxmlLoader;
 	private AdvancedScreenController parentController;
 	
-	@FXML Image barImage;
+//	@FXML Image barImage;
 	
 	public TimelineBarController(AdvancedScreenController parentController){
 	//Fetches the parent controller. In this case it is the controller in the advancedScreen class.'
@@ -42,7 +42,7 @@ public class TimelineBarController extends AnchorPane {
 		e.printStackTrace();
 	}
 	
-	initializeTimeBar();
+//	initializeTimeBar();
 	
 	}
 	
@@ -56,7 +56,7 @@ public class TimelineBarController extends AnchorPane {
 		System.out.println("[TimelineBarController: large" + large);
 		int smal = currentLength / 100;
 		System.out.println("[TimelineBarController: large" + smal);
-		PixelReader pixelReader = barImage.getPixelReader();
+//		PixelReader pixelReader = barImage.getPixelReader();
 		
 	}
 

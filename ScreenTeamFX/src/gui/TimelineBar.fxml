@@ -6,8 +6,8 @@
 <?import javafx.scene.image.Image?>
 
 <fx:root fx:id="root_pane" maxHeight="25" maxWidth="1200" minHeight="25" minWidth="1200" prefHeight="25" prefWidth="1200" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-	<ImageView  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" >
-			<Image fx:id="barImage"  url="@../../resources/ScreenTeam_logo.png"/>
-	</ImageView>
+<!-- 	<ImageView  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" -->
+<!-- 			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" > -->
+<!-- 			<Image fx:id="barImage"  url="@../../resources/ScreenTeam_logo.png"/> -->
+<!-- 	</ImageView> -->
 </fx:root>

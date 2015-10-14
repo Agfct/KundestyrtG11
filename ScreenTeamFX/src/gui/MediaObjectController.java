@@ -121,27 +121,27 @@ public class MediaObjectController extends GridPane{
 			//TODO: needs to add correct coords and movement of the mouse (only left and right)
 			@Override
 			public void handle(DragEvent event) {		
-				System.out.println("[MediaObjectController] Dargging over root");
+//				System.out.println("[MediaObjectController] Dargging over root");
 				
 				AnchorPane timelineLinePane = parentController.getRoot();
 				Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());
 				
 //				System.out.println("[MediaObject] sceneX: "+event.getSceneX()+" LocalX: "+ p.getX());
 //				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
-				System.out.println("[MediaObjectController] AnchtorPane Bounds: "+timelineLinePane.boundsInLocalProperty().get());
+//				System.out.println("[MediaObjectController] AnchtorPane Bounds: "+timelineLinePane.boundsInLocalProperty().get());
 				
 				//Prevents you from dragging outside timeline boundaries
 				Bounds boundsInParent = getBoundsInParent();
 				Bounds newBounds = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
 					(p.getX() - mDragOffset.getX()) + boundsInParent.getWidth(), (p.getY() - mDragOffset.getY()) + boundsInParent.getHeight());
-				System.out.println("[MediaObjectController] NewBounds for MediaObject: " +newBounds);
+//				System.out.println("[MediaObjectController] NewBounds for MediaObject: " +newBounds);
 				
 				if (timelineLinePane.getBoundsInLocal().contains(newBounds)) {
 //					if (timelineLinePane.boundsInLocalProperty().get().intersects(root.getLayoutX(), root.getLayoutY(), root.getLayoutX() + root.getWidth(), root.getLayoutY()+ root.getHeight())) {
 //					System.out.println("[MediaObject], yes its TRUE p is inside the panel");
 					event.acceptTransferModes(TransferMode.MOVE);
 					relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
-					System.out.println("[MediaObjectController New moved Location mediaObject" + root.getLocalToParentTransform());
+//					System.out.println("[MediaObjectController New moved Location mediaObject" + root.getLocalToParentTransform());
 //					relocateToPoint(new Point2D(event.getSceneX(), 0));
 				}
 //				event.acceptTransferModes(TransferMode.ANY);				
