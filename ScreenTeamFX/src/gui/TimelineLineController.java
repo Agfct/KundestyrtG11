@@ -34,9 +34,9 @@ public class TimelineLineController implements FXMLController{
 	private final ContextMenu contextMenu = new ContextMenu();
 	
 	//Drag&drop
-	private MediaObjectIcon mDragOverIcon = null;
-	private EventHandler<DragEvent> mIconDragOverRoot = null;
-	private EventHandler<DragEvent> mIconDragDropped = null;
+//	private MediaObjectIcon mDragOverIcon = null;
+//	private EventHandler<DragEvent> mIconDragOverRoot = null;
+//	private EventHandler<DragEvent> mIconDragDropped = null;
 	
 	//TODO: dummy list ? should it be this way ?
 	private ArrayList<MediaObjectController> mediaObjects;
@@ -64,6 +64,10 @@ public class TimelineLineController implements FXMLController{
 			e.printStackTrace();
 		}
 		
+		//TODO: TESTING ONLY
+		MediaObjectController testController = new MediaObjectController();
+		testController.setType(MediaObjectType.VIDEO);
+		addMediaObject(testController, new Point2D(0,0));
 		//Mouse Functionallity
 		initializeMouse();
 		

@@ -8,6 +8,8 @@ import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -17,6 +19,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 
 /**
  * @author Anders
@@ -26,10 +29,12 @@ public class MediaObjectController extends GridPane{
 
 	private FXMLLoader fxmlLoader;
 	private TimelineLineController parentController;
+	private GridPane root = this;
 
 	//Variables used for dragging/dropping
 	private AnchorPane masterRootPane;
 	private EventHandler <DragEvent> mContextDragOver;
+	private EventHandler <DragEvent> mContextDragDone;
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
 	private MediaObjectType mType = null;
@@ -48,9 +53,9 @@ public class MediaObjectController extends GridPane{
 			e.printStackTrace();
 		}
 		
+		
 		//Sets the master root pane for drag and drop
 		masterRootPane = AdvancedScreen.getInstance().getScreenController().getMasterRoot();
-	
 	}
 	
 	/**
@@ -113,21 +118,31 @@ public class MediaObjectController extends GridPane{
 		mContextDragOver = new EventHandler <DragEvent>() {
 
 			//dragover to handle dragging the MediaObject
-			//TODO: needs to add stuff to this
+			//TODO: needs to add correct coords and movement of the mouse (only left and right)
 			@Override
 			public void handle(DragEvent event) {		
-		
-				//TODO: find a way to prevent it from dragging outside of timeline (AnchorPane seems to expand itself when dragging outside of it)
-				AnchorPane timelineLinePane = parentController.getParentController().timelineLineContainer;
+//				System.out.println("[MediaObjectController] Dargging over root");
+				
+				AnchorPane timelineLinePane = parentController.getRoot();
 				Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());
+				
 //				System.out.println("[MediaObject] sceneX: "+event.getSceneX()+" LocalX: "+ p.getX());
 //				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
-//				System.out.println("Bounds: "+timelineLinePane.boundsInLocalProperty().get());
+//				System.out.println("[MediaObjectController] AnchtorPane Bounds: "+timelineLinePane.boundsInLocalProperty().get());
+				
 				//Prevents you from dragging outside timeline boundaries
-				if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
+				Bounds boundsInParent = getBoundsInParent();
+				Bounds newBounds = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
+					(p.getX() - mDragOffset.getX()) + boundsInParent.getWidth(), (p.getY() - mDragOffset.getY()) + boundsInParent.getHeight());
+//				System.out.println("[MediaObjectController] NewBounds for MediaObject: " +newBounds);
+				
+				if (timelineLinePane.getBoundsInLocal().contains(newBounds)) {
+//					if (timelineLinePane.boundsInLocalProperty().get().intersects(root.getLayoutX(), root.getLayoutY(), root.getLayoutX() + root.getWidth(), root.getLayoutY()+ root.getHeight())) {
 //					System.out.println("[MediaObject], yes its TRUE p is inside the panel");
-					event.acceptTransferModes(TransferMode.ANY);
-					relocateToPoint(new Point2D( event.getSceneX(), event.getSceneY()));
+					event.acceptTransferModes(TransferMode.MOVE);
+					relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
+//					System.out.println("[MediaObjectController New moved Location mediaObject" + root.getLocalToParentTransform());
+//					relocateToPoint(new Point2D(event.getSceneX(), 0));
 				}
 //				event.acceptTransferModes(TransferMode.ANY);				
 //				relocateToPoint(new Point2D( event.getSceneX(), event.getSceneY()));
@@ -144,15 +159,31 @@ public class MediaObjectController extends GridPane{
 			@Override
 			public void handle(DragEvent event) {
 			
-				//TODO: parent ? bottom pane ?
-				masterRootPane.setOnDragOver(null);
-				masterRootPane.setOnDragDropped(null);
-				
+//				parentController.getRoot().setOnDragOver(null);
+//				parentController.getRoot().setOnDragDropped(null);
+//				
 				event.setDropCompleted(true);
 				
 				event.consume();
 			}
 		};
+		
+		mContextDragDone = new EventHandler <DragEvent> () {
+			
+			@Override
+			public void handle (DragEvent event) {
+				System.out.println("[MediaObjectController] Drag DONE");
+				
+				parentController.getRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
+				parentController.getRoot().setOnDragOver(null);
+				parentController.getRoot().setOnDragDropped(null);
+				parentController.getRoot().setOnDragDone(null);
+
+				
+			}
+		};
+		
+
 		//close button click
 //		close_button.setOnMouseClicked( new EventHandler <MouseEvent> () {
 //
@@ -174,18 +205,20 @@ public class MediaObjectController extends GridPane{
 			
 				/* Drag was detected, start a drag-and-drop gesture */
 				/* allow any transfer mode */
-				System.out.println("MediaObjectController: Drag event started");
+				System.out.println("[MediaObjectController] Drag event started");
 				
 //				getParent().setOnDragOver(null);
 //				getParent().setOnDragDropped(null);
 //
 //				getParent().setOnDragOver (mContextDragOver);
 //				getParent().setOnDragDropped (mContextDragDropped);
-				masterRootPane.setOnDragOver(null);
-				masterRootPane.setOnDragDropped(null);
+//				parentController.getRoot().setOnDragOver(null);
+//				parentController.getRoot().setOnDragDropped(null);
 
-				masterRootPane.setOnDragOver (mContextDragOver);
-				masterRootPane.setOnDragDropped (mContextDragDropped);
+				
+				parentController.getRoot().setOnDragOver (mContextDragOver);
+				parentController.getRoot().setOnDragDropped (mContextDragDropped);
+				parentController.getRoot().setOnDragDone(mContextDragDone);
 
                 //begin drag ops
                 mDragOffset = new Point2D(event.getX(), event.getY());
@@ -204,13 +237,24 @@ public class MediaObjectController extends GridPane{
                 //Putting the data container onto the content
 				content.put(MediaObjectContainer.DragNode, container); //TODO: AddNode ??
 				
-                startDragAndDrop (TransferMode.MOVE).setContent(content);    //TODO: TransferMode.Copy ??             
+                startDragAndDrop (TransferMode.MOVE).setContent(content);      
                 
                 event.consume();					
 			}
 			
-		});		
+		});
+		
 	}
+	
+//	public Rectangle getRect(){
+//		Rectangle tempRect = new Rectangle(x,y,width,height);
+//		return tempRect;
+//		
+//	}
+//	public Bounds getBounds(){
+//		Bounds tempBounds = new Bounds;
+//		return tempBounds;
+//	}
 
 	/**
 	 * @return the parentController
