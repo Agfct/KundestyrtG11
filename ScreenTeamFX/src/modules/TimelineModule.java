@@ -283,7 +283,6 @@ public class TimelineModule {
 					//thread sleeping if its long until next event
 					if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp)){
 						try {
-							System.out.println((performancestack.get(0).getTime()-glbtime)-(playp-startp)-1500);
 							this.sleep((performancestack.get(0).getTime()-glbtime)-(playp-startp)-1500);
 						} catch (InterruptedException e) {
 						}
