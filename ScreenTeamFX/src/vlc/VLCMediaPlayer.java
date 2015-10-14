@@ -1,4 +1,3 @@
-
 package vlc;
 
 import javax.swing.JFrame;
@@ -27,8 +26,7 @@ public class VLCMediaPlayer {
 	}
 	
 	/**
-	 * Constructor for prerunChecker. Does not display the media player.
-	 */	
+	 * Constructor for prerunChecker. */	
 	public VLCMediaPlayer(){
 		mp = new EmbeddedMediaPlayerComponent();
 		frame.setUndecorated(true);
@@ -83,28 +81,53 @@ public class VLCMediaPlayer {
 		mediaChanged = true;
 	}
 	
-	public boolean isPlaying(){
-		return mp.getMediaPlayer().isPlaying();
+	
+	/**
+	 * Creates a new Jframe on a new graphicsDevice. Must use setMedia before media can be played again. 
+	 * @param display */
+	public void setDisplay(int display){
+		this.display = display;
+		frame.getContentPane().remove(mp);
+		frame.dispose();
+		frame = new JFrame(gs[display].getDefaultConfiguration());
+		frame.setUndecorated(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().add(mp);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setVisible(true);
 	}
 	
-	public void setDisplay(int display){
+	/**
+	 * Preferred method for changing displays. Only works on Windows 8.
+	 * @param display */
+	public void setDisplayWin8(int display){
 		this.display = display;
 		showOnDisplay(display);
 	}
-	
-	
+		
 	public int getDisplay(){
 		return this.display;
+	}
+	
+	public boolean isPlaying(){
+		return mp.getMediaPlayer().isPlaying();
 	}
 	
 	public int getID(){
 		return this.ID;
 	}
 	
+	public String getMediaPath(){
+		return mediaPath;
+	}
+	
 	public long getTime(){
 		return mp.getMediaPlayer().getTime();
 	}
 	
+	/**
+	 * Displays the media player on a graphicsDevice. Only works on Windows 8.
+	 * @param display */
 	public void showOnDisplay(int display){
 	    if(display > -1 && display < gs.length){
 			frame.setVisible(true);
@@ -129,5 +152,4 @@ public class VLCMediaPlayer {
 		mp.getMediaPlayer().stop();
 		frame.dispose();
 	}
-
 }
