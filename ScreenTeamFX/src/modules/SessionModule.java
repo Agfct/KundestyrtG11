@@ -1,5 +1,6 @@
 package modules;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,7 +10,11 @@ import java.util.HashMap;
  * Singleton
  * Controls the timelines and their connections to displays. Talks to VLCController and StorageController.
  */
-public class SessionModule {
+public class SessionModule implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3548566162984308320L;
 	//private VLCController vlccontroller;
 	// Each display can have one or zero timelines
 	private HashMap<Integer, TimelineModel> displays;
