@@ -59,8 +59,8 @@ public class TimelineMediaObject implements Serializable {
 	}
 
 
-	public void setStart(int start) {
-		this.start = start;
+	public void setStart(long lastObjectEnd) {
+		this.start = lastObjectEnd;
 	}
 
 
@@ -69,8 +69,8 @@ public class TimelineMediaObject implements Serializable {
 	}
 
 
-	public void setDuration(int duration) {
-		this.duration = duration;
+	public void setDuration(long newDuration) {
+		this.duration = newDuration;
 	}
 
 

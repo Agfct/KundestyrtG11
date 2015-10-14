@@ -1,21 +1,26 @@
 package modules;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import vlc.VLCController;
-
 /**
  * 
  * @author BEO
  * Singleton
  * Controls the timelines and their connections to displays. Talks to VLCController and StorageController.
  */
-public class SessionModule {
+public class SessionModule implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3548566162984308320L;
 	private VLCController vlccontroller;
 	// Each display can have one or zero timelines
 	private HashMap<Integer, TimelineModel> displays;
 	private ArrayList<TimelineModel> timelines;
+	private ArrayList<MediaObject> mediaObjects;
 	// Timer for the timeline
 	private long globaltime;
 	// Queue used when playing timelines
@@ -25,15 +30,19 @@ public class SessionModule {
 	private boolean pausing;
 	private Thread t1;
 	
+	private ArrayList<Object> listeners;
+	// TODO: Would be better (more correct) to use Bean or create a listener interface for the listeners!
 	
 	public SessionModule(VLCController vlc) {
 		this.timelines = new ArrayList<TimelineModel>();
 		this.timelines.add(new TimelineModel(0));
+		this.mediaObjects = new ArrayList<MediaObject>();
 		this.globaltime = 0;
 		this.performancestack = new ArrayList<Event>();
 		this.tlmID =0;
 		this.displays = new HashMap<Integer,TimelineModel>();
-		this.vlccontroller =vlc;
+		this.listeners = new ArrayList<Object>();
+		this.vlccontroller = vlc;
 		this.pausing = false;
 		vlccontroller.createMediaPlayer(tlmID);
 		this.t1 = new Thread();
@@ -48,10 +57,10 @@ public class SessionModule {
 		TimelineModel tlm = new TimelineModel(tlmID);
 		timelines.add(tlm);
 		vlccontroller.createMediaPlayer(tlmID);
+		timelinesChanged();
 		return tlmID;
 	}
-	
-	
+
 	// TODO: We are not sure which removeTimeline to use per now. depends on
 	// what the gui knows. either id of timeline or the timelinemodel itself
 	public void removeTimeline(int id){
@@ -63,6 +72,7 @@ public class SessionModule {
 				vlccontroller.deleteMediaPlayer(id);
 			}
 		}
+		timelinesChanged();
 	}
 	
 	public void unassignTimeline(TimelineModel tlm){
@@ -79,6 +89,7 @@ public class SessionModule {
 				}
 			}		
 		}
+		timelineChanged(tlm);
 	}
 	
 	public void assignTimeline(Integer display, TimelineModel tlm){
@@ -89,6 +100,7 @@ public class SessionModule {
 			TimelineModel prevtlm = displays.put(display,tlm);
 			vlccontroller.setDisplay(tlm.getID(), display);
 		}
+		timelineChanged(tlm);
 	}
 	
 	// !!!! I put Timeline Model because I can't create a new display without TimelineModel
@@ -188,6 +200,8 @@ public class SessionModule {
 	public void buildPerformance(){
 		//Add all Events to list, then sort it
 		performancestack = new ArrayList<Event>();
+		//TODO change to only the timelines that is assigned to a display??
+		// maybe for (Integer dis : displays.keyset())
 		
 		for(Integer dis : displays.keySet()){
 			for(Event ev : displays.get(dis).getTimelineStack()){
@@ -218,6 +232,7 @@ public class SessionModule {
 		}
 		performancestack.sort(Event.EventTimeComperator);
 	}
+	
 	/**
 	 * first draft of going through the stack and telling the vlccontroller what to do.
 	 * This method runs when the user pushes play on one timeline. 
@@ -253,6 +268,7 @@ public class SessionModule {
 		t1 = onePlay(glbtime);
 		t1.start();
 	}
+	
 	/**
 	 * creates a thread used for playOne
 	 * @param glbtime the startpoint of the whole program
@@ -307,6 +323,7 @@ public class SessionModule {
 		}
 		//TODO: Go through displays and pause timelines
 	}
+	
 	/**
 	 * pause the one timeline that is played with playOne()
 	 * @param display
@@ -317,10 +334,84 @@ public class SessionModule {
 		vlccontroller.pauseOne(displays.get(display).getID());
 		//TODO: Pause the timeline for this display
 	}
+	
 	public ArrayList<TimelineModel> getTimelines() {
 		return timelines;
 	}
+	
 	public void setTimelines(ArrayList<TimelineModel> timelines) {
 		this.timelines = timelines;
+		timelinesChanged();
+	}
+	
+	/**
+	 * Creates a new MediaObject and stores it in the this SessionModule. If a MediaObject with the same path already
+	 * exists, the method will not create a new MediaObject, but return the existing one.
+	 * @param mst
+	 * @param path
+	 */
+	public MediaObject createNewMediaObject(MediaSourceType mst, String path){
+		
+		// Check if this MediaObject is already stored in the list, by comparing paths
+		for (int i=0; i<mediaObjects.size(); i++){
+			if (mediaObjects.get(i).getPath().equals(path)) {
+				// Return the old MediaObject with equal path
+				return mediaObjects.get(i);
+			}
+		}
+		
+		// Did not find an old MediaObject with equal path, so create a new one
+		String name = path.substring(path.lastIndexOf('/')+1);
+		MediaObject mo = new MediaObject(path, name, mst);
+		mediaObjects.add(mo);
+		mediaObjectsChanged();
+		return mo;
+	}
+
+	public ArrayList<MediaObject> getMediaObjects() {
+		return this.mediaObjects;
+	}
+	
+	/**
+	 * Adds a new TimelineMediaObject to the specified TimelineModel, based on the MediaObject and the startTime.
+	 * @param mediaObject
+	 * @param timeline
+	 * @param startTime
+	 */
+	public String addMediaObjectToTimeline(MediaObject mediaObject, TimelineModel timeline, int startTime){
+		TimelineMediaObject tlmo = new TimelineMediaObject(startTime, mediaObject.getLength(), timeline.getID(), mediaObject);
+		String result = timeline.addTimelineMediaObject(tlmo);
+		timelineChanged(timeline);
+		return result;
+	}
+	
+	public String timelineMediaObjectChanged(TimelineModel tlm, TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){
+		String result = tlm.timelineMediaObjectChanged(tlmo, newStart, newInternalStart, newDuration);
+		timelineChanged(tlm);
+		return result;
+	}
+	
+	public void addListener(Object listener){
+		listeners.add(listener);
+	}
+	
+	public void clearListeners(){
+		listeners = new ArrayList<Object>();
+	}
+	
+	public boolean removeListener(Object listener){
+		return listeners.remove(listener);
+	}
+
+	private void timelinesChanged() {
+		// TODO listeners.fireTimelinesChanged();
+	}
+	
+	private void timelineChanged(TimelineModel tlm){
+		// TODO: listeners.fireTimelineChanged(tlm);
+	}
+	
+	private void mediaObjectsChanged(){
+		// TODO: listeners.mediaObjectListChanged();
 	}
 }
