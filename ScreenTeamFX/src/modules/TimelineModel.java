@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import vlc.VLCMediaPlayer;
+
+
 public class TimelineModel implements Serializable{
 	
 	/**
@@ -19,6 +22,7 @@ public class TimelineModel implements Serializable{
 		this.timelineMediaObjects = new ArrayList<TimelineMediaObject>();
 		this.id = id;
 		this.timelineStack = new ArrayList<Event>();
+		
 	}
 
 	public int getID() {
@@ -62,7 +66,7 @@ public class TimelineModel implements Serializable{
 			}
 			else {
 				// Need to squeeze m's duration to fit it in
-				int newDuration = timelineMediaObjects.get(1).getStart() - m.getStart();
+				long newDuration = timelineMediaObjects.get(1).getStart() - m.getStart();
 				m.setDuration(newDuration);
 				timelinechanged();
 				return "TimelineMediaObject added with reduced duration";
@@ -73,7 +77,7 @@ public class TimelineModel implements Serializable{
 		if ( timelineMediaObjects.get(timelineMediaObjects.size()-1).getStart() < m.getStart() ) {
 			// Might need to delay the start of m
 			int lastObjectIndex = timelineMediaObjects.size() - 1;
-			int lastObjectEnd = timelineMediaObjects.get(lastObjectIndex).getStart() + timelineMediaObjects.get(lastObjectIndex).getDuration();
+			long lastObjectEnd = timelineMediaObjects.get(lastObjectIndex).getStart() + timelineMediaObjects.get(lastObjectIndex).getDuration();
 			if ( m.getStart() < lastObjectEnd ) {
 				m.setStart(lastObjectEnd);
 				timelineMediaObjects.add(m);
@@ -100,7 +104,7 @@ public class TimelineModel implements Serializable{
 						
 						// Might also have to reduce the duration to fit m in
 						if ( timelineMediaObjects.get(i).getStart() < m.getStart()+m.getDuration() ) {
-							int newDuration = timelineMediaObjects.get(i).getStart() - m.getStart(); 
+							long newDuration = timelineMediaObjects.get(i).getStart() - m.getStart(); 
 							m.setDuration(newDuration);
 							timelineMediaObjects.add(i, m);
 							timelinechanged();
@@ -115,7 +119,7 @@ public class TimelineModel implements Serializable{
 					else {
 						// Start is fine, but need to check duration
 						if ( timelineMediaObjects.get(i).getStart() < m.getStart()+m.getDuration() ) {
-							int newDuration = timelineMediaObjects.get(i).getStart() - m.getStart(); 
+							long newDuration = timelineMediaObjects.get(i).getStart() - m.getStart(); 
 							m.setDuration(newDuration);
 							timelineMediaObjects.add(i, m);
 							timelinechanged();
@@ -138,7 +142,13 @@ public class TimelineModel implements Serializable{
 		return "Something went wrong. Could not add TimelineMediaObject";
 		
 	}
-
+	
+	public void addTimelineMediaObject(long start, long dur, MediaObject parent){
+		TimelineMediaObject temp = new TimelineMediaObject(start,dur,this.id,parent);
+		timelineMediaObjects.add(temp);
+		timelinechanged();
+	}
+	
 	/**
 	 * removes a timelineMediaObject from the timeline
 	 * 
@@ -188,7 +198,7 @@ public class TimelineModel implements Serializable{
 		TimelineMediaObject mO;
 		Event start;
 		Event end;
-		for(int i=0;i>=timelineMediaObjects.size();i++){
+		for(int i=0;i<timelineMediaObjects.size();i++){
 			mO = timelineMediaObjects.get(i);
 			start = new Event(mO.getStart(), id, Action.PLAY, mO);
 			end = new Event(mO.getEnd(), id, Action.STOP, mO);
