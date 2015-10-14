@@ -82,7 +82,7 @@ public class MediaObjectController extends GridPane{
 		//relocates the object to a point that has been converted to
 		//scene coordinates
 		Point2D localCoords = getParent().sceneToLocal(p);
-		
+		System.out.println("localCoords: " + localCoords);
 		relocate ( 
 				(int) (localCoords.getX() - mDragOffset.getX()),
 				(int) (localCoords.getY() - mDragOffset.getY())
@@ -125,23 +125,29 @@ public class MediaObjectController extends GridPane{
 				
 				AnchorPane timelineLinePane = parentController.getRoot();
 				Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());
+				System.out.println("AnchorPane sceneToLocal: "+ p);
 				
 //				System.out.println("[MediaObject] sceneX: "+event.getSceneX()+" LocalX: "+ p.getX());
 //				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
 //				System.out.println("[MediaObjectController] AnchtorPane Bounds: "+timelineLinePane.boundsInLocalProperty().get());
 				
 				//Prevents you from dragging outside timeline boundaries
-				Bounds boundsInParent = getBoundsInParent();
-				Bounds newBounds = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
-					(p.getX() - mDragOffset.getX()) + boundsInParent.getWidth(), (p.getY() - mDragOffset.getY()) + boundsInParent.getHeight());
-//				System.out.println("[MediaObjectController] NewBounds for MediaObject: " +newBounds);
+//				Bounds boundsInParent = getBoundsInParent();
+//				Bounds newBounds = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
+//						(p.getX() - mDragOffset.getX()) + boundsInParent.getWidth(), (p.getY() - mDragOffset.getY()) + boundsInParent.getHeight());
 				
-				if (timelineLinePane.getBoundsInLocal().contains(newBounds)) {
+				//p.getX() - mDragOffset.getX() is left corner of mediaObject in AnchorPane coordinates
+				//So pX-dragX, pY-dragY is the top left corner of the mediaObject 
+				//(at the current dragged position, we later check if it can be placed there)
+				Bounds mediaControllerRect = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
+						getMediaObjectWidth(), getMediaObjectHeigth());
+				
+//				System.out.println("[MediaObjectController] NewBounds for MediaObject: " +mediaControllerRect);
+//				System.out.println("TimelineLinePane.getBoundsInLocal(): "+ timelineLinePane.getBoundsInLocal());
+				if (timelineLinePane.getBoundsInLocal().contains(mediaControllerRect)) {
 //					if (timelineLinePane.boundsInLocalProperty().get().intersects(root.getLayoutX(), root.getLayoutY(), root.getLayoutX() + root.getWidth(), root.getLayoutY()+ root.getHeight())) {
-//					System.out.println("[MediaObject], yes its TRUE p is inside the panel");
 					event.acceptTransferModes(TransferMode.MOVE);
 					relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
-//					System.out.println("[MediaObjectController New moved Location mediaObject" + root.getLocalToParentTransform());
 //					relocateToPoint(new Point2D(event.getSceneX(), 0));
 				}
 //				event.acceptTransferModes(TransferMode.ANY);				
@@ -207,25 +213,23 @@ public class MediaObjectController extends GridPane{
 				/* allow any transfer mode */
 				System.out.println("[MediaObjectController] Drag event started");
 				
-//				getParent().setOnDragOver(null);
-//				getParent().setOnDragDropped(null);
-//
-//				getParent().setOnDragOver (mContextDragOver);
-//				getParent().setOnDragDropped (mContextDragDropped);
-//				parentController.getRoot().setOnDragOver(null);
-//				parentController.getRoot().setOnDragDropped(null);
-
-				
 				parentController.getRoot().setOnDragOver (mContextDragOver);
 				parentController.getRoot().setOnDragDropped (mContextDragDropped);
 				parentController.getRoot().setOnDragDone(mContextDragDone);
 
                 //begin drag ops
                 mDragOffset = new Point2D(event.getX(), event.getY());
+                System.out.println("dragOffset with getX: " + mDragOffset);
                 
-                relocateToPoint(
-                		new Point2D(event.getSceneX(), event.getSceneY())
-                		);
+//                relocateToPoint(
+//                		new Point2D(event.getSceneX(), event.getSceneY())
+//                		);
+                
+                //TODO: TEST STUFF:
+                System.out.println("relocate to point with sceneX with getX: " + (new Point2D(event.getSceneX(), event.getSceneY())));
+                AnchorPane timelineLinePane = parentController.getRoot();
+                System.out.println("AnchorPane: getBoundsInLocal " + timelineLinePane.getBoundsInLocal());
+                System.out.println("Media Object: getBounds in parent" + getBoundsInParent());
                 
                 //The clipboard contains all content that are to be transfered in the drag
                 ClipboardContent content = new ClipboardContent();
@@ -268,7 +272,16 @@ public class MediaObjectController extends GridPane{
 	 */
 	public void setParentController(TimelineLineController parentController) {
 		this.parentController = parentController;
-	}		
+	}
+	
+	//TODO: Add propper width
+	private double getMediaObjectWidth(){
+		return 100;
+	}
+	
+	private double getMediaObjectHeigth(){
+		return 75;
+	}
 	
 	//Shoud this be a controller ? or shoud it be a Pane ? or other ?
 	

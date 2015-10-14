@@ -10,7 +10,7 @@
 	<columnConstraints>
 		<ColumnConstraints minWidth="200" prefWidth="200"
 			maxWidth="200" />
-		<ColumnConstraints hgrow="NEVER" maxWidth="Infinity"/>
+		<ColumnConstraints hgrow="NEVER" maxWidth="1400"/>
 	</columnConstraints>
 	<children>
 		<GridPane fx:id="timelineInfo"  GridPane.columnIndex="0" maxHeight="150" maxWidth="-Infinity" minHeight="150"

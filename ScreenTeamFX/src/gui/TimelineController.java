@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.input.DragEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Rectangle;
 
 /**
  * 
@@ -56,23 +57,23 @@ public class TimelineController implements FXMLController {
 			e.printStackTrace();
 		}
 
-		//Initialize drag and drop
-//		initialize();
-		
+		//Creates a clipping mask to hide timeline outside of bounds
+		createClip();
 		//Creates the actual timeline line (right side of the timeline) using this controller as parent controller
 		childController = new TimelineLineController(this);
 		
 	}
 	
-//	private void initialize(){
-//		
-//		
-//		//Drag&drop functionality
-//		mDragOverIcon = new MediaObjectIcon();
-//		mDragOverIcon.setVisible(false);
-//		mDragOverIcon.setOpacity(0.65);
-//		rootPane.getChildren().add(mDragOverIcon);
-//	}
+	/**
+	 * Creates a clip that decides the viewport of this Panes children
+	 * The timeline that is outside of this clip will be hidden for the user.
+	 */
+	private void createClip(){
+		Rectangle clipSize = new Rectangle(1400,150);
+		clipSize.setLayoutX(0);
+		clipSize.setLayoutY(0);
+		timelineLineContainer.setClip(clipSize);
+	}
 
 	
 	/**
