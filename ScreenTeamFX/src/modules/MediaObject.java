@@ -11,7 +11,7 @@ public abstract class MediaObject {
 	private String path;
 	private String name;
 	private int length;
-	private MediaSourceType type;;
+	private MediaSourceType type;
 	
 	/**
 	 * 

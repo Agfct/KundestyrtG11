@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/jna-3.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/platform-3.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/vlcj-3.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Baptiste/Downloads/jna-3.1.0.jar/jna-3.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
