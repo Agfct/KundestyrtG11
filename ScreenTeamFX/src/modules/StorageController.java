@@ -20,7 +20,7 @@ public class StorageController {
 
 	File storageFile;
 	ArrayList<MediaObject> mediaObjects;
-	TimelineModule timelineModule;
+	SessionModule timelineModule;
 
 	
 	private static StorageController instance = null;
@@ -38,7 +38,7 @@ public class StorageController {
 		return instance;
 	}
 	
-	public boolean storeSession(TimelineModule tlm, File file){
+	public boolean storeSession(SessionModule tlm, File file){
 		FileOutputStream f_out_stream = null;
 		ObjectOutputStream obj_out_stream = null;
 		boolean storageSuccess = false;
@@ -101,8 +101,8 @@ public class StorageController {
 		}
 		
 		// Check that we have retrieved the correct objects
-		if ( temp_tlm instanceof TimelineModule ) {
-			this.timelineModule = (TimelineModule)temp_tlm;
+		if ( temp_tlm instanceof SessionModule ) {
+			this.timelineModule = (SessionModule)temp_tlm;
 			
 			if (temp_mo instanceof ArrayList<?>){
 				if ( ((ArrayList<?>)temp_mo).size() > 0 ){

@@ -4,14 +4,14 @@ import vlc.VLCController;
 
 public class Testingmodules {
 	private VLCController vlc;
-	public TimelineModule tlmodul;
+	public SessionModule tlmodul;
 	
 	/**
 	 * Just a class to test the integration between the module and VLC
 	 */
 	public Testingmodules(){
 		this.vlc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
-		tlmodul = new TimelineModule(vlc);
+		tlmodul = new SessionModule(vlc);
 		TimelineModel tlm = tlmodul.getTimelines().get(0);
 		MediaObject mO = new MediaObject("C:\\Users\\EirikZimmer\\Videos\\video_test_512kb.mp4","test",MediaSourceType.VIDEO);
 		tlmodul.addDisplay(0);
