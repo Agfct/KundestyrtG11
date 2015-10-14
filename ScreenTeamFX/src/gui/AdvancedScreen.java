@@ -121,6 +121,7 @@ public class AdvancedScreen implements Screen{
 			private MediaObjectIcon mDragOverIcon = null;
 			private EventHandler<DragEvent> mIconDragOverRoot = null;
 			private EventHandler<DragEvent> mIconDragDropped = null;
+			private EventHandler<DragEvent> mIconDragDone = null;
 			private EventHandler<DragEvent> mIconDragOverTimeline = null;
 
 			// Pointers to the fx:id in the fxml
@@ -157,7 +158,7 @@ public class AdvancedScreen implements Screen{
 				initializeScrollBar();
 				
 				//Drag&drop functionality
-//				initialize();
+				initialize();
 
 			}
 			
@@ -221,6 +222,7 @@ public class AdvancedScreen implements Screen{
 						// Sets the drag handler for the rootPane.
 						// Telling the root how to handle the dragIcon
 						rootPane.setOnDragOver(mIconDragOverRoot);
+						rootPane.setOnDragDone(mIconDragDone);
 //						
 						//Get timelines and add dragBehavior
 //						for (FXMLController timelineController : timelineControllers) {
@@ -290,24 +292,24 @@ public class AdvancedScreen implements Screen{
 				};
 				
 				//TODO: NOT USED ? REVISIT
-				mIconDragOverTimeline = new EventHandler <DragEvent> () {
-
-					@Override
-					public void handle(DragEvent event) {
-
-						event.acceptTransferModes(TransferMode.ANY);
-						
-						//convert the mouse coordinates to scene coordinates,
-						//then convert back to coordinates that are relative to 
-						//the parent of mDragIcon.  Since mDragIcon is a child of the root
-						//pane, coodinates must be in the root pane's coordinate system to work
-						//properly.
-						mDragOverIcon.relocateToPoint(
-										new Point2D(event.getSceneX(), event.getSceneY())
-						);
-						event.consume();
-					}
-				};
+//				mIconDragOverTimeline = new EventHandler <DragEvent> () {
+//
+//					@Override
+//					public void handle(DragEvent event) {
+//
+//						event.acceptTransferModes(TransferMode.ANY);
+//						
+//						//convert the mouse coordinates to scene coordinates,
+//						//then convert back to coordinates that are relative to 
+//						//the parent of mDragIcon.  Since mDragIcon is a child of the root
+//						//pane, coodinates must be in the root pane's coordinate system to work
+//						//properly.
+//						mDragOverIcon.relocateToPoint(
+//										new Point2D(event.getSceneX(), event.getSceneY())
+//						);
+//						event.consume();
+//					}
+//				};
 						
 				/**
 				 * When the mediaObjectIcon is dropped onto a timeline this handler
@@ -345,20 +347,22 @@ public class AdvancedScreen implements Screen{
 				 * When the drag is complete we clean up the drag operation, 
 				 * and add the node to the timeline that was dropped upon.
 				 */
-				rootPane.setOnDragDone (new EventHandler <DragEvent> (){
+				mIconDragDone = new EventHandler <DragEvent> () {
 					
 					@Override
 					public void handle (DragEvent event) {
 						System.out.println("[AdvancedScreen] Drag DONE");
 
-
 						//Cleaning up the DragEvents
 						rootPane.removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverRoot);
+						rootPane.setOnDragOver(null);
+						rootPane.setOnDragDone(null);
 //						for (FXMLController timelineController : timelineControllers) {
 //							((TimelineController)timelineController).getTimelineLineController().getRoot().removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverTimeline);
 //						}
 						for (FXMLController timelineController : timelineControllers) {
 							((TimelineController)timelineController).getTimelineLineController().getRoot().removeEventHandler(DragEvent.DRAG_DROPPED, mIconDragDropped);
+							((TimelineController)timelineController).getTimelineLineController().getRoot().setOnDragDropped(null);
 						}
 										
 						mDragOverIcon.setVisible(false);
@@ -398,19 +402,9 @@ public class AdvancedScreen implements Screen{
 						}
 						
 						
-						//If the NODE IS A DRAG NODE, THAT IS: ITS AN EXISTING MEDIA OBJECT INSDIE AN EXISTING TIMELINE
-						//TODO: If we are dragging from timeline to timeline, then we need this.
-//						container = 
-//								(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.DragNode);
-//						
-//						if (container != null) {
-//							if (container.getValue("type") != null)
-//								System.out.println ("Moved node " + container.getValue("type"));
-//						}
-						
 						event.consume();
 					}
-				});		
+				};		
 			}
 			
 			/**

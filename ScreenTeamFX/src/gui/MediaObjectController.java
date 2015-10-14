@@ -34,6 +34,7 @@ public class MediaObjectController extends GridPane{
 	//Variables used for dragging/dropping
 	private AnchorPane masterRootPane;
 	private EventHandler <DragEvent> mContextDragOver;
+	private EventHandler <DragEvent> mContextDragDone;
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
 	private MediaObjectType mType = null;
@@ -127,20 +128,20 @@ public class MediaObjectController extends GridPane{
 				
 //				System.out.println("[MediaObject] sceneX: "+event.getSceneX()+" LocalX: "+ p.getX());
 //				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
-				System.out.println("[MediaObject] AnchtorPane Bounds: "+timelineLinePane.boundsInLocalProperty().get());
+				System.out.println("[MediaObjectController] AnchtorPane Bounds: "+timelineLinePane.boundsInLocalProperty().get());
 				
 				//Prevents you from dragging outside timeline boundaries
 				Bounds boundsInParent = getBoundsInParent();
 				Bounds newBounds = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
 					(p.getX() - mDragOffset.getX()) + boundsInParent.getWidth(), (p.getY() - mDragOffset.getY()) + boundsInParent.getHeight());
-				System.out.println("[MediaObject] NewBounds for MediaObject: " +newBounds);
+				System.out.println("[MediaObjectController] NewBounds for MediaObject: " +newBounds);
 				
 				if (timelineLinePane.getBoundsInLocal().contains(newBounds)) {
 //					if (timelineLinePane.boundsInLocalProperty().get().intersects(root.getLayoutX(), root.getLayoutY(), root.getLayoutX() + root.getWidth(), root.getLayoutY()+ root.getHeight())) {
 //					System.out.println("[MediaObject], yes its TRUE p is inside the panel");
 					event.acceptTransferModes(TransferMode.MOVE);
 					relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
-					System.out.println("[MediaObject New moved Location mediaObject" + root.getLocalToParentTransform());
+					System.out.println("[MediaObjectController New moved Location mediaObject" + root.getLocalToParentTransform());
 //					relocateToPoint(new Point2D(event.getSceneX(), 0));
 				}
 //				event.acceptTransferModes(TransferMode.ANY);				
@@ -158,14 +159,31 @@ public class MediaObjectController extends GridPane{
 			@Override
 			public void handle(DragEvent event) {
 			
-				parentController.getRoot().setOnDragOver(null);
-				parentController.getRoot().setOnDragDropped(null);
-				
+//				parentController.getRoot().setOnDragOver(null);
+//				parentController.getRoot().setOnDragDropped(null);
+//				
 				event.setDropCompleted(true);
 				
 				event.consume();
 			}
 		};
+		
+		mContextDragDone = new EventHandler <DragEvent> () {
+			
+			@Override
+			public void handle (DragEvent event) {
+				System.out.println("[MediaObjectController] Drag DONE");
+				
+				parentController.getRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
+				parentController.getRoot().setOnDragOver(null);
+				parentController.getRoot().setOnDragDropped(null);
+				parentController.getRoot().setOnDragDone(null);
+
+				
+			}
+		};
+		
+
 		//close button click
 //		close_button.setOnMouseClicked( new EventHandler <MouseEvent> () {
 //
@@ -194,11 +212,13 @@ public class MediaObjectController extends GridPane{
 //
 //				getParent().setOnDragOver (mContextDragOver);
 //				getParent().setOnDragDropped (mContextDragDropped);
-				parentController.getRoot().setOnDragOver(null);
-				parentController.getRoot().setOnDragDropped(null);
+//				parentController.getRoot().setOnDragOver(null);
+//				parentController.getRoot().setOnDragDropped(null);
 
+				
 				parentController.getRoot().setOnDragOver (mContextDragOver);
 				parentController.getRoot().setOnDragDropped (mContextDragDropped);
+				parentController.getRoot().setOnDragDone(mContextDragDone);
 
                 //begin drag ops
                 mDragOffset = new Point2D(event.getX(), event.getY());
@@ -222,7 +242,8 @@ public class MediaObjectController extends GridPane{
                 event.consume();					
 			}
 			
-		});		
+		});
+		
 	}
 	
 //	public Rectangle getRect(){
