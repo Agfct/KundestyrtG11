@@ -22,6 +22,8 @@ public class SessionModule {
 	//counter for the id of the timelineModels
 	private int tlmID;
 	
+	private ArrayList<Object> listeners;
+	// TODO: Would be better (more correct) to use Bean or create a listener interface for the listeners!
 	
 	public SessionModule() {
 		this.timelines = new ArrayList<TimelineModel>();
@@ -31,6 +33,7 @@ public class SessionModule {
 		this.performancestack = new ArrayList<Event>();
 		this.tlmID =0;
 		this.displays = new HashMap<Integer,TimelineModel>();
+		this.listeners = new ArrayList<Object>();
 	}
 
 	/**
@@ -41,10 +44,10 @@ public class SessionModule {
 		tlmID +=1;
 		TimelineModel tlm = new TimelineModel(tlmID);
 		timelines.add(tlm);
+		timelinesChanged();
 		return tlmID;
 	}
-	
-	
+
 	// TODO: We are not sure which removeTimeline to use per now. depends on
 	// what the gui knows. either id of timeline or the timelinemodel itself
 	public void removeTimeline(int id){
@@ -55,6 +58,7 @@ public class SessionModule {
 				timelines.remove(i);
 			}
 		}
+		timelinesChanged();
 	}
 	
 	public void unassignTimeline(TimelineModel tlm){
@@ -71,6 +75,7 @@ public class SessionModule {
 				}
 			}		
 		}
+		timelineChanged(tlm);
 	}
 	
 	public void assignTimeline(Integer display, TimelineModel tlm){
@@ -80,6 +85,7 @@ public class SessionModule {
 		else{
 			TimelineModel prevtlm = displays.put(display,tlm);
 		}
+		timelineChanged(tlm);
 	}
 	
 	// !!!! I put Timeline Model because I can't create a new display without TimelineModel
@@ -159,6 +165,7 @@ public class SessionModule {
 	
 	public void setTimelines(ArrayList<TimelineModel> timelines) {
 		this.timelines = timelines;
+		timelinesChanged();
 	}
 	
 	/**
@@ -181,6 +188,7 @@ public class SessionModule {
 		String name = path.substring(path.lastIndexOf('/')+1);
 		MediaObject mo = new MediaObject(path, name, mst);
 		mediaObjects.add(mo);
+		mediaObjectsChanged();
 		return mo;
 	}
 
@@ -196,6 +204,38 @@ public class SessionModule {
 	 */
 	public String addMediaObjectToTimeline(MediaObject mediaObject, TimelineModel timeline, int startTime){
 		TimelineMediaObject tlmo = new TimelineMediaObject(startTime, mediaObject.getLength(), timeline.getID(), mediaObject);
-		return timeline.addTimelineMediaObject(tlmo);
+		String result = timeline.addTimelineMediaObject(tlmo);
+		timelineChanged(timeline);
+		return result;
+	}
+	
+	public String timelineMediaObjectChanged(TimelineModel tlm, TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){
+		String result = tlm.timelineMediaObjectChanged(tlmo, newStart, newInternalStart, newDuration);
+		timelineChanged(tlm);
+		return result;
+	}
+	
+	public void addListener(Object listener){
+		listeners.add(listener);
+	}
+	
+	public void clearListeners(){
+		listeners = new ArrayList<Object>();
+	}
+	
+	public boolean removeListener(Object listener){
+		return listeners.remove(listener);
+	}
+
+	private void timelinesChanged() {
+		// TODO listeners.fireTimelinesChanged();
+	}
+	
+	private void timelineChanged(TimelineModel tlm){
+		// TODO: listeners.fireTimelineChanged(tlm);
+	}
+	
+	private void mediaObjectsChanged(){
+		// TODO: listeners.mediaObjectListChanged();
 	}
 }

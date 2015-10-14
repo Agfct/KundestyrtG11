@@ -41,7 +41,7 @@ public class TimelineModel {
 		if (timelineMediaObjects.size() == 0) {
 			timelineMediaObjects.add(m);
 			timelinechanged();
-			return "TimelineMediaObject added in full length"; 
+			return "TimelineMediaObject added with full length"; 
 		}
 		
 		// Check if we can put m on the start of the timeline, in which case we don't need to consider earlier objects
@@ -53,7 +53,7 @@ public class TimelineModel {
 			if ( m.getStart()+m.getDuration() < timelineMediaObjects.get(1).getStart() ) {
 				// Everyting is okay
 				timelinechanged();
-				return "TimelineMediaObject added with full duration";
+				return "TimelineMediaObject added with full length";
 			}
 			else {
 				// Need to squeeze m's duration to fit it in
@@ -155,14 +155,23 @@ public class TimelineModel {
 	 * @param newDuration
 	 * @return
 	 */
-	public String timelineMediaObjectChanged( TimelineMediaObject tlmo, int newStart, int newDuration){
-		if(!timelineMediaObjects.contains(tlmo)) {
+	public String timelineMediaObjectChanged( TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){	
+		if(!timelineMediaObjects.remove(tlmo)){
 			return "TimelineMediaObject not found on timeline";
 		}
+		TimelineMediaObject newTimelineMediaObject = new TimelineMediaObject(newStart, newInternalStart, newDuration, tlmo.getTimelineid(), tlmo.getParent());
+		String result = this.addTimelineMediaObject(newTimelineMediaObject);
 		
+		// Check the result, if the new one was not added, put back the old one
+		if (result.equals("TimelineMediaObject was not added, there was no space at the given position") ){
+			result = this.addTimelineMediaObject(tlmo);
+			if (result.equals("TimelineMediaObject was not added, there was no space at the given position") ){
+				return "Something went wrong, could not change the TimelineMediaObject, and it was removed from the timeline";
+			}
+			return "Could not modify the TimelineMediaObject, it remains unchanged";
+		}
 		
-		
-		
+		return "TImelineMediaObject successfully modified. " + result;
 	}
 	
 	/**
