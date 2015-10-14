@@ -113,6 +113,7 @@ public class TimelineModule {
 	 */
 	public void playAll(long gbltime){
 		//TODO: look over and look for a better way to do this, currently constantly checks if the next event is ready to go or not.
+		//ABSOLUTELY NOT DONE NBNBNBNBNBNBNBNB
 		if (!pausing){
 			this.globaltime = gbltime;
 			buildPerformance();
@@ -225,6 +226,7 @@ public class TimelineModule {
 	 */
 	public void playOne(Integer display, long glbtime){
 		//TODO look over and look for better way to do this, currently constantly checks if the next event is ready to go or not.
+		//NOT DONE NBNNBNBNBNBNBNB
 		pausing = false;
 		this.globaltime = glbtime;
 		performancestack.clear();
@@ -251,7 +253,11 @@ public class TimelineModule {
 		t1 = onePlay(glbtime);
 		t1.start();
 	}
-	
+	/**
+	 * creates a thread used for playOne
+	 * @param glbtime the startpoint of the whole program
+	 * @return the thread created
+	 */
 	private synchronized Thread onePlay(long glbtime){
 		Thread t = new Thread(){
 			public void run(){
@@ -259,7 +265,7 @@ public class TimelineModule {
 				long playp = System.currentTimeMillis();
 				while (!performancestack.isEmpty()&& pausing ==false){
 					playp = System.currentTimeMillis();
-					if (performancestack.get(0).getTime()<= playp-startp){
+					if (performancestack.get(0).getTime()-glbtime<= playp-startp){
 						Event ev2 = performancestack.remove(0);
 							if (ev2.getAction()==Action.PLAY){
 								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
@@ -275,9 +281,10 @@ public class TimelineModule {
 							}
 						}
 					//thread sleeping if its long until next event
-					if (!performancestack.isEmpty() && performancestack.get(0).getTime()>= 1000+(playp-startp)){
+					if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp)){
 						try {
-							this.sleep(performancestack.get(0).getTime()-(playp-startp)-1000);
+							System.out.println((performancestack.get(0).getTime()-glbtime)-(playp-startp)-1500);
+							this.sleep((performancestack.get(0).getTime()-glbtime)-(playp-startp)-1500);
 						} catch (InterruptedException e) {
 						}
 					}

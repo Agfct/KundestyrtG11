@@ -6,7 +6,9 @@ public class Testingmodules {
 	private VLCController vlc;
 	public TimelineModule tlmodul;
 	
-	
+	/**
+	 * Just a class to test the integration between the module and VLC
+	 */
 	public Testingmodules(){
 		this.vlc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
 		tlmodul = new TimelineModule(vlc);
@@ -14,11 +16,12 @@ public class Testingmodules {
 		MediaObject mO = new MediaObject("C:\\Users\\EirikZimmer\\Videos\\video_test_512kb.mp4","test",MediaSourceType.VIDEO);
 		tlmodul.addDisplay(0);
 		tlmodul.assignTimeline(0, tlm);
-		tlm.addTimelineMediaObject(1000,10000,mO);
+		tlm.addTimelineMediaObject(4000,5000,mO);
 		tlm.addTimelineMediaObject(10010,1000,mO);
 		//tlm.addTimelineMediaObject(9000,1500,mO);
 		//tlm.getTimelineMediaObjects().get(0).setStartPoint(10000);
-		tlmodul.playOne(0,5000);
+		tlmodul.playOne(0,0);
+		/*
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
@@ -37,6 +40,7 @@ public class Testingmodules {
 			e.printStackTrace();
 		}
 		tlmodul.playOne(0, 7000);
+		*/
 	}
 	public static void main(String[] args) {
 		Testingmodules kk = new Testingmodules();
