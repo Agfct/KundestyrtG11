@@ -49,11 +49,6 @@ public class AdvancedScreen implements Screen{
 		private Scene screenScene;
 		private AdvancedScreenController screenController;	
 		
-		//variable to keep track of the media files imported
-		ObservableList<String> importedMediaFiles = FXCollections.observableArrayList();
-		
-		//Autoupdatable listproperty for use on the listview
-		protected ListProperty<String> listProperty = new SimpleListProperty<>();
 
 		private AdvancedScreen(){
 			
@@ -86,22 +81,11 @@ public class AdvancedScreen implements Screen{
 		}
 		
 		
-		// - change log: magnus 0110 - 
-		/*
-		 * (non-Javadoc)
-		 * @ functionality for the file chooser
-		 * The filechooser adds the file to the arraylist, and updates the on-screen listView
-		 */
-		public void fileChosen(File file){
-			importedMediaFiles.add(file.toString());
-			listProperty.set(importedMediaFiles);
-			
-		}
 		
 		
 		/**
 		 * 
-		 * @author Anders Lunde
+		 * @author Anders Lunde, Magnus Gundersen
 		 * The controller for the FXML of the advancedScreen.
 		 * The MainScreenController listens to all the input from the objects (buttons, textFields, mouseClicks) in the fxml scene.
 		 */
@@ -126,13 +110,10 @@ public class AdvancedScreen implements Screen{
 			@FXML private Button testButton;
 			@FXML private ListView fileListView;
 			@FXML private ScrollBar timelineLineScrollBar;
-			
-			//TEST
-			@FXML private GridPane topGrid;
-	
+
 			
 			public AdvancedScreenController(){
-
+				System.out.println("RUNNING CONSTRUCTOR ADVANCEDSCREEN CTRL");
 				//Instantiating controller list
 				timelineControllers = new ArrayList<TimelineController>();
 
@@ -152,6 +133,9 @@ public class AdvancedScreen implements Screen{
 				
 				//Drag&drop functionality
 				initialize();
+				
+				// Initialize the header
+				initHeader(this);
 
 			}
 			
@@ -190,13 +174,6 @@ public class AdvancedScreen implements Screen{
 				mDragOverIcon.setOpacity(0.65);
 				rootPane.getChildren().add(mDragOverIcon);
 				
-				//TODO: REMOVE TEST ONLY:
-				//Creates a dummy icon
-				MediaObjectIcon icn = new MediaObjectIcon();
-				addDragDetection(icn);
-				icn.setType(MediaObjectType.VIDEO);
-				topGrid.add(icn,1,1);
-				
 				buildDragHandlers();
 			}
 			
@@ -204,7 +181,7 @@ public class AdvancedScreen implements Screen{
 			 * adding drag detection to a MediaObjectIcon.
 			 * @param dragIcon
 			 */
-			private void addDragDetection(MediaObjectIcon dragIcon) {
+			public void addDragDetection(MediaObjectIcon dragIcon) {
 				
 				dragIcon.setOnDragDetected (new EventHandler <MouseEvent> () {
 
@@ -406,37 +383,7 @@ public class AdvancedScreen implements Screen{
 				});		
 			}
 			
-			/**
-			 * This method is ran when you press a button in the advanced screen top layout (Not inside the timelines).
-			 * It assumes that all buttons has in id. if they do not have an id this method gives a null pointer exception.
-			 * @param event
-			 */
-			@FXML protected void buttonPressed(ActionEvent event) {
-				System.out.println("AdvancedScreen:" + event.getSource().toString() + "has been pressed");
-				
-				if(((Button)event.getSource()).getId().equals("menuBtn") ){
-					//If the menu screen button is pressed the MainGUIController changes the screen to be the menu screen
-					MainGUIController.getInstance().changeScreen(SCREENTYPE.MAINMENU);
-					
-				}else if(((Button)event.getSource()).getId().equals("addTimeLineBtn")){
-					System.out.println("Adding a TimeLine");
-					addTimeline();
-					
-				}else if(((Button)event.getSource()).getId().equals("importMedia")){
-					// If the user chooses the import media button, he will get a windows-file-chooser
-					FileChooser fileChooser = new FileChooser();
-					fileChooser.setTitle("Open media file");
-					File file=fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
-					
-					//binds the items of the listView to the listProperty. This should probably be done somewhere else
-					fileListView.itemsProperty().bind(listProperty);
-					if(file != null){
-						fileChosen(file);
-					}
-			        
-
-				}
-			}	
+			
 			
 			/**
 			 * Adds a new timeline to the advancedScreen
@@ -444,7 +391,7 @@ public class AdvancedScreen implements Screen{
 			 * then adding the GridPane of the TimelineController to the VBox container.
 			 * TODO: add arguments and java models
 			 */
-			private void addTimeline(){
+			public void addTimeline(){
 				TimelineController tempTimeController = new TimelineController();
 				timelineControllers.add(tempTimeController);
 				addTimelineControllerToScreen(tempTimeController);
@@ -479,6 +426,16 @@ public class AdvancedScreen implements Screen{
 			public void removeTimeline(TimelineController timeline){
 				timelineContainer.getChildren().remove(timeline.getRoot());
 				timelineControllers.remove(timeline);
+			}
+			
+			
+			/*
+			 * Initializes the header
+			 */
+			public void initHeader(AdvancedScreenController self){
+				HeaderController headerController = new HeaderController(self);
+				System.out.println("INITING THE HEADER: ");
+				rootGrid.getChildren().add(headerController.getRoot());
 			}
 			
 	
