@@ -1,20 +1,12 @@
+
 package vlc;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-
-import com.sun.jna.NativeLibrary;
 
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
-import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Window;
-import java.util.ArrayList;
 
 
 public class VLCMediaPlayer {
@@ -22,16 +14,16 @@ public class VLCMediaPlayer {
 	private EmbeddedMediaPlayerComponent mp;
 	private String mediaPath = "";
 	private static GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-	private int display;
+	private int display = -1;
+	private int ID;
+	private boolean mediaChanged = false;
 	
-	public VLCMediaPlayer(int display){
-		this.display = display;
+	public VLCMediaPlayer(int ID){
+		this.ID = ID;
 		mp = new EmbeddedMediaPlayerComponent();
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);
-		frame.setVisible(true);
-		showOnDisplay(display);
 	}
 	
 	/**
@@ -45,24 +37,51 @@ public class VLCMediaPlayer {
 	}
 	
 	public void play(){
-		if(getTime() > 0){
-			mp.getMediaPlayer().play();
-		}
-		else if(mediaPath != ""){
-			mp.getMediaPlayer().playMedia(mediaPath);
+		if(display > -1){
+			if(mediaChanged){
+				mp.getMediaPlayer().startMedia(mediaPath);
+				mediaChanged = false;
+			}
+			else if(getTime() > 0){
+				mp.getMediaPlayer().start();
+			}
+			else{
+				System.out.println("No video attached");
+			}
 		}
 	}
 	
 	public void pause(){
-		mp.getMediaPlayer().pause();
+		if(isPlaying()){
+			mp.getMediaPlayer().pause();
+		}	
 	}
 	
 	public void seek(long time){
-		if(getTime() < 0){
-			mp.getMediaPlayer().playMedia(mediaPath);
+		if(mediaChanged){
+			mp.getMediaPlayer().startMedia(mediaPath);
+			mp.getMediaPlayer().pause();
+			mp.getMediaPlayer().setTime(time);
+			mediaChanged = false;
 		}
-		mp.getMediaPlayer().setTime(time);
+		else if(getTime() > -1){
+			mp.getMediaPlayer().pause();
+			mp.getMediaPlayer().setTime(time);
+		}
+		else{
+			System.out.println("No video attached");
+		}
 	}	
+	
+	public void stop(){
+		mp.getMediaPlayer().stop();
+	}
+	
+	public void setMedia(String mediaPath){
+		mp.getMediaPlayer().stop();
+		this.mediaPath = mediaPath;
+		mediaChanged = true;
+	}
 	
 	public boolean isPlaying(){
 		return mp.getMediaPlayer().isPlaying();
@@ -73,13 +92,13 @@ public class VLCMediaPlayer {
 		showOnDisplay(display);
 	}
 	
-	public void setMedia(String mediaPath){
-		this.mediaPath = mediaPath;
-		mp.getMediaPlayer().playMedia(mediaPath);
-	}
 	
 	public int getDisplay(){
 		return this.display;
+	}
+	
+	public int getID(){
+		return this.ID;
 	}
 	
 	public long getTime(){
@@ -88,10 +107,11 @@ public class VLCMediaPlayer {
 	
 	public void showOnDisplay(int display){
 	    if(display > -1 && display < gs.length){
-	        gs[display].setFullScreenWindow((Window)frame);
+			frame.setVisible(true);
+	        gs[display].setFullScreenWindow(frame);
 	    }
 	    else{
-	        throw new RuntimeException( "No Displays Found" );
+	        System.out.println("Display not found");
 	    }
 	}
 	
@@ -106,7 +126,8 @@ public class VLCMediaPlayer {
 	}
 	
 	public void close(){
-		pause();
+		mp.getMediaPlayer().stop();
 		frame.dispose();
 	}
+
 }

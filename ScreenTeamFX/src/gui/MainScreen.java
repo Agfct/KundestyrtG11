@@ -1,6 +1,8 @@
 package gui;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -11,6 +13,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.WindowEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import modules.MainModuleController;
+import vlc.VLCController;
+import vlc.VLCMediaPlayer;
 
 /**
  * @author Anders Lunde, Magnus Gunde
@@ -82,12 +89,25 @@ public class MainScreen implements Screen {
 		/**
 		 * This method is ran when you press a button in the main screen
 		 * @param event
+		 * @throws InterruptedException 
 		 */
-		@FXML protected void buttonPressed(ActionEvent event) {
+		@FXML protected void buttonPressed(ActionEvent event) throws InterruptedException {
 			System.out.println("Button has been pressed");
 			
 			if(((Button)event.getSource()).getId().equals("testBtn") ){
 				//If the test button is pressed
+				String path1 = "videos\\Silicon.Valley.S02E08.HDTV.x264-KILLERS.mp4";
+				String path2 = "videos\\Silicon.Valley.S02E06.HDTV.x264-ASAP.mp4";
+				String path3 = "videos\\Silicon.Valley.S02E04.HDTV.x264-ASAP.mp4";
+				String path4 = "videos\\Silicon.Valley.S02E01.HDTV.x264-ASAP.mp4";
+				String logo = "ScreenTeam_logo.png";
+//				VLCController vlcc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
+//				vlcc.createMediaPlayer(0);
+//				vlcc.setMedia(0, path1);
+//				vlcc.playAll();
+//				Thread.sleep(7000);
+//				vlcc.setDisplay(0, 0);
+				
 				
 			}else if(((Button)event.getSource()).getId().equals("advScrBtn")){
 				System.out.println("Pressing advanced screen btn");

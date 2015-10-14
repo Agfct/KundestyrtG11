@@ -12,10 +12,10 @@ public class Event implements Comparable<Event>{
 	 * TODO: should 'time' be from the start of the performance (00:00) or from where the it starts when
 	 * 	the user presses play?
 	 */
-	private int time;
+	private long time;
 	private int timelineid;
 	private Action action;
-	private MediaObject mediaobject;
+	private TimelineMediaObject timelineMediaObject;
 	
 	/**
 	 * 
@@ -24,15 +24,15 @@ public class Event implements Comparable<Event>{
 	 * @param action
 	 * @param mediaobject	The mediaobject that this event is associated with.
 	 */
-	public Event(int time, int timelineid, Action action, MediaObject mediaobject) {
+	public Event(long time, int timelineid, Action action, TimelineMediaObject timelineMediaObject) {
 		super();
 		this.time = time;
 		this.timelineid = timelineid;
 		this.action = action;
-		this.mediaobject = mediaobject;
+		this.setTimelineMediaObject(timelineMediaObject);
 	}
 
-	public int getTime() {
+	public long getTime() {
 		return time;
 	}
 
@@ -63,7 +63,7 @@ public class Event implements Comparable<Event>{
 	@Override
 	public int compareTo(Event otherEvent) {
 		
-		int otherTime = otherEvent.getTime();
+		long otherTime = otherEvent.getTime();
 		
 		/**
 		 * If one MediaObject stops and another one starts at the same time and on the same Timeline,
@@ -86,12 +86,20 @@ public class Event implements Comparable<Event>{
 			}
 		}
 		
-		return this.time - otherTime;
+		return (int) (this.time - otherTime);
 		
 		// Descending order
 		// return compareTime - this.time;
 	}
 	
+	public TimelineMediaObject getTimelineMediaObject() {
+		return timelineMediaObject;
+	}
+
+	public void setTimelineMediaObject(TimelineMediaObject timelineMediaObject) {
+		this.timelineMediaObject = timelineMediaObject;
+	}
+
 	public static Comparator<Event> EventTimeComperator = new Comparator<Event>() {
 		
 		public int compare(Event event1, Event event2){
