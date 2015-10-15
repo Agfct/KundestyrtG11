@@ -153,12 +153,12 @@ public class SessionModule implements Serializable {
 	 * @param glbtime the global point the timeline begins, 0 is start 1000 is one second in.
 	 * @return
 	 */
-	private Thread allPlay(long glbtime){
+	private synchronized Thread allPlay(long glbtime){
 		Thread tAll1 = new Thread(){
 			public void run(){
 				long startp = System.currentTimeMillis();
 				long playp = System.currentTimeMillis();
-				while (!performancestack.isEmpty()){
+				while (!performancestack.isEmpty() && pausing == false){
 					playp = System.currentTimeMillis();
 					if (performancestack.get(0).getTime()-glbtime<= playp-startp){
 						ArrayList<Event> temp = new ArrayList<Event>();
@@ -305,7 +305,6 @@ public class SessionModule implements Serializable {
 						else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
 							vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
 							long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
-							System.out.println(spoint);
 							vlccontroller.playOne(ev2.getTimelineid(), spoint);
 						}
 					}

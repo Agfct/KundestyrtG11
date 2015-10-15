@@ -27,8 +27,8 @@ public class VLCController {
 		this.vlcPath = vlcPath;
 		try{
 			NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
-//			vlcPathSet = true;
-//			prerunCheckPlayer = new VLCMediaPlayer();
+			vlcPathSet = true;
+			prerunCheckPlayer = new VLCMediaPlayer();
 		}
 		catch(Exception e){
 			e.printStackTrace();

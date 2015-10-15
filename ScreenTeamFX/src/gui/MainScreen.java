@@ -104,15 +104,20 @@ public class MainScreen implements Screen {
 				String pe = "C:\\Users\\EirikZimmer\\Videos\\video_test_512kb.mp4";
 				VLCController vlcc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
 				vlcc.createMediaPlayer(0);
-				vlcc.createMediaPlayer(1);
+//				vlcc.createMediaPlayer(1);
 				vlcc.setDisplay(0, 0);
-				vlcc.setDisplay(1, 1);
-				vlcc.setMedia(0, pe);
-				vlcc.setMedia(1, pe);
-				vlcc.playAll();
+//				vlcc.setDisplay(1, 1);
+				vlcc.setMedia(0, path1);
+//				vlcc.setMedia(1, pe);
 //				Thread.sleep(7000);
+//				vlcc.playAll();
+//				vlcc.seekOne(0, 7000);
 //				vlcc.setDisplay(0, 0);
-				
+//				vlcc.pauseAll();
+//				Thread.sleep(2000);
+//				vlcc.setMedia(0, path2);
+//				vlcc.seekOne(0, 234413);
+
 				
 			}else if(((Button)event.getSource()).getId().equals("advScrBtn")){
 				System.out.println("Pressing advanced screen btn");

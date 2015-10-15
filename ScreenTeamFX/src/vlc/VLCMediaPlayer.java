@@ -2,6 +2,8 @@ package vlc;
 
 import javax.swing.JFrame;
 
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
+
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 
 import java.awt.GraphicsDevice;
@@ -69,7 +71,6 @@ public class VLCMediaPlayer {
 		else{
 			System.out.println("No video attached");
 		}
-		while(getTime()!= time);
 	}	
 	
 	public void stop(){
