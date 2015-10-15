@@ -82,6 +82,7 @@ public class TimelineLineController implements FXMLController{
 		parentController.timelineLineContainer.getChildren().add(this.rootPane);
 		
 		//Drag&drop functionality
+		
 	}
 	
 	/**
@@ -103,6 +104,7 @@ public class TimelineLineController implements FXMLController{
 			 
             @Override
             public void handle(MouseEvent event) {
+            	contextMenu.hide();
                 MouseButton button = event.getButton();
                 if(button==MouseButton.PRIMARY){
                     System.out.println("PRIMARY button clicked");
@@ -139,6 +141,10 @@ public class TimelineLineController implements FXMLController{
 		return rootPane;
 	}
 	
+	public ContextMenu getContextMenu(){
+		return contextMenu;
+	}
+	
 	public TimelineController getParentController(){
 		return parentController;
 	}
@@ -152,6 +158,13 @@ public class TimelineLineController implements FXMLController{
 		rootPane.getChildren().add(node); //TODO: REMOVE TEMPorarly fix
 		mediaObjects.add(node);
 		node.setParentController(this);
+		
+	}
+	
+	//TODO: REVISIT TESTING ATM
+	public void removeMediaObject(MediaObjectController node) {
+		rootPane.getChildren().remove(node); //TODO: REMOVE TEMPorarly fix
+		mediaObjects.remove(node);
 		
 	}
 	

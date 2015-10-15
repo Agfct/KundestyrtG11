@@ -4,16 +4,25 @@
 package gui;
 
 import java.io.IOException;
+import java.util.Optional;
+
 import gui.AdvancedScreen.AdvancedScreenController;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
@@ -30,6 +39,9 @@ public class MediaObjectController extends GridPane{
 	private FXMLLoader fxmlLoader;
 	private TimelineLineController parentController;
 	private GridPane root = this;
+	private final MediaObjectController thisMediaObject = this;
+	private final ContextMenu contextMenu = new ContextMenu();
+	private Alert alert;
 
 	//Variables used for dragging/dropping
 	private AnchorPane masterRootPane;
@@ -53,6 +65,8 @@ public class MediaObjectController extends GridPane{
 			e.printStackTrace();
 		}
 		
+		//initialize drag&drop
+		initializeMouse();
 		
 		//Sets the master root pane for drag and drop
 		masterRootPane = AdvancedScreen.getInstance().getScreenController().getMasterRoot();
@@ -73,6 +87,51 @@ public class MediaObjectController extends GridPane{
 	private void initialize() {
 		System.out.println("init MediaHandlers");
 		buildNodeDragHandlers();
+	}
+	
+	private void initializeMouse(){
+		initializeAlerts();
+		//Adds different right click options to the ContextMenu that pops up on mouse click.
+		MenuItem edit = new MenuItem("Edit");
+		MenuItem remove = new MenuItem("Remove");
+		contextMenu.getItems().addAll(edit, remove);
+		remove.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent event) {
+		        System.out.println("Remove MediaObject");
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.get() == ButtonType.OK){
+				    // ... user chose OK
+					parentController.removeMediaObject(thisMediaObject);
+				} else {
+				    // ... user chose CANCEL or closed the dialog
+				}
+		        
+		    }
+		});
+		root.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			 
+            @Override
+            public void handle(MouseEvent event) {
+            	contextMenu.hide();
+            	parentController.getContextMenu().hide();
+                MouseButton button = event.getButton();
+                if(button==MouseButton.SECONDARY){
+                    System.out.println("Right Cliked a MediaObject");
+                    contextMenu.show(root, event.getScreenX(), event.getScreenY());
+                }
+                event.consume(); //Consumes the event so it wont go deeper down into the hierarchy 
+            }
+        });
+		
+
+	}
+	
+	private void initializeAlerts(){
+		alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Confirmation Dialog");
+		alert.setHeaderText("Delete MediaObject");
+		alert.setContentText("Do you really want to delete this MediaObject?");
 	}
 	
 	public MediaObjectType getType () { return mType; }
@@ -118,10 +177,11 @@ public class MediaObjectController extends GridPane{
 	
 	public void buildNodeDragHandlers() {
 		
-
+		
 		/**
-		 * This is the method for handling dragging over the same
-		 * Parent
+		 * This is the method for handling dragging the mediaObject
+		 * It takes the coords of the timelinePane and creates a rectangle (Bounds) and checks if it is inside the bounds of the timelinePane
+		 * NB: The y in the x,y coords are always 0 to prevent any vertical movement.
 		 */
 		mContextDragOver = new EventHandler <DragEvent>() {
 
@@ -199,6 +259,8 @@ public class MediaObjectController extends GridPane{
 				
 				parentController.getRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
 				parentController.getRoot().setOnDragOver(null);
+				AdvancedScreen.getInstance().getScreenController().getMasterRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
+				AdvancedScreen.getInstance().getScreenController().getMasterRoot().setOnDragOver(null);
 				parentController.getRoot().setOnDragDropped(null);
 				parentController.getRoot().setOnDragDone(null);
 
@@ -229,6 +291,8 @@ public class MediaObjectController extends GridPane{
 				/* Drag was detected, start a drag-and-drop gesture */
 				/* allow any transfer mode */
 				System.out.println("[MediaObjectController] Drag event started");
+				
+				AdvancedScreen.getInstance().getScreenController().getMasterRoot().setOnDragOver (mContextDragOver);
 				
 				parentController.getRoot().setOnDragOver (mContextDragOver);
 				parentController.getRoot().setOnDragDropped (mContextDragDropped);

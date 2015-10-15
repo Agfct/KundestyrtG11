@@ -62,6 +62,9 @@ public class TimelineController implements FXMLController {
 		//Creates the actual timeline line (right side of the timeline) using this controller as parent controller
 		childController = new TimelineLineController(this);
 		
+		//TODO: Sets the timeline to the current scrollbar position
+		getTimelineLineController().moveTimeline(parentController.getScrollBarPosition());
+		
 	}
 	
 	/**
