@@ -52,7 +52,7 @@ public class MediaObjectController extends GridPane{
 	private MediaObjectType mType = null;
 	
 	public MediaObjectController(){
-		setStyle("-fx-background-color: BLUE");
+//		setStyle("-fx-background-color: BLUE");
 		
 		
 		try {
