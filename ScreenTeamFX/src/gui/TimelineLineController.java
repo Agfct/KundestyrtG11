@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseButton;
@@ -32,6 +34,7 @@ public class TimelineLineController implements FXMLController{
 	private TimelineController parentController;
 	private AnchorPane rootPane;
 	private final ContextMenu contextMenu = new ContextMenu();
+
 	
 	//Drag&drop
 //	private MediaObjectIcon mDragOverIcon = null;
@@ -68,6 +71,9 @@ public class TimelineLineController implements FXMLController{
 		MediaObjectController testController = new MediaObjectController();
 		testController.setType(MediaObjectType.VIDEO);
 		addMediaObject(testController, new Point2D(0,0));
+
+		
+		
 		//Mouse Functionallity
 		initializeMouse();
 		
@@ -76,8 +82,8 @@ public class TimelineLineController implements FXMLController{
 		parentController.timelineLineContainer.getChildren().add(this.rootPane);
 		
 		//Drag&drop functionality
-		
 	}
+	
 	/**
 	 * Initializes all the mouse gesture controls, and also initializes the right click pop up menu.
 	 */

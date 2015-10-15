@@ -39,6 +39,7 @@
 					GridPane.rowIndex="0" GridPane.columnIndex="2">X</Button>
 			</children>
 		</GridPane>
+		<!-- This is the underlying anchorPane of the TimelineLine, it enables the timelineLine to slide back and forth -->
 		<AnchorPane style="-fx-background-color: cyan" fx:id="timelineLineContainer" GridPane.columnIndex="1">
 		<!-- Here is the timelineLine.fxml -->
 		</AnchorPane>

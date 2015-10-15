@@ -69,7 +69,7 @@ public class TimelineController implements FXMLController {
 	 * The timeline that is outside of this clip will be hidden for the user.
 	 */
 	private void createClip(){
-		Rectangle clipSize = new Rectangle(1400,150);
+		Rectangle clipSize = new Rectangle(1200,150);
 		clipSize.setLayoutX(0);
 		clipSize.setLayoutY(0);
 		timelineLineContainer.setClip(clipSize);
