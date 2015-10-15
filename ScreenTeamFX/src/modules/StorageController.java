@@ -140,7 +140,7 @@ public class StorageController {
 	private SessionModule synchronizeMediaObjects(SessionModule sm){
 		// Go through all timelines in TimelineModule
 		HashMap<Integer,TimelineModel> timelines = sm.getTimelines(); 
-		for (int i=0; i<timelines.size(); i++) {
+		for (Integer i : timelines.keySet()) {
 			
 			// Go through all TimelineMediaObjects in each timeline
 			ArrayList<TimelineMediaObject> mo = timelines.get(i).getTimelineMediaObjects();
