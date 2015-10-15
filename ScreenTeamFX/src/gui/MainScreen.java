@@ -101,10 +101,15 @@ public class MainScreen implements Screen {
 				String path3 = "videos\\Silicon.Valley.S02E04.HDTV.x264-ASAP.mp4";
 				String path4 = "videos\\Silicon.Valley.S02E01.HDTV.x264-ASAP.mp4";
 				String logo = "ScreenTeam_logo.png";
-//				VLCController vlcc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
-//				vlcc.createMediaPlayer(0);
-//				vlcc.setMedia(0, path1);
-//				vlcc.playAll();
+				String pe = "C:\\Users\\EirikZimmer\\Videos\\video_test_512kb.mp4";
+				VLCController vlcc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
+				vlcc.createMediaPlayer(0);
+				vlcc.createMediaPlayer(1);
+				vlcc.setDisplay(0, 0);
+				vlcc.setDisplay(1, 1);
+				vlcc.setMedia(0, pe);
+				vlcc.setMedia(1, pe);
+				vlcc.playAll();
 //				Thread.sleep(7000);
 //				vlcc.setDisplay(0, 0);
 				

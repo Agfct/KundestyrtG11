@@ -40,7 +40,7 @@ public class VLCMediaPlayer {
 				mp.getMediaPlayer().startMedia(mediaPath);
 				mediaChanged = false;
 			}
-			else if(getTime() > 0){
+			else if(getTime() > -1){
 				mp.getMediaPlayer().start();
 			}
 			else{
@@ -69,6 +69,7 @@ public class VLCMediaPlayer {
 		else{
 			System.out.println("No video attached");
 		}
+		while(getTime()!= time);
 	}	
 	
 	public void stop(){

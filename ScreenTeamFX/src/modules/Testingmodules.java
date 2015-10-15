@@ -26,14 +26,16 @@ public class Testingmodules {
 		tlm2.addTimelineMediaObject(0,15000,mO);
 		//tlm2.addTimelineMediaObject(6000,7000,mO);
 		//tlm.addTimelineMediaObject(9000,1500,mO);
-		tlm.getTimelineMediaObjects().get(0).setStartPoint(10000);
-		//tlm2.getTimelineMediaObjects().get(0).setStartPoint(10000);
-		tlmodul.playAll(0);
-		/*tlmodul.playOne(1,0);
+		tlm.getTimelineMediaObjects().get(0).setStartPoint(0);
+		//tlm.getTimelineMediaObjects().get(1).setStartPoint(5000);
+		//tlm2.getTimelineMediaObjects().get(0).setStartPoint(1);
+		//tlmodul.playAll(0);
+		//tlmodul.playOne(0,0);
+		tlmodul.playOne(0,0);
 		Thread.sleep(2000);
-		tlmodul.pauseOne(1);
-		Thread.sleep(4000);
-		tlmodul.playOne(1, 2000);*/
+		tlmodul.pauseOne(0);
+		Thread.sleep(1000);
+		tlmodul.playOne(0, 2000);
 	}
 	public static void main(String[] args) {
 		try {

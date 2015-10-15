@@ -166,7 +166,7 @@ public class SessionModule implements Serializable {
 						while (!performancestack.isEmpty() && performancestack.get(0).getTime()==temp.get(0).getTime()){
 							temp.add(performancestack.remove(0));
 						}
-						
+
 						for (Event ev2 : temp){
 							if (ev2.getAction()==Action.PLAY){
 								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
@@ -305,6 +305,7 @@ public class SessionModule implements Serializable {
 						else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
 							vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
 							long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
+							System.out.println(spoint);
 							vlccontroller.playOne(ev2.getTimelineid(), spoint);
 						}
 					}
