@@ -7,7 +7,7 @@ import java.util.HashMap;
 import vlc.VLCController;
 /**
  * 
- * @author BEO
+ * @author Baptiste Masselin, Eirik Z. Wold, Ole S.L. Skrede
  * Controls the timelines and their connections to displays. Talks to VLCController and StorageController.
  */
 public class SessionModule implements Serializable {
@@ -28,6 +28,7 @@ public class SessionModule implements Serializable {
 	private int tlmID;
 	private boolean pausing;
 	private Thread t1;
+	private Thread tAll;
 	
 	private ArrayList<Object> listeners;
 	// TODO: Would be better (more correct) to use Bean or create a listener interface for the listeners!
@@ -43,7 +44,7 @@ public class SessionModule implements Serializable {
 		this.listeners = new ArrayList<Object>();
 		this.vlccontroller = vlc;
 		this.pausing = false;
-//		vlccontroller.createMediaPlayer(tlmID);
+		vlccontroller.createMediaPlayer(tlmID);
 		this.t1 = new Thread();
 	}
 
@@ -122,75 +123,65 @@ public class SessionModule implements Serializable {
 	 * the button to play all timelines is pushed.
 	 * @param gbltime where the cursor is at when play all is pushed (0 if at start of the timelines)
 	 */
-	public void playAll(long gbltime){
+	public void playAll(long glbtime){
 		//TODO: look over and look for a better way to do this, currently constantly checks if the next event is ready to go or not.
 		//ABSOLUTELY NOT DONE NBNBNBNBNBNBNBNB
-		if (!pausing){
-			this.globaltime = gbltime;
-			buildPerformance();
-			Thread t = new Thread(){
-				public void run(){
-					long startp = System.currentTimeMillis();
-					long playp = System.currentTimeMillis();
-					while (!performancestack.isEmpty()){
-						playp = System.currentTimeMillis();
-						if (performancestack.get(0).getTime()<= playp-startp){
-							ArrayList<Event> temp = new ArrayList<Event>();
+		pausing = false;
+		this.globaltime = glbtime;
+		buildPerformance();
+		tAll = allPlay(glbtime);
+		tAll.start();
+	}
+	
+	private Thread allPlay(long glbtime){
+		Thread tAll1 = new Thread(){
+			public void run(){
+				long startp = System.currentTimeMillis();
+				long playp = System.currentTimeMillis();
+				while (!performancestack.isEmpty()){
+					playp = System.currentTimeMillis();
+					if (performancestack.get(0).getTime()-glbtime<= playp-startp){
+						ArrayList<Event> temp = new ArrayList<Event>();
+						temp.add(performancestack.remove(0));
+						while (!performancestack.isEmpty() && performancestack.get(0).getTime()==temp.get(0).getTime()){
 							temp.add(performancestack.remove(0));
-							while (performancestack.get(0).getTime()==temp.get(0).getTime()){
-								temp.add(performancestack.remove(0));
+						}
+						
+						for (Event ev2 : temp){
+							if (ev2.getAction()==Action.PLAY){
+								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+								vlccontroller.seekOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
 							}
-							
-							for (Event ev2 : temp){
-								if (ev2.getAction()==Action.PLAY){
-									vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
-									vlccontroller.seekOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
-								}
-								else if(ev2.getAction()==Action.STOP){
-									vlccontroller.stopOne(ev2.getTimelineid());
-								}
-								else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
-									vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
-									long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (gbltime-ev2.getTimelineMediaObject().getStart());
-									vlccontroller.seekOne(ev2.getTimelineid(), spoint);
-								}
-								
+							else if(ev2.getAction()==Action.STOP){
+								vlccontroller.stopOne(ev2.getTimelineid());
 							}
-							try {
-								vlccontroller.playAll();
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+							else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
+								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+								long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
+								vlccontroller.seekOne(ev2.getTimelineid(), spoint);
 							}
 						}
-						if (!performancestack.isEmpty() && performancestack.get(0).getTime()>= 1000+(playp-startp)){
-							try {
-								System.out.println("sleeping");
-								this.sleep(performancestack.get(0).getTime()-(playp-startp)-1000);
-								System.out.println("wake wake");
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+						try {
+							vlccontroller.playAll();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-						if (pausing){
-							try {
-								this.wait();
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+					}
+					//thread sleeping if its long until next event
+					if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp)){
+						try {
+							this.sleep((performancestack.get(0).getTime()-glbtime)-(playp-startp)-1500);
+						} catch (InterruptedException e) {
 						}
 					}
 				}
-			};
-		}
-		else{
-			notify();
-			pausing= false;
-		}
+			}
+		};
 		
+		return tAll1;
 	}
+	
 	
 	/**
 	 * Goes through all timelines on displays, get all their stacks of events and sort them based on when they 
@@ -203,29 +194,31 @@ public class SessionModule implements Serializable {
 		// maybe for (Integer dis : displays.keyset())
 		
 		for(Integer dis : displays.keySet()){
-			for(Event ev : displays.get(dis).getTimelineStack()){
-				if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.VIDEO){
-					if(ev.getAction() == Action.PLAY){
-						if(ev.getTime()>globaltime){
-							performancestack.add(ev);
+			if (displays.get(dis) != null){
+				for(Event ev : displays.get(dis).getTimelineStack()){
+					if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.VIDEO){
+						if(ev.getAction() == Action.PLAY){
+							if(ev.getTime()>=globaltime){
+								performancestack.add(ev);
+							}
+							else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
+								ev.setAction(Action.PLAY_WITH_OFFSET);
+								performancestack.add(ev);
+							}
 						}
-						else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
-							ev.setAction(Action.PLAY_WITH_OFFSET);
-							performancestack.add(ev);
+						else if(ev.getAction()==Action.STOP){
+							if (ev.getTime()>=globaltime){
+								performancestack.add(ev);
+							}
 						}
 					}
-					else if(ev.getAction()==Action.STOP){
-						if (ev.getTime()>globaltime){
-							performancestack.add(ev);
-						}
+					else if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.STREAM){
+						/**
+						 * TODO: Handle streams here. (Do they have both a start and end time? Might want to change between
+						 * two streams on one timeline??
+						 */
+						System.out.println("Adding events for streams is not implemented in TimelineModule.java: buildPerformance() yet.");
 					}
-				}
-				else if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.STREAM){
-					/**
-					 * TODO: Handle streams here. (Do they have both a start and end time? Might want to change between
-					 * two streams on one timeline??
-					 */
-					System.out.println("Adding events for streams is not implemented in TimelineModule.java: buildPerformance() yet.");
 				}
 			}
 		}
@@ -273,8 +266,8 @@ public class SessionModule implements Serializable {
 	 * @param glbtime the startpoint of the whole program
 	 * @return the thread created
 	 */
-	private synchronized Thread onePlay(long glbtime){
-		Thread t = new Thread(){
+	private Thread onePlay(long glbtime){
+		Thread tt = new Thread(){
 			public void run(){
 				long startp = System.currentTimeMillis();
 				long playp = System.currentTimeMillis();
@@ -306,7 +299,7 @@ public class SessionModule implements Serializable {
 			}
 		};
 		
-		return t;
+		return tt;
 	}
 	
 	/**
@@ -314,6 +307,7 @@ public class SessionModule implements Serializable {
 	 */
 	public void pauseAll(){
 		pausing = true;
+		tAll.interrupt();
 		try {
 			vlccontroller.pauseAll();
 		} catch (InterruptedException e) {
@@ -327,7 +321,7 @@ public class SessionModule implements Serializable {
 	 * pause the one timeline that is played with playOne()
 	 * @param display
 	 */
-	public void pauseOne(Integer display) throws InterruptedException{
+	public void pauseOne(Integer display){
 		pausing = true;
 		t1.interrupt();
 		vlccontroller.pauseOne(displays.get(display).getID());
