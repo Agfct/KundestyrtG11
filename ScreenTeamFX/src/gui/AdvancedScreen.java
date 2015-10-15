@@ -34,6 +34,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
+import modules.*;
 /**
  * @author Anders Lunde,  Magnus Gunde
  * Singleton class
@@ -89,12 +90,15 @@ public class AdvancedScreen implements Screen{
 		 * The controller for the FXML of the advancedScreen.
 		 * The MainScreenController listens to all the input from the objects (buttons, textFields, mouseClicks) in the fxml scene.
 		 */
-		public class AdvancedScreenController implements FXMLController {
+		public class AdvancedScreenController implements FXMLController, SessionListener {
 			
 
 			//List of all TimelineControllers within the advancedScreen
 			private ArrayList<TimelineController> timelineControllers;
 			private TimelineBarController timelineBarController;
+			private HeaderController headerController;
+			
+			private SessionModule currentSession;
 
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
@@ -131,7 +135,7 @@ public class AdvancedScreen implements Screen{
 					e.printStackTrace();
 				}
 				
-				
+				currentSession=MainModuleController.getInstance().getSession();
 				timelineBarController = new TimelineBarController(this);
 				barGrid.add(timelineBarController,1,0);
 				
@@ -434,9 +438,29 @@ public class AdvancedScreen implements Screen{
 			 * Initializes the header
 			 */
 			public void initHeader(AdvancedScreenController self){
-				HeaderController headerController = new HeaderController(self);
+				headerController = new HeaderController(self);
 				System.out.println("INITING THE HEADER: ");
 				rootGrid.getChildren().add(headerController.getRoot());
+			}
+
+
+
+			@Override
+			public void fireTimelinesChanged() {
+				// TODO Auto-generated method stub
+				
+			}
+
+
+
+			@Override
+			public void fireMediaObjectListChanged() {
+				headerController.mediaObjectsChanged();
+				
+			}
+			
+			public SessionModule getCurrentSession(){
+				return currentSession;
 			}
 			
 	

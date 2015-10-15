@@ -40,4 +40,8 @@ public class MainModuleController {
 		return mainModuleController;
 	}
 	
+	public SessionModule getSession(){
+		return sessionModule;
+	}
+	
 }
