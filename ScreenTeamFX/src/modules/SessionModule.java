@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import gui.*;
 import vlc.VLCController;
 /**
  * 
@@ -29,8 +30,7 @@ public class SessionModule implements Serializable {
 	private boolean pausing;
 	private Thread t1;
 	
-	private ArrayList<Object> listeners;
-	// TODO: Would be better (more correct) to use Bean or create a listener interface for the listeners!
+	private ArrayList<SessionListener> listeners;
 	
 	public SessionModule(VLCController vlc) {
 		this.timelines = new ArrayList<TimelineModel>();
@@ -40,10 +40,10 @@ public class SessionModule implements Serializable {
 		this.performancestack = new ArrayList<Event>();
 		this.tlmID =0;
 		this.displays = new HashMap<Integer,TimelineModel>();
-		this.listeners = new ArrayList<Object>();
+		this.listeners = new ArrayList<SessionListener>();
 		this.vlccontroller = vlc;
 		this.pausing = false;
-		vlccontroller.createMediaPlayer(tlmID);
+//		vlccontroller.createMediaPlayer(tlmID);
 		this.t1 = new Thread();
 	}
 
@@ -390,15 +390,15 @@ public class SessionModule implements Serializable {
 		return result;
 	}
 	
-	public void addListener(Object listener){
+	public void addListener(SessionListener listener){
 		listeners.add(listener);
 	}
 	
 	public void clearListeners(){
-		listeners = new ArrayList<Object>();
+		listeners = new ArrayList<SessionListener>();
 	}
 	
-	public boolean removeListener(Object listener){
+	public boolean removeListener(SessionListener listener){
 		return listeners.remove(listener);
 	}
 
@@ -411,6 +411,8 @@ public class SessionModule implements Serializable {
 	}
 	
 	private void mediaObjectsChanged(){
-		// TODO: listeners.mediaObjectListChanged();
+		for(SessionListener listener: listeners){
+			listener.fireMediaObjectListChanged();
+		}
 	}
 }

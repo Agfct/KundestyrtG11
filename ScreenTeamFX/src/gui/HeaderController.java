@@ -60,6 +60,7 @@ public class HeaderController implements FXMLController{
 	
 	public HeaderController(AdvancedScreenController AdvParentController) {
 		this.parentController=AdvParentController;
+		System.out.println("HEADERCONST");
 	
 		
 //		 Trying to fetch the FXML
@@ -174,14 +175,17 @@ public class HeaderController implements FXMLController{
 	 */
 	public void mediaObjectsChanged(){ // is Run by the advScreen when the function fireMediaObjectCahnges 
 		ArrayList<MediaObject> newListOfMediaObjects=parentController.getCurrentSession().getMediaObjects();
-		
+		importedMediaObjects.clear();
 		for(MediaObject m:newListOfMediaObjects){
-			
-			//importedMediaObjects.add(arg0)
+			MediaObjectIcon icn = new MediaObjectIcon();
+			icn.setMediaObject(m);
+			icn.setType(MediaObjectType.VIDEO);
+			icn.setTitle(m.getName());
+			importedMediaObjects.add(icn);
 		}
 		
 		//  the list of getMediaObject must possibly be converted to mediaObjectIcons 
-		//TODO: updateMediaView()
+		updateMediaView();
 		
 	}
 	
@@ -202,7 +206,13 @@ public class HeaderController implements FXMLController{
 		} catch(Exception e) {
 			System.out.println("HeaderController: FileChooser caught an expection");
 		}
+		//checks for aborted file import
+		if(selectedFiles==null){
+			return;
+		}
+		
 		//Runs through the files imported, and creates a mediaObject from the file
+		
 		for (File file : selectedFiles){
 			if(file != null){
 				this.createNewMediaObjectFromFile(file);

@@ -135,7 +135,7 @@ public class AdvancedScreen implements Screen{
 					e.printStackTrace();
 				}
 				
-				currentSession=MainModuleController.getInstance().getSession();
+				
 				timelineBarController = new TimelineBarController(this);
 				barGrid.add(timelineBarController,1,0);
 				
@@ -147,6 +147,10 @@ public class AdvancedScreen implements Screen{
 				
 				// Initialize the header
 				initHeader(this);
+				
+				//get current session
+				currentSession=MainModuleController.getInstance().getSession();
+				currentSession.addListener(this);
 
 			}
 			
@@ -441,6 +445,7 @@ public class AdvancedScreen implements Screen{
 				headerController = new HeaderController(self);
 				System.out.println("INITING THE HEADER: ");
 				rootGrid.getChildren().add(headerController.getRoot());
+
 			}
 
 
