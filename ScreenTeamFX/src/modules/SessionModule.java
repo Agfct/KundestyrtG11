@@ -34,7 +34,6 @@ public class SessionModule implements Serializable {
 	
 	public SessionModule(VLCController vlc) {
 		this.timelines = new ArrayList<TimelineModel>();
-		this.timelines.add(new TimelineModel(0));
 		this.mediaObjects = new ArrayList<MediaObject>();
 		this.globaltime = 0;
 		this.performancestack = new ArrayList<Event>();
@@ -55,7 +54,7 @@ public class SessionModule implements Serializable {
 		tlmID +=1;
 		TimelineModel tlm = new TimelineModel(tlmID);
 		timelines.add(tlm);
-		vlccontroller.createMediaPlayer(tlmID);
+//		vlccontroller.createMediaPlayer(tlmID);
 		timelinesChanged();
 		return tlmID;
 	}
@@ -68,7 +67,7 @@ public class SessionModule implements Serializable {
 			if(id==timelines.get(i).getID()){
 				unassignTimeline(timelines.get(i));
 				timelines.remove(i);
-				vlccontroller.deleteMediaPlayer(id);
+//				vlccontroller.deleteMediaPlayer(id);
 			}
 		}
 		timelinesChanged();
@@ -360,7 +359,8 @@ public class SessionModule implements Serializable {
 		}
 		
 		// Did not find an old MediaObject with equal path, so create a new one
-		String name = path.substring(path.lastIndexOf('/')+1);
+		
+		String name = path.substring(path.lastIndexOf('\\')+1);
 		MediaObject mo = new MediaObject(path, name, mst);
 		mediaObjects.add(mo);
 		mediaObjectsChanged();
@@ -403,7 +403,9 @@ public class SessionModule implements Serializable {
 	}
 
 	private void timelinesChanged() {
-		// TODO listeners.fireTimelinesChanged();
+		for(SessionListener listener: listeners){
+			listener.fireTimelinesChanged();
+		}
 	}
 	
 	private void timelineChanged(TimelineModel tlm){

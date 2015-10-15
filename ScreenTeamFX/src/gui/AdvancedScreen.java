@@ -6,6 +6,7 @@ package gui;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javafx.beans.property.ListProperty;
@@ -117,6 +118,9 @@ public class AdvancedScreen implements Screen{
 			@FXML private Button testButton;
 			@FXML private ListView fileListView;
 			@FXML private ScrollBar timelineLineScrollBar;
+			
+			// Hashmap over the timelineIDs from the modules and the timelineControllers of the GUI
+			private HashMap<TimelineController, Integer> idTimlineControllerMap;
 
 			
 			public AdvancedScreenController(){
@@ -151,6 +155,9 @@ public class AdvancedScreen implements Screen{
 				//get current session
 				currentSession=MainModuleController.getInstance().getSession();
 				currentSession.addListener(this);
+				
+				// Instanciated the hashmap over controllers
+				idTimlineControllerMap = new HashMap<TimelineController, Integer>();
 
 			}
 			
@@ -401,9 +408,12 @@ public class AdvancedScreen implements Screen{
 			 * TODO: add arguments and java models
 			 */
 			public void addTimeline(){
-				TimelineController tempTimeController = new TimelineController();
-				timelineControllers.add(tempTimeController);
-				addTimelineControllerToScreen(tempTimeController);
+				int timelineInt = currentSession.addTimeline();
+				System.out.println(timelineInt);
+				System.out.println("Total number of timelines: "+ currentSession.getTimelines().size());
+//				TimelineController tempTimeController = new TimelineController();
+//				timelineControllers.add(tempTimeController);
+//				addTimelineControllerToScreen(tempTimeController);
 			}
 			
 			/**
@@ -433,8 +443,9 @@ public class AdvancedScreen implements Screen{
 			 * @param timeline
 			 */
 			public void removeTimeline(TimelineController timeline){
-				timelineContainer.getChildren().remove(timeline.getRoot());
-				timelineControllers.remove(timeline);
+//				timelineContainer.getChildren().remove(timeline.getRoot());
+//				timelineControllers.remove(timeline);
+				currentSession.removeTimeline(idTimlineControllerMap.get(timeline));
 			}
 			
 			
@@ -453,10 +464,27 @@ public class AdvancedScreen implements Screen{
 			@Override
 			public void fireTimelinesChanged() {
 				// TODO Auto-generated method stub
+				ArrayList<TimelineModel> timelineModelList = currentSession.getTimelines();
+				
+				//Remove all timelines from view
+				timelineControllers.clear();
+				timelineContainer.getChildren().clear();
+				idTimlineControllerMap.clear();
+				
+				for(TimelineModel tlm:timelineModelList){
+					TimelineController tempTimeController = new TimelineController();
+					timelineControllers.add(tempTimeController);
+					addTimelineControllerToScreen(tempTimeController);
+					idTimlineControllerMap.put(tempTimeController, tlm.getID());
+					
+				}
+				
 				
 			}
 
-
+			
+			
+			
 
 			@Override
 			public void fireMediaObjectListChanged() {

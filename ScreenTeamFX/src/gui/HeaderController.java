@@ -184,7 +184,7 @@ public class HeaderController implements FXMLController{
 			importedMediaObjects.add(icn);
 		}
 		
-		//  the list of getMediaObject must possibly be converted to mediaObjectIcons 
+		//Updates the view for the user
 		updateMediaView();
 		
 	}
