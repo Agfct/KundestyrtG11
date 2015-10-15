@@ -31,9 +31,9 @@ public class Testingmodules {
 		tlmodul.playOne(1,0);
 		//tlmodul.playAll(1000);
 		Thread.sleep(2000);
-		tlmodul.pauseOne(1);
+		tlmodul.pauseOne(0);
 		Thread.sleep(4000);
-		tlmodul.playOne(1, 2000);
+		//tlmodul.playOne(1, 2000);
 	}
 	public static void main(String[] args) {
 		try {

@@ -18,7 +18,7 @@ public class SessionModule implements Serializable {
 	private VLCController vlccontroller;
 	// Each display can have one or zero timelines
 	private HashMap<Integer, TimelineModel> displays;
-	private ArrayList<TimelineModel> timelines;
+	private HashMap<Integer, TimelineModel> timelines;
 	private ArrayList<MediaObject> mediaObjects;
 	// Timer for the timeline
 	private long globaltime;
@@ -34,8 +34,8 @@ public class SessionModule implements Serializable {
 	// TODO: Would be better (more correct) to use Bean or create a listener interface for the listeners!
 	
 	public SessionModule(VLCController vlc) {
-		this.timelines = new ArrayList<TimelineModel>();
-		this.timelines.add(new TimelineModel(0));
+		this.timelines = new HashMap<Integer,TimelineModel>();
+		this.timelines.put(0,new TimelineModel(0));
 		this.mediaObjects = new ArrayList<MediaObject>();
 		this.globaltime = 0;
 		this.performancestack = new ArrayList<Event>();
@@ -55,7 +55,7 @@ public class SessionModule implements Serializable {
 	public int addTimeline(){
 		tlmID +=1;
 		TimelineModel tlm = new TimelineModel(tlmID);
-		timelines.add(tlm);
+		timelines.put(tlmID,tlm);
 		vlccontroller.createMediaPlayer(tlmID);
 		timelinesChanged();
 		return tlmID;
@@ -65,36 +65,40 @@ public class SessionModule implements Serializable {
 	// what the gui knows. either id of timeline or the timelinemodel itself
 	public void removeTimeline(int id){
 		// Find the timeline in the timelines list and remove it
-		for(int i=0; i<timelines.size(); i++){
-			if(id==timelines.get(i).getID()){
-				unassignTimeline(timelines.get(i));
-				timelines.remove(i);
-				vlccontroller.deleteMediaPlayer(id);
-			}
-		}
+		unassignTimeline(timelines.get(id));
+		timelines.put(id,null);
+		vlccontroller.deleteMediaPlayer(id);
 		timelinesChanged();
 	}
-	
+	/**
+	 * goes through all displays and removes tlm if it is assigned to said display
+	 * @param tlm
+	 */
 	public void unassignTimeline(TimelineModel tlm){
 		//TODO: Go through all displays and remove the tlm timeline if it is assigned
-		int i;
 		//Test to know that we have at least 1 display
 		if(displays.isEmpty()){
 		}
 		else{
 			//Check every displays
-			for(i=0; i<displays.size(); i++){
+			for(Integer i : displays.keySet()){
 				if(displays.get(i)==tlm){
-					displays.remove(i);
+					displays.put(i,null);
 				}
 			}		
 		}
 		timelineChanged(tlm);
 	}
 	
+	/**
+	 * Assigns a timeline to be played on a display
+	 * @param display
+	 * @param tlm the timeline that is to be assigned to the display
+	 */
 	public void assignTimeline(Integer display, TimelineModel tlm){
-		//TODO: Check that this is legal. If so: add tlm to display in displays.
-		if(displays.isEmpty()){
+		//TODO: Change tlm to the ID for the timeline??? return something about previous assigned timeline???
+		if(!displays.containsKey(display)){
+			System.out.println("this display is not added to the list, please add it");
 		}
 		else{
 			TimelineModel prevtlm = displays.put(display,tlm);
@@ -103,17 +107,28 @@ public class SessionModule implements Serializable {
 		timelineChanged(tlm);
 	}
 	
-	// !!!! I put Timeline Model because I can't create a new display without TimelineModel
+	/**
+	 * adds a display to the list of possible displays.
+	 * to be used by mainmodulecontroller if i/o module finds a new display
+	 * @param display
+	 */
 	public void addDisplay(Integer display){
 		//TODO: add display to displays, assign none (timeline)
 		displays.put(display, null);
+		//vlccontroller.addDisplay(Integer display);
 	}
 	
+	/**
+	 * removes a display from the list of possible displays
+	 * to be used if I/O module detects that a display dissapears.
+	 * @param display
+	 */
 	public void removeDisplay(Integer display){
-		//TODO: check if the display have any timelines assigned, handle it and remove the display..
-		if(displays.isEmpty()){
+		if(!displays.containsKey(display)){
+			System.out.println("no such display to remove");
 		}
 		else{
+			vlccontroller.setDisplay(displays.get(display).getID(),-1);
 			displays.remove(display);
 		}
 	}
@@ -132,7 +147,12 @@ public class SessionModule implements Serializable {
 		tAll = allPlay(glbtime);
 		tAll.start();
 	}
-	
+	/**
+	 * creates a thread to go through the performancestack and tell vlccontroller when and what
+	 * to play and stop.
+	 * @param glbtime the global point the timeline begins, 0 is start 1000 is one second in.
+	 * @return
+	 */
 	private Thread allPlay(long glbtime){
 		Thread tAll1 = new Thread(){
 			public void run(){
@@ -187,7 +207,7 @@ public class SessionModule implements Serializable {
 	 * Goes through all timelines on displays, get all their stacks of events and sort them based on when they 
 	 * begin and end. Also check where we are on the globaltime.
 	 */
-	public void buildPerformance(){
+	private void buildPerformance(){
 		//Add all Events to list, then sort it
 		performancestack = new ArrayList<Event>();
 		//TODO change to only the timelines that is assigned to a display??
@@ -262,7 +282,7 @@ public class SessionModule implements Serializable {
 	}
 	
 	/**
-	 * creates a thread used for playOne
+	 * creates a thread used for playOne that tells vlccontroller when and what to play and stop
 	 * @param glbtime the startpoint of the whole program
 	 * @return the thread created
 	 */
@@ -321,18 +341,18 @@ public class SessionModule implements Serializable {
 	 * pause the one timeline that is played with playOne()
 	 * @param display
 	 */
-	public void pauseOne(Integer display){
+	public void pauseOne(Integer timelineid){
 		pausing = true;
 		t1.interrupt();
-		vlccontroller.pauseOne(displays.get(display).getID());
+		vlccontroller.pauseOne(timelineid);
 		//TODO: Pause the timeline for this display
 	}
 	
-	public ArrayList<TimelineModel> getTimelines() {
+	public HashMap<Integer,TimelineModel> getTimelines() {
 		return timelines;
 	}
 	
-	public void setTimelines(ArrayList<TimelineModel> timelines) {
+	public void setTimelines(HashMap<Integer,TimelineModel> timelines) {
 		this.timelines = timelines;
 		timelinesChanged();
 	}
