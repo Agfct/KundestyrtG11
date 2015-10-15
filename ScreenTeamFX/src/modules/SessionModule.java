@@ -139,8 +139,8 @@ public class SessionModule implements Serializable {
 	 * @param gbltime where the cursor is at when play all is pushed (0 if at start of the timelines)
 	 */
 	public void playAll(long glbtime){
-		//TODO: look over and look for a better way to do this, currently constantly checks if the next event is ready to go or not.
-		//ABSOLUTELY NOT DONE NBNBNBNBNBNBNBNB
+		//TODO: look over and look for a better way to do this.
+		//NOT DONE NBNBNBNBNBNBNBNB
 		pausing = false;
 		this.globaltime = glbtime;
 		buildPerformance();
@@ -252,7 +252,7 @@ public class SessionModule implements Serializable {
 	 * @param glbtime current position of the cursor (0 if at beginning of timeline).
 	 */
 	public void playOne(Integer display, long glbtime){
-		//TODO look over and look for better way to do this, currently constantly checks if the next event is ready to go or not.
+		//TODO look over and look for better way to do this.
 		//NOT DONE NBNNBNBNBNBNBNB
 		pausing = false;
 		this.globaltime = glbtime;
@@ -295,19 +295,19 @@ public class SessionModule implements Serializable {
 					playp = System.currentTimeMillis();
 					if (performancestack.get(0).getTime()-glbtime<= playp-startp){
 						Event ev2 = performancestack.remove(0);
-							if (ev2.getAction()==Action.PLAY){
-								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
-								vlccontroller.playOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
-							}
-							else if(ev2.getAction()==Action.STOP){
-								vlccontroller.stopOne(ev2.getTimelineid());
-							}
-							else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
-								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
-								long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
-								vlccontroller.playOne(ev2.getTimelineid(), spoint);
-							}
+						if (ev2.getAction()==Action.PLAY){
+							vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+							vlccontroller.playOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
 						}
+						else if(ev2.getAction()==Action.STOP){
+							vlccontroller.stopOne(ev2.getTimelineid());
+						}
+						else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
+							vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+							long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
+							vlccontroller.playOne(ev2.getTimelineid(), spoint);
+						}
+					}
 					//thread sleeping if its long until next event
 					if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp)){
 						try {
