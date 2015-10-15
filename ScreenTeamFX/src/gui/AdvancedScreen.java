@@ -32,7 +32,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * @author Anders Lunde,  Magnus Gunde
@@ -442,6 +445,18 @@ public class AdvancedScreen implements Screen{
 				HeaderController headerController = new HeaderController(self);
 				System.out.println("INITING THE HEADER: ");
 				rootGrid.getChildren().add(headerController.getRoot());
+			}
+			
+			public void showModal(MediaObjectController mediaObject){
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(MainGUIController.getInstance().primaryStage);
+//                VBox dialogVbox = new VBox(20);
+//                dialogVbox.getChildren().add(new Text("This is a Dialog"));
+                ModalController mediaObjectModal = new ModalController(mediaObject);
+                Scene dialogScene = new Scene(mediaObjectModal.getRoot(), 300, 200);
+                dialog.setScene(dialogScene);
+                dialog.show();
 			}
 
 

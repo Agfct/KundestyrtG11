@@ -109,6 +109,13 @@ public class MediaObjectController extends GridPane{
 		        
 		    }
 		});
+		edit.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent event) {
+		        System.out.println("Edit MediaObject");
+				AdvancedScreen.getInstance().getScreenController().showModal(thisMediaObject);
+		    }
+		});
 		root.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			 
             @Override
