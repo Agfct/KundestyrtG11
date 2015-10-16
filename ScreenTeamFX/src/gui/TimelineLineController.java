@@ -19,6 +19,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import modules.MediaSourceType;
 
 /**
  * 
@@ -69,7 +70,7 @@ public class TimelineLineController implements FXMLController{
 		
 		//TODO: TESTING ONLY
 		MediaObjectController testController = new MediaObjectController();
-		testController.setType(MediaObjectType.VIDEO);
+		testController.setType(MediaSourceType.VIDEO);
 		addMediaObject(testController, new Point2D(0,0));
 
 		
