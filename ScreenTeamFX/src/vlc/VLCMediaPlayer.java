@@ -6,6 +6,7 @@ import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 
+import java.awt.Color;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
@@ -99,6 +100,7 @@ public class VLCMediaPlayer {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		mp.setBackground(new Color(255, 255, 255));
 		frame.setVisible(true);
 	}
 	

@@ -31,9 +31,21 @@ public class VLCController {
 			vlcPathSet = true;
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			System.out.println("Can't add VLC native library. Invalid path.");
 		}
 		findDisplays();
+	}
+	
+	public void setVlcPath(String vlcPath){
+		this.vlcPath = vlcPath;
+		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
+		try{
+			prerunCheckPlayer = new VLCMediaPlayer();
+			vlcPathSet = true;
+		}
+		catch(Exception e){
+			System.out.println("Can't add VLC native library. Invalid path.");
+		}
 	}
 	
 	private void findDisplays(){
@@ -245,7 +257,11 @@ public class VLCController {
 		}
 	}
 	
-	public ArrayList<Integer> getAvailableDisplays(){
-		return availableDisplays;
+	public void close(){
+		for(int mp : mediaPlayerList.keySet()){
+			toPlayer(mp).close();
+		}
+		prerunCheckPlayer.close();
+		System.exit(1);
 	}
 }
