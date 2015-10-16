@@ -433,6 +433,15 @@ public class AdvancedScreen implements Screen{
 				timelineContainer.getChildren().add(tempTimeController.getRoot());
 			}
 			
+			/**
+			 * Removes the given timelineController from the timelinecontainer(Vbox)
+			 * @param timeLineControllerToBeRemoved
+			 */
+			private void removeTimelineControllerFromScreen(TimelineController timelineController){
+				timelineContainer.getChildren().remove(timelineController.getRoot());
+
+			}
+			
 			/* (non-Javadoc)
 			 * @see gui.FXMLController#getFXMLLoader()
 			 */
@@ -451,10 +460,10 @@ public class AdvancedScreen implements Screen{
 			 * and the TimelineController from the advanceScreens controller list.
 			 * @param timeline
 			 */
-			public void removeTimeline(TimelineController timeline){
+			public void removeTimeline(TimelineController timelineController){
 //				timelineContainer.getChildren().remove(timeline.getRoot());
 //				timelineControllers.remove(timeline);
-				currentSession.removeTimeline(idTimlineControllerMap.get(timeline));
+				currentSession.removeTimeline(idTimlineControllerMap.get(timelineController));
 			}
 			
 			
@@ -481,19 +490,38 @@ public class AdvancedScreen implements Screen{
 				
 				
 				switch (changeType) {
-				case ADDED:
-					TimelineController tempTimeController = new TimelineController();
+				case ADDED:{
+					TimelineController tempTimeController = new TimelineController(timeLineModel);
 					timelineControllers.add(tempTimeController);
 					addTimelineControllerToScreen(tempTimeController);
 					idTimlineControllerMap.put(tempTimeController, timeLineModel.getID());
 					break;
-					
-				case REMOVED:
-					timelineControllers.remove(idTimlineControllerMap.get(key)tempTimeController);
-					addTimelineControllerToScreen(tempTimeController);
-					idTimlineControllerMap.put(tempTimeController, timeLineModel.getID());
+				}
+				case REMOVED:{
+					//Remove the controller from the
+//					timelineControllers.remove(idTimlineControllerMap.get(key)tempTimeController);
+					TimelineController timelineControllerToBeRemoved=null;
+					for(TimelineController timelineController: idTimlineControllerMap.keySet()){
+						if(idTimlineControllerMap.get(timelineController).equals(timeLineModel.getID())){
+							timelineControllerToBeRemoved=timelineController;
+						}
+					}
+					idTimlineControllerMap.remove(timelineControllerToBeRemoved);
+					timelineControllers.remove(timelineControllerToBeRemoved);
+					removeTimelineControllerFromScreen(timelineControllerToBeRemoved);
 					break;
-
+				}
+				case MODIFIED:{
+					TimelineController timelineControllerToBeModified=null;
+					for(TimelineController timelineController: idTimlineControllerMap.keySet()){
+						if(idTimlineControllerMap.get(timelineController).equals(timeLineModel.getID())){
+							timelineControllerToBeModified=timelineController;
+						}
+					}
+					timelineControllerToBeModified.modelChanged();
+					
+					break;
+				}
 				
 				default:
 					break;
@@ -504,17 +532,17 @@ public class AdvancedScreen implements Screen{
 				}
 				
 				//Remove all timelines from view
-				timelineControllers.clear();
-				timelineContainer.getChildren().clear();
-				idTimlineControllerMap.clear();
+//				timelineControllers.clear();
+//				timelineContainer.getChildren().clear();
+//				idTimlineControllerMap.clear();
 				
-				for(TimelineModel tlm:timelineModelList){
-					TimelineController tempTimeController = new TimelineController();
-					timelineControllers.add(tempTimeController);
-					addTimelineControllerToScreen(tempTimeController);
-					idTimlineControllerMap.put(tempTimeController, tlm.getID());
-					
-				}
+//				for(TimelineModel tlm:timelineModelList){
+//					TimelineController tempTimeController = new TimelineController();
+//					timelineControllers.add(tempTimeController);
+//					addTimelineControllerToScreen(tempTimeController);
+//					idTimlineControllerMap.put(tempTimeController, tlm.getID());
+//					
+//				}
 				
 				
 			}

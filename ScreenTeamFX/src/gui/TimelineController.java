@@ -12,6 +12,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
+import modules.TimelineModel;
 
 /**
  * 
@@ -31,15 +32,15 @@ public class TimelineController implements FXMLController {
 	@FXML GridPane timelineContainer;
 	@FXML AnchorPane timelineLineContainer;
 	
-	
+	//The timelinemodel that corresponds to this controller
+	TimelineModel timelineModel;
 	/**
-	 *TODO: Add a timelineModel to this controller, and also add its model the the module.
 	 *
 	 *This construction initiates the TimelineInfo.fxml and controls the actions from it.
 	 *It also creates an instance of the TimeLineLineController which contains the TimelineLine.fxml.
 	 */
-	public TimelineController (){
-		
+	public TimelineController (TimelineModel timelineModel){
+		this.timelineModel=timelineModel;
 			//TODO: Add clipping on anchorPane ??
 //		timelineLineContainer.setClip(value);
 		
@@ -113,6 +114,16 @@ public class TimelineController implements FXMLController {
 	
 	public GridPane getTimelineInfo(){
 		return timelineInfo;
+	}
+	
+	public TimelineModel getTimelineModel(){
+		return timelineModel;
+	}
+
+	public void modelChanged() {
+		childController.repaint();
+		//TODO: updateValuesFromModel()
+		
 	}
 
 
