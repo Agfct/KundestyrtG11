@@ -68,10 +68,6 @@ public class TimelineLineController implements FXMLController{
 			e.printStackTrace();
 		}
 		
-		//TODO: TESTING ONLY
-		MediaObjectController testController = new MediaObjectController();
-		testController.setType(MediaSourceType.VIDEO);
-		addMediaObject(testController, new Point2D(0,0));
 
 		
 		

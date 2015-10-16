@@ -129,6 +129,7 @@ public class HeaderController implements FXMLController{
 		acceptedVideoFormats.add("mpg");
 		acceptedVideoFormats.add("mkv");
 		acceptedVideoFormats.add("wmv");
+		acceptedVideoFormats.add("mp4");
 		ArrayList<String> acceptedAudioFormats = new ArrayList<String>();
 		acceptedAudioFormats.add("mp3");
 		acceptedAudioFormats.add("flac");
