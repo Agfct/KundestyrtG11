@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import gui.*;
 import vlc.VLCController;
 /**
  * 
@@ -29,21 +30,19 @@ public class SessionModule implements Serializable {
 	private boolean pausing;
 	private Thread t1;
 	
-	private ArrayList<Object> listeners;
-	// TODO: Would be better (more correct) to use Bean or create a listener interface for the listeners!
+	private ArrayList<SessionListener> listeners;
 	
 	public SessionModule(VLCController vlc) {
 		this.timelines = new ArrayList<TimelineModel>();
-		this.timelines.add(new TimelineModel(0));
 		this.mediaObjects = new ArrayList<MediaObject>();
 		this.globaltime = 0;
 		this.performancestack = new ArrayList<Event>();
 		this.tlmID =0;
 		this.displays = new HashMap<Integer,TimelineModel>();
-		this.listeners = new ArrayList<Object>();
+		this.listeners = new ArrayList<SessionListener>();
 		this.vlccontroller = vlc;
 		this.pausing = false;
-		vlccontroller.createMediaPlayer(tlmID);
+//		vlccontroller.createMediaPlayer(tlmID);
 		this.t1 = new Thread();
 	}
 
@@ -55,7 +54,7 @@ public class SessionModule implements Serializable {
 		tlmID +=1;
 		TimelineModel tlm = new TimelineModel(tlmID);
 		timelines.add(tlm);
-		vlccontroller.createMediaPlayer(tlmID);
+//		vlccontroller.createMediaPlayer(tlmID);
 		timelinesChanged();
 		return tlmID;
 	}
@@ -68,7 +67,7 @@ public class SessionModule implements Serializable {
 			if(id==timelines.get(i).getID()){
 				unassignTimeline(timelines.get(i));
 				timelines.remove(i);
-				vlccontroller.deleteMediaPlayer(id);
+//				vlccontroller.deleteMediaPlayer(id);
 			}
 		}
 		timelinesChanged();
@@ -360,7 +359,8 @@ public class SessionModule implements Serializable {
 		}
 		
 		// Did not find an old MediaObject with equal path, so create a new one
-		String name = path.substring(path.lastIndexOf('/')+1);
+		
+		String name = path.substring(path.lastIndexOf('\\')+1);
 		MediaObject mo = new MediaObject(path, name, mst);
 		mediaObjects.add(mo);
 		mediaObjectsChanged();
@@ -390,20 +390,22 @@ public class SessionModule implements Serializable {
 		return result;
 	}
 	
-	public void addListener(Object listener){
+	public void addListener(SessionListener listener){
 		listeners.add(listener);
 	}
 	
 	public void clearListeners(){
-		listeners = new ArrayList<Object>();
+		listeners = new ArrayList<SessionListener>();
 	}
 	
-	public boolean removeListener(Object listener){
+	public boolean removeListener(SessionListener listener){
 		return listeners.remove(listener);
 	}
 
 	private void timelinesChanged() {
-		// TODO listeners.fireTimelinesChanged();
+		for(SessionListener listener: listeners){
+			listener.fireTimelinesChanged();
+		}
 	}
 	
 	private void timelineChanged(TimelineModel tlm){
@@ -411,6 +413,8 @@ public class SessionModule implements Serializable {
 	}
 	
 	private void mediaObjectsChanged(){
-		// TODO: listeners.mediaObjectListChanged();
+		for(SessionListener listener: listeners){
+			listener.fireMediaObjectListChanged();
+		}
 	}
 }

@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import modules.*;
 
 /**
  * @author Anders Lunde
@@ -29,6 +30,8 @@ public class MediaObjectIcon extends GridPane{
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
 	private MediaObjectType mType = null;
+	
+	private MediaObject mediaObject;
 
 	public MediaObjectIcon() {
 		
@@ -59,7 +62,10 @@ public class MediaObjectIcon extends GridPane{
 	private void initialize() {
 		buildNodeDragHandlers();
 	}
-	
+	public void setMediaObject(MediaObject mediaObject){
+		//Check validity
+		this.mediaObject=mediaObject;
+	}
 
 	public void buildNodeDragHandlers() {
 		

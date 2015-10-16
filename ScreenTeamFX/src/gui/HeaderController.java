@@ -22,6 +22,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
 import javafx.stage.FileChooser;
 
+import modules.*;
+
+
 
 /**
  * @author Magnus Gundersen
@@ -57,6 +60,7 @@ public class HeaderController implements FXMLController{
 	
 	public HeaderController(AdvancedScreenController AdvParentController) {
 		this.parentController=AdvParentController;
+		System.out.println("HEADERCONST");
 	
 		
 //		 Trying to fetch the FXML
@@ -144,13 +148,13 @@ public class HeaderController implements FXMLController{
 		for(String format:acceptedVideoFormats){
 			if(format.equals(extension)){
 				System.out.println(fileName + " is a video! of type:  "+ format);
-				//TODO: currentSession.createMediaObject(MediaSourceType.VIDEO,path);
+				parentController.getCurrentSession().createNewMediaObject(MediaSourceType.VIDEO,path);
 				//___________DELETE: NOT MVC___________
-				MediaObjectIcon icn = new MediaObjectIcon();
-				icn.setType(MediaObjectType.VIDEO);
-				icn.setTitle(fileName);
-				importedMediaObjects.add(icn);
-				updateMediaView();
+//				MediaObjectIcon icn = new MediaObjectIcon();
+//				icn.setType(MediaObjectType.VIDEO);
+//				icn.setTitle(fileName);
+//				importedMediaObjects.add(icn);
+//				updateMediaView();
 				//--------DELETE FINISHED--------------
 				return;
 			}
@@ -169,10 +173,19 @@ public class HeaderController implements FXMLController{
 	 * TODO: get the currentSession from advancedScreen, and get the list of mediaObjects from the session. 
 	 *  This method is run by the currentSession when a mediaObject is changed. 
 	 */
-	public void mediaObjectsChanged(){ // Consider rename to fireMediaObjectListChanged
-		//TODO: importedMediaObjects=currentSession.getMediaObjects()
-		//  the list of getMediaObject must possibly be converted to mediaObjectIcons 
-		//TODO: updateMediaView()
+	public void mediaObjectsChanged(){ // is Run by the advScreen when the function fireMediaObjectCahnges 
+		ArrayList<MediaObject> newListOfMediaObjects=parentController.getCurrentSession().getMediaObjects();
+		importedMediaObjects.clear();
+		for(MediaObject m:newListOfMediaObjects){
+			MediaObjectIcon icn = new MediaObjectIcon();
+			icn.setMediaObject(m);
+			icn.setType(MediaObjectType.VIDEO);
+			icn.setTitle(m.getName());
+			importedMediaObjects.add(icn);
+		}
+		
+		//Updates the view for the user
+		updateMediaView();
 		
 	}
 	
@@ -193,7 +206,13 @@ public class HeaderController implements FXMLController{
 		} catch(Exception e) {
 			System.out.println("HeaderController: FileChooser caught an expection");
 		}
+		//checks for aborted file import
+		if(selectedFiles==null){
+			return;
+		}
+		
 		//Runs through the files imported, and creates a mediaObject from the file
+		
 		for (File file : selectedFiles){
 			if(file != null){
 				this.createNewMediaObjectFromFile(file);

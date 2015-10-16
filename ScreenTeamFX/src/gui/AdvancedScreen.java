@@ -6,6 +6,7 @@ package gui;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javafx.beans.property.ListProperty;
@@ -34,6 +35,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
+import modules.*;
 /**
  * @author Anders Lunde,  Magnus Gunde
  * Singleton class
@@ -89,12 +91,15 @@ public class AdvancedScreen implements Screen{
 		 * The controller for the FXML of the advancedScreen.
 		 * The MainScreenController listens to all the input from the objects (buttons, textFields, mouseClicks) in the fxml scene.
 		 */
-		public class AdvancedScreenController implements FXMLController {
+		public class AdvancedScreenController implements FXMLController, SessionListener {
 			
 
 			//List of all TimelineControllers within the advancedScreen
 			private ArrayList<TimelineController> timelineControllers;
 			private TimelineBarController timelineBarController;
+			private HeaderController headerController;
+			
+			private SessionModule currentSession;
 
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
@@ -113,6 +118,9 @@ public class AdvancedScreen implements Screen{
 			@FXML private Button testButton;
 			@FXML private ListView fileListView;
 			@FXML private ScrollBar timelineLineScrollBar;
+			
+			// Hashmap over the timelineIDs from the modules and the timelineControllers of the GUI
+			private HashMap<TimelineController, Integer> idTimlineControllerMap;
 
 			
 			public AdvancedScreenController(){
@@ -143,6 +151,13 @@ public class AdvancedScreen implements Screen{
 				
 				// Initialize the header
 				initHeader(this);
+				
+				//get current session
+				currentSession=MainModuleController.getInstance().getSession();
+				currentSession.addListener(this);
+				
+				// Instanciated the hashmap over controllers
+				idTimlineControllerMap = new HashMap<TimelineController, Integer>();
 
 			}
 			
@@ -393,9 +408,12 @@ public class AdvancedScreen implements Screen{
 			 * TODO: add arguments and java models
 			 */
 			public void addTimeline(){
-				TimelineController tempTimeController = new TimelineController();
-				timelineControllers.add(tempTimeController);
-				addTimelineControllerToScreen(tempTimeController);
+				int timelineInt = currentSession.addTimeline();
+				System.out.println(timelineInt);
+				System.out.println("Total number of timelines: "+ currentSession.getTimelines().size());
+//				TimelineController tempTimeController = new TimelineController();
+//				timelineControllers.add(tempTimeController);
+//				addTimelineControllerToScreen(tempTimeController);
 			}
 			
 			/**
@@ -425,8 +443,9 @@ public class AdvancedScreen implements Screen{
 			 * @param timeline
 			 */
 			public void removeTimeline(TimelineController timeline){
-				timelineContainer.getChildren().remove(timeline.getRoot());
-				timelineControllers.remove(timeline);
+//				timelineContainer.getChildren().remove(timeline.getRoot());
+//				timelineControllers.remove(timeline);
+				currentSession.removeTimeline(idTimlineControllerMap.get(timeline));
 			}
 			
 			
@@ -434,9 +453,47 @@ public class AdvancedScreen implements Screen{
 			 * Initializes the header
 			 */
 			public void initHeader(AdvancedScreenController self){
-				HeaderController headerController = new HeaderController(self);
+				headerController = new HeaderController(self);
 				System.out.println("INITING THE HEADER: ");
 				rootGrid.getChildren().add(headerController.getRoot());
+
+			}
+
+
+
+			@Override
+			public void fireTimelinesChanged() {
+				// TODO Auto-generated method stub
+				ArrayList<TimelineModel> timelineModelList = currentSession.getTimelines();
+				
+				//Remove all timelines from view
+				timelineControllers.clear();
+				timelineContainer.getChildren().clear();
+				idTimlineControllerMap.clear();
+				
+				for(TimelineModel tlm:timelineModelList){
+					TimelineController tempTimeController = new TimelineController();
+					timelineControllers.add(tempTimeController);
+					addTimelineControllerToScreen(tempTimeController);
+					idTimlineControllerMap.put(tempTimeController, tlm.getID());
+					
+				}
+				
+				
+			}
+
+			
+			
+			
+
+			@Override
+			public void fireMediaObjectListChanged() {
+				headerController.mediaObjectsChanged();
+				
+			}
+			
+			public SessionModule getCurrentSession(){
+				return currentSession;
 			}
 			
 	
