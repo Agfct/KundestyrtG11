@@ -174,4 +174,9 @@ public class TimelineLineController implements FXMLController{
 		rootPane.setLayoutX(newPosition);
 	}
 
+	public void repaint() {
+		// TODO Go through all mediaObjectControllers, and repaint according to the new model. 
+		
+	}
+
 }

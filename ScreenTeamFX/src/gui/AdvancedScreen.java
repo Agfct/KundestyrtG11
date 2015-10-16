@@ -39,6 +39,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import modules.*;
+
+
 /**
  * @author Anders Lunde,  Magnus Gunde
  * Singleton class
@@ -430,6 +432,20 @@ public class AdvancedScreen implements Screen{
 			 */
 			private void addTimelineControllerToScreen(TimelineController tempTimeController){
 				timelineContainer.getChildren().add(tempTimeController.getRoot());
+				tempTimeController.getRoot().toBack();
+			}
+			
+			/**
+			 * Removes the given timelineController from the timelinecontainer(Vbox)
+			 * @param timeLineControllerToBeRemoved
+			 */
+			private void removeTimelineControllerFromScreen(TimelineController timelineController){
+				timelineContainer.getChildren().remove(timelineController.getRoot());
+
+			}
+			
+			private void removeAllTimelineControllersFromScreen(){
+				timelineContainer.getChildren().clear();
 			}
 			
 			/* (non-Javadoc)
@@ -450,10 +466,10 @@ public class AdvancedScreen implements Screen{
 			 * and the TimelineController from the advanceScreens controller list.
 			 * @param timeline
 			 */
-			public void removeTimeline(TimelineController timeline){
+			public void removeTimeline(TimelineController timelineController){
 //				timelineContainer.getChildren().remove(timeline.getRoot());
 //				timelineControllers.remove(timeline);
-				currentSession.removeTimeline(idTimlineControllerMap.get(timeline));
+				currentSession.removeTimeline(idTimlineControllerMap.get(timelineController));
 			}
 			
 			
@@ -468,28 +484,81 @@ public class AdvancedScreen implements Screen{
 			}
 
 
-
+			/*
+			 * (non-Javadoc)
+			 * @see gui.SessionListener#fireTimelinesChanged(modules.TimeLineChanges, modules.TimelineModel)
+			 * 
+			 */
 			@Override
-			public void fireTimelinesChanged() {
-				// TODO Auto-generated method stub
-//				ArrayList<TimelineModel> timelineModelList = (ArrayList<TimelineModel>) currentSession.getTimelines().values();
-				ArrayList<TimelineModel> timelineModelList = new ArrayList<TimelineModel>();
-				for(TimelineModel tlmmodel: currentSession.getTimelines().values()){
-					timelineModelList.add(tlmmodel);
-				}
+			public void fireTimelinesChanged(TimeLineChanges changeType, TimelineModel timeLineModel) {
+			
 				
-				//Remove all timelines from view
-				timelineControllers.clear();
-				timelineContainer.getChildren().clear();
-				idTimlineControllerMap.clear();
-				
-				for(TimelineModel tlm:timelineModelList){
-					TimelineController tempTimeController = new TimelineController();
+				switch (changeType) {
+				case ADDED:{
+					TimelineController tempTimeController = new TimelineController(timeLineModel);
 					timelineControllers.add(tempTimeController);
 					addTimelineControllerToScreen(tempTimeController);
-					idTimlineControllerMap.put(tempTimeController, tlm.getID());
-					
+					idTimlineControllerMap.put(tempTimeController, timeLineModel.getID());
+					break;
 				}
+				case REMOVED:{
+					TimelineController timelineControllerToBeRemoved=null;
+					for(TimelineController timelineController: idTimlineControllerMap.keySet()){
+						if(idTimlineControllerMap.get(timelineController).equals(timeLineModel.getID())){
+							timelineControllerToBeRemoved=timelineController;
+						}
+					}
+					idTimlineControllerMap.remove(timelineControllerToBeRemoved);
+					timelineControllers.remove(timelineControllerToBeRemoved);
+					removeTimelineControllerFromScreen(timelineControllerToBeRemoved);
+					break;
+				}
+				case MODIFIED:{
+					TimelineController timelineControllerToBeModified=null;
+					for(TimelineController timelineController: idTimlineControllerMap.keySet()){
+						if(idTimlineControllerMap.get(timelineController).equals(timeLineModel.getID())){
+							timelineControllerToBeModified=timelineController;
+						}
+					}
+					timelineControllerToBeModified.modelChanged();
+					
+					break;
+				}
+				case ORDER:{
+					removeAllTimelineControllersFromScreen();
+					ArrayList<Integer> orderedListOfTimelines = currentSession.getTimelineOrder();
+					
+					//We need to reverse the ordering because we allways bring the newest timeline to the top of the view. 
+					for(int i=orderedListOfTimelines.size()-1;i>=0;i--){
+						TimelineController timelineControllerToPaint=null;
+						for(TimelineController timelineController: idTimlineControllerMap.keySet()){
+							if(idTimlineControllerMap.get(timelineController).equals(orderedListOfTimelines.get(i))){
+								timelineControllerToPaint=timelineController;
+								break;
+							}
+						}
+						addTimelineControllerToScreen(timelineControllerToPaint);
+						
+					}					
+					break;
+				}
+				
+				default:
+					System.out.println("bitte nicht die enum engenehmen, Zimmer...");
+					break;
+				}
+				//Remove all timelines from view
+//				timelineControllers.clear();
+//				timelineContainer.getChildren().clear();
+//				idTimlineControllerMap.clear();
+				
+//				for(TimelineModel tlm:timelineModelList){
+//					TimelineController tempTimeController = new TimelineController();
+//					timelineControllers.add(tempTimeController);
+//					addTimelineControllerToScreen(tempTimeController);
+//					idTimlineControllerMap.put(tempTimeController, tlm.getID());
+//					
+//				}
 				
 				
 			}
