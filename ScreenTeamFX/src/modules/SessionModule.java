@@ -35,7 +35,7 @@ public class SessionModule implements Serializable {
 	
 	public SessionModule(VLCController vlc) {
 		this.timelines = new HashMap<Integer,TimelineModel>();
-		this.timelines.put(0,new TimelineModel(0));
+//		this.timelines.put(0,new TimelineModel(0));
 		this.mediaObjects = new ArrayList<MediaObject>();
 		this.globaltime = 0;
 		this.performancestack = new ArrayList<Event>();
@@ -67,7 +67,7 @@ public class SessionModule implements Serializable {
 	public void removeTimeline(int id){
 		// Find the timeline in the timelines list and remove it
 		unassignTimeline(timelines.get(id));
-		timelines.put(id,null);
+		timelines.remove(id);
 		vlccontroller.deleteMediaPlayer(id);
 		timelinesChanged();
 	}

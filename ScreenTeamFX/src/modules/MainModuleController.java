@@ -26,8 +26,8 @@ public class MainModuleController {
 		//TODO check if storage loads last session without problem, if so set timelinemodule to last session
 		//this.timelinemodule = this.storage.gettimelineModule
 
-//		this.vlc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
-		this.sessionModule= new SessionModule(null);
+		this.vlc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
+		this.sessionModule= new SessionModule(vlc);
 
 
 	}
