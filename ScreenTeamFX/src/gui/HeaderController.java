@@ -54,7 +54,7 @@ public class HeaderController implements FXMLController{
 	
 
 	//variable to keep track of the media files imported
-	ObservableList<MediaObjectIcon> importedMediaObjects = FXCollections.observableArrayList(); //NB: Should perhaps be a normal ArrayList
+	ArrayList<MediaObjectIcon> importedMediaObjects = new ArrayList<MediaObjectIcon>(); //NB: Should perhaps be a normal ArrayList
 
 	
 	
@@ -177,7 +177,7 @@ public class HeaderController implements FXMLController{
 		ArrayList<MediaObject> newListOfMediaObjects=parentController.getCurrentSession().getMediaObjects();
 		importedMediaObjects.clear();
 		for(MediaObject m:newListOfMediaObjects){
-			MediaObjectIcon icn = new MediaObjectIcon();
+			MediaObjectIcon icn = new MediaObjectIcon(m);
 			icn.setMediaObject(m);
 			icn.setType(MediaSourceType.VIDEO);
 			icn.setTitle(m.getName());

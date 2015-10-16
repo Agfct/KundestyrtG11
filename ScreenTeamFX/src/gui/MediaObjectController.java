@@ -30,6 +30,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import modules.MediaSourceType;
+import modules.TimelineMediaObject;
 
 /**
  * @author Anders
@@ -50,10 +51,12 @@ public class MediaObjectController extends GridPane{
 	private EventHandler <DragEvent> mContextDragDone;
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
-	private MediaSourceType mType = null;
+//	private MediaSourceType mType = null;
+	
+	private TimelineMediaObject timelineMediaObject;
 	
 	public MediaObjectController(){
-//		setStyle("-fx-background-color: BLUE");
+		setStyle("-fx-background-color: BLUE");
 		
 		
 		try {
@@ -78,7 +81,13 @@ public class MediaObjectController extends GridPane{
 	 * @param container
 	 */
 	public void initializeMediaObject(MediaObjectContainer container){
-		setType(MediaSourceType.valueOf(container.getValue("type")));
+//		setType(MediaSourceType.valueOf(container.getValue("type")));
+		//TODO: get the correct start-time from the drop-point
+		System.out.println("model of the container: "+ container.getValue("model"));
+		System.out.println("Parentcontroller: "+ this.parentController.getParentController().getTimelineModel());
+		
+		AdvancedScreen.getInstance().getScreenController().getCurrentSession().addMediaObjectToTimeline(container.getValue("model"), this.parentController.getParentController().getTimelineModel(), 10000);
+		System.out.println("ADDED TO TIMELINE" + container.getValue("scene_coords"));
 	}
 	
 	/**
@@ -148,7 +157,9 @@ public class MediaObjectController extends GridPane{
 		alert.setContentText("Do you really want to delete this MediaObject?");
 	}
 	
-	public MediaSourceType getType () { return mType; }
+	public MediaSourceType getType () { 
+		return timelineMediaObject.getParent().getType(); 
+		}
 	
 	public void relocateToPoint (Point2D p) {
 
@@ -175,13 +186,12 @@ public class MediaObjectController extends GridPane{
 	 * this is only a visual representation for the drag and drop
 	 * @param type
 	 */
-	public void setType (MediaSourceType type) {
-		mType = type;
+	public void setGraphicType (MediaSourceType type) {
 		
 		getStyleClass().clear();
 		getStyleClass().add("dragicon");
 		
-		if(mType == MediaSourceType.AUDIO){
+		if(type == MediaSourceType.AUDIO){
 			getStyleClass().add("icon-sound");
 		}else{
 			getStyleClass().add("icon-video");
@@ -331,7 +341,7 @@ public class MediaObjectController extends GridPane{
                 
                 //creating a container with all the data of the media object
 				MediaObjectContainer container = new MediaObjectContainer();			
-				container.addData ("type", mType.toString());
+				container.addData ("type", timelineMediaObject.getParent().getType().toString());
                 
                 //Putting the data container onto the content
 				content.put(MediaObjectContainer.DragNode, container); //TODO: AddNode ??

@@ -177,6 +177,7 @@ public class TimelineLineController implements FXMLController{
 	public void repaint() {
 		// TODO Go through all mediaObjectControllers, and repaint according to the new model. 
 		
+		
 	}
 
 }
