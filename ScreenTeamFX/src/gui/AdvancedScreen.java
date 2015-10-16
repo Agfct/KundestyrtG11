@@ -164,7 +164,7 @@ public class AdvancedScreen implements Screen{
 				timelineLineScrollBar.valueProperty().addListener(new ChangeListener<Number>() {
 		            public void changed(ObservableValue<? extends Number> ov,
 		                Number old_val, Number new_val) {
-		            	System.out.println("Scrolling: Old value: "+ old_val.doubleValue()+" NewValue: "+ new_val.doubleValue());
+//		            	System.out.println("Scrolling: Old value: "+ old_val.doubleValue()+" NewValue: "+ new_val.doubleValue());
 		            	for (TimelineController timelineController : timelineControllers) {
 		            		scrollBarPosition = -new_val.doubleValue();
 		            		timelineController.getTimelineLineController().moveTimeline(scrollBarPosition);
@@ -451,8 +451,6 @@ public class AdvancedScreen implements Screen{
                 final Stage dialog = new Stage();
                 dialog.initModality(Modality.APPLICATION_MODAL);
                 dialog.initOwner(MainGUIController.getInstance().primaryStage);
-//                VBox dialogVbox = new VBox(20);
-//                dialogVbox.getChildren().add(new Text("This is a Dialog"));
                 ModalController mediaObjectModal = new ModalController(mediaObject);
                 Scene dialogScene = new Scene(mediaObjectModal.getRoot(), 300, 200);
                 dialog.setScene(dialogScene);

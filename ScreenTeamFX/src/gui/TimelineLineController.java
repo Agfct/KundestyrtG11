@@ -169,7 +169,7 @@ public class TimelineLineController implements FXMLController{
 	}
 	
 	protected void moveTimeline(Double newPosition){
-		System.out.println("TimelineLineController Moving the Root");
+//		System.out.println("TimelineLineController Moving the Root");
 		rootPane.setLayoutX(newPosition);
 	}
 

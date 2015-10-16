@@ -89,6 +89,9 @@ public class MediaObjectController extends GridPane{
 		buildNodeDragHandlers();
 	}
 	
+	/**
+	 * Adds the right click functions to the MediaObject, edit, remove. and puts an event handler onto them.
+	 */
 	private void initializeMouse(){
 		initializeAlerts();
 		//Adds different right click options to the ContextMenu that pops up on mouse click.
@@ -134,6 +137,9 @@ public class MediaObjectController extends GridPane{
 
 	}
 	
+	/**
+	 *Initializes the alert box that is displayed when the user right clicks the mediaObject and presses remove.
+	 */
 	private void initializeAlerts(){
 		alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Confirmation Dialog");
@@ -200,7 +206,7 @@ public class MediaObjectController extends GridPane{
 				
 				AnchorPane timelineLinePane = parentController.getRoot();
 				Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());
-				System.out.println("AnchorPane sceneToLocal: "+ p);
+//				System.out.println("AnchorPane sceneToLocal: "+ p);
 				
 //				System.out.println("[MediaObject] sceneX: "+event.getSceneX()+" LocalX: "+ p.getX());
 //				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
@@ -225,8 +231,8 @@ public class MediaObjectController extends GridPane{
 							getMediaObjectWidth(), getMediaObjectHeigth());
 				}
 				
-				System.out.println("[MediaObjectController] NewBounds for MediaObject: " +mediaControllerRect);
-				System.out.println("TimelineLinePane.getBoundsInLocal(): "+ timelineLinePane.getBoundsInLocal());
+//				System.out.println("[MediaObjectController] NewBounds for MediaObject: " +mediaControllerRect);
+//				System.out.println("TimelineLinePane.getBoundsInLocal(): "+ timelineLinePane.getBoundsInLocal());
 				if (timelineLinePane.getBoundsInLocal().contains(mediaControllerRect)) {
 //					if (timelineLinePane.boundsInLocalProperty().get().intersects(root.getLayoutX(), root.getLayoutY(), root.getLayoutX() + root.getWidth(), root.getLayoutY()+ root.getHeight())) {
 					event.acceptTransferModes(TransferMode.MOVE);
@@ -337,16 +343,6 @@ public class MediaObjectController extends GridPane{
 		});
 		
 	}
-	
-//	public Rectangle getRect(){
-//		Rectangle tempRect = new Rectangle(x,y,width,height);
-//		return tempRect;
-//		
-//	}
-//	public Bounds getBounds(){
-//		Bounds tempBounds = new Bounds;
-//		return tempBounds;
-//	}
 
 	/**
 	 * @return the parentController

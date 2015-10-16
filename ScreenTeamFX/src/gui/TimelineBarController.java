@@ -29,7 +29,7 @@ public class TimelineBarController extends AnchorPane {
 	//Fetches the parent controller. In this case it is the controller in the advancedScreen class.'
 	this.parentController = parentController;
 	
-	this.setStyle("-fx-background-color:RED");
+//	this.setStyle("-fx-background-color:RED");
 	
 	// The constructor will try to fetch the fxml 
 	try {
