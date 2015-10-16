@@ -103,6 +103,7 @@ public class AdvancedScreen implements Screen{
 			private HeaderController headerController;		
 			private SessionModule currentSession;
 			private double scrollBarPosition = 0;
+			private Stage modalDialog;
 
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
@@ -508,13 +509,20 @@ public class AdvancedScreen implements Screen{
 			}
 			
 			public void showModal(MediaObjectController mediaObject){
-                final Stage dialog = new Stage();
-                dialog.initModality(Modality.APPLICATION_MODAL);
-                dialog.initOwner(MainGUIController.getInstance().primaryStage);
+//                final Stage modalDialog = new Stage();
+                modalDialog = new Stage();
+                modalDialog.initModality(Modality.APPLICATION_MODAL);
+                modalDialog.initOwner(MainGUIController.getInstance().primaryStage);
                 ModalController mediaObjectModal = new ModalController(mediaObject);
                 Scene dialogScene = new Scene(mediaObjectModal.getRoot(), 300, 200);
-                dialog.setScene(dialogScene);
-                dialog.show();
+                modalDialog.setScene(dialogScene);
+                modalDialog.show();
+			}
+			
+			public void closeModal(){
+				if(modalDialog != null){
+					modalDialog.close();
+				}
 			}
 
 

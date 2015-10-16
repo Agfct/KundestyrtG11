@@ -4,23 +4,45 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<?import gui.NumberTextField?>
 
 <GridPane style="-fx-background-color: LIGHTBLUE" fx:id="modalContainer"
 	gridLinesVisible="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40"
 	maxHeight="200" maxWidth="300" minHeight="200" minWidth="300"
 	prefHeight="200" prefWidth="300">
 	<columnConstraints>
-		<ColumnConstraints hgrow="NEVER" prefWidth="150" />
-		<ColumnConstraints hgrow="NEVER" prefWidth="150" />
+		<ColumnConstraints halignment="CENTER" hgrow="NEVER"
+			prefWidth="150" />
+		<ColumnConstraints halignment="CENTER" hgrow="NEVER"
+			prefWidth="150" />
 	</columnConstraints>
 	<rowConstraints>
-		<RowConstraints prefHeight="50" vgrow="NEVER" />
-		<RowConstraints prefHeight="50" vgrow="NEVER" />
-		<RowConstraints prefHeight="50" vgrow="NEVER" />
-		<RowConstraints prefHeight="50" vgrow="NEVER" />
+		<RowConstraints prefHeight="40" vgrow="NEVER" />
+		<RowConstraints prefHeight="40" vgrow="NEVER" />
+		<RowConstraints prefHeight="40" vgrow="NEVER" />
+		<RowConstraints prefHeight="40" vgrow="NEVER" />
+		<RowConstraints prefHeight="40" vgrow="NEVER" />
 	</rowConstraints>
 	<children>
-		<Label fx:id="name" text="Type" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-		<ChoiceBox fx:id="typeChoiseBox" GridPane.rowIndex="1" />
+		<!-- Left side -->
+		<Label text="Name: " GridPane.rowIndex="0" />
+		<Label text="StartTime: " GridPane.rowIndex="1" />
+		<Label text="Duration: " GridPane.rowIndex="2" />
+		<Label text="EndTime: " GridPane.rowIndex="3" />
+		<Button fx:id="applyBtn" text="Apply " onAction="#buttonPressed" GridPane.rowIndex="4" />
+		<!-- Right side -->
+		<Label fx:id="nameLabel" text="Actual Name "
+			GridPane.columnIndex="1" GridPane.rowIndex="0" />
+		<NumberTextField fx:id="startTimeField" GridPane.columnIndex="1"
+			GridPane.rowIndex="1" />
+		<NumberTextField fx:id="durationField" GridPane.columnIndex="1"
+			GridPane.rowIndex="2" />
+		<Label fx:id="endTimeLabel" text="EndTime "
+			GridPane.columnIndex="1" GridPane.rowIndex="3" />
+		<Button fx:id="okBtn" text="Ok " onAction="#buttonPressed" GridPane.columnIndex="1"
+			GridPane.rowIndex="4" />
+
 	</children>
 </GridPane>
