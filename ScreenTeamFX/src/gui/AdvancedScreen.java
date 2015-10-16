@@ -431,6 +431,7 @@ public class AdvancedScreen implements Screen{
 			 */
 			private void addTimelineControllerToScreen(TimelineController tempTimeController){
 				timelineContainer.getChildren().add(tempTimeController.getRoot());
+				tempTimeController.getRoot().toBack();
 			}
 			
 			/**
@@ -440,6 +441,10 @@ public class AdvancedScreen implements Screen{
 			private void removeTimelineControllerFromScreen(TimelineController timelineController){
 				timelineContainer.getChildren().remove(timelineController.getRoot());
 
+			}
+			
+			private void removeAllTimelineControllersFromScreen(){
+				timelineContainer.getChildren().clear();
 			}
 			
 			/* (non-Javadoc)
@@ -485,9 +490,7 @@ public class AdvancedScreen implements Screen{
 			 */
 			@Override
 			public void fireTimelinesChanged(TimeLineChanges changeType, TimelineModel timeLineModel) {
-				// TODO Find the actinon recuired based on the changeType. The timelinemodel is a reference to what model that shuld be modified.  
-//				ArrayList<TimelineModel> timelineModelList = (ArrayList<TimelineModel>) currentSession.getTimelines().values();
-				
+			
 				
 				switch (changeType) {
 				case ADDED:{
@@ -498,8 +501,6 @@ public class AdvancedScreen implements Screen{
 					break;
 				}
 				case REMOVED:{
-					//Remove the controller from the
-//					timelineControllers.remove(idTimlineControllerMap.get(key)tempTimeController);
 					TimelineController timelineControllerToBeRemoved=null;
 					for(TimelineController timelineController: idTimlineControllerMap.keySet()){
 						if(idTimlineControllerMap.get(timelineController).equals(timeLineModel.getID())){
@@ -522,15 +523,29 @@ public class AdvancedScreen implements Screen{
 					
 					break;
 				}
-				
-				default:
+				case ORDER:{
+					removeAllTimelineControllersFromScreen();
+					ArrayList<Integer> orderedListOfTimelines = currentSession.getTimelineOrder();
+					
+					//We need to reverse the ordering because we allways bring the newest timeline to the top of the view. 
+					for(int i=orderedListOfTimelines.size()-1;i>=0;i--){
+						TimelineController timelineControllerToPaint=null;
+						for(TimelineController timelineController: idTimlineControllerMap.keySet()){
+							if(idTimlineControllerMap.get(timelineController).equals(orderedListOfTimelines.get(i))){
+								timelineControllerToPaint=timelineController;
+								break;
+							}
+						}
+						addTimelineControllerToScreen(timelineControllerToPaint);
+						
+					}					
 					break;
 				}
-				ArrayList<TimelineModel> timelineModelList = new ArrayList<TimelineModel>();
-				for(TimelineModel tlmmodel: currentSession.getTimelines().values()){
-					timelineModelList.add(tlmmodel);
-				}
 				
+				default:
+					System.out.println("bitte nicht die enum engenehmen, Zimmer...");
+					break;
+				}
 				//Remove all timelines from view
 //				timelineControllers.clear();
 //				timelineContainer.getChildren().clear();

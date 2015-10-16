@@ -60,7 +60,7 @@ public class SessionModule implements Serializable {
 		TimelineModel tlm = new TimelineModel(tlmID);
 		timelines.put(tlmID,tlm);
 		vlccontroller.createMediaPlayer(tlmID);
-		timelineOrder.add(tlm.getID()); //Added the timeLine to the beginning of the list. This means the new timeline will be at the first positision in the gui
+		timelineOrder.add(0,tlm.getID()); //Added the timeLine to the beginning of the list. This means the new timeline will be at the first positision in the gui
 		timelineChanged(TimeLineChanges.ADDED, tlm);
 		return tlmID;
 	}
@@ -454,5 +454,9 @@ public class SessionModule implements Serializable {
 	public void changeOrderOfTimelines(int timelineID, int newPos ){
 		//TODO: Change order of tha timelines
 		//This means sending the new order to the GUI,and the GUI must clear all controllers from the timelineContainer. And then reAdd them in the order specified by the timelineOrder
+	}
+
+	public ArrayList<Integer> getTimelineOrder() {
+		return timelineOrder;
 	}
 }
