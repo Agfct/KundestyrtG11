@@ -46,6 +46,7 @@ public class SessionModule implements Serializable {
 		this.pausing = false;
 		vlccontroller.createMediaPlayer(tlmID);
 		this.t1 = new Thread();
+		this.tAll = new Thread();
 	}
 
 	/**
@@ -144,6 +145,12 @@ public class SessionModule implements Serializable {
 		pausing = false;
 		this.globaltime = glbtime;
 		buildPerformance();
+		try {
+			tAll.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		tAll = allPlay(glbtime);
 		tAll.start();
 	}
@@ -276,6 +283,12 @@ public class SessionModule implements Serializable {
 					}
 				}
 			}
+		}
+		try {
+			t1.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		t1 = onePlay(glbtime);
 		t1.start();
