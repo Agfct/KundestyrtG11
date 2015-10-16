@@ -39,6 +39,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import modules.*;
+
+
 /**
  * @author Anders Lunde,  Magnus Gunde
  * Singleton class
@@ -467,11 +469,35 @@ public class AdvancedScreen implements Screen{
 			}
 
 
-
+			/*
+			 * (non-Javadoc)
+			 * @see gui.SessionListener#fireTimelinesChanged(modules.TimeLineChanges, modules.TimelineModel)
+			 * 
+			 */
 			@Override
-			public void fireTimelinesChanged() {
-				// TODO Auto-generated method stub
+			public void fireTimelinesChanged(TimeLineChanges changeType, TimelineModel timeLineModel) {
+				// TODO Find the actinon recuired based on the changeType. The timelinemodel is a reference to what model that shuld be modified.  
 //				ArrayList<TimelineModel> timelineModelList = (ArrayList<TimelineModel>) currentSession.getTimelines().values();
+				
+				
+				switch (changeType) {
+				case ADDED:
+					TimelineController tempTimeController = new TimelineController();
+					timelineControllers.add(tempTimeController);
+					addTimelineControllerToScreen(tempTimeController);
+					idTimlineControllerMap.put(tempTimeController, timeLineModel.getID());
+					break;
+					
+				case REMOVED:
+					timelineControllers.remove(idTimlineControllerMap.get(key)tempTimeController);
+					addTimelineControllerToScreen(tempTimeController);
+					idTimlineControllerMap.put(tempTimeController, timeLineModel.getID());
+					break;
+
+				
+				default:
+					break;
+				}
 				ArrayList<TimelineModel> timelineModelList = new ArrayList<TimelineModel>();
 				for(TimelineModel tlmmodel: currentSession.getTimelines().values()){
 					timelineModelList.add(tlmmodel);

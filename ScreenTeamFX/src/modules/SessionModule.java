@@ -32,6 +32,7 @@ public class SessionModule implements Serializable {
 	private Thread tAll;
 	
 	private ArrayList<SessionListener> listeners;
+	private ArrayList<Integer> timelineOrder;
 	
 	public SessionModule(VLCController vlc) {
 		this.timelines = new HashMap<Integer,TimelineModel>();
@@ -58,18 +59,23 @@ public class SessionModule implements Serializable {
 		TimelineModel tlm = new TimelineModel(tlmID);
 		timelines.put(tlmID,tlm);
 		vlccontroller.createMediaPlayer(tlmID);
-		timelinesChanged();
+		timelineOrder.add(0,tlm.getID()); //Added the timeLine to the beginning of the list. This means the new timeline will be at the first positision in the gui
+		timelineChanged(TimeLineChanges.ADDED, tlm);
 		return tlmID;
 	}
 
-	// TODO: We are not sure which removeTimeline to use per now. depends on
-	// what the gui knows. either id of timeline or the timelinemodel itself
+	/*
+	 * This function removes the timeline from the modules.
+	 * It then sends the removed object back to the GUI, in order for all pointers to the timeline to be removed. 
+	 */
 	public void removeTimeline(int id){
 		// Find the timeline in the timelines list and remove it
-		unassignTimeline(timelines.get(id));
+		TimelineModel tlm = timelines.get(id);
+		unassignTimeline(tlm);
 		timelines.remove(id);
 		vlccontroller.deleteMediaPlayer(id);
-		timelinesChanged();
+		timelineOrder.remove(new Integer(id));
+		timelineChanged(TimeLineChanges.REMOVED,tlm );
 	}
 	/**
 	 * goes through all displays and removes tlm if it is assigned to said display
@@ -88,7 +94,7 @@ public class SessionModule implements Serializable {
 				}
 			}		
 		}
-		timelineChanged(tlm);
+		timelineChanged(TimeLineChanges.MODIFIED, tlm);
 	}
 	
 	/**
@@ -105,7 +111,7 @@ public class SessionModule implements Serializable {
 			TimelineModel prevtlm = displays.put(display,tlm);
 			vlccontroller.setDisplay(tlm.getID(), display);
 		}
-		timelineChanged(tlm);
+		timelineChanged(TimeLineChanges.MODIFIED,tlm);
 	}
 	
 	/**
@@ -365,10 +371,7 @@ public class SessionModule implements Serializable {
 		return timelines;
 	}
 	
-	public void setTimelines(HashMap<Integer,TimelineModel> timelines) {
-		this.timelines = timelines;
-		timelinesChanged();
-	}
+
 	
 	/**
 	 * Creates a new MediaObject and stores it in the this SessionModule. If a MediaObject with the same path already
@@ -408,13 +411,13 @@ public class SessionModule implements Serializable {
 	public String addMediaObjectToTimeline(MediaObject mediaObject, TimelineModel timeline, int startTime){
 		TimelineMediaObject tlmo = new TimelineMediaObject(startTime, mediaObject.getLength(), timeline.getID(), mediaObject);
 		String result = timeline.addTimelineMediaObject(tlmo);
-		timelineChanged(timeline);
+		timelineChanged(TimeLineChanges.MODIFIED,timeline);
 		return result;
 	}
 	
 	public String timelineMediaObjectChanged(TimelineModel tlm, TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){
 		String result = tlm.timelineMediaObjectChanged(tlmo, newStart, newInternalStart, newDuration);
-		timelineChanged(tlm);
+		timelineChanged(TimeLineChanges.MODIFIED, tlm);
 		return result;
 	}
 	
@@ -429,20 +432,26 @@ public class SessionModule implements Serializable {
 	public boolean removeListener(SessionListener listener){
 		return listeners.remove(listener);
 	}
-
-	private void timelinesChanged() {
+	
+	/*
+	 * Makes sure all the listeners are notified whenever a change to the timelines are done.  
+	 */
+	private void timelineChanged(TimeLineChanges changeType, TimelineModel timeLineModel) {
 		for(SessionListener listener: listeners){
-			listener.fireTimelinesChanged();
+			listener.fireTimelinesChanged(changeType, timeLineModel);
 		}
 	}
-	
-	private void timelineChanged(TimelineModel tlm){
-		// TODO: listeners.fireTimelineChanged(tlm);
-	}
-	
+		
+	//TODO: we need to specify which mediaobject has been changed. 
 	private void mediaObjectsChanged(){
 		for(SessionListener listener: listeners){
 			listener.fireMediaObjectListChanged();
 		}
+	}
+	
+	
+	public void changeOrderOfTimelines(int timelineID, int newPos ){
+		//TODO: Change order of tha timelines
+		//This means sending the new order to the GUI,and the GUI must clear all controllers from the timelineContainer. And then reAdd them in the order specified by the timelineOrder
 	}
 }
