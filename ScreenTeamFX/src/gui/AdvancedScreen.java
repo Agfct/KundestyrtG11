@@ -471,7 +471,7 @@ public class AdvancedScreen implements Screen{
 			@Override
 			public void fireTimelinesChanged() {
 				// TODO Auto-generated method stub
-				ArrayList<TimelineModel> timelineModelList = currentSession.getTimelines();
+				ArrayList<TimelineModel> timelineModelList = (ArrayList<TimelineModel>) currentSession.getTimelines().values();
 				
 				//Remove all timelines from view
 				timelineControllers.clear();

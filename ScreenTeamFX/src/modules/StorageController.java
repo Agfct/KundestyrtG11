@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -138,8 +139,8 @@ public class StorageController {
 	 */
 	private SessionModule synchronizeMediaObjects(SessionModule sm){
 		// Go through all timelines in TimelineModule
-		ArrayList<TimelineModel> timelines = sm.getTimelines(); 
-		for (int i=0; i<timelines.size(); i++) {
+		HashMap<Integer,TimelineModel> timelines = sm.getTimelines(); 
+		for (Integer i : timelines.keySet()) {
 			
 			// Go through all TimelineMediaObjects in each timeline
 			ArrayList<TimelineMediaObject> mo = timelines.get(i).getTimelineMediaObjects();
