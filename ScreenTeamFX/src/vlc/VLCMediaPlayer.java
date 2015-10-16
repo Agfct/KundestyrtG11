@@ -19,11 +19,11 @@ public class VLCMediaPlayer {
 	private int display = -1;
 	private int ID;
 	private boolean mediaChanged = false;
-	private boolean isSeeking = false;
 	
 	public VLCMediaPlayer(int ID){
 		this.ID = ID;
 		mp = new EmbeddedMediaPlayerComponent();
+		mp.setBackground(new Color(255, 255, 255));
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);
@@ -56,11 +56,10 @@ public class VLCMediaPlayer {
 	public void pause(){
 		if(isPlaying()){
 			mp.getMediaPlayer().pause();
-		}	
+		}
 	}
 	
 	public void seek(long time){
-		isSeeking = true;
 		if(mediaChanged){
 			mp.getMediaPlayer().startMedia(mediaPath);
 			mp.getMediaPlayer().pause();
@@ -74,7 +73,7 @@ public class VLCMediaPlayer {
 		else{
 			System.out.println("No video attached");
 		}
-		isSeeking = false;
+		while(isPlaying());
 	}	
 	
 	public void stop(){
@@ -100,7 +99,6 @@ public class VLCMediaPlayer {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		mp.setBackground(new Color(255, 255, 255));
 		frame.setVisible(true);
 	}
 	
@@ -132,9 +130,6 @@ public class VLCMediaPlayer {
 		return mp.getMediaPlayer().getTime();
 	}
 	
-	public boolean isSeeking(){
-		return isSeeking;
-	}
 	
 	/**
 	 * Displays the media player on a graphicsDevice. Only works on Windows 8.
@@ -151,11 +146,7 @@ public class VLCMediaPlayer {
 	
 	public boolean isPlayable(String mediaPath){
 		frame.setVisible(true);
-		mp.getMediaPlayer().playMedia(mediaPath);
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {
-		}
+		mp.getMediaPlayer().startMedia(mediaPath);
 		return isPlaying();
 	}
 	

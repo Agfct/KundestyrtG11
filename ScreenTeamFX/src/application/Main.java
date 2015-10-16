@@ -6,9 +6,11 @@
 package application;
 	
 import gui.MainGUIController;
+import gui.MainScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import modules.MainModuleController;
+import vlc.VLCController;
 
 /**
  * 
@@ -49,8 +51,9 @@ public class Main extends Application {
 	
 	@Override
 	public void stop(){
-		System.out.println("APPLICATION IS TERMINATED");
-//		MainModuleController.getInstance().
+		System.out.println("APPLICATION TERMINATED");
+		System.exit(0);
+
 	}
 
 
