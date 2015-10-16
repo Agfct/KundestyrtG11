@@ -4,16 +4,25 @@
 package gui;
 
 import java.io.IOException;
+import java.util.Optional;
+
 import gui.AdvancedScreen.AdvancedScreenController;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
@@ -30,6 +39,9 @@ public class MediaObjectController extends GridPane{
 	private FXMLLoader fxmlLoader;
 	private TimelineLineController parentController;
 	private GridPane root = this;
+	private final MediaObjectController thisMediaObject = this;
+	private final ContextMenu contextMenu = new ContextMenu();
+	private Alert alert;
 
 	//Variables used for dragging/dropping
 	private AnchorPane masterRootPane;
@@ -40,7 +52,7 @@ public class MediaObjectController extends GridPane{
 	private MediaObjectType mType = null;
 	
 	public MediaObjectController(){
-		setStyle("-fx-background-color: BLUE");
+//		setStyle("-fx-background-color: BLUE");
 		
 		
 		try {
@@ -53,6 +65,8 @@ public class MediaObjectController extends GridPane{
 			e.printStackTrace();
 		}
 		
+		//initialize drag&drop
+		initializeMouse();
 		
 		//Sets the master root pane for drag and drop
 		masterRootPane = AdvancedScreen.getInstance().getScreenController().getMasterRoot();
@@ -75,18 +89,84 @@ public class MediaObjectController extends GridPane{
 		buildNodeDragHandlers();
 	}
 	
+	/**
+	 * Adds the right click functions to the MediaObject, edit, remove. and puts an event handler onto them.
+	 */
+	private void initializeMouse(){
+		initializeAlerts();
+		//Adds different right click options to the ContextMenu that pops up on mouse click.
+		MenuItem edit = new MenuItem("Edit");
+		MenuItem remove = new MenuItem("Remove");
+		contextMenu.getItems().addAll(edit, remove);
+		remove.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent event) {
+		        System.out.println("Remove MediaObject");
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.get() == ButtonType.OK){
+				    // ... user chose OK
+					parentController.removeMediaObject(thisMediaObject);
+				} else {
+				    // ... user chose CANCEL or closed the dialog
+				}
+		        
+		    }
+		});
+		edit.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent event) {
+		        System.out.println("Edit MediaObject");
+				AdvancedScreen.getInstance().getScreenController().showModal(thisMediaObject);
+		    }
+		});
+		root.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			 
+            @Override
+            public void handle(MouseEvent event) {
+            	contextMenu.hide();
+            	parentController.getContextMenu().hide();
+                MouseButton button = event.getButton();
+                if(button==MouseButton.SECONDARY){
+                    System.out.println("Right Cliked a MediaObject");
+                    contextMenu.show(root, event.getScreenX(), event.getScreenY());
+                }
+                event.consume(); //Consumes the event so it wont go deeper down into the hierarchy 
+            }
+        });
+		
+
+	}
+	
+	/**
+	 *Initializes the alert box that is displayed when the user right clicks the mediaObject and presses remove.
+	 */
+	private void initializeAlerts(){
+		alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Confirmation Dialog");
+		alert.setHeaderText("Delete MediaObject");
+		alert.setContentText("Do you really want to delete this MediaObject?");
+	}
+	
 	public MediaObjectType getType () { return mType; }
 	
 	public void relocateToPoint (Point2D p) {
 
 		//relocates the object to a point that has been converted to
 		//scene coordinates
-		Point2D localCoords = getParent().sceneToLocal(p);
-		
+//		Point2D localCoords = getParent().sceneToLocal(p);
+//		System.out.println("localCoords: " + localCoords);
+//		relocate ( 
+//				(int) (localCoords.getX() - mDragOffset.getX()),
+//				(int) (localCoords.getY() - mDragOffset.getY())
+//			);
+//		relocate ( 
+//				(int) (localCoords.getX() - mDragOffset.getX()),
+//				(int) (0)
+//				);
 		relocate ( 
-				(int) (localCoords.getX() - mDragOffset.getX()),
-				(int) (localCoords.getY() - mDragOffset.getY())
-			);
+		(int) (p.getX()),
+		(int) (p.getY())
+	);
 	}
 	
 	/**
@@ -110,10 +190,11 @@ public class MediaObjectController extends GridPane{
 	
 	public void buildNodeDragHandlers() {
 		
-
+		
 		/**
-		 * This is the method for handling dragging over the same
-		 * Parent
+		 * This is the method for handling dragging the mediaObject
+		 * It takes the coords of the timelinePane and creates a rectangle (Bounds) and checks if it is inside the bounds of the timelinePane
+		 * NB: The y in the x,y coords are always 0 to prevent any vertical movement.
 		 */
 		mContextDragOver = new EventHandler <DragEvent>() {
 
@@ -125,23 +206,38 @@ public class MediaObjectController extends GridPane{
 				
 				AnchorPane timelineLinePane = parentController.getRoot();
 				Point2D p = timelineLinePane.sceneToLocal(event.getSceneX(), event.getSceneY());
+//				System.out.println("AnchorPane sceneToLocal: "+ p);
 				
 //				System.out.println("[MediaObject] sceneX: "+event.getSceneX()+" LocalX: "+ p.getX());
 //				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
 //				System.out.println("[MediaObjectController] AnchtorPane Bounds: "+timelineLinePane.boundsInLocalProperty().get());
 				
 				//Prevents you from dragging outside timeline boundaries
-				Bounds boundsInParent = getBoundsInParent();
-				Bounds newBounds = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
-					(p.getX() - mDragOffset.getX()) + boundsInParent.getWidth(), (p.getY() - mDragOffset.getY()) + boundsInParent.getHeight());
-//				System.out.println("[MediaObjectController] NewBounds for MediaObject: " +newBounds);
+//				Bounds boundsInParent = getBoundsInParent();
+//				Bounds newBounds = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
+//						(p.getX() - mDragOffset.getX()) + boundsInParent.getWidth(), (p.getY() - mDragOffset.getY()) + boundsInParent.getHeight());
 				
-				if (timelineLinePane.getBoundsInLocal().contains(newBounds)) {
+				//p.getX() - mDragOffset.getX() is left corner of mediaObject in AnchorPane coordinates
+				//So pX-dragX, pY-dragY is the top left corner of the mediaObject 
+				//(at the current dragged position, we later check if it can be placed there)
+//				Bounds mediaControllerRect = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
+//						getMediaObjectWidth(), getMediaObjectHeigth());
+				Bounds mediaControllerRect;
+				if(p.getX() - mDragOffset.getX() >= 0){
+					 mediaControllerRect = new BoundingBox(p.getX() - mDragOffset.getX(),0,
+						getMediaObjectWidth(), getMediaObjectHeigth());
+				}else{
+					 mediaControllerRect = new BoundingBox(0,0,
+							getMediaObjectWidth(), getMediaObjectHeigth());
+				}
+				
+//				System.out.println("[MediaObjectController] NewBounds for MediaObject: " +mediaControllerRect);
+//				System.out.println("TimelineLinePane.getBoundsInLocal(): "+ timelineLinePane.getBoundsInLocal());
+				if (timelineLinePane.getBoundsInLocal().contains(mediaControllerRect)) {
 //					if (timelineLinePane.boundsInLocalProperty().get().intersects(root.getLayoutX(), root.getLayoutY(), root.getLayoutX() + root.getWidth(), root.getLayoutY()+ root.getHeight())) {
-//					System.out.println("[MediaObject], yes its TRUE p is inside the panel");
 					event.acceptTransferModes(TransferMode.MOVE);
-					relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
-//					System.out.println("[MediaObjectController New moved Location mediaObject" + root.getLocalToParentTransform());
+//					relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
+					relocateToPoint(new Point2D(mediaControllerRect.getMinX(),mediaControllerRect.getMinY()));
 //					relocateToPoint(new Point2D(event.getSceneX(), 0));
 				}
 //				event.acceptTransferModes(TransferMode.ANY);				
@@ -176,6 +272,8 @@ public class MediaObjectController extends GridPane{
 				
 				parentController.getRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
 				parentController.getRoot().setOnDragOver(null);
+				AdvancedScreen.getInstance().getScreenController().getMasterRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
+				AdvancedScreen.getInstance().getScreenController().getMasterRoot().setOnDragOver(null);
 				parentController.getRoot().setOnDragDropped(null);
 				parentController.getRoot().setOnDragDone(null);
 
@@ -207,14 +305,7 @@ public class MediaObjectController extends GridPane{
 				/* allow any transfer mode */
 				System.out.println("[MediaObjectController] Drag event started");
 				
-//				getParent().setOnDragOver(null);
-//				getParent().setOnDragDropped(null);
-//
-//				getParent().setOnDragOver (mContextDragOver);
-//				getParent().setOnDragDropped (mContextDragDropped);
-//				parentController.getRoot().setOnDragOver(null);
-//				parentController.getRoot().setOnDragDropped(null);
-
+				AdvancedScreen.getInstance().getScreenController().getMasterRoot().setOnDragOver (mContextDragOver);
 				
 				parentController.getRoot().setOnDragOver (mContextDragOver);
 				parentController.getRoot().setOnDragDropped (mContextDragDropped);
@@ -222,10 +313,17 @@ public class MediaObjectController extends GridPane{
 
                 //begin drag ops
                 mDragOffset = new Point2D(event.getX(), event.getY());
+                System.out.println("dragOffset with getX: " + mDragOffset);
                 
-                relocateToPoint(
-                		new Point2D(event.getSceneX(), event.getSceneY())
-                		);
+//                relocateToPoint(
+//                		new Point2D(event.getSceneX(), event.getSceneY())
+//                		);
+                
+                //TODO: TEST STUFF:
+                System.out.println("relocate to point with sceneX with getX: " + (new Point2D(event.getSceneX(), event.getSceneY())));
+                AnchorPane timelineLinePane = parentController.getRoot();
+                System.out.println("AnchorPane: getBoundsInLocal " + timelineLinePane.getBoundsInLocal());
+                System.out.println("Media Object: getBounds in parent" + getBoundsInParent());
                 
                 //The clipboard contains all content that are to be transfered in the drag
                 ClipboardContent content = new ClipboardContent();
@@ -245,16 +343,6 @@ public class MediaObjectController extends GridPane{
 		});
 		
 	}
-	
-//	public Rectangle getRect(){
-//		Rectangle tempRect = new Rectangle(x,y,width,height);
-//		return tempRect;
-//		
-//	}
-//	public Bounds getBounds(){
-//		Bounds tempBounds = new Bounds;
-//		return tempBounds;
-//	}
 
 	/**
 	 * @return the parentController
@@ -268,7 +356,16 @@ public class MediaObjectController extends GridPane{
 	 */
 	public void setParentController(TimelineLineController parentController) {
 		this.parentController = parentController;
-	}		
+	}
+	
+	//TODO: Add propper width
+	private double getMediaObjectWidth(){
+		return 100;
+	}
+	
+	private double getMediaObjectHeigth(){
+		return 75;
+	}
 	
 	//Shoud this be a controller ? or shoud it be a Pane ? or other ?
 	

@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseButton;
@@ -32,6 +34,7 @@ public class TimelineLineController implements FXMLController{
 	private TimelineController parentController;
 	private AnchorPane rootPane;
 	private final ContextMenu contextMenu = new ContextMenu();
+
 	
 	//Drag&drop
 //	private MediaObjectIcon mDragOverIcon = null;
@@ -68,6 +71,9 @@ public class TimelineLineController implements FXMLController{
 		MediaObjectController testController = new MediaObjectController();
 		testController.setType(MediaObjectType.VIDEO);
 		addMediaObject(testController, new Point2D(0,0));
+
+		
+		
 		//Mouse Functionallity
 		initializeMouse();
 		
@@ -78,6 +84,7 @@ public class TimelineLineController implements FXMLController{
 		//Drag&drop functionality
 		
 	}
+	
 	/**
 	 * Initializes all the mouse gesture controls, and also initializes the right click pop up menu.
 	 */
@@ -97,6 +104,7 @@ public class TimelineLineController implements FXMLController{
 			 
             @Override
             public void handle(MouseEvent event) {
+            	contextMenu.hide();
                 MouseButton button = event.getButton();
                 if(button==MouseButton.PRIMARY){
                     System.out.println("PRIMARY button clicked");
@@ -133,6 +141,10 @@ public class TimelineLineController implements FXMLController{
 		return rootPane;
 	}
 	
+	public ContextMenu getContextMenu(){
+		return contextMenu;
+	}
+	
 	public TimelineController getParentController(){
 		return parentController;
 	}
@@ -149,8 +161,15 @@ public class TimelineLineController implements FXMLController{
 		
 	}
 	
+	//TODO: REVISIT TESTING ATM
+	public void removeMediaObject(MediaObjectController node) {
+		rootPane.getChildren().remove(node); //TODO: REMOVE TEMPorarly fix
+		mediaObjects.remove(node);
+		
+	}
+	
 	protected void moveTimeline(Double newPosition){
-		System.out.println("TimelineLineController Moving the Root");
+//		System.out.println("TimelineLineController Moving the Root");
 		rootPane.setLayoutX(newPosition);
 	}
 

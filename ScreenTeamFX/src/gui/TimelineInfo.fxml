@@ -10,7 +10,7 @@
 	<columnConstraints>
 		<ColumnConstraints minWidth="200" prefWidth="200"
 			maxWidth="200" />
-		<ColumnConstraints hgrow="NEVER" maxWidth="Infinity"/>
+		<ColumnConstraints hgrow="NEVER" maxWidth="1000"/>
 	</columnConstraints>
 	<children>
 		<GridPane fx:id="timelineInfo"  GridPane.columnIndex="0" maxHeight="150" maxWidth="-Infinity" minHeight="150"
@@ -39,6 +39,7 @@
 					GridPane.rowIndex="0" GridPane.columnIndex="2">X</Button>
 			</children>
 		</GridPane>
+		<!-- This is the underlying anchorPane of the TimelineLine, it enables the timelineLine to slide back and forth -->
 		<AnchorPane style="-fx-background-color: cyan" fx:id="timelineLineContainer" GridPane.columnIndex="1">
 		<!-- Here is the timelineLine.fxml -->
 		</AnchorPane>

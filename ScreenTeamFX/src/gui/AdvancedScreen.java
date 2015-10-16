@@ -33,7 +33,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import modules.*;
 /**
@@ -50,7 +53,7 @@ public class AdvancedScreen implements Screen{
 
 		private Scene screenScene;
 		private AdvancedScreenController screenController;	
-		
+	
 
 		private AdvancedScreen(){
 			
@@ -97,9 +100,9 @@ public class AdvancedScreen implements Screen{
 			//List of all TimelineControllers within the advancedScreen
 			private ArrayList<TimelineController> timelineControllers;
 			private TimelineBarController timelineBarController;
-			private HeaderController headerController;
-			
+			private HeaderController headerController;		
 			private SessionModule currentSession;
+			private double scrollBarPosition = 0;
 
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
@@ -169,12 +172,16 @@ public class AdvancedScreen implements Screen{
 			 * TODO: Keep current scroll value to update newly added timlines, also make shure the scroll does not cover the info window.
 			 */
 			private void initializeScrollBar() {
+				
+				//TODO: atm this is the size of the clip minus the size of the timelineLine
+				timelineLineScrollBar.setMax(2000-1200);
 				timelineLineScrollBar.valueProperty().addListener(new ChangeListener<Number>() {
 		            public void changed(ObservableValue<? extends Number> ov,
 		                Number old_val, Number new_val) {
-		            	System.out.println("Scrolling: Old value: "+ old_val.doubleValue()+" NewValue: "+ new_val.doubleValue());
+//		            	System.out.println("Scrolling: Old value: "+ old_val.doubleValue()+" NewValue: "+ new_val.doubleValue());
 		            	for (TimelineController timelineController : timelineControllers) {
-		            		timelineController.getTimelineLineController().moveTimeline(-new_val.doubleValue());;
+		            		scrollBarPosition = -new_val.doubleValue();
+		            		timelineController.getTimelineLineController().moveTimeline(scrollBarPosition);
 						}
 
 		            }
@@ -494,6 +501,25 @@ public class AdvancedScreen implements Screen{
 			
 			public SessionModule getCurrentSession(){
 				return currentSession;
+			}
+			
+			public void showModal(MediaObjectController mediaObject){
+                final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(MainGUIController.getInstance().primaryStage);
+                ModalController mediaObjectModal = new ModalController(mediaObject);
+                Scene dialogScene = new Scene(mediaObjectModal.getRoot(), 300, 200);
+                dialog.setScene(dialogScene);
+                dialog.show();
+			}
+
+
+
+			/**
+			 * @return the scrollBarPosition
+			 */
+			public double getScrollBarPosition() {
+				return scrollBarPosition;
 			}
 			
 	
