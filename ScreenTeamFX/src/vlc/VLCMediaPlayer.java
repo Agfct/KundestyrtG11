@@ -18,6 +18,7 @@ public class VLCMediaPlayer {
 	private int display = -1;
 	private int ID;
 	private boolean mediaChanged = false;
+	private boolean isSeeking = false;
 	
 	public VLCMediaPlayer(int ID){
 		this.ID = ID;
@@ -58,6 +59,7 @@ public class VLCMediaPlayer {
 	}
 	
 	public void seek(long time){
+		isSeeking = true;
 		if(mediaChanged){
 			mp.getMediaPlayer().startMedia(mediaPath);
 			mp.getMediaPlayer().pause();
@@ -65,12 +67,13 @@ public class VLCMediaPlayer {
 			mediaChanged = false;
 		}
 		else if(getTime() > -1){
-			mp.getMediaPlayer().pause();
+			pause();
 			mp.getMediaPlayer().setTime(time);
 		}
 		else{
 			System.out.println("No video attached");
 		}
+		isSeeking = false;
 	}	
 	
 	public void stop(){
@@ -125,6 +128,10 @@ public class VLCMediaPlayer {
 	
 	public long getTime(){
 		return mp.getMediaPlayer().getTime();
+	}
+	
+	public boolean isSeeking(){
+		return isSeeking;
 	}
 	
 	/**

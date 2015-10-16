@@ -116,13 +116,14 @@ public class VLCController {
 	}
 	
 	
-	/** * Seek to time and then play the media player. Only plays if time is 0.
+	/** * Seek to time and then play the media player. Seeks only if time not equal 0.
 	 * @param mp
 	 * @param time */
 	public void playOne(int mp, long time){
 		if(time != 0){
 			toPlayer(mp).seek(time);
 		}
+		while(toPlayer(mp).isSeeking());
 		toPlayer(mp).play();
 	}
 
