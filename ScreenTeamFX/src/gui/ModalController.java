@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import modules.MediaSourceType;
 
 /**
  * @author Anders
@@ -24,7 +25,7 @@ public class ModalController implements FXMLController {
 		private GridPane rootGrid;
 		
 		@FXML Label name;
-		@FXML ChoiceBox<MediaObjectType> typeChoiseBox;
+		@FXML ChoiceBox<MediaSourceType> typeChoiseBox;
 		
 		public ModalController(MediaObjectController mediaObject){
 
@@ -47,10 +48,10 @@ public class ModalController implements FXMLController {
 		 * Maps the info in the media object to the modal for editing.
 		 */
 		private void initializeMediaObjectToModal(){
-			typeChoiseBox.setItems(FXCollections.observableArrayList(MediaObjectType.values()));
+			typeChoiseBox.setItems(FXCollections.observableArrayList(MediaSourceType.values()));
 			typeChoiseBox.getSelectionModel().select(currentMediaObject.getType());
-			typeChoiseBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<MediaObjectType>() {
-		        @Override public void changed(ObservableValue ov, MediaObjectType oldType, MediaObjectType newType) {
+			typeChoiseBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<MediaSourceType>() {
+		        @Override public void changed(ObservableValue ov, MediaSourceType oldType, MediaSourceType newType) {
 		        	currentMediaObject.setType(newType);
 		          }    
 		      });

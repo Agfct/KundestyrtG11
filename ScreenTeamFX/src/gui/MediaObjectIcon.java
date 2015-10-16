@@ -29,7 +29,7 @@ public class MediaObjectIcon extends GridPane{
 	private EventHandler <DragEvent> mContextDragOver;
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
-	private MediaObjectType mType = null;
+	private MediaSourceType mType = null;
 	
 	private MediaObject mediaObject;
 
@@ -155,16 +155,16 @@ public class MediaObjectIcon extends GridPane{
 			);
 	}
 	
-	public MediaObjectType getType () { return mType; }
+	public MediaSourceType getType () { return mType; }
 	
-	public void setType (MediaObjectType type) {
+	public void setType (MediaSourceType type) {
 		
 		mType = type;
 		
 		getStyleClass().clear();
 		getStyleClass().add("dragicon");
 
-			if(mType == MediaObjectType.SOUND){
+			if(mType == MediaSourceType.AUDIO){
 				getStyleClass().add("icon-sound");
 			}else{
 				getStyleClass().add("icon-video");

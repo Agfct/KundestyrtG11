@@ -29,6 +29,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import modules.MediaSourceType;
 
 /**
  * @author Anders
@@ -49,7 +50,7 @@ public class MediaObjectController extends GridPane{
 	private EventHandler <DragEvent> mContextDragDone;
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
-	private MediaObjectType mType = null;
+	private MediaSourceType mType = null;
 	
 	public MediaObjectController(){
 //		setStyle("-fx-background-color: BLUE");
@@ -77,7 +78,7 @@ public class MediaObjectController extends GridPane{
 	 * @param container
 	 */
 	public void initializeMediaObject(MediaObjectContainer container){
-		setType(MediaObjectType.valueOf(container.getValue("type")));
+		setType(MediaSourceType.valueOf(container.getValue("type")));
 	}
 	
 	/**
@@ -147,7 +148,7 @@ public class MediaObjectController extends GridPane{
 		alert.setContentText("Do you really want to delete this MediaObject?");
 	}
 	
-	public MediaObjectType getType () { return mType; }
+	public MediaSourceType getType () { return mType; }
 	
 	public void relocateToPoint (Point2D p) {
 
@@ -174,13 +175,13 @@ public class MediaObjectController extends GridPane{
 	 * this is only a visual representation for the drag and drop
 	 * @param type
 	 */
-	public void setType (MediaObjectType type) {
+	public void setType (MediaSourceType type) {
 		mType = type;
 		
 		getStyleClass().clear();
 		getStyleClass().add("dragicon");
 		
-		if(mType == MediaObjectType.SOUND){
+		if(mType == MediaSourceType.AUDIO){
 			getStyleClass().add("icon-sound");
 		}else{
 			getStyleClass().add("icon-video");
