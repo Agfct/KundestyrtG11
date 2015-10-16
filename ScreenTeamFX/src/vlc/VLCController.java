@@ -135,8 +135,9 @@ public class VLCController {
 		if(time != 0){
 			toPlayer(mp).seek(time);
 		}
-		while(toPlayer(mp).isSeeking());
-		toPlayer(mp).play();
+		while(!toPlayer(mp).isPlaying()){
+			toPlayer(mp).play();
+		}
 	}
 
 	/** * Pauses one specific media player. 
