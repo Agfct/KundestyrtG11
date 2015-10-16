@@ -135,6 +135,7 @@ public class VLCController {
 		if(time != 0){
 			toPlayer(mp).seek(time);
 		}
+		toPlayer(mp).play();
 		while(!toPlayer(mp).isPlaying()){
 			toPlayer(mp).play();
 		}

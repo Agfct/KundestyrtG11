@@ -22,19 +22,24 @@ public class Testingmodules {
 		TimelineModel tlm2 = tlmodul.getTimelines().get(2);
 		tlmodul.assignTimeline(0, tlm);
 //		tlmodul.assignTimeline(1, tlm2);
-		tlm.addTimelineMediaObject(0,3000,mO);
-		tlm.addTimelineMediaObject(3000, 10000,mO);
+		tlm.addTimelineMediaObject(0,4000,mO);
+		tlm.addTimelineMediaObject(6000, 5000,mO);
+		tlm.addTimelineMediaObject(11000,1000,mO);
 		tlm2.addTimelineMediaObject(0,6000,mO);
 		tlm2.addTimelineMediaObject(6000,7000,mO);
 		//tlm.addTimelineMediaObject(9000,1500,mO);
 		tlm.getTimelineMediaObjects().get(0).setStartPoint(5000);
 		tlm.getTimelineMediaObjects().get(1).setStartPoint(10000);
-		tlm2.getTimelineMediaObjects().get(0).setStartPoint(2000);
-		tlmodul.playOne(0,0);
-		Thread.sleep(1000);
+//		tlm2.getTimelineMediaObjects().get(0).setStartPoint(2000);
+		tlmodul.playOne(1,0);
+		/*Thread.sleep(2000);
 		tlmodul.pauseOne(1);
 		Thread.sleep(1000);
-		tlmodul.playOne(0,1000);
+		tlmodul.playOne(1,2000);
+		Thread.sleep(5000);
+		tlmodul.pauseOne(1);
+		Thread.sleep(1000);
+		tlmodul.playOne(1, 7000);*/
 	}
 	public static void main(String[] args) {
 		try {
