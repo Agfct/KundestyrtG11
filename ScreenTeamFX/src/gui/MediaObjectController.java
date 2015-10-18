@@ -77,7 +77,7 @@ public class MediaObjectController extends GridPane{
 			e.printStackTrace();
 		}
 		
-		//initialize drag&drop
+		//initialize drag&drop NB: THIS IS NOW DISABLED: NO DRAG/DROP INSIDE OF TIMELINE. OUTCOMMENT TO ENABLE
 		initializeMouse();
 		
 		//Sets the master root pane for drag and drop
@@ -109,8 +109,8 @@ public class MediaObjectController extends GridPane{
 	 */
 	@FXML
 	private void initialize() {
-		System.out.println("init MediaHandlers");
-		buildNodeDragHandlers();
+		//NB: DRAG INSIDE A TIMELINE IS NOW DISABLED! OUTCOMMENT TO ENABLE
+//		buildNodeDragHandlers();
 	}
 	
 	/**
@@ -129,7 +129,8 @@ public class MediaObjectController extends GridPane{
 				Optional<ButtonType> result = alert.showAndWait();
 				if (result.get() == ButtonType.OK){
 				    // ... user chose OK
-					parentController.removeMediaObject(thisMediaObject);
+//					parentController.removeMediaObject(thisMediaObject);
+					AdvancedScreen.getInstance().getScreenController().getCurrentSession().removeTimelineMediaObjectFromTimeline(parentController.getParentController().getTimelineModel(),timelineMediaObject);
 				} else {
 				    // ... user chose CANCEL or closed the dialog
 				}
@@ -390,6 +391,10 @@ public class MediaObjectController extends GridPane{
 	
 	private double getMediaObjectHeigth(){
 		return 75;
+	}
+	
+	public TimelineMediaObject getTimelineMediaObject(){
+		return timelineMediaObject;
 	}
 	
 	//Shoud this be a controller ? or shoud it be a Pane ? or other ?

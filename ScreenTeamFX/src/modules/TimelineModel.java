@@ -169,7 +169,7 @@ public class TimelineModel implements Serializable{
 	 * @param newStart
 	 * @param newDuration
 	 * @return
-	 */
+	 */ //TODO: Do the check with the dummy object, and change the actual object instead. This fucks up the pointers when editing on a timeline
 	public String timelineMediaObjectChanged( TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){	
 		if(!timelineMediaObjects.remove(tlmo)){
 			return "TimelineMediaObject not found on timeline";
@@ -185,7 +185,7 @@ public class TimelineModel implements Serializable{
 			}
 			return "Could not modify the TimelineMediaObject, it remains unchanged";
 		}
-		
+		timelinechanged();
 		return "TImelineMediaObject successfully modified. " + result;
 	}
 	

@@ -450,6 +450,16 @@ public class SessionModule implements Serializable {
 			listener.fireMediaObjectListChanged();
 		}
 	}
+	/**
+	 * removes the timelinemediaobject from the given timelinemodel
+	 * @param tlm
+	 * @param tlmo
+	 */
+	public void removeTimelineMediaObjectFromTimeline(TimelineModel tlm, TimelineMediaObject tlmo){
+		tlm.removeTimelineMediaObject(tlmo);
+		timelineChanged(TimeLineChanges.MODIFIED, tlm);
+		
+	}
 	
 	
 	public void changeOrderOfTimelines(int timelineID, int newPos ){

@@ -22,7 +22,7 @@ import modules.MediaSourceType;
 public class ModalController implements FXMLController {
 
 		private FXMLLoader fxmlLoader;
-		private MediaObjectController currentMediaObject;
+		private MediaObjectController currentMediaObjectController;
 		
 		//Temp variables for keeping MediaObject information (new start points and such)
 		private long temp_start;
@@ -42,7 +42,7 @@ public class ModalController implements FXMLController {
 		
 		public ModalController(MediaObjectController mediaObject){
 
-			currentMediaObject = mediaObject;
+			currentMediaObjectController = mediaObject;
 			// The constructor will try to fetch the fxml 
 			try {
 				fxmlLoader = new FXMLLoader(getClass().getResource("MediaObjectModal.fxml"));
@@ -55,6 +55,15 @@ public class ModalController implements FXMLController {
 			}
 
 			initializeMediaObjectToModal();
+			setInfo();
+		}
+		
+		private void setInfo(){
+			nameLabel.setText(currentMediaObjectController.getTimelineMediaObject().getParent().getName());
+			startTimeField.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getStart()));
+			durationField.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getDuration()));
+			endTimeLabel.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getEnd()));			
+
 		}
 		
 		/**
@@ -75,7 +84,6 @@ public class ModalController implements FXMLController {
 //			    if(Integer.parseInt(newValue) > 0 && Integer.parseInt(newValue) < currentMediaObject.getLength()){
 				    temp_duration = Integer.parseInt(newValue);
 //			    }
-
 			    
 			});
 			
@@ -103,7 +111,10 @@ public class ModalController implements FXMLController {
 			
 			if(((Button)event.getSource()).getId().equals("applyBtn") ){
 				System.out.println("APPLY CHANGES");
-				
+				//TODO: a new object is made each time something is changed. See the TODO on line 172 in timelineModel.java This means the function only works one time.
+				String result = AdvancedScreen.getInstance().getScreenController().getCurrentSession().timelineMediaObjectChanged(currentMediaObjectController.getParentController().getParentController().getTimelineModel(),currentMediaObjectController.getTimelineMediaObject(), (int)temp_start, (int)temp_startPoint, (int)temp_duration);
+				//TODO: it would be nice to display this result somewhere. Maybe another popup? or some field on the screen that can be used. 		
+				System.out.println("timelinemediaObject changed: " + result);
 			}else if(((Button)event.getSource()).getId().equals("okBtn")){
 				System.out.println("OK AND APPLY CHANGES");
 				AdvancedScreen.getInstance().getScreenController().closeModal();
