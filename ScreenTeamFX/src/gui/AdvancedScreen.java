@@ -252,7 +252,6 @@ public class AdvancedScreen implements Screen{
 						MediaObjectContainer container = new MediaObjectContainer();
 //						
 						//TODO: add all advanced information about the MediaObject is added here (seperate method ? )
-//						container.addData ("type", mDragOverIcon.getType().toString());
 						container.addData ("model", icn.getMediaObject());
 						
 						//Container is put onto the clipboard
@@ -396,11 +395,8 @@ public class AdvancedScreen implements Screen{
 									System.out.println("Point: X: " + p.getX() + " Y: " + p.getY());
 									System.out.println(" Container Point: X: " + ((Point2D) container.getValue("scene_coords")).getX() + " Y: " + ((Point2D) container.getValue("scene_coords")).getY());
 									if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
-										
-//										currentTimelineLineController.addMediaObject(node,p);
-//										node.initializeMediaObject(container);
 										currentSession.addMediaObjectToTimeline(container.getValue("model"), timelineController.getTimelineModel() , (int)p.getX()*1000);
-										System.out.println(" WE ARE DONE !!!");
+										System.out.println("The drag is done, and the modules are notified that we need a new timelinemediaobject");
 										break;
 									}
 								}
@@ -511,6 +507,7 @@ public class AdvancedScreen implements Screen{
 					for(TimelineController timelineController: idTimlineControllerMap.keySet()){
 						if(idTimlineControllerMap.get(timelineController).equals(timeLineModel.getID())){
 							timelineControllerToBeRemoved=timelineController;
+							break;
 						}
 					}
 					idTimlineControllerMap.remove(timelineControllerToBeRemoved);
@@ -519,10 +516,12 @@ public class AdvancedScreen implements Screen{
 					break;
 				}
 				case MODIFIED:{
+					//TODO: find out what the modification was: addedMediaObject, removedMediaOBject or replaced mediaobject. 
 					TimelineController timelineControllerToBeModified=null;
 					for(TimelineController timelineController: idTimlineControllerMap.keySet()){
 						if(idTimlineControllerMap.get(timelineController).equals(timeLineModel.getID())){
 							timelineControllerToBeModified=timelineController;
+							break;
 						}
 					}
 					timelineControllerToBeModified.modelChanged();
@@ -533,7 +532,7 @@ public class AdvancedScreen implements Screen{
 					removeAllTimelineControllersFromScreen();
 					ArrayList<Integer> orderedListOfTimelines = currentSession.getTimelineOrder();
 					
-					//We need to reverse the ordering because we allways bring the newest timeline to the top of the view. 
+					//We need to reverse the ordering because we always bring the newest timeline to the top of the view. 
 					for(int i=orderedListOfTimelines.size()-1;i>=0;i--){
 						TimelineController timelineControllerToPaint=null;
 						for(TimelineController timelineController: idTimlineControllerMap.keySet()){

@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.ActionEvent;
@@ -20,10 +21,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import modules.MediaSourceType;
+import modules.TimelineMediaObject;
+import modules.TimelineModel;
+import uk.co.caprica.vlcj.binding.internal.media_duration_changed;
 
 /**
  * 
- * @author Anders Lunde
+ * @author Anders Lunde, Magnus Gundersen
  * The TimelineLineController is the controller of the line you see at the right side, 
  * containing all the media objects.
  * The controller handles all internal drag and drop operations
@@ -43,7 +47,9 @@ public class TimelineLineController implements FXMLController{
 //	private EventHandler<DragEvent> mIconDragDropped = null;
 	
 	//TODO: dummy list ? should it be this way ?
-	private ArrayList<MediaObjectController> mediaObjects;
+	private ArrayList<MediaObjectController> mediaObjectControllers;
+	private ArrayList<TimelineMediaObject> timelineMediaObjectModels;
+	private HashMap<TimelineMediaObject,MediaObjectController> mediaObjectToControllerMap;
 	
 	/**
 	 * 
@@ -51,11 +57,11 @@ public class TimelineLineController implements FXMLController{
 	 */
 	public TimelineLineController(TimelineController parentController){
 		
-		//Fetches the parent controller. In this case it is the controller in the advancedScreen class.'
+		//Fetches the parent controller. In this case it is the timelineController who has this timelinelinecontroller
 		this.parentController = parentController;
 		
 		//initializes empty mediaObjectList
-		mediaObjects = new ArrayList<>();
+		mediaObjectControllers = new ArrayList<>();
 		
 		// The constructor will try to fetch the fxml 
 		try {
@@ -153,15 +159,16 @@ public class TimelineLineController implements FXMLController{
 	 */
 	public void addMediaObject(MediaObjectController node, Point2D p) {
 		rootPane.getChildren().add(node); //TODO: REMOVE TEMPorarly fix
-		mediaObjects.add(node);
+		mediaObjectControllers.add(node);
 		node.setParentController(this);
+		node.relocateToPoint(p);
 		
 	}
 	
 	//TODO: REVISIT TESTING ATM
 	public void removeMediaObject(MediaObjectController node) {
 		rootPane.getChildren().remove(node); //TODO: REMOVE TEMPorarly fix
-		mediaObjects.remove(node);
+		mediaObjectControllers.remove(node);
 		
 	}
 	
@@ -171,8 +178,25 @@ public class TimelineLineController implements FXMLController{
 	}
 
 	public void repaint() {
+		System.out.println("---Repainting---");
 		// TODO Go through all mediaObjectControllers, and repaint according to the new model. 
+		rootPane.getChildren().clear();
+		mediaObjectControllers.clear();
 		
+		TimelineModel model=parentController.getTimelineModel();
+		timelineMediaObjectModels=model.getTimelineMediaObjects();
+		for(TimelineMediaObject tlmo:timelineMediaObjectModels){
+			MediaObjectController mediaObjectController = new MediaObjectController(tlmo);
+			mediaObjectController.initializeMediaObject();
+			addMediaObject(mediaObjectController, new Point2D(tlmo.getStart()/1000, 0));
+			
+		}
+		
+		for(MediaObjectController mediaObjectController:mediaObjectControllers){
+			//TODO: run updateValueFromModel on each controller?
+			mediaObjectController.updateValuesFromModel();
+		}
+		System.out.println("Goon do some repainting");
 		
 	}
 

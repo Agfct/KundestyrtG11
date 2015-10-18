@@ -5,6 +5,7 @@ package gui;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Random;
 
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -33,7 +35,7 @@ import modules.MediaSourceType;
 import modules.TimelineMediaObject;
 
 /**
- * @author Anders
+ * @author Anders Lunde, Magnus Gundersen
  * This is the visual representation of the MediaObject (Movie, Sound)
  */
 public class MediaObjectController extends GridPane{
@@ -51,13 +53,19 @@ public class MediaObjectController extends GridPane{
 	private EventHandler <DragEvent> mContextDragDone;
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
-//	private MediaSourceType mType = null;
 	
+	//Model corresponding to this controller
 	private TimelineMediaObject timelineMediaObject;
 	
-	public MediaObjectController(){
-		setStyle("-fx-background-color: BLUE");
-		
+	//Width of the mediaObject
+	private double mediaObjectWidth=1000;
+	
+	private Label nameOfFile;
+	
+	public MediaObjectController(TimelineMediaObject timelineMediaObject){
+		setStyle("-fx-background-color: GRAY");
+		this.timelineMediaObject=timelineMediaObject;
+		this.setWidth(234);
 		
 		try {
 			fxmlLoader = new FXMLLoader(getClass().getResource("MediaObject.fxml"));
@@ -79,15 +87,21 @@ public class MediaObjectController extends GridPane{
 	/**
 	 * Extracts the information from the container and adds it to the mediaObjectController
 	 * @param container
+	 * TODO: remove this? It was only useful before the modules was integrated into the program
 	 */
-	public void initializeMediaObject(MediaObjectContainer container){
-//		setType(MediaSourceType.valueOf(container.getValue("type")));
-		//TODO: get the correct start-time from the drop-point
-		System.out.println("model of the container: "+ container.getValue("model"));
-		System.out.println("Parentcontroller: "+ this.parentController.getParentController().getTimelineModel());
+	public void initializeMediaObject(){
+		this.nameOfFile= new Label(timelineMediaObject.getParent().getName());
+		nameOfFile.setVisible(true);
+		this.add(nameOfFile, 0, 0);
+		this.mediaObjectWidth=timelineMediaObject.getDuration()/1000;
+		System.out.println("Setting width:" + mediaObjectWidth);
+		this.setPrefWidth(mediaObjectWidth);
+		this.setMaxWidth(mediaObjectWidth);
 		
-		AdvancedScreen.getInstance().getScreenController().getCurrentSession().addMediaObjectToTimeline(container.getValue("model"), this.parentController.getParentController().getTimelineModel(), 10000);
-		System.out.println("ADDED TO TIMELINE" + container.getValue("scene_coords"));
+	}
+	
+	public void updateValuesFromModel(){
+		
 	}
 	
 	/**
@@ -341,7 +355,7 @@ public class MediaObjectController extends GridPane{
                 
                 //creating a container with all the data of the media object
 				MediaObjectContainer container = new MediaObjectContainer();			
-				container.addData ("type", timelineMediaObject.getParent().getType().toString());
+//				container.addData ("type", timelineMediaObject.getParent().getType().toString());
                 
                 //Putting the data container onto the content
 				content.put(MediaObjectContainer.DragNode, container); //TODO: AddNode ??
@@ -371,7 +385,7 @@ public class MediaObjectController extends GridPane{
 	
 	//TODO: Add propper width
 	private double getMediaObjectWidth(){
-		return 100;
+		return mediaObjectWidth;
 	}
 	
 	private double getMediaObjectHeigth(){

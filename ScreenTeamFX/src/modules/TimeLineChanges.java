@@ -1,5 +1,9 @@
 package modules;
 
 public enum TimeLineChanges {
-	MODIFIED, ADDED, REMOVED, ORDER
+	MEDIAOBJECTADDED, MEDIAOBJECTREMOVED, MEDIAOBJECTMODIFIED, MEDIAOBJECTORDER, MODIFIED, ADDED, REMOVED, ORDER;
+
+	public String getModificationType(){
+		return "yes";
+	}
 }

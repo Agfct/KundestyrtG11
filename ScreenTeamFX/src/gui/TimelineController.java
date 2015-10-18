@@ -122,7 +122,7 @@ public class TimelineController implements FXMLController {
 
 	public void modelChanged() {
 		childController.repaint();
-		//TODO: updateValuesFromModel()
+		//TODO: updateValuesFromModel(): This is to get the screen-list and other things in the info-view correct
 		
 	}
 

@@ -1,6 +1,7 @@
 package modules;
 
 import java.io.Serializable;
+import java.util.Random;
 
 /**
  * 
@@ -32,6 +33,7 @@ public class MediaObject implements Serializable {
 		this.path = path;
 		this.name = name;
 		this.setType(type);
+		this.length=(int) Math.max(1000,(Math.random()*100000)); //TODO: get proper length from VLC. Now it gets random value between 1000 and 100000
 	}
 	
 	public String getName() {
@@ -51,6 +53,7 @@ public class MediaObject implements Serializable {
 	}
 
 	public int getLength() {
+		//TODO: we need help from VLC to get correct lenght of a video. 
 		return length;
 	}
 
