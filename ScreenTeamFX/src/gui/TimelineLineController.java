@@ -186,12 +186,12 @@ public class TimelineLineController implements FXMLController{
 	public void repaint() {
 		System.out.println("---Repainting---");
 		// TODO Go through all mediaObjectControllers, and repaint according to the new model. 
-//		rootPane.getChildren().clear();
-//		mediaObjectControllers.clear();
+
 		
 		TimelineModel model=parentController.getTimelineModel();
 		ArrayList<TimelineMediaObject> newListOfTimelineMediaObject=model.getTimelineMediaObjects();
-		
+		System.out.println("Local: " + timelineMediaObjectModels);
+		System.out.println("Remote: " + newListOfTimelineMediaObject);
 		if(newListOfTimelineMediaObject.equals(timelineMediaObjectModels)){
 			System.out.println("SAME CONTENT! THIS MEANS SOME OF THEM HAS BEEN CHANGED. REPAINT ONLY");
 			for(MediaObjectController mediaObjectController:mediaObjectControllers){
@@ -221,7 +221,6 @@ public class TimelineLineController implements FXMLController{
 		}
 		else if(newListOfTimelineMediaObject.size()<timelineMediaObjectModels.size()){
 			System.out.println("THIS MEANS AN OBJECT HAS BEEN REMOVED");
-			System.out.println("THIS MEANS AN OBJECT HAS BEEN ADDED");
 			ArrayList<TimelineMediaObject> difference= new ArrayList<>();
 			difference.addAll(timelineMediaObjectModels);
 			difference.removeAll(newListOfTimelineMediaObject);
