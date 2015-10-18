@@ -24,6 +24,7 @@ import modules.MediaSourceType;
 import modules.TimelineMediaObject;
 import modules.TimelineModel;
 import uk.co.caprica.vlcj.binding.internal.media_duration_changed;
+import java.util.Collection;
 
 /**
  * 
@@ -62,6 +63,7 @@ public class TimelineLineController implements FXMLController{
 		
 		//initializes empty mediaObjectList
 		mediaObjectControllers = new ArrayList<>();
+		mediaObjectToControllerMap = new HashMap<TimelineMediaObject, MediaObjectController>();
 		
 		// The constructor will try to fetch the fxml 
 		try {
@@ -84,7 +86,8 @@ public class TimelineLineController implements FXMLController{
 //		parentController.timelineContainer.add(this.rootPane, 1, 0);
 		parentController.timelineLineContainer.getChildren().add(this.rootPane);
 		
-		//Drag&drop functionality
+		timelineMediaObjectModels= new ArrayList<TimelineMediaObject>();
+		
 		
 	}
 	
@@ -162,6 +165,8 @@ public class TimelineLineController implements FXMLController{
 		mediaObjectControllers.add(node);
 		node.setParentController(this);
 		node.relocateToPoint(p);
+		mediaObjectToControllerMap.put(node.getTimelineMediaObject(), node);
+
 		
 	}
 	
@@ -169,6 +174,7 @@ public class TimelineLineController implements FXMLController{
 	public void removeMediaObject(MediaObjectController node) {
 		rootPane.getChildren().remove(node); //TODO: REMOVE TEMPorarly fix
 		mediaObjectControllers.remove(node);
+		mediaObjectToControllerMap.remove(node);
 		
 	}
 	
@@ -180,23 +186,67 @@ public class TimelineLineController implements FXMLController{
 	public void repaint() {
 		System.out.println("---Repainting---");
 		// TODO Go through all mediaObjectControllers, and repaint according to the new model. 
-		rootPane.getChildren().clear();
-		mediaObjectControllers.clear();
+//		rootPane.getChildren().clear();
+//		mediaObjectControllers.clear();
 		
 		TimelineModel model=parentController.getTimelineModel();
-		timelineMediaObjectModels=model.getTimelineMediaObjects();
-		for(TimelineMediaObject tlmo:timelineMediaObjectModels){
-			MediaObjectController mediaObjectController = new MediaObjectController(tlmo);
-			mediaObjectController.initializeMediaObject();
-			addMediaObject(mediaObjectController, new Point2D(tlmo.getStart()/1000, 0));
+		ArrayList<TimelineMediaObject> newListOfTimelineMediaObject=model.getTimelineMediaObjects();
+		
+		if(newListOfTimelineMediaObject.equals(timelineMediaObjectModels)){
+			System.out.println("SAME CONTENT! THIS MEANS SOME OF THEM HAS BEEN CHANGED. REPAINT ONLY");
+			for(MediaObjectController mediaObjectController:mediaObjectControllers){
+				mediaObjectController.updateValuesFromModel();
+				rootPane.getChildren().remove(mediaObjectController);
+				rootPane.getChildren().add(mediaObjectController); 
+				mediaObjectController.relocateToPoint(new Point2D(mediaObjectController.getTimelineMediaObject().getStart()/1000,0));
+			}
 			
 		}
 		
-		for(MediaObjectController mediaObjectController:mediaObjectControllers){
-			//TODO: run updateValueFromModel on each controller?
-			mediaObjectController.updateValuesFromModel();
+		else if(newListOfTimelineMediaObject.size()>timelineMediaObjectModels.size()){
+			System.out.println("THIS MEANS AN OBJECT HAS BEEN ADDED");
+			ArrayList<TimelineMediaObject> difference= new ArrayList<>();
+			difference.addAll(newListOfTimelineMediaObject);
+			difference.removeAll(timelineMediaObjectModels);
+			
+			for(TimelineMediaObject tlmo:difference){
+				MediaObjectController mediaObjectController = new MediaObjectController(tlmo);
+				mediaObjectController.initializeMediaObject();
+				addMediaObject(mediaObjectController, new Point2D(tlmo.getStart()/1000, 0));
+
+			}
+			timelineMediaObjectModels.clear();
+			timelineMediaObjectModels.addAll(newListOfTimelineMediaObject);
+			
 		}
-		System.out.println("Goon do some repainting");
+		else if(newListOfTimelineMediaObject.size()<timelineMediaObjectModels.size()){
+			System.out.println("THIS MEANS AN OBJECT HAS BEEN REMOVED");
+			System.out.println("THIS MEANS AN OBJECT HAS BEEN ADDED");
+			ArrayList<TimelineMediaObject> difference= new ArrayList<>();
+			difference.addAll(timelineMediaObjectModels);
+			difference.removeAll(newListOfTimelineMediaObject);
+			
+			for(TimelineMediaObject tlmo:difference){
+				MediaObjectController mediaObjectController = mediaObjectToControllerMap.get(tlmo);
+				removeMediaObject(mediaObjectController);
+
+			}
+			timelineMediaObjectModels.clear();
+			timelineMediaObjectModels.addAll(newListOfTimelineMediaObject);
+			
+		}
+		
+		
+		
+//		for(TimelineMediaObject tlmo:timelineMediaObjectModels){
+//			// TODO: should we avoid creating a new Controller each time?
+//			MediaObjectController mediaObjectController = new MediaObjectController(tlmo);
+//			mediaObjectController.initializeMediaObject();
+//			addMediaObject(mediaObjectController, new Point2D(tlmo.getStart()/1000, 0));
+//			
+//		}
+		
+		
 		
 	}
 

@@ -16,8 +16,7 @@ import javafx.scene.layout.GridPane;
 import modules.MediaSourceType;
 
 /**
- * @author Anders
- * TODO: Maby make the modal hold temp values and only apply them after you press an ok button ?
+ * @author Anders Lunde, Magnus Gundersen
  */
 public class ModalController implements FXMLController {
 
@@ -58,6 +57,10 @@ public class ModalController implements FXMLController {
 			setInfo();
 		}
 		
+		
+		/**
+		 * This function gets the info from the model, and sets the fields. It is run every time the user does some changes to the values that are displayed. 
+		 */
 		private void setInfo(){
 			nameLabel.setText(currentMediaObjectController.getTimelineMediaObject().getParent().getName());
 			startTimeField.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getStart()));
@@ -112,11 +115,14 @@ public class ModalController implements FXMLController {
 			if(((Button)event.getSource()).getId().equals("applyBtn") ){
 				System.out.println("APPLY CHANGES");
 				//TODO: a new object is made each time something is changed. See the TODO on line 172 in timelineModel.java This means the function only works one time.
+				//This line get the currentSession, and sends a request to change the value of the timelinemediaObject
 				String result = AdvancedScreen.getInstance().getScreenController().getCurrentSession().timelineMediaObjectChanged(currentMediaObjectController.getParentController().getParentController().getTimelineModel(),currentMediaObjectController.getTimelineMediaObject(), (int)temp_start, (int)temp_startPoint, (int)temp_duration);
 				//TODO: it would be nice to display this result somewhere. Maybe another popup? or some field on the screen that can be used. 		
 				System.out.println("timelinemediaObject changed: " + result);
+				this.setInfo(); // Update the info from the model. It is possible that the values inputted was rejected. 
 			}else if(((Button)event.getSource()).getId().equals("okBtn")){
-				System.out.println("OK AND APPLY CHANGES");
+				String result = AdvancedScreen.getInstance().getScreenController().getCurrentSession().timelineMediaObjectChanged(currentMediaObjectController.getParentController().getParentController().getTimelineModel(),currentMediaObjectController.getTimelineMediaObject(), (int)temp_start, (int)temp_startPoint, (int)temp_duration);
+				System.out.println("OK AND APPLY: " + result);
 				AdvancedScreen.getInstance().getScreenController().closeModal();
 				
 			}

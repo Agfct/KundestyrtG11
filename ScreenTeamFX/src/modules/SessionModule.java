@@ -416,7 +416,15 @@ public class SessionModule implements Serializable {
 		timelineChanged(TimeLineChanges.MODIFIED,timeline); //TODO: tell the user what was the outcome of the operation
 		return result;
 	}
-	
+	/**
+	 * 
+	 * @param tlm
+	 * @param tlmo
+	 * @param newStart
+	 * @param newInternalStart
+	 * @param newDuration
+	 * @return
+	 */
 	public String timelineMediaObjectChanged(TimelineModel tlm, TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){
 		String result = tlm.timelineMediaObjectChanged(tlmo, newStart, newInternalStart, newDuration);
 		timelineChanged(TimeLineChanges.MODIFIED, tlm);

@@ -42,7 +42,7 @@ import modules.*;
 
 
 /**
- * @author Anders Lunde,  Magnus Gunde
+ * @author Anders Lunde,  Magnus Gundersen
  * Singleton class
  *The AdvancedScreen class represents the view/Screen where you can create a new session that will be displayed on the screens.
  *This is the most important screen in the application and it will contain most of the applications functionallity.
@@ -376,7 +376,7 @@ public class AdvancedScreen implements Screen{
 						if (container != null) {
 							//If the drop is inside the view
 							if (container.getValue("scene_coords") != null) {
-								System.out.println("Not EMPTY");
+//								System.out.println("Not EMPTY");
 							
 //								MediaObjectController node = new MediaObjectController();
 								
@@ -395,8 +395,8 @@ public class AdvancedScreen implements Screen{
 									System.out.println("Point: X: " + p.getX() + " Y: " + p.getY());
 									System.out.println(" Container Point: X: " + ((Point2D) container.getValue("scene_coords")).getX() + " Y: " + ((Point2D) container.getValue("scene_coords")).getY());
 									if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
-										currentSession.addMediaObjectToTimeline(container.getValue("model"), timelineController.getTimelineModel() , (int)p.getX()*1000);
-										System.out.println("The drag is done, and the modules are notified that we need a new timelinemediaobject");
+										String result=currentSession.addMediaObjectToTimeline(container.getValue("model"), timelineController.getTimelineModel() , (int)p.getX()*1000);
+										System.out.println("Result of the drop of mediaObject: " + result);
 										break;
 									}
 								}
