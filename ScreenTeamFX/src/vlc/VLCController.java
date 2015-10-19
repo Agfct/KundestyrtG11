@@ -267,19 +267,21 @@ public class VLCController {
 		}
 	}
 	
+	
 	/**
 	 * Returns true if mediaPath is a valid path and is playable.
 	 * @param mediaPath
 	 * @return */
-	public boolean prerunCheck(String mediaPath){
+	public long prerunCheck(String mediaPath){
 		try{
-			if(prerunCheckPlayer.isPlayable(mediaPath)){
-				return true;
+			long length = prerunCheckPlayer.isPlayable(mediaPath);
+			if(length != 0){
+				return length;
 			}
-			return false;
+			return 0;
 		}
 		catch(Exception e) {
-			return false;
+			return 0;
 		}
 		finally {
 			prerunCheckPlayer.close();

@@ -1,10 +1,14 @@
 package vlc;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.SwingConstants;
 
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
@@ -105,7 +109,8 @@ public class VLCMediaPlayer {
 	 * @param display */
 	public void setDisplayWin8(int display){
 		this.display = display;
-		showOnDisplay(display);
+        gs[display].setFullScreenWindow(frame);
+        frame.setVisible(true);
 	}
 	
 	public void removeDisplay(){
@@ -113,7 +118,7 @@ public class VLCMediaPlayer {
 			gs[display].setFullScreenWindow(null);
 		}
 		else{
-			frame.getContentPane().remove(mp);
+			frame.getContentPane().removeAll();
 			frame.dispose();
 		}
 		display = -1;
@@ -143,24 +148,10 @@ public class VLCMediaPlayer {
 		return mp.getMediaPlayer().getTime();
 	}
 	
-	
-	/**
-	 * Displays the media player on a graphicsDevice. Only works on Windows 8.
-	 * @param display */
-	public void showOnDisplay(int display){
-	    if(display > -1 && display < gs.length){
-			frame.setVisible(true);
-	        gs[display].setFullScreenWindow(frame);
-	    }
-	    else{
-	        System.out.println("Display not found");
-	    }
-	}
-	
-	public boolean isPlayable(String mediaPath){
+	public long isPlayable(String mediaPath){
 		frame.setVisible(true);
 		mp.getMediaPlayer().startMedia(mediaPath);
-		return isPlaying();
+		return mp.getMediaPlayer().getLength();
 	}
 	
 	public void close(){
