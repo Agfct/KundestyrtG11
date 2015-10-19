@@ -456,6 +456,8 @@ public class SessionModule implements Serializable {
 		
 		String name = path.substring(path.lastIndexOf('\\')+1);
 		MediaObject mo = new MediaObject(path, name, mst);
+		//TODO: set lenght of video. 
+//		vlccontroller.getLenghtOfVideo();
 		mediaObjects.add(mo);
 		mediaObjectsChanged();
 		return mo;
@@ -544,6 +546,13 @@ public class SessionModule implements Serializable {
 	public void globalTimeChanged(){
 		for(SessionListener listener:listeners){
 			listener.fireGlobalTimeChanged(globaltime);
+		}
+	}
+
+	public void changeGlobalTime(long newGlobalTime) {
+		if(newGlobalTime>=0){
+			this.globaltime=newGlobalTime;
+			globalTimeChanged();
 		}
 	}
 	

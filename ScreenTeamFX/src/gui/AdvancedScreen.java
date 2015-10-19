@@ -627,6 +627,13 @@ public class AdvancedScreen implements Screen{
 			public void pauseAllTimelines(){
 				currentSession.pauseAll();
 			}
+
+
+
+			public void changeGlobalTime(long i) {
+				currentSession.changeGlobalTime(i);
+				
+			}
 			
 			
 	
