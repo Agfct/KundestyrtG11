@@ -606,6 +606,28 @@ public class AdvancedScreen implements Screen{
 			public double getScrollBarPosition() {
 				return scrollBarPosition;
 			}
+
+
+
+			@Override
+			public void fireGlobalTimeChanged(long newGlobalTime) {
+				// TODO Update timelineBar to new global time
+				System.out.println(newGlobalTime);
+				
+			}
+			
+			
+			public void playAllTimelines(){
+				currentSession.addDisplay(0);
+				
+				currentSession.assignTimeline(0, currentSession.getTimelines().get(1));
+				currentSession.playAll();
+			}
+			
+			public void pauseAllTimelines(){
+				currentSession.pauseAll();
+			}
+			
 			
 	
 

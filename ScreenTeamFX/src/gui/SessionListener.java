@@ -10,6 +10,7 @@ public interface SessionListener {
 	
 	public void fireTimelinesChanged(TimeLineChanges changeType, TimelineModel timeLineModel);
 	public void fireMediaObjectListChanged();
+	public void fireGlobalTimeChanged(long newGlobalTime);
 	
 	
 	

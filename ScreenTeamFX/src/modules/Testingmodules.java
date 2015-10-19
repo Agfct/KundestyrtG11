@@ -31,7 +31,7 @@ public class Testingmodules {
 		tlm.getTimelineMediaObjects().get(0).setStartPoint(5000);
 		tlm.getTimelineMediaObjects().get(1).setStartPoint(10000);
 //		tlm2.getTimelineMediaObjects().get(0).setStartPoint(2000);
-		tlmodul.playOne(1,0);
+//		tlmodul.playOne(1,0);
 		/*Thread.sleep(2000);
 		tlmodul.pauseOne(1);
 		Thread.sleep(1000);

@@ -101,6 +101,17 @@ public class HeaderController implements FXMLController{
 			
 			
 		}
+		else if(((Button)event.getSource()).getId().equals("playAllTimelines")){
+			// If the user clicks the import media button, he will get a windows file-chooser
+			this.parentController.playAllTimelines();
+
+		}
+		else if(((Button)event.getSource()).getId().equals("pauseAllTimelines")){
+			// If the user clicks the import media button, he will get a windows file-chooser
+			this.parentController.pauseAllTimelines();
+
+		}
+	
 	}
 	
 	
