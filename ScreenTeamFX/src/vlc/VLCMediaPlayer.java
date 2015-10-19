@@ -2,8 +2,6 @@ package vlc;
 
 import javax.swing.JFrame;
 
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
-
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 
 import java.awt.Color;
@@ -109,7 +107,22 @@ public class VLCMediaPlayer {
 		this.display = display;
 		showOnDisplay(display);
 	}
-		
+	
+	public void removeDisplay(){
+		if(System.getProperty("os.name").startsWith("Windows 8")){
+			gs[display].setFullScreenWindow(null);
+		}
+		else{
+			frame.getContentPane().remove(mp);
+			frame.dispose();
+		}
+		display = -1;
+	}
+	
+	public static void updateDisplays(){
+		gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+	}
+	
 	public int getDisplay(){
 		return this.display;
 	}
