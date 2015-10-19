@@ -9,7 +9,7 @@ import gui.*;
 import vlc.VLCController;
 /**
  * 
- * @author Baptiste Masselin, Eirik Z. Wold, Ole S.L. Skrede
+ * @author Baptiste Masselin, Eirik Z. Wold, Ole S.L. Skrede, Magnus Gundersen
  * Controls the timelines and their connections to displays. Talks to VLCController and StorageController.
  */
 public class SessionModule implements Serializable {
@@ -410,6 +410,7 @@ public class SessionModule implements Serializable {
 	
 	/**
 	 * Adds a new TimelineMediaObject to the specified TimelineModel, based on the MediaObject and the startTime.
+	 * 
 	 * @param mediaObject
 	 * @param timeline
 	 * @param startTime
@@ -417,10 +418,18 @@ public class SessionModule implements Serializable {
 	public String addMediaObjectToTimeline(MediaObject mediaObject, TimelineModel timeline, int startTime){
 		TimelineMediaObject tlmo = new TimelineMediaObject(startTime, mediaObject.getLength(), timeline.getID(), mediaObject);
 		String result = timeline.addTimelineMediaObject(tlmo);
-		timelineChanged(TimeLineChanges.MODIFIED,timeline);
+		timelineChanged(TimeLineChanges.MODIFIED,timeline); //TODO: tell the user what was the outcome of the operation
 		return result;
 	}
-	
+	/**
+	 * 
+	 * @param tlm
+	 * @param tlmo
+	 * @param newStart
+	 * @param newInternalStart
+	 * @param newDuration
+	 * @return
+	 */
 	public String timelineMediaObjectChanged(TimelineModel tlm, TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){
 		String result = tlm.timelineMediaObjectChanged(tlmo, newStart, newInternalStart, newDuration);
 		timelineChanged(TimeLineChanges.MODIFIED, tlm);
@@ -453,6 +462,16 @@ public class SessionModule implements Serializable {
 		for(SessionListener listener: listeners){
 			listener.fireMediaObjectListChanged();
 		}
+	}
+	/**
+	 * removes the timelinemediaobject from the given timelinemodel
+	 * @param tlm
+	 * @param tlmo
+	 */
+	public void removeTimelineMediaObjectFromTimeline(TimelineModel tlm, TimelineMediaObject tlmo){
+		tlm.removeTimelineMediaObject(tlmo);
+		timelineChanged(TimeLineChanges.MODIFIED, tlm);
+		
 	}
 	
 	

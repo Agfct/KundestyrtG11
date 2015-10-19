@@ -5,6 +5,7 @@ package gui;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Random;
 
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -30,9 +32,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import modules.MediaSourceType;
+import modules.TimelineMediaObject;
 
 /**
- * @author Anders
+ * @author Anders Lunde, Magnus Gundersen
  * This is the visual representation of the MediaObject (Movie, Sound)
  */
 public class MediaObjectController extends GridPane{
@@ -50,11 +53,19 @@ public class MediaObjectController extends GridPane{
 	private EventHandler <DragEvent> mContextDragDone;
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
-	private MediaSourceType mType = null;
 	
-	public MediaObjectController(){
-//		setStyle("-fx-background-color: BLUE");
-		
+	//Model corresponding to this controller
+	private TimelineMediaObject timelineMediaObject;
+	
+	//Width of the mediaObject
+	private double mediaObjectWidth=1000;
+	
+	private Label nameOfFile;
+	
+	public MediaObjectController(TimelineMediaObject timelineMediaObject){
+		setStyle("-fx-background-color: GRAY");
+		this.timelineMediaObject=timelineMediaObject;
+		this.setWidth(234);
 		
 		try {
 			fxmlLoader = new FXMLLoader(getClass().getResource("MediaObject.fxml"));
@@ -66,7 +77,7 @@ public class MediaObjectController extends GridPane{
 			e.printStackTrace();
 		}
 		
-		//initialize drag&drop
+		//initialize drag&drop NB: THIS IS NOW DISABLED: NO DRAG/DROP INSIDE OF TIMELINE. OUTCOMMENT TO ENABLE
 		initializeMouse();
 		
 		//Sets the master root pane for drag and drop
@@ -76,9 +87,25 @@ public class MediaObjectController extends GridPane{
 	/**
 	 * Extracts the information from the container and adds it to the mediaObjectController
 	 * @param container
+	 * TODO: remove this? It was only useful before the modules was integrated into the program
 	 */
-	public void initializeMediaObject(MediaObjectContainer container){
-		setType(MediaSourceType.valueOf(container.getValue("type")));
+	public void initializeMediaObject(){
+		this.nameOfFile= new Label(timelineMediaObject.getParent().getName());
+		nameOfFile.setVisible(true);
+		this.add(nameOfFile, 0, 0);
+		this.mediaObjectWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
+		System.out.println("Setting width:" + mediaObjectWidth);
+		this.setPrefWidth(mediaObjectWidth);
+		this.setMaxWidth(mediaObjectWidth);
+		
+	}
+	
+	public void updateValuesFromModel(){
+		this.mediaObjectWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
+		this.setPrefWidth(mediaObjectWidth);
+		this.setMaxWidth(mediaObjectWidth);
+//		setStyle("-fx-background-color: BLUE");
+
 	}
 	
 	/**
@@ -86,8 +113,8 @@ public class MediaObjectController extends GridPane{
 	 */
 	@FXML
 	private void initialize() {
-		System.out.println("init MediaHandlers");
-		buildNodeDragHandlers();
+		//NB: DRAG INSIDE A TIMELINE IS NOW DISABLED! OUTCOMMENT TO ENABLE
+//		buildNodeDragHandlers();
 	}
 	
 	/**
@@ -106,7 +133,8 @@ public class MediaObjectController extends GridPane{
 				Optional<ButtonType> result = alert.showAndWait();
 				if (result.get() == ButtonType.OK){
 				    // ... user chose OK
-					parentController.removeMediaObject(thisMediaObject);
+//					parentController.removeMediaObject(thisMediaObject);
+					AdvancedScreen.getInstance().getScreenController().getCurrentSession().removeTimelineMediaObjectFromTimeline(parentController.getParentController().getTimelineModel(),timelineMediaObject);
 				} else {
 				    // ... user chose CANCEL or closed the dialog
 				}
@@ -148,7 +176,9 @@ public class MediaObjectController extends GridPane{
 		alert.setContentText("Do you really want to delete this MediaObject?");
 	}
 	
-	public MediaSourceType getType () { return mType; }
+	public MediaSourceType getType () { 
+		return timelineMediaObject.getParent().getType(); 
+		}
 	
 	public void relocateToPoint (Point2D p) {
 
@@ -175,13 +205,12 @@ public class MediaObjectController extends GridPane{
 	 * this is only a visual representation for the drag and drop
 	 * @param type
 	 */
-	public void setType (MediaSourceType type) {
-		mType = type;
+	public void setGraphicType (MediaSourceType type) {
 		
 		getStyleClass().clear();
 		getStyleClass().add("dragicon");
 		
-		if(mType == MediaSourceType.AUDIO){
+		if(type == MediaSourceType.AUDIO){
 			getStyleClass().add("icon-sound");
 		}else{
 			getStyleClass().add("icon-video");
@@ -331,7 +360,7 @@ public class MediaObjectController extends GridPane{
                 
                 //creating a container with all the data of the media object
 				MediaObjectContainer container = new MediaObjectContainer();			
-				container.addData ("type", mType.toString());
+//				container.addData ("type", timelineMediaObject.getParent().getType().toString());
                 
                 //Putting the data container onto the content
 				content.put(MediaObjectContainer.DragNode, container); //TODO: AddNode ??
@@ -361,11 +390,15 @@ public class MediaObjectController extends GridPane{
 	
 	//TODO: Add propper width
 	private double getMediaObjectWidth(){
-		return 100;
+		return mediaObjectWidth;
 	}
 	
 	private double getMediaObjectHeigth(){
 		return 75;
+	}
+	
+	public TimelineMediaObject getTimelineMediaObject(){
+		return timelineMediaObject;
 	}
 	
 	//Shoud this be a controller ? or shoud it be a Pane ? or other ?

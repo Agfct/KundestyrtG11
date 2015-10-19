@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.ActionEvent;
@@ -20,10 +21,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import modules.MediaSourceType;
+import modules.TimelineMediaObject;
+import modules.TimelineModel;
+import uk.co.caprica.vlcj.binding.internal.media_duration_changed;
+import java.util.Collection;
 
 /**
  * 
- * @author Anders Lunde
+ * @author Anders Lunde, Magnus Gundersen
  * The TimelineLineController is the controller of the line you see at the right side, 
  * containing all the media objects.
  * The controller handles all internal drag and drop operations
@@ -43,7 +48,9 @@ public class TimelineLineController implements FXMLController{
 //	private EventHandler<DragEvent> mIconDragDropped = null;
 	
 	//TODO: dummy list ? should it be this way ?
-	private ArrayList<MediaObjectController> mediaObjects;
+	private ArrayList<MediaObjectController> mediaObjectControllers;
+	private ArrayList<TimelineMediaObject> timelineMediaObjectModels;
+	private HashMap<TimelineMediaObject,MediaObjectController> mediaObjectToControllerMap;
 	
 	/**
 	 * 
@@ -51,11 +58,12 @@ public class TimelineLineController implements FXMLController{
 	 */
 	public TimelineLineController(TimelineController parentController){
 		
-		//Fetches the parent controller. In this case it is the controller in the advancedScreen class.'
+		//Fetches the parent controller. In this case it is the timelineController who has this timelinelinecontroller
 		this.parentController = parentController;
 		
 		//initializes empty mediaObjectList
-		mediaObjects = new ArrayList<>();
+		mediaObjectControllers = new ArrayList<>();
+		mediaObjectToControllerMap = new HashMap<TimelineMediaObject, MediaObjectController>();
 		
 		// The constructor will try to fetch the fxml 
 		try {
@@ -68,10 +76,6 @@ public class TimelineLineController implements FXMLController{
 			e.printStackTrace();
 		}
 		
-		//TODO: TESTING ONLY
-		MediaObjectController testController = new MediaObjectController();
-		testController.setType(MediaSourceType.VIDEO);
-		addMediaObject(testController, new Point2D(0,0));
 
 		
 		
@@ -82,7 +86,8 @@ public class TimelineLineController implements FXMLController{
 //		parentController.timelineContainer.add(this.rootPane, 1, 0);
 		parentController.timelineLineContainer.getChildren().add(this.rootPane);
 		
-		//Drag&drop functionality
+		timelineMediaObjectModels= new ArrayList<TimelineMediaObject>();
+		
 		
 	}
 	
@@ -157,15 +162,19 @@ public class TimelineLineController implements FXMLController{
 	 */
 	public void addMediaObject(MediaObjectController node, Point2D p) {
 		rootPane.getChildren().add(node); //TODO: REMOVE TEMPorarly fix
-		mediaObjects.add(node);
+		mediaObjectControllers.add(node);
 		node.setParentController(this);
+		node.relocateToPoint(p);
+		mediaObjectToControllerMap.put(node.getTimelineMediaObject(), node);
+
 		
 	}
 	
 	//TODO: REVISIT TESTING ATM
 	public void removeMediaObject(MediaObjectController node) {
 		rootPane.getChildren().remove(node); //TODO: REMOVE TEMPorarly fix
-		mediaObjects.remove(node);
+		mediaObjectControllers.remove(node);
+		mediaObjectToControllerMap.remove(node);
 		
 	}
 	
@@ -175,7 +184,68 @@ public class TimelineLineController implements FXMLController{
 	}
 
 	public void repaint() {
+		System.out.println("---Repainting---");
 		// TODO Go through all mediaObjectControllers, and repaint according to the new model. 
+
+		
+		TimelineModel model=parentController.getTimelineModel();
+		ArrayList<TimelineMediaObject> newListOfTimelineMediaObject=model.getTimelineMediaObjects();
+		System.out.println("Local: " + timelineMediaObjectModels);
+		System.out.println("Remote: " + newListOfTimelineMediaObject);
+		if(newListOfTimelineMediaObject.size()==timelineMediaObjectModels.size()){
+			System.out.println("SAME CONTENT! THIS MEANS SOME OF THEM HAS BEEN CHANGED. REPAINT ONLY");
+			for(MediaObjectController mediaObjectController:mediaObjectControllers){
+				mediaObjectController.updateValuesFromModel();
+				rootPane.getChildren().remove(mediaObjectController);
+				rootPane.getChildren().add(mediaObjectController); 
+				mediaObjectController.relocateToPoint(new Point2D(mediaObjectController.getTimelineMediaObject().getStart()/1000,0));
+			}
+			
+		}
+		
+		else if(newListOfTimelineMediaObject.size()>timelineMediaObjectModels.size()){
+			System.out.println("THIS MEANS AN OBJECT HAS BEEN ADDED");
+			ArrayList<TimelineMediaObject> difference= new ArrayList<>();
+			difference.addAll(newListOfTimelineMediaObject);
+			difference.removeAll(timelineMediaObjectModels);
+			
+			for(TimelineMediaObject tlmo:difference){
+				MediaObjectController mediaObjectController = new MediaObjectController(tlmo);
+				mediaObjectController.initializeMediaObject();
+				addMediaObject(mediaObjectController, new Point2D(tlmo.getStart()/1000, 0));
+
+			}
+			timelineMediaObjectModels.clear();
+			timelineMediaObjectModels.addAll(newListOfTimelineMediaObject);
+			
+		}
+		else if(newListOfTimelineMediaObject.size()<timelineMediaObjectModels.size()){
+			System.out.println("THIS MEANS AN OBJECT HAS BEEN REMOVED");
+			ArrayList<TimelineMediaObject> difference= new ArrayList<>();
+			difference.addAll(timelineMediaObjectModels);
+			difference.removeAll(newListOfTimelineMediaObject);
+			
+			for(TimelineMediaObject tlmo:difference){
+				MediaObjectController mediaObjectController = mediaObjectToControllerMap.get(tlmo);
+				removeMediaObject(mediaObjectController);
+
+			}
+			timelineMediaObjectModels.clear();
+			timelineMediaObjectModels.addAll(newListOfTimelineMediaObject);
+			
+		}
+		
+		
+		
+//		for(TimelineMediaObject tlmo:timelineMediaObjectModels){
+//			// TODO: should we avoid creating a new Controller each time?
+//			MediaObjectController mediaObjectController = new MediaObjectController(tlmo);
+//			mediaObjectController.initializeMediaObject();
+//			addMediaObject(mediaObjectController, new Point2D(tlmo.getStart()/1000, 0));
+//			
+//		}
+		
+		
 		
 	}
 

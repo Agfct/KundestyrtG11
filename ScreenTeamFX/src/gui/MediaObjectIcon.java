@@ -33,7 +33,7 @@ public class MediaObjectIcon extends GridPane{
 	
 	private MediaObject mediaObject;
 
-	public MediaObjectIcon() {
+	public MediaObjectIcon(MediaObject mediaObject) {
 		
 		FXMLLoader fxmlLoader = new FXMLLoader(
 				getClass().getResource("MediaObjectIcon.fxml")
@@ -48,6 +48,8 @@ public class MediaObjectIcon extends GridPane{
 		} catch (IOException exception) {
 		    throw new RuntimeException(exception);
 		}
+		
+		this.mediaObject = mediaObject;
 
 		
 	}
@@ -155,7 +157,9 @@ public class MediaObjectIcon extends GridPane{
 			);
 	}
 	
-	public MediaSourceType getType () { return mType; }
+	public MediaSourceType getType () {
+		return mType; 
+		}
 	
 	public void setType (MediaSourceType type) {
 		
@@ -170,5 +174,9 @@ public class MediaObjectIcon extends GridPane{
 				getStyleClass().add("icon-video");
 			}
 			
+	}
+	
+	public MediaObject getMediaObject(){
+		return mediaObject;
 	}
 }

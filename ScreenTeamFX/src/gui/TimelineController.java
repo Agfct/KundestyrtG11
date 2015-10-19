@@ -86,7 +86,7 @@ public class TimelineController implements FXMLController {
 	 * @param event
 	 */
 	@FXML protected void buttonPressed(ActionEvent event) {
-		System.out.println("AdvancedScreen:" + event.getSource().toString() + "has been pressed");
+		System.out.println("TIMELINECONTROLLER:" + event.getSource().toString() + "has been pressed");
 		
 		if(((Button)event.getSource()).getId().equals("removeTimelineBtn") ){
 			//Removes the timeline from the AdvanceScreen Children list
@@ -122,9 +122,11 @@ public class TimelineController implements FXMLController {
 
 	public void modelChanged() {
 		childController.repaint();
-		//TODO: updateValuesFromModel()
+		//TODO: updateValuesFromModel(): This is to get the screen-list and other things in the info-view correct
 		
 	}
+	
+	
 
 
 	

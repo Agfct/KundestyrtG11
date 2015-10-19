@@ -42,7 +42,7 @@ import modules.*;
 
 
 /**
- * @author Anders Lunde,  Magnus Gunde
+ * @author Anders Lunde,  Magnus Gundersen
  * Singleton class
  *The AdvancedScreen class represents the view/Screen where you can create a new session that will be displayed on the screens.
  *This is the most important screen in the application and it will contain most of the applications functionallity.
@@ -201,7 +201,7 @@ public class AdvancedScreen implements Screen{
 			 */
 			private void initialize(){
 				
-				mDragOverIcon = new MediaObjectIcon();
+				mDragOverIcon = new MediaObjectIcon(null);
 				mDragOverIcon.setVisible(false);
 				mDragOverIcon.setOpacity(0.65);
 				rootPane.getChildren().add(mDragOverIcon);
@@ -242,6 +242,7 @@ public class AdvancedScreen implements Screen{
 						//Sets the type of the drag icon based on the icon of the triggering MediaObject (Video/Sound)
 						//Here one can alternativly set text that shoud be displayed on the icon while you drag it.
 						mDragOverIcon.setType(icn.getType());
+
 						
 						//Moves the icon to the point where you start the drag event
 						mDragOverIcon.relocateToPoint(new Point2D (event.getSceneX(), event.getSceneY()));
@@ -251,7 +252,7 @@ public class AdvancedScreen implements Screen{
 						MediaObjectContainer container = new MediaObjectContainer();
 //						
 						//TODO: add all advanced information about the MediaObject is added here (seperate method ? )
-						container.addData ("type", mDragOverIcon.getType().toString());
+						container.addData ("model", icn.getMediaObject());
 						
 						//Container is put onto the clipboard
 						content.put(MediaObjectContainer.AddNode, container);
@@ -375,17 +376,17 @@ public class AdvancedScreen implements Screen{
 						if (container != null) {
 							//If the drop is inside the view
 							if (container.getValue("scene_coords") != null) {
-								System.out.println("Not EMPTY");
+//								System.out.println("Not EMPTY");
 							
-								MediaObjectController node = new MediaObjectController();
+//								MediaObjectController node = new MediaObjectController();
 								
 								//Sends the container containing all the information about the mediaObject
 								//To the newly created MediaObject for initialization
-								node.initializeMediaObject(container);
+//								node.initializeMediaObject(container);
 								
 				
 								//We need to check which timeline the container is dropped upon
-								for (FXMLController timelineController : timelineControllers) {
+								for (TimelineController timelineController : timelineControllers) {
 									TimelineLineController currentTimelineLineController = ((TimelineController)timelineController).getTimelineLineController();
 									Pane timelineLinePane = currentTimelineLineController.getRoot();
 									Point2D containerPoints = (Point2D)container.getValue("scene_coords");
@@ -394,8 +395,8 @@ public class AdvancedScreen implements Screen{
 									System.out.println("Point: X: " + p.getX() + " Y: " + p.getY());
 									System.out.println(" Container Point: X: " + ((Point2D) container.getValue("scene_coords")).getX() + " Y: " + ((Point2D) container.getValue("scene_coords")).getY());
 									if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
-										currentTimelineLineController.addMediaObject(node,p);
-										System.out.println(" WE ARE DONE !!!");
+										String result=currentSession.addMediaObjectToTimeline(container.getValue("model"), timelineController.getTimelineModel() , (int)p.getX()*1000);
+										System.out.println("Result of the drop of mediaObject: " + result);
 										break;
 									}
 								}
@@ -506,6 +507,7 @@ public class AdvancedScreen implements Screen{
 					for(TimelineController timelineController: idTimlineControllerMap.keySet()){
 						if(idTimlineControllerMap.get(timelineController).equals(timeLineModel.getID())){
 							timelineControllerToBeRemoved=timelineController;
+							break;
 						}
 					}
 					idTimlineControllerMap.remove(timelineControllerToBeRemoved);
@@ -514,10 +516,12 @@ public class AdvancedScreen implements Screen{
 					break;
 				}
 				case MODIFIED:{
+					//TODO: find out what the modification was: addedMediaObject, removedMediaOBject or replaced mediaobject. 
 					TimelineController timelineControllerToBeModified=null;
 					for(TimelineController timelineController: idTimlineControllerMap.keySet()){
 						if(idTimlineControllerMap.get(timelineController).equals(timeLineModel.getID())){
 							timelineControllerToBeModified=timelineController;
+							break;
 						}
 					}
 					timelineControllerToBeModified.modelChanged();
@@ -528,7 +532,7 @@ public class AdvancedScreen implements Screen{
 					removeAllTimelineControllersFromScreen();
 					ArrayList<Integer> orderedListOfTimelines = currentSession.getTimelineOrder();
 					
-					//We need to reverse the ordering because we allways bring the newest timeline to the top of the view. 
+					//We need to reverse the ordering because we always bring the newest timeline to the top of the view. 
 					for(int i=orderedListOfTimelines.size()-1;i>=0;i--){
 						TimelineController timelineControllerToPaint=null;
 						for(TimelineController timelineController: idTimlineControllerMap.keySet()){

@@ -59,8 +59,11 @@ public class TimelineMediaObject implements Serializable {
 	}
 
 
-	public void setStart(long lastObjectEnd) {
-		this.start = lastObjectEnd;
+	public void setStart(long newStart) {
+		if(newStart>=0){
+			this.start = newStart;
+		}
+		
 	}
 
 
@@ -68,9 +71,16 @@ public class TimelineMediaObject implements Serializable {
 		return duration;
 	}
 
-
+	/**
+	 * Checks if the duration is valid within both the total length of parent and remaining time after startpoint
+	 * @param newDuration
+	 */
 	public void setDuration(long newDuration) {
-		this.duration = newDuration;
+		if(newDuration>0){
+			long maxDur=parent.getLength()-startPoint;
+			this.duration=Math.min(maxDur, newDuration);
+		}
+		
 	}
 
 
@@ -101,7 +111,8 @@ public class TimelineMediaObject implements Serializable {
 	public long getStartPoint(){
 		return startPoint;
 	}
-
+	
+	//TODO: update duration whenever the startpoint is changed. 
 	public void setStartPoint(int spoint){
 		this.startPoint = spoint;
 	}
