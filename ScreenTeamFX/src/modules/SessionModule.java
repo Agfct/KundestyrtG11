@@ -93,6 +93,7 @@ public class SessionModule implements Serializable {
 			for(Integer i : displays.keySet()){
 				if(displays.get(i)==tlm){
 					displays.put(i,null);
+					vlccontroller.unassignDisplay(tlm.getID());
 				}
 			}		
 		}
@@ -111,7 +112,7 @@ public class SessionModule implements Serializable {
 		}
 		else{
 			TimelineModel prevtlm = displays.put(display,tlm);
-			vlccontroller.setDisplay(tlm.getID(), display);
+			vlccontroller.assignDisplay(tlm.getID(), display);
 		}
 		timelineChanged(TimeLineChanges.MODIFIED,tlm);
 	}
@@ -127,6 +128,21 @@ public class SessionModule implements Serializable {
 		//vlccontroller.addDisplay(Integer display);
 	}
 	
+	public void updateDisplays(ArrayList<Integer> displays){
+		for(Integer d : displays){
+			if(!this.displays.containsKey(d)){
+				addDisplay(d);
+			}
+			
+		}
+		for(Integer i : this.displays.keySet()){
+			if(!displays.contains(i)){
+				removeDisplay(i);
+			}
+		}
+		vlccontroller.updateDisplays(displays);
+	}
+	
 	/**
 	 * removes a display from the list of possible displays
 	 * to be used if I/O module detects that a display dissapears.
@@ -137,8 +153,7 @@ public class SessionModule implements Serializable {
 			System.out.println("no such display to remove");
 		}
 		else{
-			vlccontroller.setDisplay(displays.get(display).getID(),-1);
-			displays.remove(display);
+			vlccontroller.unassignDisplay(displays.remove(display).getID());
 		}
 	}
 	

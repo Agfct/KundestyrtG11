@@ -17,6 +17,7 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 public class VLCController {
 	private Map<Integer, VLCMediaPlayer> mediaPlayerList = new HashMap<Integer, VLCMediaPlayer>();
 	private Map<Integer, Integer> mediaPlayerDisplayConnections = new HashMap<Integer, Integer>();
+	private ArrayList<Integer> displays = new ArrayList<Integer>();
 	private ArrayList<Integer> availableDisplays = new ArrayList<Integer>();
 	private boolean vlcPathSet = false;
 	private VLCMediaPlayer prerunCheckPlayer;
@@ -24,7 +25,7 @@ public class VLCController {
 	/**
 	 * Creates a new VLC controller. vlcPath is the path to the VLC 64-bit client on your computer.
 	 * @param vlcPath */
-	public VLCController(String vlcPath){
+	public VLCController(ArrayList<Integer> displays){
 		if(Integer.parseInt(System.getProperty("sun.arch.data.model")) == 32){
 			NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "\\VLC\\VLC32");
 		}
@@ -40,7 +41,26 @@ public class VLCController {
 					+ " You need VLC " + System.getProperty("sun.arch.data.model") + "-bit."
 					+ " Try setting a working path with setVlcPath()");
 		}
-		findDisplays();
+		this.displays = displays;
+		availableDisplays = displays;
+	}
+	
+	public void updateDisplays(ArrayList<Integer> displays){
+		for(Integer d : this.displays){
+			if(!displays.contains(d)){
+				if(availableDisplays.contains(d)){
+					availableDisplays.remove(d);
+				}
+
+			}
+		}
+		for(Integer i : displays){
+			if(!this.displays.contains(i)){
+				availableDisplays.add(i);
+			}
+		}
+		this.displays = displays;
+		VLCMediaPlayer.updateDisplays();
 	}
 	
 	public void setVlcPath(String vlcPath){
@@ -54,14 +74,6 @@ public class VLCController {
 					+ " You need VLC " + System.getProperty("sun.arch.data.model") + "-bit."
 					+ "T ry setting a working path with setVlcPath()");
 		}
-	}
-	
-	private void findDisplays(){
-	    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	    GraphicsDevice[] gs = ge.getScreenDevices();
-	    for(int i = 0; i < gs.length; i++){
-	    	availableDisplays.add(i);
-	    }
 	}
 	
 	/** 
@@ -98,7 +110,7 @@ public class VLCController {
 	 * Returns true if a display was set
 	 * @param mp 
 	 * @param display */
-	public boolean setDisplay(int mp, int display){
+	public boolean assignDisplay(int mp, int display){
 		if(availableDisplays.contains((Integer)display)){
 			if(mediaPlayerDisplayConnections.containsKey(mp)){
 				availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
@@ -121,6 +133,13 @@ public class VLCController {
 			return true;
 		}
 		return false;
+	}
+	
+	public void unassignDisplay(int mp){
+		if(mediaPlayerDisplayConnections.containsKey(mp)){
+			availableDisplays.add(mediaPlayerDisplayConnections.remove(mp));
+			toPlayer(mp).removeDisplay();
+		}
 	}
 	
 	/**

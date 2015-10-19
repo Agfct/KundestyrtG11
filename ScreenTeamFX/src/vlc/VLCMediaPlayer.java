@@ -109,7 +109,22 @@ public class VLCMediaPlayer {
 		this.display = display;
 		showOnDisplay(display);
 	}
-		
+	
+	public void removeDisplay(){
+		if(System.getProperty("os.name").startsWith("Windows 8")){
+			gs[display].setFullScreenWindow(null);
+		}
+		else{
+			frame.getContentPane().remove(mp);
+			frame.dispose();
+		}
+		display = -1;
+	}
+	
+	public static void updateDisplays(){
+		gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+	}
+	
 	public int getDisplay(){
 		return this.display;
 	}
