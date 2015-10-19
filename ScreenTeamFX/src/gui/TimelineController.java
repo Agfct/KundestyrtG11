@@ -1,14 +1,19 @@
 package gui;
 
 import java.io.IOException;
+import java.util.Iterator;
+
+import org.controlsfx.control.CheckComboBox;
+
 import gui.AdvancedScreen.AdvancedScreenController;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
-import javafx.scene.input.DragEvent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
@@ -27,10 +32,12 @@ public class TimelineController implements FXMLController {
 	private TimelineLineController childController;
 	private GridPane rootPane;
 	
-	@FXML Button removeTimelineBtn;
 	@FXML GridPane timelineInfo;
 	@FXML GridPane timelineContainer;
 	@FXML AnchorPane timelineLineContainer;
+	@FXML Button removeTimelineBtn;
+	@FXML CheckComboBox<String> checkComboBox;
+	@FXML Label listOfScreens;
 	
 	//The timelinemodel that corresponds to this controller
 	TimelineModel timelineModel;
@@ -66,6 +73,8 @@ public class TimelineController implements FXMLController {
 		//TODO: Sets the timeline to the current scrollbar position
 		getTimelineLineController().moveTimeline(parentController.getScrollBarPosition());
 		
+		initializeTimelineInfo();
+		
 	}
 	
 	/**
@@ -77,6 +86,38 @@ public class TimelineController implements FXMLController {
 		clipSize.setLayoutX(0);
 		clipSize.setLayoutY(0);
 		timelineLineContainer.setClip(clipSize);
+	}
+	
+	private void initializeTimelineInfo(){
+		
+		final ObservableList<String> strings = FXCollections.observableArrayList();
+		 for (int i = 0; i <= 20; i++) {
+		     strings.add("Scr " + i);
+		 }
+//		 checkComboBox = new CheckComboBox<String>(strings);
+		 checkComboBox.getItems().addAll(strings);
+
+		 checkComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+		     public void onChanged(ListChangeListener.Change<? extends String> c) {
+		         System.out.println(checkComboBox.getCheckModel().getCheckedItems());
+		     }
+		 });
+		 
+//		List<String> supplierNames = Arrays.asList("sup1", "sup2", "sup3");
+//		screenChoiceBox.setItems(FXCollections.observableArrayList(supplierNames));
+//		typeChoiseBox.getSelectionModel().select(currentMediaObject.getType());
+//		screenChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+//	        @Override public void changed(ObservableValue<? extends String> ov, String oldType, String newType) {
+//	        	currentMediaObject.setType(newType);
+//	          }    
+//	      });
+//		typeChoiseBox.getSelectionModel().selectedIndexProperty().addListener(new
+//				ChangeListener<Number>() {
+//			@Override
+//			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+//				name.setText(newValue.toString());
+//			}
+//		});
 	}
 
 	

@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/jna-3.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/platform-3.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/vlcj-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/controlsfx-8.40.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
