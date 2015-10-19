@@ -11,7 +11,7 @@ public class Testingmodules {
 	 * @throws InterruptedException 
 	 */
 	public Testingmodules() throws InterruptedException{
-		this.vlc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
+//		this.vlc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
 		tlmodul = new SessionModule(vlc);
 		tlmodul.addTimeline();
 		TimelineModel tlm = tlmodul.getTimelines().get(1);
