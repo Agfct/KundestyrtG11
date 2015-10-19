@@ -111,6 +111,11 @@ public class HeaderController implements FXMLController{
 			this.parentController.pauseAllTimelines();
 
 		}
+		else if(((Button)event.getSource()).getId().equals("resetGlobalTime")){
+			// If the user clicks the import media button, he will get a windows file-chooser
+			this.parentController.changeGlobalTime(0);
+
+		}
 	
 	}
 	
