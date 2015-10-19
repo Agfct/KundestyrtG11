@@ -8,15 +8,16 @@ import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
+import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
+import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 public class VLCController {
 	private Map<Integer, VLCMediaPlayer> mediaPlayerList = new HashMap<Integer, VLCMediaPlayer>();
 	private Map<Integer, Integer> mediaPlayerDisplayConnections = new HashMap<Integer, Integer>();
 	private ArrayList<Integer> availableDisplays = new ArrayList<Integer>();
-	private String vlcPath;
 	private boolean vlcPathSet = false;
 	private VLCMediaPlayer prerunCheckPlayer;
 	
@@ -24,27 +25,34 @@ public class VLCController {
 	 * Creates a new VLC controller. vlcPath is the path to the VLC 64-bit client on your computer.
 	 * @param vlcPath */
 	public VLCController(String vlcPath){
-		this.vlcPath = vlcPath;
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
+		if(Integer.parseInt(System.getProperty("sun.arch.data.model")) == 32){
+			NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "\\VLC\\VLC32");
+		}
+		else if(Integer.parseInt(System.getProperty("sun.arch.data.model")) == 64){
+			NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "\\VLC\\VLC64");
+		}
 		try{
 			prerunCheckPlayer = new VLCMediaPlayer();
 			vlcPathSet = true;
 		}
 		catch(Exception e){
-			System.out.println("Can't add VLC native library. Invalid path.");
+			System.out.println("Can't add VLC native library. The path may be invalid or you have the wrong version."
+					+ " You need VLC " + System.getProperty("sun.arch.data.model") + "-bit."
+					+ " Try setting a working path with setVlcPath()");
 		}
 		findDisplays();
 	}
 	
 	public void setVlcPath(String vlcPath){
-		this.vlcPath = vlcPath;
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
 		try{
 			prerunCheckPlayer = new VLCMediaPlayer();
 			vlcPathSet = true;
 		}
 		catch(Exception e){
-			System.out.println("Can't add VLC native library. Invalid path.");
+			System.out.println("Can't add VLC native library. The path may be invalid or you have the wrong version."
+					+ " You need VLC " + System.getProperty("sun.arch.data.model") + "-bit."
+					+ "T ry setting a working path with setVlcPath()");
 		}
 	}
 	
@@ -66,7 +74,7 @@ public class VLCController {
 			return mp;
 		}
 		else{
-			System.out.println("Can't create a VLC media player. VLC64 path not set");
+			System.out.println("Can't create a VLC media player. VLC path not set");
 		}
 		return null;
 	}
@@ -135,8 +143,10 @@ public class VLCController {
 		if(time != 0){
 			toPlayer(mp).seek(time);
 		}
-		while(toPlayer(mp).isSeeking());
 		toPlayer(mp).play();
+		while(!toPlayer(mp).isPlaying()){
+			toPlayer(mp).play();
+		}
 	}
 
 	/** * Pauses one specific media player. 
@@ -257,11 +267,7 @@ public class VLCController {
 		}
 	}
 	
-	public void close(){
-		for(int mp : mediaPlayerList.keySet()){
-			toPlayer(mp).close();
-		}
-		prerunCheckPlayer.close();
-		System.exit(1);
+	public String getVlcVersionNeeded(){
+		return System.getProperty("sun.arch.data.model");
 	}
 }
