@@ -109,14 +109,20 @@ public class SessionModule implements Serializable {
 	 * @param tlm the timeline that is to be assigned to the display
 	 */
 	public void assignTimeline(Integer display, TimelineModel tlm){
-		//TODO: Change tlm to the ID for the timeline??? return something about previous assigned timeline???
 		if(!displays.containsKey(display)){
 			System.out.println("this display is not added to the list, please add it");
 		}
 		else{
 			TimelineModel prevtlm = displays.put(display,tlm);
+			tlm.addDisplay(display);
+			if(prevtlm !=null){
+				prevtlm.removeDisplay(display);
+				vlccontroller.unassignDisplay(prevtlm.getID());
+				timelineChanged(TimeLineChanges.MODIFIED, prevtlm);
+			}
 			vlccontroller.assignDisplay(tlm.getID(), display);
 		}
+		
 		timelineChanged(TimeLineChanges.MODIFIED,tlm);
 	}
 	
@@ -442,13 +448,13 @@ public class SessionModule implements Serializable {
 	 * @param mst
 	 * @param path
 	 */
-	public MediaObject createNewMediaObject(MediaSourceType mst, String path){
+	public String createNewMediaObject(MediaSourceType mst, String path){
 		
 		// Check if this MediaObject is already stored in the list, by comparing paths
 		for (int i=0; i<mediaObjects.size(); i++){
 			if (mediaObjects.get(i).getPath().equals(path)) {
 				// Return the old MediaObject with equal path
-				return mediaObjects.get(i);
+				return "Already exisisted";//ediaObjects.get(i);
 			}
 		}
 		
@@ -456,11 +462,15 @@ public class SessionModule implements Serializable {
 		
 		String name = path.substring(path.lastIndexOf('\\')+1);
 		MediaObject mo = new MediaObject(path, name, mst);
-		//TODO: set lenght of video. 
-//		vlccontroller.getLenghtOfVideo();
-		mediaObjects.add(mo);
-		mediaObjectsChanged();
-		return mo;
+		long lenght=vlccontroller.prerunCheck(mo.getPath());
+		if(lenght>0){
+			mo.setLength((int)lenght);
+			mediaObjects.add(mo);
+			mediaObjectsChanged();
+			return "mediaObject created";
+
+		}
+		return "MediaObject not created, prerunChecker in VLC failed";
 	}
 
 	public ArrayList<MediaObject> getMediaObjects() {
@@ -554,6 +564,10 @@ public class SessionModule implements Serializable {
 			this.globaltime=newGlobalTime;
 			globalTimeChanged();
 		}
+	}
+	
+	public ArrayList<Integer> getAvailableDisplays(){
+		return new ArrayList<Integer>(displays.keySet());
 	}
 	
 	

@@ -17,11 +17,14 @@ public class TimelineModel implements Serializable{
 	private final int id;
 	private ArrayList<Event> timelineStack;
 	
+	private ArrayList<Integer> assignedDisplays;
+	
 	public TimelineModel(int id) {
 		super();
 		this.timelineMediaObjects = new ArrayList<TimelineMediaObject>();
 		this.id = id;
 		this.timelineStack = new ArrayList<Event>();
+		this.assignedDisplays=new ArrayList<Integer>();
 		
 	}
 
@@ -213,6 +216,18 @@ public class TimelineModel implements Serializable{
 			timelineStack.add(end);
 			Collections.sort(timelineStack);
 		}
+	}
+
+	public ArrayList<Integer> getAssignedDisplays() {
+		return assignedDisplays;
+	}
+	
+	public void addDisplay(Integer dispID){
+		assignedDisplays.add(dispID);
+	}
+	
+	public void removeDisplay(Integer dispID){
+		assignedDisplays.remove(dispID);
 	}
 		
 }

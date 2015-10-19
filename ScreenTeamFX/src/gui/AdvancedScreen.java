@@ -618,9 +618,6 @@ public class AdvancedScreen implements Screen{
 			
 			
 			public void playAllTimelines(){
-				currentSession.addDisplay(0);
-				
-				currentSession.assignTimeline(0, currentSession.getTimelines().get(1));
 				currentSession.playAll();
 			}
 			
@@ -633,6 +630,16 @@ public class AdvancedScreen implements Screen{
 			public void changeGlobalTime(long i) {
 				currentSession.changeGlobalTime(i);
 				
+			}
+
+
+
+			public ArrayList<Integer> getAvailableDisplays() {
+				return currentSession.getAvailableDisplays();
+			}
+			
+			public void assignDisplay(Integer displayID,TimelineModel tlm){
+				currentSession.assignTimeline(displayID, tlm);
 			}
 			
 			

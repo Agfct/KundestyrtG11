@@ -29,6 +29,7 @@ public class MainModuleController {
 		
 		this.vlc = new VLCController(ioModule.getDisplays());
 		this.sessionModule= new SessionModule(vlc);
+		this.sessionModule.updateDisplays(ioModule.getDisplays());
 
 	}
 	
