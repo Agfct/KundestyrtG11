@@ -93,7 +93,7 @@ public class MediaObjectController extends GridPane{
 		this.nameOfFile= new Label(timelineMediaObject.getParent().getName());
 		nameOfFile.setVisible(true);
 		this.add(nameOfFile, 0, 0);
-		this.mediaObjectWidth=timelineMediaObject.getDuration()/1000;
+		this.mediaObjectWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
 		System.out.println("Setting width:" + mediaObjectWidth);
 		this.setPrefWidth(mediaObjectWidth);
 		this.setMaxWidth(mediaObjectWidth);
@@ -101,7 +101,11 @@ public class MediaObjectController extends GridPane{
 	}
 	
 	public void updateValuesFromModel(){
-		
+		this.mediaObjectWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
+		this.setPrefWidth(mediaObjectWidth);
+		this.setMaxWidth(mediaObjectWidth);
+//		setStyle("-fx-background-color: BLUE");
+
 	}
 	
 	/**
