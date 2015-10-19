@@ -2,8 +2,6 @@ package vlc;
 
 import javax.swing.JFrame;
 
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
-
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 
 import java.awt.Color;
