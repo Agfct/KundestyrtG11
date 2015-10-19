@@ -192,7 +192,7 @@ public class TimelineLineController implements FXMLController{
 		ArrayList<TimelineMediaObject> newListOfTimelineMediaObject=model.getTimelineMediaObjects();
 		System.out.println("Local: " + timelineMediaObjectModels);
 		System.out.println("Remote: " + newListOfTimelineMediaObject);
-		if(newListOfTimelineMediaObject.equals(timelineMediaObjectModels)){
+		if(newListOfTimelineMediaObject.size()==timelineMediaObjectModels.size()){
 			System.out.println("SAME CONTENT! THIS MEANS SOME OF THEM HAS BEEN CHANGED. REPAINT ONLY");
 			for(MediaObjectController mediaObjectController:mediaObjectControllers){
 				mediaObjectController.updateValuesFromModel();

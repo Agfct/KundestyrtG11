@@ -174,10 +174,12 @@ public class TimelineModel implements Serializable{
 		if(!timelineMediaObjects.remove(tlmo)){
 			return "TimelineMediaObject not found on timeline";
 		}
+		
 		TimelineMediaObject newTimelineMediaObject = new TimelineMediaObject(newStart, newInternalStart, newDuration, tlmo.getTimelineid(), tlmo.getParent());
 		String result = this.addTimelineMediaObject(newTimelineMediaObject);
-		
+		this.removeTimelineMediaObject(newTimelineMediaObject);
 		// Check the result, if the new one was not added, put back the old one
+//		tlmo.
 		if (result.equals("TimelineMediaObject was not added, there was no space at the given position") ){
 			result = this.addTimelineMediaObject(tlmo);
 			if (result.equals("TimelineMediaObject was not added, there was no space at the given position") ){
@@ -185,6 +187,11 @@ public class TimelineModel implements Serializable{
 			}
 			return "Could not modify the TimelineMediaObject, it remains unchanged";
 		}
+		//Since the if above did not fire, we know the changed are legal. make changes
+		tlmo.setStart(newStart);
+		tlmo.setStartPoint(newInternalStart);
+		tlmo.setDuration(newDuration);
+		result=this.addTimelineMediaObject(tlmo);
 		timelinechanged();
 		return "TImelineMediaObject successfully modified. " + result;
 	}
