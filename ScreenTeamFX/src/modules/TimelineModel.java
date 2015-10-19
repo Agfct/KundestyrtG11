@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import vlc.VLCMediaPlayer;
-
 
 public class TimelineModel implements Serializable{
 	
@@ -51,6 +49,13 @@ public class TimelineModel implements Serializable{
 			timelineMediaObjects.add(m);
 			timelinechanged();
 			return "TimelineMediaObject added with full length"; 
+		}
+		
+		// If the TimelineMediaObject has the same start as an already existing one, abort without adding it
+		for (int i=0; i<timelineMediaObjects.size(); i++){
+			if ( m.getStart() == timelineMediaObjects.get(i).getStart() ) {
+				return "TimelineMediaObject was not added, there was no space at the given position";
+			}
 		}
 		
 		// Check if we can put m on the start of the timeline, in which case we don't need to consider earlier objects
@@ -169,17 +174,19 @@ public class TimelineModel implements Serializable{
 	 * @param newStart
 	 * @param newDuration
 	 * @return
-	 */ //TODO: Do the check with the dummy object, and change the actual object instead. This fucks up the pointers when editing on a timeline
-	public String timelineMediaObjectChanged( TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){	
+	 */
+	public String timelineMediaObjectChanged( TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){
+		// Remove the TimelineMediaObject from the timeline
 		if(!timelineMediaObjects.remove(tlmo)){
 			return "TimelineMediaObject not found on timeline";
 		}
 		
+		// Try to add a temporary TimelineMediaObject with the modifications
 		TimelineMediaObject newTimelineMediaObject = new TimelineMediaObject(newStart, newInternalStart, newDuration, tlmo.getTimelineid(), tlmo.getParent());
 		String result = this.addTimelineMediaObject(newTimelineMediaObject);
 		this.removeTimelineMediaObject(newTimelineMediaObject);
+		
 		// Check the result, if the new one was not added, put back the old one
-//		tlmo.
 		if (result.equals("TimelineMediaObject was not added, there was no space at the given position") ){
 			result = this.addTimelineMediaObject(tlmo);
 			if (result.equals("TimelineMediaObject was not added, there was no space at the given position") ){
@@ -193,7 +200,7 @@ public class TimelineModel implements Serializable{
 		tlmo.setDuration(newDuration);
 		result=this.addTimelineMediaObject(tlmo);
 		timelinechanged();
-		return "TImelineMediaObject successfully modified. " + result;
+		return "TimelineMediaObject successfully modified. " + result;
 	}
 	
 	/**
