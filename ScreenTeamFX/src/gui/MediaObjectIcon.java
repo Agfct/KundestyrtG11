@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import modules.*;
 
 /**
@@ -25,6 +26,7 @@ import modules.*;
 public class MediaObjectIcon extends GridPane{
 	@FXML GridPane grid_pane;
 	private @FXML Label nameOfFile;
+	private @FXML Region styleIcon;
 	
 	//Drag&Drop
 	private EventHandler <DragEvent> mContextDragOver;
@@ -166,13 +168,13 @@ public class MediaObjectIcon extends GridPane{
 		
 		mType = type;
 		
-		getStyleClass().clear();
-		getStyleClass().add("dragicon");
+//		getStyleClass().clear();
+//		getStyleClass().add("dragicon");
 
 			if(mType == MediaSourceType.AUDIO){
-				getStyleClass().add("icon-sound");
+				styleIcon.getStyleClass().add("icon-sound");
 			}else{
-				getStyleClass().add("icon-video");
+				styleIcon.getStyleClass().add("icon-video");
 			}
 			
 	}
