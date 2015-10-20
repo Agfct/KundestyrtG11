@@ -1,11 +1,10 @@
 package modules;
 
 import java.io.Serializable;
-import java.util.Random;
 
 /**
  * 
- * @author BEO
+ * @author Baptiste Masselin, Eirik Zimmer Wold, Ole Steinar L. Skrede
  * This class contains information about a video or a stream.
  *
  *
@@ -19,7 +18,7 @@ public class MediaObject implements Serializable {
 	private static final long serialVersionUID = -4023233269937165070L;
 	private String path;
 	private String name;
-	private int length;
+	private long length;
 	private MediaSourceType type;;
 	
 	/**
@@ -33,7 +32,12 @@ public class MediaObject implements Serializable {
 		this.path = path;
 		this.name = name;
 		this.setType(type);
-		this.length=(int) Math.max(3000,(Math.random()*100000)); //TODO: get proper length from VLC. Now it gets random value between 3000 and 100000
+		if ( type == MediaSourceType.IMAGE){
+			this.length = Long.MAX_VALUE;
+		}
+		else {
+			this.length=(long) Math.max(3000,(Math.random()*100000)); //TODO: get proper length from VLC. Now it gets random value between 3000 and 100000
+		}
 	}
 	
 	public String getName() {
@@ -54,12 +58,12 @@ public class MediaObject implements Serializable {
 		this.path = path;
 	}
 
-	public int getLength() {
+	public long getLength() {
 		//TODO: we need help from VLC to get correct length of a video. 
 		return length;
 	}
 
-	public void setLength(int length) {
+	public void setLength(long length) {
 		this.length = length;
 	}
 

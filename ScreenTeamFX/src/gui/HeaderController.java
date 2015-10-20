@@ -183,6 +183,13 @@ public class HeaderController implements FXMLController{
 			}
 		}
 		//TODO: add support for imageFile!
+		for(String format:acceptedImageFormats){
+			if(format.equals(extension)){
+				System.out.println(fileName + " is an image! of type: "+ format);
+				parentController.getCurrentSession().createNewMediaObject(MediaSourceType.IMAGE,path);
+				return;
+			}
+		}
 		System.out.println("The file was neither a video nor a sound: " + extension);
 	}
 	
