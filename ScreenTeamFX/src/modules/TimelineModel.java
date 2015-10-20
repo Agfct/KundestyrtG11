@@ -15,11 +15,14 @@ public class TimelineModel implements Serializable{
 	private final int id;
 	private ArrayList<Event> timelineStack;
 	
+	private ArrayList<Integer> assignedDisplays;
+	
 	public TimelineModel(int id) {
 		super();
 		this.timelineMediaObjects = new ArrayList<TimelineMediaObject>();
 		this.id = id;
 		this.timelineStack = new ArrayList<Event>();
+		this.assignedDisplays=new ArrayList<Integer>();
 		
 	}
 
@@ -174,19 +177,17 @@ public class TimelineModel implements Serializable{
 	 * @param newStart
 	 * @param newDuration
 	 * @return
-	 */
-	public String timelineMediaObjectChanged( TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){
-		// Remove the TimelineMediaObject from the timeline
+	 */ //TODO: Do the check with the dummy object, and change the actual object instead. This fucks up the pointers when editing on a timeline
+	public String timelineMediaObjectChanged( TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){	
 		if(!timelineMediaObjects.remove(tlmo)){
 			return "TimelineMediaObject not found on timeline";
 		}
 		
-		// Try to add a temporary TimelineMediaObject with the modifications
 		TimelineMediaObject newTimelineMediaObject = new TimelineMediaObject(newStart, newInternalStart, newDuration, tlmo.getTimelineid(), tlmo.getParent());
 		String result = this.addTimelineMediaObject(newTimelineMediaObject);
 		this.removeTimelineMediaObject(newTimelineMediaObject);
-		
 		// Check the result, if the new one was not added, put back the old one
+//		tlmo.
 		if (result.equals("TimelineMediaObject was not added, there was no space at the given position") ){
 			result = this.addTimelineMediaObject(tlmo);
 			if (result.equals("TimelineMediaObject was not added, there was no space at the given position") ){
@@ -200,7 +201,7 @@ public class TimelineModel implements Serializable{
 		tlmo.setDuration(newDuration);
 		result=this.addTimelineMediaObject(tlmo);
 		timelinechanged();
-		return "TimelineMediaObject successfully modified. " + result;
+		return "TImelineMediaObject successfully modified. " + result;
 	}
 	
 	/**
@@ -221,6 +222,17 @@ public class TimelineModel implements Serializable{
 			Collections.sort(timelineStack);
 		}
 	}
+
+	public ArrayList<Integer> getAssignedDisplays() {
+		return assignedDisplays;
+	}
+	
+	public void addDisplay(Integer dispID){
+		assignedDisplays.add(dispID);
+	}
+	
+	public void removeDisplay(Integer dispID){
+		assignedDisplays.remove(dispID);
+	}
 		
 }
-

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -606,6 +607,67 @@ public class AdvancedScreen implements Screen{
 			public double getScrollBarPosition() {
 				return scrollBarPosition;
 			}
+
+
+
+			@Override
+			public void fireGlobalTimeChanged(long newGlobalTime) {
+				// TODO Update timelineBar to new global time
+				System.out.println(newGlobalTime);
+				
+			}
+			
+			
+			public void playAllTimelines(){
+				currentSession.playAll();
+			}
+			
+			public void pauseAllTimelines(){
+				currentSession.pauseAll();
+			}
+
+
+
+			public void changeGlobalTime(long i) {
+				currentSession.changeGlobalTime(i);
+				
+			}
+
+
+
+			public ArrayList<Integer> getAvailableDisplays() {
+				return currentSession.getAvailableDisplays();
+			}
+			
+			public void assignDisplay(Integer displayID,TimelineModel tlm){
+				currentSession.assignTimeline(displayID, tlm);
+			}
+
+
+
+			public void assignRequest(List<String> checkedItems, TimelineModel tlm) {
+				System.out.println("CHECKEDITEMS: " +checkedItems);		
+				System.out.println("ACTUAL ASSIGNED SCREENS: "+ tlm.getAssignedDisplays() );
+				
+				if(checkedItems.size()>tlm.getAssignedDisplays().size()){
+					System.out.println("New display!");
+					//NB: only possible with one screen per timeline. Address problem with ghosts
+					currentSession.assignTimeline(Integer.parseInt(checkedItems.get(0)), tlm);
+				}
+				else if(checkedItems.size()<tlm.getAssignedDisplays().size()){
+					//TODO: implement the removal of screen if box is unchecked
+					System.out.println("RemovedScreen!");
+				}
+				else if(checkedItems.size()==tlm.getAssignedDisplays().size()){
+					for(String dispString:checkedItems){
+						if(!tlm.getAssignedDisplays().contains(Integer.parseInt(dispString))){
+							System.out.println("NEW DISPLAY!?");
+						}
+					}
+				}
+				
+			}
+			
 			
 	
 

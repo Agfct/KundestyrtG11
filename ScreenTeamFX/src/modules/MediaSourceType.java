@@ -1,5 +1,5 @@
 package modules;
 
 public enum MediaSourceType {
-	VIDEO, STREAM, AUDIO, WINDOW
+	VIDEO, STREAM, AUDIO, WINDOW, IMAGE
 }

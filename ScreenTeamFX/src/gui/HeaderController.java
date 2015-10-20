@@ -101,6 +101,22 @@ public class HeaderController implements FXMLController{
 			
 			
 		}
+		else if(((Button)event.getSource()).getId().equals("playAllTimelines")){
+			// If the user clicks the import media button, he will get a windows file-chooser
+			this.parentController.playAllTimelines();
+
+		}
+		else if(((Button)event.getSource()).getId().equals("pauseAllTimelines")){
+			// If the user clicks the import media button, he will get a windows file-chooser
+			this.parentController.pauseAllTimelines();
+
+		}
+		else if(((Button)event.getSource()).getId().equals("resetGlobalTime")){
+			// If the user clicks the import media button, he will get a windows file-chooser
+			this.parentController.changeGlobalTime(0);
+
+		}
+	
 	}
 	
 	
@@ -130,19 +146,25 @@ public class HeaderController implements FXMLController{
 		acceptedVideoFormats.add("mkv");
 		acceptedVideoFormats.add("wmv");
 		acceptedVideoFormats.add("mp4");
+		acceptedVideoFormats.add("mov");
 		ArrayList<String> acceptedAudioFormats = new ArrayList<String>();
 		acceptedAudioFormats.add("mp3");
 		acceptedAudioFormats.add("flac");
 		acceptedAudioFormats.add("wma");
 		acceptedAudioFormats.add("waw");
-		
+		ArrayList<String> acceptedImageFormats = new ArrayList<String>();
+		acceptedImageFormats.add("img");
+		acceptedImageFormats.add("jpg");
+		acceptedImageFormats.add("jpeg");
+		acceptedImageFormats.add("png");
+		acceptedAudioFormats.add("gif");
 		//Checks the validity of the files imported by checking the file extension
 		String extension = "";
 		String fileName = file.getName();
 		int i = fileName.lastIndexOf('.');
 		int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
 		if (i > p) {
-		    extension = fileName.substring(i+1);
+		    extension = fileName.substring(i+1).toLowerCase();
 		}
 		
 		
@@ -150,13 +172,6 @@ public class HeaderController implements FXMLController{
 			if(format.equals(extension)){
 				System.out.println(fileName + " is a video! of type:  "+ format);
 				parentController.getCurrentSession().createNewMediaObject(MediaSourceType.VIDEO,path);
-				//___________DELETE: NOT MVC___________
-//				MediaObjectIcon icn = new MediaObjectIcon();
-//				icn.setType(MediaObjectType.VIDEO);
-//				icn.setTitle(fileName);
-//				importedMediaObjects.add(icn);
-//				updateMediaView();
-				//--------DELETE FINISHED--------------
 				return;
 			}
 		}
@@ -167,6 +182,7 @@ public class HeaderController implements FXMLController{
 				return;
 			}
 		}
+		//TODO: add support for imageFile!
 		System.out.println("The file was neither a video nor a sound: " + extension);
 	}
 	

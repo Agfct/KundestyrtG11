@@ -32,6 +32,8 @@ public class SessionModule implements Serializable {
 	private Thread t1;
 	private Thread tAll;
 	
+	private Thread globalTimeTicker;
+	
 	private ArrayList<SessionListener> listeners;
 	private ArrayList<Integer> timelineOrder;
 	
@@ -49,6 +51,7 @@ public class SessionModule implements Serializable {
 //		vlccontroller.createMediaPlayer(tlmID);
 		this.t1 = new Thread();
 		this.tAll = new Thread();
+		this.globalTimeTicker = new Thread();
 		this.timelineOrder=new ArrayList<Integer>();
 	}
 
@@ -106,14 +109,20 @@ public class SessionModule implements Serializable {
 	 * @param tlm the timeline that is to be assigned to the display
 	 */
 	public void assignTimeline(Integer display, TimelineModel tlm){
-		//TODO: Change tlm to the ID for the timeline??? return something about previous assigned timeline???
 		if(!displays.containsKey(display)){
 			System.out.println("this display is not added to the list, please add it");
 		}
 		else{
 			TimelineModel prevtlm = displays.put(display,tlm);
+			tlm.addDisplay(display);
+			if(prevtlm !=null){
+				prevtlm.removeDisplay(display);
+				vlccontroller.unassignDisplay(prevtlm.getID());
+				timelineChanged(TimeLineChanges.MODIFIED, prevtlm);
+			}
 			vlccontroller.assignDisplay(tlm.getID(), display);
 		}
+		
 		timelineChanged(TimeLineChanges.MODIFIED,tlm);
 	}
 	
@@ -162,21 +171,53 @@ public class SessionModule implements Serializable {
 	 * the button to play all timelines is pushed.
 	 * @param gbltime where the cursor is at when play all is pushed (0 if at start of the timelines)
 	 */
-	public void playAll(long glbtime){
+	public void playAll(){
 		//TODO: look over and look for a better way to do this.
 		//NOT DONE NBNBNBNBNBNBNBNB
+		System.out.println("PLAYALL");
 		try {
 			tAll.join();
+			globalTimeTicker.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.globaltime = glbtime;
 		buildPerformance();
-		tAll = allPlay(glbtime);
+		tAll = allPlay(globaltime);
+		globalTimeTicker=tickGlobalTime(globaltime);
 		pausing = false;
 		tAll.start();
+		globalTimeTicker.start();
 	}
+	
+	private synchronized Thread tickGlobalTime(long globalTimeAtStart){
+		Thread globalTicker = new Thread(){
+			public void run(){
+				long startp = System.currentTimeMillis();
+				long playp = System.currentTimeMillis();
+				while(!pausing){
+					playp = System.currentTimeMillis();
+					globaltime=globalTimeAtStart+playp-startp;
+					globalTimeChanged();
+					try {
+						this.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+//						e.printStackTrace();
+					}
+					
+				}
+				
+				// Run update one last time before the thread dies. 
+				playp = System.currentTimeMillis();
+				globaltime=globalTimeAtStart+playp-startp;
+				globalTimeChanged();
+			}
+		};
+		return globalTicker;
+	}
+
+
 	/**
 	 * creates a thread to go through the performancestack and tell vlccontroller when and what
 	 * to play and stop.
@@ -184,8 +225,11 @@ public class SessionModule implements Serializable {
 	 * @return
 	 */
 	private synchronized Thread allPlay(long glbtime){
+		
 		Thread tAll1 = new Thread(){
 			public void run(){
+				System.out.println("RUN ALLPLAY");
+				System.out.println(performancestack.size());
 				long startp = System.currentTimeMillis();
 				long playp = System.currentTimeMillis();
 				while (!performancestack.isEmpty() && pausing == false){
@@ -281,17 +325,17 @@ public class SessionModule implements Serializable {
 	 * @param display the display should be played
 	 * @param glbtime current position of the cursor (0 if at beginning of timeline).
 	 */
-	public void playOne(Integer timeline, long glbtime){
+	public void playOne(Integer timeline){
 		//TODO look over and look for better way to do this.
 		//NOT DONE NBNNBNBNBNBNBNB
 		try {
 			t1.join();
+			globalTimeTicker.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("playing");
-		this.globaltime = glbtime;
 		performancestack.clear();
 		ArrayList<Event> tempstack = timelines.get(timeline).getTimelineStack();
 		for (Event ev2 : tempstack){
@@ -316,11 +360,13 @@ public class SessionModule implements Serializable {
 		performancestack.sort(Event.EventTimeComperator);
 		t1 = new Thread(){
 			public void run(){
-				onePlay(glbtime);
+				onePlay(globaltime);
 //				System.out.println("im done");
 			}
 		};
+		globalTimeTicker=tickGlobalTime(globaltime);
 		pausing = false;
+		globalTimeTicker.start();
 		t1.start();
 	}
 	
@@ -367,6 +413,7 @@ public class SessionModule implements Serializable {
 	public void pauseAll(){
 		pausing = true;
 		tAll.interrupt();
+		globalTimeTicker.interrupt();
 		try {
 			vlccontroller.pauseAll();
 		} catch (InterruptedException e) {
@@ -383,6 +430,7 @@ public class SessionModule implements Serializable {
 	public void pauseOne(Integer timelineid){
 		pausing = true;
 		t1.interrupt();
+		globalTimeTicker.interrupt();
 		vlccontroller.pauseOne(timelineid);
 		System.out.println("paused");
 		//TODO: Pause the timeline for this display
@@ -400,13 +448,13 @@ public class SessionModule implements Serializable {
 	 * @param mst
 	 * @param path
 	 */
-	public MediaObject createNewMediaObject(MediaSourceType mst, String path){
+	public String createNewMediaObject(MediaSourceType mst, String path){
 		
 		// Check if this MediaObject is already stored in the list, by comparing paths
 		for (int i=0; i<mediaObjects.size(); i++){
 			if (mediaObjects.get(i).getPath().equals(path)) {
 				// Return the old MediaObject with equal path
-				return mediaObjects.get(i);
+				return "Already exisisted";//ediaObjects.get(i);
 			}
 		}
 		
@@ -414,9 +462,15 @@ public class SessionModule implements Serializable {
 		
 		String name = path.substring(path.lastIndexOf('\\')+1);
 		MediaObject mo = new MediaObject(path, name, mst);
-		mediaObjects.add(mo);
-		mediaObjectsChanged();
-		return mo;
+		long lenght=vlccontroller.prerunCheck(mo.getPath());
+		if(lenght>0){
+			mo.setLength((int)lenght);
+			mediaObjects.add(mo);
+			mediaObjectsChanged();
+			return "mediaObject created";
+
+		}
+		return "MediaObject not created, prerunChecker in VLC failed";
 	}
 
 	public ArrayList<MediaObject> getMediaObjects() {
@@ -498,4 +552,24 @@ public class SessionModule implements Serializable {
 	public ArrayList<Integer> getTimelineOrder() {
 		return timelineOrder;
 	}
+	
+	public void globalTimeChanged(){
+		for(SessionListener listener:listeners){
+			listener.fireGlobalTimeChanged(globaltime);
+		}
+	}
+
+	public void changeGlobalTime(long newGlobalTime) {
+		if(newGlobalTime>=0){
+			this.globaltime=newGlobalTime;
+			globalTimeChanged();
+		}
+	}
+	
+	public ArrayList<Integer> getAvailableDisplays(){
+		return new ArrayList<Integer>(displays.keySet());
+	}
+	
+	
+	
 }

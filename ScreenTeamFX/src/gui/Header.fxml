@@ -36,6 +36,8 @@
 						mnemonicParsing="true" />
 					<Button id="pauseAllTimelines" text="_Pause all timelines" onAction="#buttonPressed"
 						mnemonicParsing="true" />
+					<Button id="resetGlobalTime" text="_Reset global time" onAction="#buttonPressed"
+						mnemonicParsing="true" />
 					
 				
 				</HBox>
