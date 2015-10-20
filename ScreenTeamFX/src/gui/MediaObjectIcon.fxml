@@ -18,7 +18,7 @@
 	<columnConstraints>
 		<ColumnConstraints hgrow="NEVER" minWidth="16"
 			prefWidth="16" />
-		<ColumnConstraints minWidth="48" prefWidth="48" />
+		<ColumnConstraints minWidth="48" maxWidth="Infinity" />
 	</columnConstraints>
 	<rowConstraints>
 		<RowConstraints minHeight="16" prefHeight="16" vgrow="NEVER" />
