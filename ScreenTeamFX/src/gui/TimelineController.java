@@ -136,7 +136,6 @@ public class TimelineController implements FXMLController {
 
 		 checkComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
 		     public void onChanged(ListChangeListener.Change<? extends String> c) {
-//		         parentController.assignDisplay(Integer.parseInt(checkComboBox.getCheckModel().getCheckedItems().get(0)), timelineModel);
 		    	 System.out.println("CheckedItems: " +checkComboBox.getCheckModel().getCheckedItems());
 		    	 parentController.assignRequest(checkComboBox.getCheckModel().getCheckedItems(),timelineModel);
 		     }
