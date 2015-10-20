@@ -585,6 +585,7 @@ public class AdvancedScreen implements Screen{
 			public void showModal(MediaObjectController mediaObject){
 //                final Stage modalDialog = new Stage();
                 modalDialog = new Stage();
+                modalDialog.setResizable(false);
                 modalDialog.initModality(Modality.APPLICATION_MODAL);
                 modalDialog.initOwner(MainGUIController.getInstance().primaryStage);
                 ModalController mediaObjectModal = new ModalController(mediaObject);
