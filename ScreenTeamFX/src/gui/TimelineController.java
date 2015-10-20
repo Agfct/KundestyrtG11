@@ -19,6 +19,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import modules.TimelineModel;
+import sun.misc.Cleaner;
 
 /**
  * 
@@ -96,13 +97,20 @@ public class TimelineController implements FXMLController {
 	}
 	
 	private void initializeTimelineInfo(){
+		
+		
 		checkComboBox.getItems().clear();
+		System.out.println("UPDATING TIMELINEMODEL CTRL: "+ timelineModel.getID());
+		
+		ObservableList<String> obsList = FXCollections.observableArrayList();
 		 for (int i=0;i<parentController.getAvailableDisplays().size();i++) {
 //		     obsDisplays.add(i.toString());
-		     checkComboBox.getItems().add(parentController.getAvailableDisplays().get(i).toString());
+//		     checkComboBox.getItems().add(parentController.getAvailableDisplays().get(i).toString());
+			 obsList.add(parentController.getAvailableDisplays().get(i).toString());
 		     
 		 }
-		 
+		 checkComboBox.getItems().addAll(obsList);
+		 checkComboBox.getCheckModel().clearChecks();
 		 if(assignedDisplays.size()!=0){
 			 for(int i=0;i<checkComboBox.getItems().size();i++){
 			 if(assignedDisplays.contains(Integer.parseInt(checkComboBox.getItems().get(i)))){
@@ -121,7 +129,7 @@ public class TimelineController implements FXMLController {
 //		 if(assignedDisplays.size()>0){
 //			 checkComboBox.getCheckModel().getCheckedItems().addAll(assignedDisplays.get(0).toString());
 //		 }
-		 System.out.println("CHECKED ITEMS; "+checkComboBox.getCheckModel());
+		 System.out.println("CHECKED ITEMS; "+checkComboBox.getCheckModel().getCheckedItems());
 		 
 //		 checkComboBox.setCheckModel(value);
 		     
@@ -130,8 +138,11 @@ public class TimelineController implements FXMLController {
 		     public void onChanged(ListChangeListener.Change<? extends String> c) {
 //		         parentController.assignDisplay(Integer.parseInt(checkComboBox.getCheckModel().getCheckedItems().get(0)), timelineModel);
 		    	 System.out.println("CheckedItems: " +checkComboBox.getCheckModel().getCheckedItems());
+		    	 parentController.assignRequest(checkComboBox.getCheckModel().getCheckedItems(),timelineModel);
 		     }
+		     
 		 });
+		 
 		 
 //		List<String> supplierNames = Arrays.asList("sup1", "sup2", "sup3");
 //		screenChoiceBox.setItems(FXCollections.observableArrayList(supplierNames));
