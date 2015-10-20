@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
 
-<fx:root fx:id="root_pane" maxHeight="75" minHeight="75" minWidth="-Infinity" prefHeight="75"  type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fx:id="root_pane" stylesheets="@application.css"  maxHeight="75" minHeight="75" minWidth="-Infinity" prefHeight="75"  type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 	<!-- TODO Add Nodes -->
+	<children>
+		<Label fx:id="nameOfFile" style="-fx-padding: 5 0 0 0;" />
+	</children>
 </fx:root>

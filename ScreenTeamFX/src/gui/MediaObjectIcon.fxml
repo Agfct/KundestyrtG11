@@ -5,6 +5,14 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
 
 
-<fx:root fx:id="grid_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="64.0" prefWidth="64.0" styleClass="dragicon" stylesheets="@application.css" type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" />
+<fx:root fx:id="grid_pane" maxHeight="-Infinity" maxWidth="-Infinity"
+	minHeight="-Infinity" minWidth="-Infinity" prefHeight="32" prefWidth="64"
+	styleClass="dragicon" stylesheets="@application.css" type="javafx.scene.layout.GridPane"
+	xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
+	<children>
+		<Label  fx:id="nameOfFile" style="-fx-padding: 5 0 0 0;"/>
+	</children>
+</fx:root>

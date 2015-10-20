@@ -13,6 +13,9 @@ target/
 *.war
 *.ear
 *.db
+
+#VLC Files#
+*.dat
  
 ######################
 # Windows

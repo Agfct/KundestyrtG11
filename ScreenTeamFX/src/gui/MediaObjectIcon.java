@@ -24,6 +24,7 @@ import modules.*;
  */
 public class MediaObjectIcon extends GridPane{
 	@FXML GridPane grid_pane;
+	private @FXML Label nameOfFile;
 	
 	//Drag&Drop
 	private EventHandler <DragEvent> mContextDragOver;
@@ -57,7 +58,7 @@ public class MediaObjectIcon extends GridPane{
 	 * Method for setting the title of the Icon
 	 */
 	public void setTitle(String s){
-		this.add(new Label(s.substring(0, s.length()-Math.min(s.length(),5))),0,0);
+		nameOfFile.setText(s);
 	}
 	
 	@FXML

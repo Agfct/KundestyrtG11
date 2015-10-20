@@ -60,10 +60,11 @@ public class MediaObjectController extends GridPane{
 	//Width of the mediaObject
 	private double mediaObjectWidth=1000;
 	
-	private Label nameOfFile;
+	private @FXML Label nameOfFile;
 	
 	public MediaObjectController(TimelineMediaObject timelineMediaObject){
-		setStyle("-fx-background-color: GRAY");
+//		setStyle("-fx-background-color: GRAY");
+		setGraphicType(timelineMediaObject.getParent().getType());
 		this.timelineMediaObject=timelineMediaObject;
 		this.setWidth(234);
 		
@@ -90,9 +91,7 @@ public class MediaObjectController extends GridPane{
 	 * TODO: remove this? It was only useful before the modules was integrated into the program
 	 */
 	public void initializeMediaObject(){
-		this.nameOfFile= new Label(timelineMediaObject.getParent().getName());
-		nameOfFile.setVisible(true);
-		this.add(nameOfFile, 0, 0);
+		this.nameOfFile.setText(timelineMediaObject.getParent().getName());
 		this.mediaObjectWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
 		System.out.println("Setting width:" + mediaObjectWidth);
 		this.setPrefWidth(mediaObjectWidth);
@@ -207,9 +206,9 @@ public class MediaObjectController extends GridPane{
 	 */
 	public void setGraphicType (MediaSourceType type) {
 		
-		getStyleClass().clear();
-		getStyleClass().add("dragicon");
-		
+//		getStyleClass().clear();
+//		getStyleClass().add("dragicon");
+//		
 		if(type == MediaSourceType.AUDIO){
 			getStyleClass().add("icon-sound");
 		}else{

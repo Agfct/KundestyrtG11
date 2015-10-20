@@ -4,9 +4,14 @@
 
 .icon-sound {
 	-fx-background-color: blue;
+	-fx-background-radius: 10; 
 }
 .icon-video {
-	-fx-background-color: orange;
+	-fx-background-image: url("../../resources/videoTypeBack.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-background-size: cover;
+	-fx-background-radius: 10; 
 }
 
 .icon-cog {
@@ -17,10 +22,31 @@
 }
 
 .background-timeline {
-	/*-fx-background-image: url("../../resources/timelineLineTempBck.png");
+	-fx-background-image: url("../../resources/timelineBackTemp.png");
+	/*-fx-background-color: rgba(255,255,0,0.5); */
+}
+
+.background-info {
+	-fx-background-image: url("../../resources/TempInfoBack.png");
 	-fx-background-repeat: no-repeat;
-	-fx-background-size: cover;*/
-	-fx-background-color: rgba(255,255,0,0.5); 
+	-fx-background-size: cover;
+	/*-fx-background-color: rgba(255,255,0,0.5); */
+}
+
+.background-advancedScreen {
+	-fx-background-image: url("../../resources/background_dokkhuset.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+}
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+.scroll-pane {
+   -fx-background-color: transparent;
+}
+
+.background-transparent {
+	-fx-background-color:rgba(0,100, 100, 0.5);
 }
 
 .background-main {
