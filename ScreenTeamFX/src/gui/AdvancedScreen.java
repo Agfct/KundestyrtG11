@@ -672,6 +672,19 @@ public class AdvancedScreen implements Screen{
 				}
 				
 			}
+
+
+
+			/* (non-Javadoc)
+			 * @see gui.SessionListener#fireSessionLenghtChanged()
+			 */
+			@Override
+			public void fireSessionLenghtChanged() {
+				refreshScrollBarSize();
+				for (TimelineController timelineController : timelineControllers) {
+					timelineController.getTimelineLineController().getRoot().setPrefWidth(currentSession.getSessionLength());
+				}
+			}
 			
 			
 	

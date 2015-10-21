@@ -20,6 +20,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import modules.MainModuleController;
 import modules.MediaSourceType;
 import modules.TimelineMediaObject;
 import modules.TimelineModel;
@@ -77,7 +78,7 @@ public class TimelineLineController implements FXMLController{
 		}
 		
 
-		
+		rootPane.setPrefWidth(MainModuleController.getInstance().getSession().getSessionLength());
 		
 		//Mouse Functionallity
 		initializeMouse();
