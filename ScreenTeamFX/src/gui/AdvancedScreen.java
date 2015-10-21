@@ -150,6 +150,10 @@ public class AdvancedScreen implements Screen{
 				timelineBarController = new TimelineBarController(this);
 				barGrid.add(timelineBarController,1,0);
 				
+				//get current session
+				currentSession=MainModuleController.getInstance().getSession();
+				currentSession.addListener(this);
+				
 				//InitializeScrollBar values
 				initializeScrollBar();
 				
@@ -158,10 +162,6 @@ public class AdvancedScreen implements Screen{
 				
 				// Initialize the header
 				initHeader(this);
-				
-				//get current session
-				currentSession=MainModuleController.getInstance().getSession();
-				currentSession.addListener(this);
 				
 				// Instanciated the hashmap over controllers
 				idTimlineControllerMap = new HashMap<TimelineController, Integer>();
@@ -178,7 +178,7 @@ public class AdvancedScreen implements Screen{
 			private void initializeScrollBar() {
 				
 				//TODO: atm this is the size of the clip minus the size of the timelineLine
-				timelineLineScrollBar.setMax(2000-1200);
+				timelineLineScrollBar.setMax(currentSession.getSessionLength() - 1000);
 				timelineLineScrollBar.valueProperty().addListener(new ChangeListener<Number>() {
 		            public void changed(ObservableValue<? extends Number> ov,
 		                Number old_val, Number new_val) {
@@ -607,6 +607,10 @@ public class AdvancedScreen implements Screen{
 			 */
 			public double getScrollBarPosition() {
 				return scrollBarPosition;
+			}
+			
+			public void refreshScrollBarSize() {
+				timelineLineScrollBar.setMax(currentSession.getSessionLength() - 1000);
 			}
 
 

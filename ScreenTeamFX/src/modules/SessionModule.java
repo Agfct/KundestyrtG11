@@ -11,7 +11,7 @@ import vlc.VLCController;
 import vlc.VLCMediaPlayer;
 /**
  * 
- * @author Baptiste Masselin, Eirik Z. Wold, Ole S.L. Skrede, Magnus Gundersen
+ * @author Baptiste Masselin, Eirik Z. Wold, Ole S.L. Skrede, Magnus Gundersen, Anders Lunde.
  * Controls the timelines and their connections to displays. Talks to VLCController and StorageController.
  */
 public class SessionModule implements Serializable {
@@ -34,6 +34,8 @@ public class SessionModule implements Serializable {
 	private Thread t1;
 	private Thread tAll;
 	
+	private long sessionLength;
+	
 	private Thread globalTimeTicker;
 	
 	private ArrayList<SessionListener> listeners;
@@ -46,6 +48,7 @@ public class SessionModule implements Serializable {
 		this.globaltime = 0;
 		this.performancestack = new ArrayList<Event>();
 		this.tlmID =0;
+		this.sessionLength = 2000; //Seconds not ms
 		this.displays = new HashMap<Integer,TimelineModel>();
 		this.listeners = new ArrayList<SessionListener>();
 		this.vlccontroller = vlc;
@@ -560,6 +563,10 @@ public class SessionModule implements Serializable {
 
 	public ArrayList<Integer> getTimelineOrder() {
 		return timelineOrder;
+	}
+	
+	public long getSessionLength(){
+		return sessionLength;
 	}
 	
 	public void globalTimeChanged(){
