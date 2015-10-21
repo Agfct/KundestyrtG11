@@ -31,6 +31,7 @@ public class SessionModule implements Serializable {
 	//counter for the id of the timelineModels
 	private int tlmID;
 	private boolean pausing;
+	private boolean paused;
 	private Thread t1;
 	private Thread tAll;
 	
@@ -50,6 +51,7 @@ public class SessionModule implements Serializable {
 		this.listeners = new ArrayList<SessionListener>();
 		this.vlccontroller = vlc;
 		this.pausing = true;
+		this.paused = true;
 //		vlccontroller.createMediaPlayer(tlmID);
 		this.t1 = new Thread();
 		this.tAll = new Thread();
@@ -175,8 +177,9 @@ public class SessionModule implements Serializable {
 	 * @param gbltime where the cursor is at when play all is pushed (0 if at start of the timelines)
 	 */
 	public void playAll(){
-		if(pausing){			
+		if(paused){			
 			System.out.println("PLAYALL");
+			paused = false;
 			try {
 				tAll.join();
 				globalTimeTicker.join();
@@ -189,7 +192,7 @@ public class SessionModule implements Serializable {
 			globalTimeTicker=tickGlobalTime(globaltime);
 			pausing = false;
 			tAll.start();
-			globalTimeTicker.start();
+//			globalTimeTicker.start();
 		}
 	}
 	
@@ -250,20 +253,26 @@ public class SessionModule implements Serializable {
 								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
 								pplay.put(ev2.getTimelineid(), ev2.getTimelineMediaObject().getStartPoint());
 								vlccontroller.seekOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
+								
 							}
 							else if(ev2.getAction()==Action.STOP){
 								vlccontroller.stopOne(ev2.getTimelineid());
 							}
 							else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
-								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+								if (vlccontroller.getMediaPlayerList().get(ev2.getTimelineid()).getMediaPath()!=ev2.getTimelineMediaObject().getParent().getPath()){
+									vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+								}
 								long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
 								pplay.put(ev2.getTimelineid(), spoint);
 								vlccontroller.seekOne(ev2.getTimelineid(), spoint);
 							}
 						}
 						try {
-							vlccontroller.SeekMultiple(pplay);;
+							vlccontroller.SeekMultiple(pplay);
 							vlccontroller.playAll();
+							if (!globalTimeTicker.isAlive()){
+								globalTimeTicker.start();
+							}
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -374,8 +383,8 @@ public class SessionModule implements Serializable {
 			};
 			globalTimeTicker=tickGlobalTime(globaltime);
 			pausing = false;
-			globalTimeTicker.start();
 			t1.start();
+			globalTimeTicker.start();
 		}
 	}
 	
@@ -420,14 +429,17 @@ public class SessionModule implements Serializable {
 	 * pause all the displays and timelines.
 	 */
 	public void pauseAll(){
-		pausing = true;
-		tAll.interrupt();
-		globalTimeTicker.interrupt();
-		try {
-			vlccontroller.pauseAll();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (!pausing){
+			pausing = true;
+			globalTimeTicker.interrupt();
+			tAll.interrupt();
+			try {
+				vlccontroller.pauseAll();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			paused = true;
 		}
 		//TODO: Go through displays and pause timelines
 	}
