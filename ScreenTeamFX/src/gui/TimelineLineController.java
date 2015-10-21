@@ -20,6 +20,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import modules.MainModuleController;
 import modules.MediaSourceType;
 import modules.TimelineMediaObject;
 import modules.TimelineModel;
@@ -77,7 +78,7 @@ public class TimelineLineController implements FXMLController{
 		}
 		
 
-		
+		rootPane.setPrefWidth(MainModuleController.getInstance().getSession().getSessionLength());
 		
 		//Mouse Functionallity
 		initializeMouse();
@@ -96,14 +97,16 @@ public class TimelineLineController implements FXMLController{
 	 */
 	private void initializeMouse(){
 		//Adds different right click options to the ContextMenu that pops up on mouse click.
-		MenuItem cut = new MenuItem("Cut");
+		MenuItem duplicate = new MenuItem("Duplicate");
 		MenuItem copy = new MenuItem("Copy");
 		MenuItem paste = new MenuItem("Paste");
-		contextMenu.getItems().addAll(cut, copy, paste);
-		cut.setOnAction(new EventHandler<ActionEvent>() {
+		contextMenu.getItems().addAll(duplicate, copy, paste);
+		duplicate.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override
 		    public void handle(ActionEvent event) {
-		        System.out.println("Cut...");
+		        System.out.println("Duplicate Timeline");
+		        //TODO: Duplicate timeline; Method in modules that takes in a timelineLine id ?
+		       
 		    }
 		});
 		rootPane.setOnMouseClicked(new EventHandler<MouseEvent>() {

@@ -9,8 +9,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import modules.MainModuleController;
+import vlc.VLCController;
 
 /**
  * @author Anders
@@ -61,8 +64,12 @@ public class OptionsScreen implements Screen {
 		private AnchorPane rootPane;
 		private AnchorPane creditsRootPane;
 		private boolean credits = false;
+		private VLCController vlc_controller;
 		
 		@FXML private GridPane rootGrid;
+		@FXML private Label vlc_version;
+		@FXML private Label java_version;
+		@FXML private Label display_output;
 		
 		public OptionsScreenController(){
 			
@@ -77,6 +84,18 @@ public class OptionsScreen implements Screen {
 				e.printStackTrace();
 			}
 			
+			initializeOptions();
+			
+		}
+		
+		/**
+		 * Gets correct version values from VLC and labels them
+		 */
+		private void initializeOptions(){
+			vlc_controller = MainModuleController.getInstance().getVLCController();
+//			java_version.setText(vlc_controller.getJavaVersion());
+//			vlc_version.setText(vlc_controller.getVLCVersion());
+//			display_output.setText(vlc_controller.getDisplayOutput());
 		}
 		
 		/**

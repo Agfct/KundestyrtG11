@@ -11,7 +11,7 @@ import vlc.VLCController;
 import vlc.VLCMediaPlayer;
 /**
  * 
- * @author Baptiste Masselin, Eirik Z. Wold, Ole S.L. Skrede, Magnus Gundersen
+ * @author Baptiste Masselin, Eirik Z. Wold, Ole S.L. Skrede, Magnus Gundersen, Anders Lunde.
  * Controls the timelines and their connections to displays. Talks to VLCController and StorageController.
  */
 public class SessionModule implements Serializable {
@@ -35,6 +35,8 @@ public class SessionModule implements Serializable {
 	private Thread t1;
 	private Thread tAll;
 	
+	private long sessionLength;
+	
 	private Thread globalTimeTicker;
 	
 	private ArrayList<SessionListener> listeners;
@@ -50,6 +52,7 @@ public class SessionModule implements Serializable {
 		this.globaltime = 0;
 		this.performancestack = new ArrayList<Event>();
 		this.tlmID =0;
+		this.sessionLength = 2000; //Seconds not ms
 		this.displays = new HashMap<Integer,TimelineModel>();
 		this.listeners = new ArrayList<SessionListener>();
 		this.vlccontroller = vlc;
@@ -537,7 +540,26 @@ public class SessionModule implements Serializable {
 		}
 		String result = timeline.addTimelineMediaObject(tlmo);
 		timelineChanged(TimeLineChanges.MODIFIED,timeline); //TODO: tell the user what was the outcome of the operation
+		checkSessionSize(tlmo.getStart(), tlmo.getDuration());
 		return result;
+	}
+	
+	/**
+	 * When the user wants to increase the length of a session we increase the sessionLength and updates the GUI.
+	 * @param start
+	 * @param duration
+	 */
+	private void checkSessionSize(long start, long duration){
+		if(start+duration > sessionLength*1000){
+			sessionLength = sessionLength*2; //Doubles the size of the session
+			sessionLenghtChanged();
+		}
+	}
+	
+	private void sessionLenghtChanged(){
+		for(SessionListener listener:listeners){
+			listener.fireSessionLenghtChanged();
+		}
 	}
 	/**
 	 * 
@@ -600,6 +622,10 @@ public class SessionModule implements Serializable {
 
 	public ArrayList<Integer> getTimelineOrder() {
 		return timelineOrder;
+	}
+	
+	public long getSessionLength(){
+		return sessionLength;
 	}
 	
 	public void globalTimeChanged(){
