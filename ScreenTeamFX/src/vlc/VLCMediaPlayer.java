@@ -47,6 +47,7 @@ public class VLCMediaPlayer {
 				mediaChanged = false;
 			}
 			else if(getTime() > -1){
+				long startp = System.currentTimeMillis();
 				mp.getMediaPlayer().start();
 			}
 			else{

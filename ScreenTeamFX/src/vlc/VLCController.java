@@ -190,10 +190,10 @@ public class VLCController {
 	/** * Play all the media of all media players at the exact same time.
 	 * @throws BrokenBarrierException 
 	 * @throws InterruptedException */	
-	public void playAll() throws InterruptedException{
+	public synchronized void playAll() throws InterruptedException{
 		ArrayList<Thread> threads = new ArrayList<Thread>();
-		final CyclicBarrier gate = new CyclicBarrier(mediaPlayerList.size() + 1);
-		for(int mp : mediaPlayerList.keySet()){
+		final CyclicBarrier gate = new CyclicBarrier(mediaPlayerDisplayConnections.size() + 1);
+		for(int mp : mediaPlayerDisplayConnections.keySet()){
 			Thread t = new Thread(){
 				public void run(){
 					try {
@@ -217,25 +217,26 @@ public class VLCController {
 	 * @throws BrokenBarrierException 
 	 * @throws InterruptedException */
 	public void pauseAll() throws InterruptedException{
-		ArrayList<Thread> threads = new ArrayList<Thread>();
-		final CyclicBarrier gate = new CyclicBarrier(mediaPlayerList.size() + 1);
-		for(int mp : mediaPlayerList.keySet()){
-			Thread t = new Thread(){
+		ArrayList<Thread> threads1 = new ArrayList<Thread>();
+		final CyclicBarrier gate = new CyclicBarrier(mediaPlayerDisplayConnections.size() + 1);
+		for(int mp : mediaPlayerDisplayConnections.keySet()){
+			Thread t1 = new Thread(){
 				public void run(){
 					try {
 						gate.await();
 					} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
 					toPlayer(mp).pause();
+					
 				}
 			};
-			t.start();
-			threads.add(t);
+			t1.start();
+			threads1.add(t1);
 		}
 		try {
 			gate.await();
 		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
-		for(int i= 0; i < threads.size(); i++){
-			threads.get(i).join();
+		for(int i= 0; i < threads1.size(); i++){
+			threads1.get(i).join();
 		}
 	}
 	
