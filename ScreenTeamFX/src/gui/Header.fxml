@@ -24,8 +24,17 @@
 			vgrow="SOMETIMES" percentHeight="33" />
 	</rowConstraints>
 	<children>
-				<Button id="menuBtn" text="_MainMenu" onAction="#buttonPressed"
-					mnemonicParsing="true" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+				
+				<HBox fx:id="mainPlayerHBox" GridPane.rowIndex="0" GridPane.columnIndex="0" alignment="center" >
+					<Button id="menuBtn" text="_MainMenu" onAction="#buttonPressed"
+						mnemonicParsing="true" />	
+					<Button id="saveSession" text="_Save session" onAction="#buttonPressed"
+						mnemonicParsing="true" />	
+					<Button id="loadSession" text="_Load session" onAction="#buttonPressed"
+						mnemonicParsing="true" />	
+				</HBox>
+					
+					
 				<Button id="addTimeLineBtn" text="_Add Timeline" onAction="#buttonPressed"
 					mnemonicParsing="true" GridPane.rowIndex="2" GridPane.columnIndex="0" />
 				<Button id="importMediaFromDisk" text="_Import media from disk" onAction="#buttonPressed"

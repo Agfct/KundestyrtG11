@@ -116,6 +116,16 @@ public class HeaderController implements FXMLController{
 			this.parentController.changeGlobalTime(0);
 
 		}
+		else if(((Button)event.getSource()).getId().equals("saveSession")){
+			// If the user clicks the import media button, he will get a windows file-chooser
+			this.parentController.saveSession();
+
+		}
+		else if(((Button)event.getSource()).getId().equals("loadSession")){
+			// If the user clicks the import media button, he will get a windows file-chooser
+			this.parentController.changeGlobalTime(0);
+
+		}
 	
 	}
 	
@@ -182,7 +192,6 @@ public class HeaderController implements FXMLController{
 				return;
 			}
 		}
-		//TODO: add support for imageFile!
 		for(String format:acceptedImageFormats){
 			if(format.equals(extension)){
 				System.out.println(fileName + " is an image! of type: "+ format);

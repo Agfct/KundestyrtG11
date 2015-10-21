@@ -668,6 +668,13 @@ public class AdvancedScreen implements Screen{
 				}
 				
 			}
+
+
+
+			public void saveSession() {
+				MainModuleController.getInstance().saveSession();
+				
+			}
 			
 			
 	

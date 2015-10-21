@@ -56,4 +56,8 @@ public class MainModuleController {
 		return sessionModule;
 	}
 	
+	public boolean saveSession(){
+		return storageController.storeSession(sessionModule);
+	}
+	
 }
