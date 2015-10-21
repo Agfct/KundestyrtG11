@@ -88,6 +88,17 @@ public class VLCMediaPlayer {
 		mediaChanged = true;
 	}
 	
+	public void mute(){
+		mp.getMediaPlayer().mute(true);
+	}
+	
+	public void unmute(){
+		mp.getMediaPlayer().mute(false);
+	}
+	
+	public void maximize(){
+		frame.setState(java.awt.Frame.NORMAL);
+	}
 	
 	/**
 	 * Creates a new Jframe on a new graphicsDevice. Must use setMedia before media can be played again. 
@@ -96,7 +107,7 @@ public class VLCMediaPlayer {
 		this.display = display;
 		frame.getContentPane().remove(mp);
 		frame.dispose();
-		frame = new JFrame(gs[display].getDefaultConfiguration());
+		frame = new JFrame(gs[display].getDefaultConfiguration ());
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);

@@ -1,12 +1,19 @@
 package vlc;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
@@ -23,8 +30,8 @@ public class VLCController {
 	private VLCMediaPlayer prerunCheckPlayer;
 	
 	/**
-	 * Creates a new VLC controller. vlcPath is the path to the VLC 64-bit client on your computer.
-	 * @param vlcPath */
+	 * Creates a VLC controller. Java version is checked and the corresponding version on VLC is loaded.
+	 */
 	public VLCController(ArrayList<Integer> displays){
 		if(Integer.parseInt(System.getProperty("sun.arch.data.model")) == 32){
 			NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "\\VLC\\VLC32");
@@ -267,6 +274,55 @@ public class VLCController {
 		}
 	}
 	
+	public void mute(int mp, boolean muted){
+		if(muted){
+			toPlayer(mp).mute();
+		}
+		else{
+			toPlayer(mp).unmute();
+		}
+	}
+	
+	public void identifyDisplays(){
+		GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+		
+		Thread t = new Thread(){
+			public void run(){
+				ArrayList<JFrame> frames = new ArrayList<JFrame>();
+				for(int i = 0; i < gs.length; i++){
+					int textSize = gs[i].getDisplayMode().getHeight()/2;
+					JLabel label = new JLabel("" + i);
+					label.setForeground(Color.WHITE);
+					label.setBackground(Color.BLACK);
+					label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, textSize));
+					label.setOpaque(true);
+					label.setHorizontalAlignment(JLabel.CENTER);
+				    label.setVerticalAlignment(JLabel.CENTER);
+					JFrame frame = new JFrame(gs[i].getDefaultConfiguration());
+					frame.setUndecorated(true);
+					frame.getContentPane().add(label);
+					frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+					frame.setVisible(true);
+					frames.add(frame);
+				}
+				try {
+					sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				for(int j = 0; j < gs.length; j++){
+					frames.get(j).dispose();
+				}
+				for(Integer mp : mediaPlayerList.keySet()){
+					if(mediaPlayerDisplayConnections.containsKey(mp)){
+						toPlayer(mp).maximize();
+					}
+				}
+			}		
+		};
+		t.start();
+	}
+	
 	
 	/**
 	 * Returns true if mediaPath is a valid path and is playable.
@@ -288,8 +344,12 @@ public class VLCController {
 		}
 	}
 	
-	public String getVlcVersionNeeded(){
+	public String getJavaVersion(){
 		return System.getProperty("sun.arch.data.model");
+	}
+	
+	public String getVLCVersion(){
+		return RuntimeUtil.getLibVlcLibraryName();
 	}
 
 	public Map<Integer, VLCMediaPlayer> getMediaPlayerList() {
