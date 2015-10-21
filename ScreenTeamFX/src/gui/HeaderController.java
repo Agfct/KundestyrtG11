@@ -123,7 +123,7 @@ public class HeaderController implements FXMLController{
 		}
 		else if(((Button)event.getSource()).getId().equals("loadSession")){
 			// If the user clicks the import media button, he will get a windows file-chooser
-			this.parentController.changeGlobalTime(0);
+			asdf
 
 		}
 	

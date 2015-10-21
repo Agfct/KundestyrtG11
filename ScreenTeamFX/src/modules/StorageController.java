@@ -20,7 +20,9 @@ import java.util.Iterator;
  */
 public class StorageController {
 	
-
+	String defaultFile = "";
+	String filetype = ".sedat";
+	
 	// storageFile is the savefile used if no file is specified. 
 	File storageFile;
 	
@@ -28,7 +30,7 @@ public class StorageController {
 	private static StorageController instance = null;
 	
 	protected StorageController() {
-		storageFile = new File("default_save.data");
+		storageFile = new File(defaultFile+filetype);
 	}
 	
 	public static StorageController getInstance() {
