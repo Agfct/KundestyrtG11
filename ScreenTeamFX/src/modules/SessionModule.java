@@ -39,6 +39,9 @@ public class SessionModule implements Serializable {
 	private ArrayList<SessionListener> listeners;
 	private ArrayList<Integer> timelineOrder;
 	
+	// Constant used when creating TimelineMediaObjects that are images. Used as a reasonable duration when first appearing on a timeline.
+	private final long IMAGE_DURATION = 30000;
+	
 	public SessionModule(VLCController vlc) {
 		this.timelines = new HashMap<Integer,TimelineModel>();
 //		this.timelines.put(0,new TimelineModel(0));
@@ -472,14 +475,29 @@ public class SessionModule implements Serializable {
 		String name = path.substring(path.lastIndexOf('\\')+1);
 		MediaObject mo = new MediaObject(path, name, mst);
 		long lenght=vlccontroller.prerunCheck(mo.getPath());
-		if(lenght>0){
-			mo.setLength((int)lenght);
+		
+		switch(mst){
+		case IMAGE: {
 			mediaObjects.add(mo);
 			mediaObjectsChanged();
 			return "mediaObject created";
-
 		}
-		return "MediaObject not created, prerunChecker in VLC failed";
+		case VIDEO: {
+			if(lenght>0){
+				mo.setLength((int)lenght);
+				mediaObjects.add(mo);
+				mediaObjectsChanged();
+				return "mediaObject created";
+
+			}
+			return "MediaObject not created, prerunChecker in VLC failed";
+		}
+		default: {
+			return "MediaObject not created, MediaSourceType not recognized in SessionModule.createNewMediaObject(MediaSourceType mst, String path)";
+		}
+		}
+		
+
 	}
 
 	public ArrayList<MediaObject> getMediaObjects() {
@@ -494,7 +512,17 @@ public class SessionModule implements Serializable {
 	 * @param startTime
 	 */
 	public String addMediaObjectToTimeline(MediaObject mediaObject, TimelineModel timeline, int startTime){
-		TimelineMediaObject tlmo = new TimelineMediaObject(startTime, mediaObject.getLength(), timeline.getID(), mediaObject);
+		TimelineMediaObject tlmo;
+		MediaSourceType type = mediaObject.getType(); 
+		switch (type){
+			case IMAGE: {
+				tlmo = new TimelineMediaObject(startTime, IMAGE_DURATION, timeline.getID(), mediaObject);
+				break;
+			}
+			default:
+				tlmo = new TimelineMediaObject(startTime, mediaObject.getLength(), timeline.getID(), mediaObject);
+				break;
+		}
 		String result = timeline.addTimelineMediaObject(tlmo);
 		timelineChanged(TimeLineChanges.MODIFIED,timeline); //TODO: tell the user what was the outcome of the operation
 		return result;
