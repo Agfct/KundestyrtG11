@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import gui.*;
 import vlc.VLCController;
+import vlc.VLCMediaPlayer;
 /**
  * 
  * @author Baptiste Masselin, Eirik Z. Wold, Ole S.L. Skrede, Magnus Gundersen
@@ -47,7 +49,7 @@ public class SessionModule implements Serializable {
 		this.displays = new HashMap<Integer,TimelineModel>();
 		this.listeners = new ArrayList<SessionListener>();
 		this.vlccontroller = vlc;
-		this.pausing = false;
+		this.pausing = true;
 //		vlccontroller.createMediaPlayer(tlmID);
 		this.t1 = new Thread();
 		this.tAll = new Thread();
@@ -97,6 +99,7 @@ public class SessionModule implements Serializable {
 				if(displays.get(i)==tlm){
 					displays.put(i,null);
 					vlccontroller.unassignDisplay(tlm.getID());
+					tlm.removeDisplay(i);
 				}
 			}		
 		}
@@ -172,22 +175,22 @@ public class SessionModule implements Serializable {
 	 * @param gbltime where the cursor is at when play all is pushed (0 if at start of the timelines)
 	 */
 	public void playAll(){
-		//TODO: look over and look for a better way to do this.
-		//NOT DONE NBNBNBNBNBNBNBNB
-		System.out.println("PLAYALL");
-		try {
-			tAll.join();
-			globalTimeTicker.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(pausing){			
+			System.out.println("PLAYALL");
+			try {
+				tAll.join();
+				globalTimeTicker.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			buildPerformance();
+			tAll = allPlay(globaltime);
+			globalTimeTicker=tickGlobalTime(globaltime);
+			pausing = false;
+			tAll.start();
+			globalTimeTicker.start();
 		}
-		buildPerformance();
-		tAll = allPlay(globaltime);
-		globalTimeTicker=tickGlobalTime(globaltime);
-		pausing = false;
-		tAll.start();
-		globalTimeTicker.start();
 	}
 	
 	private synchronized Thread tickGlobalTime(long globalTimeAtStart){
@@ -225,25 +228,27 @@ public class SessionModule implements Serializable {
 	 * @return
 	 */
 	private synchronized Thread allPlay(long glbtime){
-		
+		System.out.println();
 		Thread tAll1 = new Thread(){
 			public void run(){
 				System.out.println("RUN ALLPLAY");
 				System.out.println(performancestack.size());
 				long startp = System.currentTimeMillis();
 				long playp = System.currentTimeMillis();
+				Map<Integer,Long> pplay = new HashMap<Integer,Long>();
 				while (!performancestack.isEmpty() && pausing == false){
 					playp = System.currentTimeMillis();
 					if (performancestack.get(0).getTime()-glbtime<= playp-startp){
 						ArrayList<Event> temp = new ArrayList<Event>();
 						temp.add(performancestack.remove(0));
-						while (!performancestack.isEmpty() && performancestack.get(0).getTime()==temp.get(0).getTime()){
+						pplay.clear();
+						while (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime<=playp-startp){
 							temp.add(performancestack.remove(0));
 						}
-
 						for (Event ev2 : temp){
 							if (ev2.getAction()==Action.PLAY){
 								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
+								pplay.put(ev2.getTimelineid(), ev2.getTimelineMediaObject().getStartPoint());
 								vlccontroller.seekOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
 							}
 							else if(ev2.getAction()==Action.STOP){
@@ -252,10 +257,12 @@ public class SessionModule implements Serializable {
 							else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
 								vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
 								long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
+								pplay.put(ev2.getTimelineid(), spoint);
 								vlccontroller.seekOne(ev2.getTimelineid(), spoint);
 							}
 						}
 						try {
+							vlccontroller.SeekMultiple(pplay);;
 							vlccontroller.playAll();
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
@@ -282,14 +289,16 @@ public class SessionModule implements Serializable {
 	 * begin and end. Also check where we are on the globaltime.
 	 */
 	private void buildPerformance(){
+		System.out.println("BUILD PERFORMANCE");
 		//Add all Events to list, then sort it
 		performancestack = new ArrayList<Event>();
 		//TODO change to only the timelines that is assigned to a display??
 		// maybe for (Integer dis : displays.keyset())
-		
+		System.out.println("Displays: "+ displays.keySet());
 		for(Integer dis : displays.keySet()){
 			if (displays.get(dis) != null){
-				for(Event ev : displays.get(dis).getTimelineStack()){
+				for(Event ev2 : displays.get(dis).getTimelineStack()){
+					Event ev = new Event(ev2.getTime(), ev2.getTimelineid(), ev2.getAction(), ev2.getTimelineMediaObject());
 					if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.VIDEO){
 						if(ev.getAction() == Action.PLAY){
 							if(ev.getTime()>=globaltime){
@@ -326,48 +335,48 @@ public class SessionModule implements Serializable {
 	 * @param glbtime current position of the cursor (0 if at beginning of timeline).
 	 */
 	public void playOne(Integer timeline){
-		//TODO look over and look for better way to do this.
-		//NOT DONE NBNNBNBNBNBNBNB
-		try {
-			t1.join();
-			globalTimeTicker.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("playing");
-		performancestack.clear();
-		ArrayList<Event> tempstack = timelines.get(timeline).getTimelineStack();
-		for (Event ev2 : tempstack){
-			Event ev = new Event(ev2.getTime(),ev2.getTimelineid(),ev2.getAction(),ev2.getTimelineMediaObject());
-			if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.VIDEO){
-				if(ev.getAction() == Action.PLAY){
-					if(ev.getTime()>=globaltime){
-						performancestack.add(ev);
+		if(pausing){
+			try {
+				t1.join();
+				globalTimeTicker.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("playing");
+			performancestack.clear();
+			ArrayList<Event> tempstack = timelines.get(timeline).getTimelineStack();
+			for (Event ev2 : tempstack){
+				Event ev = new Event(ev2.getTime(),ev2.getTimelineid(),ev2.getAction(),ev2.getTimelineMediaObject());
+				if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.VIDEO){
+					if(ev.getAction() == Action.PLAY){
+						if(ev.getTime()>=globaltime){
+							performancestack.add(ev);
+						}
+						else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
+							ev.setAction(Action.PLAY_WITH_OFFSET);
+							performancestack.add(ev);
+						}
 					}
-					else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
-						ev.setAction(Action.PLAY_WITH_OFFSET);
-						performancestack.add(ev);
-					}
-				}
-				else if(ev.getAction()==Action.STOP){
-					if (ev.getTime()>=globaltime){
-						performancestack.add(ev);
+					else if(ev.getAction()==Action.STOP){
+						if (ev.getTime()>=globaltime){
+							performancestack.add(ev);
+						}
 					}
 				}
 			}
-		}
-		performancestack.sort(Event.EventTimeComperator);
-		t1 = new Thread(){
-			public void run(){
-				onePlay(globaltime);
+			performancestack.sort(Event.EventTimeComperator);
+			t1 = new Thread(){
+				public void run(){
+					onePlay(globaltime);
 //				System.out.println("im done");
-			}
-		};
-		globalTimeTicker=tickGlobalTime(globaltime);
-		pausing = false;
-		globalTimeTicker.start();
-		t1.start();
+				}
+			};
+			globalTimeTicker=tickGlobalTime(globaltime);
+			pausing = false;
+			globalTimeTicker.start();
+			t1.start();
+		}
 	}
 	
 	/**
@@ -561,8 +570,25 @@ public class SessionModule implements Serializable {
 
 	public void changeGlobalTime(long newGlobalTime) {
 		if(newGlobalTime>=0){
+			pauseAll();
+			try {
+				tAll.join();
+				globalTimeTicker.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			this.globaltime=newGlobalTime;
 			globalTimeChanged();
+			
+			
+			
+			//stop all mediaPlayers
+			for(Integer integer:vlccontroller.getMediaPlayerList().keySet()){
+				vlccontroller.stopOne(integer);
+			}
+			
 		}
 	}
 	

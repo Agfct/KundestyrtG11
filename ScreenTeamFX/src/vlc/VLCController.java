@@ -291,4 +291,10 @@ public class VLCController {
 	public String getVlcVersionNeeded(){
 		return System.getProperty("sun.arch.data.model");
 	}
+
+	public Map<Integer, VLCMediaPlayer> getMediaPlayerList() {
+		return mediaPlayerList;
+	}
+	
+	
 }

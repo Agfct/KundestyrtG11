@@ -232,7 +232,9 @@ public class TimelineModel implements Serializable{
 	}
 	
 	public void removeDisplay(Integer dispID){
-		assignedDisplays.remove(dispID);
+		if (assignedDisplays.contains(dispID)){
+			assignedDisplays.remove(dispID);			
+		}
 	}
 		
 }
