@@ -58,7 +58,7 @@ public class MediaObjectController extends GridPane{
 	private TimelineMediaObject timelineMediaObject;
 	
 	//Width of the mediaObject
-	private double mediaObjectWidth=1000;
+	private double mediaObjectActualWidth=1000;
 	
 	private @FXML Label nameOfFile;
 	
@@ -92,19 +92,30 @@ public class MediaObjectController extends GridPane{
 	 */
 	public void initializeMediaObject(){
 		this.nameOfFile.setText(timelineMediaObject.getParent().getName());
-		this.mediaObjectWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
-		System.out.println("Setting width:" + mediaObjectWidth);
-		this.setPrefWidth(mediaObjectWidth);
-		this.setMaxWidth(mediaObjectWidth);
+		this.mediaObjectActualWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
+		System.out.println("Setting width:" + mediaObjectActualWidth);
+		setMediaObjectWidth(mediaObjectActualWidth);
 		
 	}
 	
 	public void updateValuesFromModel(){
-		this.mediaObjectWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
-		this.setPrefWidth(mediaObjectWidth);
-		this.setMaxWidth(mediaObjectWidth);
+		this.mediaObjectActualWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
+		setMediaObjectWidth(mediaObjectActualWidth);
 //		setStyle("-fx-background-color: BLUE");
 
+	}
+	
+	/**
+	 * This method sets the width of the mediaObject based on the zoom scale
+	 * @param width
+	 */
+	private void setMediaObjectWidth(double width){
+
+		//TODO: 		double scaledWidth = returnsWidthWithScaledValues(width);
+//		this.setPrefWidth(scaledWidth);
+//		this.setMaxWidth(scaledWidth);
+		this.setPrefWidth(width);
+		this.setMaxWidth(width);
 	}
 	
 	/**
@@ -389,7 +400,7 @@ public class MediaObjectController extends GridPane{
 	
 	//TODO: Add propper width
 	private double getMediaObjectWidth(){
-		return mediaObjectWidth;
+		return mediaObjectActualWidth;
 	}
 	
 	private double getMediaObjectHeigth(){

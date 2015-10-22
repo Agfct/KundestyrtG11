@@ -16,6 +16,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import modules.MainModuleController;
 
 /**
@@ -63,9 +64,12 @@ public class TimelineBarController extends Pane {
 	     for (int x = 0; x < sessionLength; x+=widthBetweenLines) {
 	            double x1 ;
 	            x1 = x + 0.5 ; //TODO: The 0.5 is to get a clean (not blurry) line, but it might mean that x width should be +1 more pixel
-	            gc.moveTo(x1, 0);
+	            gc.moveTo(x1, 25);
 	            gc.lineTo(x1, 15);
 	            gc.stroke();
+	            gc.setFont(new Font(8));
+	            gc.fillText("1", x1+1, 12);
+//	            gc.strokeText("1", x1, 12);
 	        }
 	}
 
