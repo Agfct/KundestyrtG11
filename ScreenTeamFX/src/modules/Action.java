@@ -12,5 +12,5 @@ package modules;
  *
  */
 public enum Action {
-	STOP, PLAY, PLAY_WITH_OFFSET, PAUSE
+	STOP, PLAY, PLAY_WITH_OFFSET, PAUSE, SHOW, HIDE
 }

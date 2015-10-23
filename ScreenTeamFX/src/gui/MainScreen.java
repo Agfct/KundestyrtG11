@@ -95,18 +95,8 @@ public class MainScreen implements Screen {
 			System.out.println("Button has been pressed");
 			
 			if(((Button)event.getSource()).getId().equals("testBtn") ){
-				//If the test button is pressed
-				String path1 = "videos\\Silicon.Valley.S02E08.HDTV.x264-KILLERS.mp4";
-				String path2 = "videos\\Silicon.Valley.S02E06.HDTV.x264-ASAP.mp4";
-				String path3 = "videos\\Silicon.Valley.S02E04.HDTV.x264-ASAP.mp4";
-				String path4 = "videos\\Silicon.Valley.S02E01.HDTV.x264-ASAP.mp4";
-				String logo = "ScreenTeam_logo.png";
-//				VLCController vlcc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
-//				vlcc.createMediaPlayer(0);
-//				vlcc.setMedia(0, path1);
-//				vlcc.playAll();
-//				Thread.sleep(7000);
-//				vlcc.setDisplay(0, 0);
+				VLCController vlcc = MainModuleController.getInstance().getVLCController();
+				vlcc.identifyDisplays();
 				
 				
 			}else if(((Button)event.getSource()).getId().equals("advScrBtn")){

@@ -215,12 +215,26 @@ public class TimelineModel implements Serializable{
 		Event end;
 		for(int i=0;i<timelineMediaObjects.size();i++){
 			mO = timelineMediaObjects.get(i);
-			start = new Event(mO.getStart(), id, Action.PLAY, mO);
-			end = new Event(mO.getEnd(), id, Action.STOP, mO);
-			timelineStack.add(start);
-			timelineStack.add(end);
-			Collections.sort(timelineStack);
+			if (mO.getParent().getType()==MediaSourceType.VIDEO){
+				start = new Event(mO.getStart(), id, Action.PLAY, mO);
+				end = new Event(mO.getEnd(), id, Action.STOP, mO);
+				timelineStack.add(start);
+				timelineStack.add(end);
+			}
+			else if(mO.getParent().getType()==MediaSourceType.WINDOW){
+				start = new Event(mO.getStart(),id,Action.SHOW,mO);
+				end = new Event(mO.getEnd(), id, Action.HIDE, mO);
+				timelineStack.add(start);
+				timelineStack.add(end);
+			}
+			else if(mO.getParent().getType()==MediaSourceType.IMAGE){
+				start = new Event(mO.getStart(), id, Action.PLAY, mO);
+				end = new Event(mO.getEnd(), id, Action.STOP, mO);
+				timelineStack.add(start);
+				timelineStack.add(end);
+			}
 		}
+		Collections.sort(timelineStack);
 	}
 
 	public ArrayList<Integer> getAssignedDisplays() {
