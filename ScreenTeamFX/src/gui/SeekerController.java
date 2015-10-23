@@ -83,6 +83,12 @@ public class SeekerController extends Pane{
 				);
 	}
 
+	public void moveTo(Point2D pointX){
+		System.out.println("Point: " + pointX);
+		//Moves by -12 to set the pointer to the middle
+		relocateToPoint(new Point2D(pointX.getX()- 12,0));
+	}
+	
 	public void buildNodeDragHandlers() {
 
 
