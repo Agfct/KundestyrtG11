@@ -5,7 +5,10 @@ import static modules.psapi32dll.*;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -30,7 +33,8 @@ import modules.user32dll.WNDENUMPROC;
 public class WindowDisplay {
 	private static final int MAX_TITLE_LENGTH = 1024;
 	private HashMap <Integer,MonitorInfo> AllMonitor;
-
+	public ArrayList<WindowInfos> AllWindow;
+	
 	public WindowDisplay(Integer nb_screen){
 		InitialisationMonitor(nb_screen);
 	}
@@ -65,6 +69,7 @@ public class WindowDisplay {
 		}
 			
 	}
+
 	public void InitialisationMonitor(int nb_screen){
 		GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 		Integer display;
@@ -85,8 +90,9 @@ public class WindowDisplay {
 	}
 		
 
-	private WindowInfos getWindows(String NameTitle)
+	public void getAllWindows()
 	   {
+		   this.AllWindow = new ArrayList<WindowInfos>();	
 	       final WindowInfos V = new WindowInfos(null,null,null,null);
 	       EnumWindows(new WNDENUMPROC()
 	       {
@@ -113,8 +119,51 @@ public class WindowDisplay {
 	                       // Make sure the text is not null or blank
 	                       if(!(info.title == null || info.title.trim().equals("")))
 	                       {
-	                    	                       	  
-		                  	
+	                    	                       	                      	   
+	                    	   AllWindow.add(info);
+
+	                       }
+	                   }
+	               }
+	               
+	               return true;
+	           }
+	       }, null);
+	      
+	   }
+
+	private WindowInfos getWindows(String NameTitle)
+	   {
+	       final WindowInfos V = new WindowInfos(null,null,null,null);
+	       EnumWindows(new WNDENUMPROC()
+	       {
+	           public boolean callback(Pointer hWndPointer, Pointer userData)
+	           {
+	               HWND hWnd = new HWND(hWndPointer);
+
+           		
+	               // Make sure the window is visible
+	               if(IsWindowVisible(hWndPointer))
+	               {
+	                   int GWL_EXSTYLE = -20;
+	                   long WS_EX_TOOLWINDOW = 0x00000080L;
+	                   //------------------
+	                   int [] rect = {0,0,0,0}; 
+	                   
+	                   //------------------
+	                   // Make sure this is not a tool window
+	                   if((GetWindowLongW(hWndPointer, GWL_EXSTYLE) & WS_EX_TOOLWINDOW) == 0)
+	                   {
+	                       // Get the title bar text for the window (and other info)
+	                       WindowInfos info = getWindowTitleAndProcessDetails(hWnd);
+	                       
+	                       // Make sure the text is not null or blank
+	                       if(!(info.title == null || info.title.trim().equals("")))
+	                       {
+	                    	   
+	                    	   List<String> AllWindow = new ArrayList<String>();	                    	   
+	                    	   AllWindow.add(info.getTitle());
+	                    	   
 		                    	if((info.title.equals(NameTitle))) {
 		                    	   System.out.println(" Window " + NameTitle + " Find");
 		                    	   GetWindowRect(hWnd, rect);
@@ -133,6 +182,8 @@ public class WindowDisplay {
 	       return V;
 	   }
 
+	
+	
 
 	private WindowInfos getWindowTitleAndProcessDetails(HWND hWnd) {
   
