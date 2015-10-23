@@ -74,7 +74,7 @@ public class MediaObjectController extends GridPane{
 			fxmlLoader.setRoot(this);
 			fxmlLoader.load();
 		} catch (IOException e) {
-			System.out.println("Failed to load TimelineController FXML");
+			System.out.println("Failed to load MediaObject FXML");
 			e.printStackTrace();
 		}
 		

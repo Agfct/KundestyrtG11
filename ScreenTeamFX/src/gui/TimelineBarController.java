@@ -16,6 +16,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import modules.MainModuleController;
 
@@ -30,6 +31,9 @@ public class TimelineBarController extends Pane {
 	
 	private @FXML Canvas timelineBarCanvas;
 	private GraphicsContext gc;
+	private Pane root = this;
+
+	private SeekerController seeker;
 	
 	public TimelineBarController(AdvancedScreenController parentController){
 	//Fetches the parent controller. In this case it is the controller in the advancedScreen class.'
@@ -50,7 +54,11 @@ public class TimelineBarController extends Pane {
 	
 	initializeTimeBar();
 	
+	seeker = new SeekerController(this);
+	this.getChildren().add(seeker);
+	
 	}
+	
 	
 	/**
 	 * Creates the canvas that will be drawn upon in the timelineBar
@@ -71,6 +79,34 @@ public class TimelineBarController extends Pane {
 	            gc.fillText("1", x1+1, 12);
 //	            gc.strokeText("1", x1, 12);
 	        }
+	     
+			//Creates a clipping mask to hide timelineBar outside of bounds
+			createClip();
 	}
+	
+	/**
+	 * Creates a clip that decides the viewport of this Panes children
+	 * The timelineBar that is outside of this clip will be hidden for the user.
+	 */
+	private void createClip(){
+		Rectangle clipSize = new Rectangle(1000,150);
+		clipSize.setLayoutX(0);
+		clipSize.setLayoutY(0);
+		parentController.getTimelineBarContainer().setClip(clipSize);
+	}
+	
+	protected void moveTimelineBar(Double newPosition){
+		root.setLayoutX(newPosition);
+	}
+	
+	public Pane getRoot(){
+		return root;
+	}
+	
+	public AdvancedScreenController getAdvancedScreenController(){
+		return parentController;
+	}
+	
+
 
 }

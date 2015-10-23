@@ -111,7 +111,7 @@ public class AdvancedScreen implements Screen{
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
 			@FXML private GridPane rootGrid;
-			@FXML private GridPane barGrid;
+			@FXML private AnchorPane timelineBarContainer;
 			
 			//Drag&drop
 			private MediaObjectIcon mDragOverIcon = null;
@@ -148,7 +148,7 @@ public class AdvancedScreen implements Screen{
 				
 				
 				timelineBarController = new TimelineBarController(this);
-				barGrid.add(timelineBarController,1,0);
+				timelineBarContainer.getChildren().add(timelineBarController);
 				
 				//get current session
 				currentSession=MainModuleController.getInstance().getSession();
@@ -183,10 +183,12 @@ public class AdvancedScreen implements Screen{
 		            public void changed(ObservableValue<? extends Number> ov,
 		                Number old_val, Number new_val) {
 //		            	System.out.println("Scrolling: Old value: "+ old_val.doubleValue()+" NewValue: "+ new_val.doubleValue());
+		            	scrollBarPosition = -new_val.doubleValue();
 		            	for (TimelineController timelineController : timelineControllers) {
-		            		scrollBarPosition = -new_val.doubleValue();
+		            		
 		            		timelineController.getTimelineLineController().moveTimeline(scrollBarPosition);
 						}
+		            	timelineBarController.moveTimelineBar(scrollBarPosition);
 
 		            }
 		        });
@@ -568,7 +570,9 @@ public class AdvancedScreen implements Screen{
 				
 			}
 
-			
+			public TimelineBarController getTimelineBarController(){
+				return timelineBarController;
+			}
 			
 			
 
@@ -636,6 +640,10 @@ public class AdvancedScreen implements Screen{
 			public void changeGlobalTime(long i) {
 				currentSession.changeGlobalTime(i);
 				
+			}
+			
+			public AnchorPane getTimelineBarContainer(){
+				return timelineBarContainer;
 			}
 
 
