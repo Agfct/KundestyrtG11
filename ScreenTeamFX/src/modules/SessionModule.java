@@ -309,6 +309,10 @@ public class SessionModule implements Serializable {
 						}
 					}
 				}
+				if (!globalTimeTicker.isAlive()){
+					startp = System.currentTimeMillis();
+					globalTimeTicker.start();
+				}
 			}
 		};
 		

@@ -5,6 +5,7 @@ import vlc.VLCController;
 public class Testingmodules {
 	private VLCController vlc;
 	public SessionModule tlmodul;
+	private WindowDisplay aka;
 	
 	/**
 	 * Just a class to test the integration between the module and VLC
@@ -12,7 +13,7 @@ public class Testingmodules {
 	 */
 	public Testingmodules() throws InterruptedException{
 //		this.vlc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
-		tlmodul = new SessionModule(vlc);
+		tlmodul = new SessionModule(vlc,aka);
 		tlmodul.addTimeline();
 		TimelineModel tlm = tlmodul.getTimelines().get(1);
 		MediaObject mO = new MediaObject("C:\\Users\\EirikZimmer\\Videos\\video_test_512kb.mp4","test",MediaSourceType.VIDEO);
