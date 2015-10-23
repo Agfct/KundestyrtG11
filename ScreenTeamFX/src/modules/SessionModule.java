@@ -337,6 +337,36 @@ public class SessionModule implements Serializable {
 						 */
 						System.out.println("Adding events for streams is not implemented in TimelineModule.java: buildPerformance() yet.");
 					}
+					else if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.IMAGE){
+						if(ev.getAction() == Action.PLAY){
+							if(ev.getTime()>=globaltime){
+								performancestack.add(ev);
+							}
+							else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
+								performancestack.add(ev);
+							}
+						}
+						else if(ev.getAction()==Action.STOP){
+							if (ev.getTime()>=globaltime){
+								performancestack.add(ev);
+							}
+						}
+					}
+					else if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.WINDOW){
+						if (ev.getAction()==Action.SHOW){//change play to show?
+							if(ev.getTime()>=globaltime){
+								performancestack.add(ev);
+							}
+							else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
+								performancestack.add(ev);
+							}
+						}
+						else if(ev.getAction()==Action.HIDE){//change stop to hide?
+							if(ev.getTime()>=globaltime){
+								performancestack.add(ev);
+							}
+						}
+					}
 				}
 			}
 		}
