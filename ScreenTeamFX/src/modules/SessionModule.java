@@ -20,6 +20,7 @@ public class SessionModule implements Serializable {
 	 */
 	private static final long serialVersionUID = 3548566162984308320L;
 	private VLCController vlccontroller;
+	private WindowDisplay windowdisplay;
 	// Each display can have one or zero timelines
 	private HashMap<Integer, TimelineModel> displays;
 	private HashMap<Integer, TimelineModel> timelines;
@@ -45,7 +46,7 @@ public class SessionModule implements Serializable {
 	// Constant used when creating TimelineMediaObjects that are images. Used as a reasonable duration when first appearing on a timeline.
 	private final long IMAGE_DURATION = 30000;
 	
-	public SessionModule(VLCController vlc) {
+	public SessionModule(VLCController vlc, WindowDisplay wdi) {
 		this.timelines = new HashMap<Integer,TimelineModel>();
 //		this.timelines.put(0,new TimelineModel(0));
 		this.mediaObjects = new ArrayList<MediaObject>();
@@ -56,6 +57,7 @@ public class SessionModule implements Serializable {
 		this.displays = new HashMap<Integer,TimelineModel>();
 		this.listeners = new ArrayList<SessionListener>();
 		this.vlccontroller = vlc;
+		this.windowdisplay = wdi;
 		this.pausing = true;
 		this.paused = true;
 //		vlccontroller.createMediaPlayer(tlmID);
@@ -269,6 +271,22 @@ public class SessionModule implements Serializable {
 								long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
 								pplay.put(ev2.getTimelineid(), spoint);
 								vlccontroller.seekOne(ev2.getTimelineid(), spoint);
+							}
+							else if(ev2.getAction()==Action.SHOW){
+								for(Integer dis:displays.keySet()){
+									if (displays.get(dis).getID()==ev2.getTimelineid()){
+										windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), false, dis);
+										break;
+									}
+								}
+							}
+							else if(ev2.getAction()==Action.HIDE){
+								for(Integer dis:displays.keySet()){
+									if (displays.get(dis).getID()==ev2.getTimelineid()){
+										windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), true, dis);
+										break;
+									}
+								}
 							}
 						}
 						try {
