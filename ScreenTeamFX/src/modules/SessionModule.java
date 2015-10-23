@@ -343,6 +343,7 @@ public class SessionModule implements Serializable {
 								performancestack.add(ev);
 							}
 							else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
+								ev.setAction(Action.PLAY_WITH_OFFSET);
 								performancestack.add(ev);
 							}
 						}
