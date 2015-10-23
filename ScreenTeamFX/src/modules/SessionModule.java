@@ -39,6 +39,9 @@ public class SessionModule implements Serializable {
 	private ArrayList<SessionListener> listeners;
 	private ArrayList<Integer> timelineOrder;
 	
+	// Used when saving and loading, to check if the loaded session has the same number of displays as the loaded one
+	private int numberOfAvailableDisplays;
+	
 	// Constant used when creating TimelineMediaObjects that are images. Used as a reasonable duration when first appearing on a timeline.
 	private final long IMAGE_DURATION = 30000;
 	
@@ -58,6 +61,7 @@ public class SessionModule implements Serializable {
 		this.tAll = new Thread();
 		this.globalTimeTicker = new Thread();
 		this.timelineOrder=new ArrayList<Integer>();
+		this.numberOfAvailableDisplays = -1;
 	}
 
 	/**
@@ -156,6 +160,7 @@ public class SessionModule implements Serializable {
 			}
 		}
 		vlccontroller.updateDisplays(displays);
+		numberOfAvailableDisplays = displays.size();
 	}
 	
 	/**
@@ -172,6 +177,9 @@ public class SessionModule implements Serializable {
 		}
 	}
 	
+	public int getNumberOfAbailableDisplays(){
+		return numberOfAvailableDisplays;
+	}
 	/**
 	 * first draft of playing the whole performance. this happens when
 	 * the button to play all timelines is pushed.
@@ -623,7 +631,43 @@ public class SessionModule implements Serializable {
 	public ArrayList<Integer> getAvailableDisplays(){
 		return new ArrayList<Integer>(displays.keySet());
 	}
+
+	public void removeVLCController() {
+		vlccontroller = null;
+	}
+
+	public void removeThreads() {
+		t1 = null;
+		tAll = null;
+		globalTimeTicker = null;
+	}
+
+	public void removeAssignedDisplays(){
+		for (Integer i: displays.keySet()) {
+			displays.put(i, null);
+		}
+	}
 	
-	
+	public void reinitialize(VLCController vlc, boolean keepDisplays) {
+		if(!keepDisplays) {
+			this.displays = new HashMap<Integer,TimelineModel>();
+		}
+		this.listeners = new ArrayList<SessionListener>();
+		this.vlccontroller = vlc;
+		this.t1 = new Thread();
+		this.tAll = new Thread();
+		this.globalTimeTicker = new Thread();
+		
+		for(Integer i : timelines.keySet()){
+			vlccontroller.createMediaPlayer(i);
+		}
+		
+	}
+
+	public long getGlobalTime() {
+		return globaltime;
+	}
+
+		
 	
 }

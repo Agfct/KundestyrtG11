@@ -566,11 +566,7 @@ public class AdvancedScreen implements Screen{
 //				}
 				
 				
-			}
-
-			
-			
-			
+			}			
 
 			@Override
 			public void fireMediaObjectListChanged() {
@@ -671,13 +667,53 @@ public class AdvancedScreen implements Screen{
 
 
 
-			public void saveSession() {
-				MainModuleController.getInstance().saveSession();
-				
+			public boolean saveSession() {
+				return MainModuleController.getInstance().saveSession();
 			}
 			
+			public boolean saveSession(File saveFile) {
+				return MainModuleController.getInstance().saveSession(saveFile);
+			}
 			
-	
+			public void loadSession(File loadFile) {
+				SessionModule sm = MainModuleController.getInstance().loadSession(loadFile);
+				currentSession = sm;
+				MainModuleController.getInstance().updateSession(sm);
+				MainGUIController.getInstance().updateSession(sm);
+				MainModuleController.getInstance().getSession().addListener(this);
+			}
+
+
+
+			public void rebuildTimelines() {
+				removeAllTimelineControllersFromScreen();
+				idTimlineControllerMap = new HashMap<TimelineController, Integer>();
+				
+				for(Integer i: currentSession.getTimelines().keySet()){
+					TimelineModel timeLineModel = currentSession.getTimelines().get(i);
+					TimelineController tempTimeController = new TimelineController(timeLineModel);
+					timelineControllers.add(tempTimeController);
+					idTimlineControllerMap.put(tempTimeController, timeLineModel.getID());
+				}
+				
+				ArrayList<Integer> orderedListOfTimelines = currentSession.getTimelineOrder();
+				
+				
+				//Repaint
+				//We need to reverse the ordering because we always bring the newest timeline to the top of the view. 
+				for(int i=orderedListOfTimelines.size()-1;i>=0;i--){
+					TimelineController timelineControllerToPaint=null;
+					for(TimelineController timelineController: idTimlineControllerMap.keySet()){
+						if(idTimlineControllerMap.get(timelineController).equals(orderedListOfTimelines.get(i))){
+							timelineControllerToPaint=timelineController;
+							break;
+						}
+					}
+					addTimelineControllerToScreen(timelineControllerToPaint);
+					timelineControllerToPaint.getTimelineLineController().repaint();
+					
+				}		
+			}
 
 		}//end AdvancedScreenController
 

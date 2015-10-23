@@ -2,9 +2,14 @@ package modules;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class IOModule {
+public class IOModule implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -300482677867387510L;
 	private ArrayList<Integer> displays;
 	
 	public IOModule(){

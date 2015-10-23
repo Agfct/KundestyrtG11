@@ -3,6 +3,8 @@
  */
 package modules;
 
+import java.io.File;
+
 import gui.MainGUIController;
 import vlc.VLCController;
 
@@ -58,6 +60,51 @@ public class MainModuleController {
 	
 	public boolean saveSession(){
 		return storageController.storeSession(sessionModule);
+	}
+
+	public boolean saveSession(File saveFile) {
+		SessionModule saveSession = new SessionModule(null);
+		// Need to remove some stuff, but keep it and put it back after the save
+		sessionModule.getListeners();
+		sessionModule.getVLCController();
+		sessionModule.getT1();
+		sessionModule.getTAll();
+		sessionModule.getGlobalTimeTicker();
+		sessionModule.getDisplays();
+		
+		boolean result = storageController.storeSession(saveSession, saveFile);
+		
+		// Put back stuff
+		sessionModule.setListeners();
+		sessionModule.setVLCController();
+		sessionModule.setT1();
+		sessionModule.setTAll();
+		sessionModule.setGlobalTimeTicker();
+		sessionModule.setDisplays();
+		
+		return result;
+	}
+
+	public String getSaveFiletype() {
+		return storageController.getFileType();
+	}
+
+	public SessionModule loadSession(File loadFile) {
+		return storageController.loadSession(loadFile);
+	}
+
+	public void updateSession(SessionModule sm) {
+		int loadedNumberOfAvailableDisplays = sm.getNumberOfAbailableDisplays();
+		int currentNumberOfAvailableDisplays = sessionModule.getNumberOfAbailableDisplays();
+		
+		// If we have at least as many displays as last time, we can keep the arrangement (displays->timlines), if not we have to scrap it
+		boolean keepDisplays = false;//currentNumberOfAvailableDisplays >= loadedNumberOfAvailableDisplays;
+		
+		sessionModule = sm;
+		
+		sessionModule.reinitialize(vlc, keepDisplays);
+		sessionModule.updateDisplays(ioModule.getDisplays());
+		
 	}
 	
 }
