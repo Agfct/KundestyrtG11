@@ -97,8 +97,6 @@ public class SessionModule implements Serializable {
 	 * @param tlm
 	 */
 	public void unassignTimeline(TimelineModel tlm){
-		//TODO: Go through all displays and remove the tlm timeline if it is assigned
-		//Test to know that we have at least 1 display
 		if(displays.isEmpty()){
 		}
 		else{
@@ -143,7 +141,6 @@ public class SessionModule implements Serializable {
 	 * @param display
 	 */
 	public void addDisplay(Integer display){
-		//TODO: add display to displays, assign none (timeline)
 		displays.put(display, null);
 		//vlccontroller.addDisplay(Integer display);
 	}
@@ -190,8 +187,7 @@ public class SessionModule implements Serializable {
 				tAll.join();
 				globalTimeTicker.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("interrupted waiting for tAll and/or the globalTimeTicker to die");
 			}
 			buildPerformance();
 			tAll = allPlay(globaltime);
@@ -202,6 +198,11 @@ public class SessionModule implements Serializable {
 		}
 	}
 	
+	/**
+	 * creates a thread That every second updates the globaltime
+	 * @param globalTimeAtStart
+	 * @return the thread
+	 */
 	private synchronized Thread tickGlobalTime(long globalTimeAtStart){
 		Thread globalTicker = new Thread(){
 			public void run(){
@@ -214,10 +215,7 @@ public class SessionModule implements Serializable {
 					try {
 						this.sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-//						e.printStackTrace();
 					}
-					
 				}
 				
 				// Run update one last time before the thread dies. 
@@ -277,6 +275,7 @@ public class SessionModule implements Serializable {
 							vlccontroller.SeekMultiple(pplay);
 							vlccontroller.playAll();
 							if (!globalTimeTicker.isAlive()){
+								startp = System.currentTimeMillis();
 								globalTimeTicker.start();
 							}
 						} catch (InterruptedException e) {
@@ -494,6 +493,9 @@ public class SessionModule implements Serializable {
 		//TODO: Pause the timeline for this display
 	}
 	
+	/**
+	 * @return a hashmap with the id of a timeline as key and the timelinemodel as value
+	 */
 	public HashMap<Integer,TimelineModel> getTimelines() {
 		return timelines;
 	}
