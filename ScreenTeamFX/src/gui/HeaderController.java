@@ -157,7 +157,7 @@ public class HeaderController implements FXMLController{
 		acceptedImageFormats.add("jpg");
 		acceptedImageFormats.add("jpeg");
 		acceptedImageFormats.add("png");
-		acceptedAudioFormats.add("gif");
+		//acceptedImageFormats.add("gif");
 		//Checks the validity of the files imported by checking the file extension
 		String extension = "";
 		String fileName = file.getName();
