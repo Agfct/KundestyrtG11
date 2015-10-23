@@ -5,6 +5,7 @@ package gui;
 
 import java.io.IOException;
 
+import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import modules.MainModuleController;
 
 
 /**
@@ -62,15 +65,30 @@ public class SeekerController extends Pane{
 	private void initialize() {
 		buildNodeDragHandlers();
 		initializeSeeker();
+		drawSeekerLine();
 	}
 
 	/**
 	 * Adds the seeker line to the root node of the advancedScreeen
 	 */
 	public void initializeSeeker(){
-		seekerLine = new Canvas();
-		parentController.getAdvancedScreenController().getMasterRoot().getChildren().add(seekerLine);
+		AdvancedScreenController tempAdvancedScreen = parentController.getAdvancedScreenController();
+		seekerLine = new Canvas(2,0);
+		tempAdvancedScreen.getMasterRoot().getChildren().add(seekerLine);
 		seekerLine.toFront();
+		//let's convert coordinates of TextField into coordinates relative for Scene
+		Bounds localBounds = this.localToScene(this.getBoundsInLocal());
+		//TODO: FINISH THIS 
+		System.out.println(localBounds.g +":"+ localBounds.getY());
+		seekerLine.relocate(localtoScenePoint.getX(),localtoScenePoint.getY());
+	}
+	public void drawSeekerLine(){
+		seekerLine.setHeight(300);
+		seekergc = seekerLine.getGraphicsContext2D() ;
+		seekergc.setLineWidth(1.0);
+		seekergc.moveTo(1+0.5, 25);
+		seekergc.lineTo(1+0.5, 300);
+		seekergc.stroke();
 	}
 
 	public void relocateToPoint (Point2D p) {
@@ -81,6 +99,7 @@ public class SeekerController extends Pane{
 				(int) (p.getX()),
 				(int) (p.getY())
 				);
+		seekerLine.relocate(p.getX(), this.getLayoutY());
 	}
 
 	public void moveTo(Point2D pointX){
@@ -99,7 +118,7 @@ public class SeekerController extends Pane{
 
 			@Override
 			public void handle(DragEvent event) {		
-				System.out.println("[Seeker] Dragging over root");
+//				System.out.println("[Seeker] Dragging over root");
 
 				Pane timelineBarController = parentController.getRoot();
 				Point2D p = timelineBarController.sceneToLocal(event.getSceneX(), event.getSceneY());

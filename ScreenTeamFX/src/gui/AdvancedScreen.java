@@ -111,6 +111,7 @@ public class AdvancedScreen implements Screen{
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
 			@FXML private GridPane rootGrid;
+			@FXML private GridPane barGrid;
 			@FXML private AnchorPane timelineBarContainer;
 			
 			//Drag&drop

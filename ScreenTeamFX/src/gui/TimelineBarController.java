@@ -64,13 +64,14 @@ public class TimelineBarController extends Pane {
 		System.out.println("Failed to load TimelineBar FXML");
 		e.printStackTrace();
 	}
+	//Creates a clipping mask to hide timelineBar outside of bounds
+	createClip();
 	
 	initializeTimeBar();
 	initializeMouse();
 	
 	seeker = new SeekerController(this);
 	this.getChildren().add(seeker);
-	
 	}
 	
 	
@@ -94,8 +95,6 @@ public class TimelineBarController extends Pane {
 //	            gc.strokeText("1", x1, 12);
 	        }
 	     
-			//Creates a clipping mask to hide timelineBar outside of bounds
-			createClip();
 	}
 	
 	private void initializeMouse(){
