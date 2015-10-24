@@ -59,10 +59,9 @@ public class SeekerController extends Pane{
 
 
 	/**
-	 * This method is ran when the object is initialized (created) i the FXML
+	 * This method is ran after the controller is created in order to get node position values.
 	 */
-	@FXML
-	private void initialize() {
+	public void initialize() {
 		buildNodeDragHandlers();
 		initializeSeeker();
 		drawSeekerLine();
@@ -75,12 +74,11 @@ public class SeekerController extends Pane{
 		AdvancedScreenController tempAdvancedScreen = parentController.getAdvancedScreenController();
 		seekerLine = new Canvas(2,0);
 		tempAdvancedScreen.getMasterRoot().getChildren().add(seekerLine);
-		seekerLine.toFront();
+		seekerLine.toFrt();
 		//let's convert coordinates of TextField into coordinates relative for Scene
-		Bounds localBounds = this.localToScene(this.getBoundsInLocal());
-		//TODO: FINISH THIS 
-		System.out.println(localBounds.g +":"+ localBounds.getY());
-		seekerLine.relocate(localtoScenePoint.getX(),localtoScenePoint.getY());
+		Point2D localBounds = localToScene(0,0);
+		System.out.println(localBounds.getX() +":"+ localBounds.getY());
+//		seekerLine.relocate(localtoScenePoint.getX(),localtoScenePoint.getY());
 	}
 	public void drawSeekerLine(){
 		seekerLine.setHeight(300);

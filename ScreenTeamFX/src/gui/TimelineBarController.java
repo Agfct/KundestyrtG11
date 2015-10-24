@@ -72,6 +72,7 @@ public class TimelineBarController extends Pane {
 	
 	seeker = new SeekerController(this);
 	this.getChildren().add(seeker);
+	seeker.initialize();
 	}
 	
 	
