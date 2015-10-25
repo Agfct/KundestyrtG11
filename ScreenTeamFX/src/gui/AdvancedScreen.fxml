@@ -38,12 +38,12 @@
 			</rowConstraints>
 			<children>
 				<!-- The header will be inserted here in javacode -->
-				<GridPane fx:id="barGrid" 
+				<GridPane fx:id="barGrid" gridLinesVisible="true"
 					GridPane.rowIndex="1">
 					<columnConstraints>
-						<ColumnConstraints minWidth="200" prefWidth="200"
-							maxWidth="200" />
-						<ColumnConstraints hgrow="NEVER" maxWidth="1000" />
+						<ColumnConstraints minWidth="190" prefWidth="190"
+							maxWidth="190" />
+						<ColumnConstraints hgrow="NEVER" maxWidth="1011" prefWidth="1011"/>
 					</columnConstraints>
 					<rowConstraints>
 						<RowConstraints minHeight="25" prefHeight="25"

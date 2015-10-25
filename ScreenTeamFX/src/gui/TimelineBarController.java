@@ -72,7 +72,7 @@ public class TimelineBarController extends Pane {
 	
 	seeker = new SeekerController(this);
 	this.getChildren().add(seeker);
-	seeker.initialize();
+
 	}
 	
 	
@@ -81,11 +81,14 @@ public class TimelineBarController extends Pane {
 	 */
 	public void initializeTimeBar(){
 		long sessionLength = MainModuleController.getInstance().getSession().getSessionLength();
+		//22 is the added length because the bar needs to be centered when starting and stopping
+		long adjustedSessionlength = sessionLength +22;
 		long widthBetweenLines = 10;
-		timelineBarCanvas.setWidth(sessionLength);
+		timelineBarCanvas.setWidth(adjustedSessionlength);
 		gc = timelineBarCanvas.getGraphicsContext2D() ;
 		gc.setLineWidth(1.0);
-	     for (int x = 0; x < sessionLength; x+=widthBetweenLines) {
+		//x = 12 to start the first line ontop of the center of the seeker
+	     for (int x = 12; x < adjustedSessionlength; x+=widthBetweenLines) {
 	            double x1 ;
 	            x1 = x + 0.5 ; //TODO: The 0.5 is to get a clean (not blurry) line, but it might mean that x width should be +1 more pixel
 	            gc.moveTo(x1, 25);
@@ -134,13 +137,15 @@ public class TimelineBarController extends Pane {
 	 */
 	private void createClip(){
 		Rectangle clipSize = new Rectangle(1000,150);
-		clipSize.setLayoutX(0);
+		clipSize.setLayoutX(11);
 		clipSize.setLayoutY(0);
 		parentController.getTimelineBarContainer().setClip(clipSize);
 	}
 	
 
-	
+	public SeekerController getSeeker(){
+		return seeker;
+	}
 	protected void moveTimelineBar(Double newPosition){
 		root.setLayoutX(newPosition);
 	}
