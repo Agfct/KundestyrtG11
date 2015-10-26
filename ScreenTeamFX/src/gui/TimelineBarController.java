@@ -136,7 +136,7 @@ public class TimelineBarController extends Pane {
 	 * The timelineBar that is outside of this clip will be hidden for the user.
 	 */
 	private void createClip(){
-		Rectangle clipSize = new Rectangle(1000,150);
+		Rectangle clipSize = new Rectangle(1000,450);
 		clipSize.setLayoutX(11);
 		clipSize.setLayoutY(0);
 		parentController.getTimelineBarContainer().setClip(clipSize);

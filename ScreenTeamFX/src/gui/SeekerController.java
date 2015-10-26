@@ -35,6 +35,7 @@ public class SeekerController extends Pane{
 
 	private Canvas seekerLine;
 	private GraphicsContext seekergc;
+	private int seekerLineHeight = 450;
 
 	//Dragging:
 	private EventHandler <DragEvent> mContextDragOver;
@@ -79,11 +80,11 @@ public class SeekerController extends Pane{
 		seekerLine.relocate(11,0);
 	}
 	public void drawSeekerLine(){
-		seekerLine.setHeight(300);
+		seekerLine.setHeight(seekerLineHeight);
 		seekergc = seekerLine.getGraphicsContext2D() ;
 		seekergc.setLineWidth(1.0);
 		seekergc.moveTo(1+0.5, 25);
-		seekergc.lineTo(1+0.5, 300);
+		seekergc.lineTo(1+0.5, seekerLineHeight);
 		seekergc.stroke();
 	}
 
@@ -122,25 +123,8 @@ public class SeekerController extends Pane{
 			@Override
 			public void handle(DragEvent event) {		
 //				System.out.println("[Seeker] Dragging over root");
-
 				Pane timelineBarController = parentController.getRoot();
 				Point2D p = timelineBarController.sceneToLocal(event.getSceneX(), event.getSceneY());
-				//				System.out.println("AnchorPane sceneToLocal: "+ p);
-
-				//				System.out.println("[MediaObject] sceneX: "+event.getSceneX()+" LocalX: "+ p.getX());
-				//				System.out.println("[MediaObject] LocalX: "+p.getX()+" LocalX: "+ p.getY());
-				//				System.out.println("[MediaObjectController] AnchtorPane Bounds: "+timelineLinePane.boundsInLocalProperty().get());
-
-				//Prevents you from dragging outside timeline boundaries
-				//				Bounds boundsInParent = getBoundsInParent();
-				//				Bounds newBounds = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
-				//						(p.getX() - mDragOffset.getX()) + boundsInParent.getWidth(), (p.getY() - mDragOffset.getY()) + boundsInParent.getHeight());
-
-				//p.getX() - mDragOffset.getX() is left corner of mediaObject in AnchorPane coordinates
-				//So pX-dragX, pY-dragY is the top left corner of the mediaObject 
-				//(at the current dragged position, we later check if it can be placed there)
-				//				Bounds mediaControllerRect = new BoundingBox(p.getX() - mDragOffset.getX(),p.getY() - mDragOffset.getY(),
-				//						getMediaObjectWidth(), getMediaObjectHeigth());
 				Bounds mediaControllerRect;
 				if(p.getX() - mDragOffset.getX() >= 0){
 					mediaControllerRect = new BoundingBox(p.getX() - mDragOffset.getX(),0,
@@ -150,18 +134,10 @@ public class SeekerController extends Pane{
 							25, 25);
 				}
 
-				//				System.out.println("[MediaObjectController] NewBounds for MediaObject: " +mediaControllerRect);
-				//				System.out.println("TimelineLinePane.getBoundsInLocal(): "+ timelineLinePane.getBoundsInLocal());
 				if (timelineBarController.getBoundsInLocal().contains(mediaControllerRect)) {
-					//					if (timelineLinePane.boundsInLocalProperty().get().intersects(root.getLayoutX(), root.getLayoutY(), root.getLayoutX() + root.getWidth(), root.getLayoutY()+ root.getHeight())) {
 					event.acceptTransferModes(TransferMode.MOVE);
-					//					relocateToPoint(new Point2D(event.getSceneX(), event.getSceneY()));
 					relocateToPoint(new Point2D(mediaControllerRect.getMinX(),mediaControllerRect.getMinY()));
-					//					relocateToPoint(new Point2D(event.getSceneX(), 0));
 				}
-				//				event.acceptTransferModes(TransferMode.ANY);				
-				//				relocateToPoint(new Point2D( event.getSceneX(), event.getSceneY()));
-
 				event.consume();
 			}
 		};
@@ -187,7 +163,7 @@ public class SeekerController extends Pane{
 
 			@Override
 			public void handle (DragEvent event) {
-				System.out.println("[SeekerController] Drag DONE");
+				System.out.println("[SeekerController] Drag DONE" + localToParent(0,25));
 
 				parentController.getRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
 				parentController.getRoot().setOnDragOver(null);
