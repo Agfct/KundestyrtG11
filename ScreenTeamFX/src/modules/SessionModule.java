@@ -275,15 +275,19 @@ public class SessionModule implements Serializable {
 							else if(ev2.getAction()==Action.SHOW){
 								for(Integer dis:displays.keySet()){
 									if (displays.get(dis).getID()==ev2.getTimelineid()){
+										//TODO get the mediaplayer for this events timeline and call showhide() or make function just for showing the frame
 										windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), false, dis);
+										//TODO get the mediaplayer for the events timeline and call maximize()
 										break;
 									}
 								}
 							}
 							else if(ev2.getAction()==Action.HIDE){
 								for(Integer dis:displays.keySet()){
+									//TODO get the mediaplayer for this events timeline and call showhide() or make own function just for hiding the frame
 									if (displays.get(dis).getID()==ev2.getTimelineid()){
 										windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), true, dis);
+										//TODO get the mediaplayer for the events timeline and call maximize()
 										break;
 									}
 								}
