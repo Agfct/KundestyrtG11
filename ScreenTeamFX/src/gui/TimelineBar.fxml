@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.canvas.Canvas?>
 
-<fx:root fx:id="root_pane" maxHeight="25" maxWidth="1000" minHeight="25" minWidth="1000" prefHeight="25" prefWidth="1000" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-<!-- 	<ImageView  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" -->
-<!-- 			AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" > -->
-<!-- 			<Image fx:id="barImage"  url="@../../resources/ScreenTeam_logo.png"/> -->
-<!-- 	</ImageView> -->
+<fx:root fx:id="root_pane" maxHeight="25" maxWidth="1011" minHeight="25" minWidth="1011" prefHeight="25" prefWidth="1011" type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<Canvas style="-fx-background-color: RED" fx:id="timelineBarCanvas" width="200" height="25"/>
 </fx:root>

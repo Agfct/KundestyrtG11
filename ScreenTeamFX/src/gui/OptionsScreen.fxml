@@ -42,7 +42,7 @@
 			<Text styleClass="header-smal" GridPane.columnIndex="1"
 				GridPane.halignment="CENTER"> Options</Text>
 			<GridPane gridLinesVisible="true" GridPane.rowIndex="1"
-				GridPane.columnIndex="0">
+				GridPane.columnIndex="0" >
 				<columnConstraints>
 					<ColumnConstraints percentWidth="50" />
 					<ColumnConstraints percentWidth="50" />
@@ -60,11 +60,11 @@
 				<!-- vgrow="SOMETIMES" /> -->
 				<!-- </rowConstraints> -->
 				<children>
-					<Label text="VLC version: " />
+					<Label text="VLC version: "  GridPane.halignment="CENTER"/>
 					<Label fx:id="vlc_version" GridPane.columnIndex="1" />
-					<Label text="Java version: " GridPane.rowIndex="1" />
+					<Label text="Java version: " GridPane.rowIndex="1" GridPane.halignment="CENTER"/>
 					<Label fx:id="java_version" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-					<Label text="Display Output: " GridPane.rowIndex="2" />
+					<Label text="Display Output: " GridPane.rowIndex="2" GridPane.halignment="CENTER"/>
 					<Label fx:id="display_output" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 				</children>
 			</GridPane>
@@ -72,12 +72,12 @@
 				mnemonicParsing="false" text="MainMenu" GridPane.columnIndex="1"
 				GridPane.rowIndex="2" GridPane.halignment="CENTER" />
 			<TextFlow GridPane.columnIndex="2" GridPane.rowIndex="1"
-				GridPane.halignment="CENTER" lineSpacing="10.0" maxHeight="-Infinity"
+				GridPane.halignment="CENTER"  maxHeight="-Infinity"
 				maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
 				textAlignment="CENTER">
 				<children>
-					<Text style="-fx-font-size: 20; -fx-fill: darkred;" text="Credits" />
-					<Text text="&#10;DevelopmentTeam:" />
+					<Text text="Credits" style="-fx-font-size: 20; -fx-fill: darkred;"  />
+					<Text text="&#10;DevelopmentTeam:" style="-fx-font-weight: bold" />
 					<Text text="&#10;Anders Lunde" />
 					<Text text="&#10;Baptiste Masselin" />
 					<Text text="&#10;Kristian Midtgård" />

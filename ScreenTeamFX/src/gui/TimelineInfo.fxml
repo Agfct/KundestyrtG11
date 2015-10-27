@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<GridPane fx:id="timelineContainer" xmlns:fx="http://javafx.com/fxml/1"
+<GridPane gridLinesVisible="true" fx:id="timelineContainer" xmlns:fx="http://javafx.com/fxml/1"
 	xmlns="http://javafx.com/javafx/8.0.40">
 	<columnConstraints>
 		<ColumnConstraints minWidth="200" prefWidth="200"
