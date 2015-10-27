@@ -3,6 +3,7 @@ package modules;
 import java.util.ArrayList;
 
 import vlc.VLCController;
+import vlc.VLCMediaPlayer;
 
 public class Testingmodules {
 	private VLCController vlc;
@@ -16,8 +17,9 @@ public class Testingmodules {
 	public Testingmodules() throws InterruptedException{
 		ArrayList<Integer> ll = new ArrayList<Integer>();
 		ll.add(0);
+		ll.add(1);
 		this.vlc = new VLCController(ll);
-		this.aka = new WindowDisplay(1);
+		this.aka = new WindowDisplay(2);
 		tlmodul = new SessionModule(vlc,aka);
 		tlmodul.addTimeline();
 		TimelineModel tlm = tlmodul.getTimelines().get(1);
@@ -26,9 +28,9 @@ public class Testingmodules {
 		//tlmodul.addDisplay(1);
 		tlmodul.addTimeline();
 		TimelineModel tlm2 = tlmodul.getTimelines().get(2);
-		tlmodul.assignTimeline(0, tlm);
-		System.out.println(tlmodul.getAvailableDisplays());
-//		tlmodul.assignTimeline(1, tlm2);
+		VLCMediaPlayer mp = vlc.getMediaPlayerList().get(tlm2.getID());
+		//tlmodul.assignTimeline(0, tlm);
+		tlmodul.assignTimeline(1, tlm2);
 		tlm.addTimelineMediaObject(0,4000,mO);
 		tlm.addTimelineMediaObject(6000, 5000,mO);
 		tlm.addTimelineMediaObject(11000,1000,mO);
@@ -38,20 +40,27 @@ public class Testingmodules {
 		tlm.getTimelineMediaObjects().get(0).setStartPoint(5000);
 		tlm.getTimelineMediaObjects().get(1).setStartPoint(10000);
 //		tlm2.getTimelineMediaObjects().get(0).setStartPoint(2000);
-//		tlmodul.playOne(1,0);
-		/*Thread.sleep(2000);
-		tlmodul.pauseOne(1);
-		Thread.sleep(1000);
-		tlmodul.playOne(1,2000);
-		Thread.sleep(5000);
-		tlmodul.pauseOne(1);
-		Thread.sleep(1000);
-		tlmodul.playOne(1, 7000);*/
-		Thread.sleep(1000);
+		tlmodul.playOne(2);
+		Thread.sleep(2000);
+		aka.WindowManipulation("GitHub", false, 0);
+		Thread.sleep(2000);
+		aka.WindowManipulation("GitHub", true, 1);
+		mp.maximize();
+		Thread.sleep(2000);
+		aka.WindowManipulation("GitHub", false, 1);
+		Thread.sleep(2000);
+		aka.WindowManipulation("GitHub", true, 1);
+		mp.maximize();
+		Thread.sleep(2000);
+		//aka.WindowManipulation("GitHub", true, 0);
 		aka.WindowManipulation("GitHub", false, 0);
 		Thread.sleep(2000);
 		aka.WindowManipulation("GitHub", true, 0);
-		aka.WindowManipulation("scr 1", false, 0);
+		mp.maximize();
+		Thread.sleep(2000);
+		aka.WindowManipulation("GitHub", false, 1);
+		Thread.sleep(2000);
+		//aka.WindowManipulation("GitHub", true, 0);
 	}
 	public static void main(String[] args) {
 		try {

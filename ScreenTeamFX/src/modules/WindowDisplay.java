@@ -56,12 +56,14 @@ public class WindowDisplay {
 				//Show the window
 			
 				MoveWindow(WIs.getThWnd(),AllMonitor.get(display).getStart_X(),AllMonitor.get(display).getStart_Y(),200,200,true);	
-				ShowWindow(WIs.getThWnd(),User32.SW_MAXIMIZE); 
+				System.out.println(AllMonitor.get(display).getStart_X());
+				ShowWindow(WIs.getThWnd(),User32.SW_SHOWMAXIMIZED); 
 			}
 			else if  (hide==true){
 				//Hide the window
 				MoveWindow(WIs.getThWnd(),AllMonitor.get(display).getStart_X(),AllMonitor.get(display).getStart_Y(),200,200,true);					
-				ShowWindow(WIs.getThWnd(),User32.SW_FORCEMINIMIZE);
+				System.out.println(AllMonitor.get(display).getStart_X());
+				ShowWindow(WIs.getThWnd(),User32.SW_SHOWMINIMIZED);
 			}
 			else{
 				System.out.println("boolean hide no assigned: "+hide);
