@@ -107,7 +107,10 @@ public class AdvancedScreen implements Screen{
 			private SessionModule currentSession;
 			private double scrollBarPosition = 0;
 			private Stage modalDialog;
-
+			
+			//Scaling
+			private int scaleCoefficient = 10;
+			
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
 			@FXML private GridPane rootGrid;
@@ -636,6 +639,9 @@ public class AdvancedScreen implements Screen{
 				currentSession.pauseAll();
 			}
 
+			public int getScaleCoefficient(){
+				return scaleCoefficient;
+			}
 
 
 			public void changeGlobalTime(long i) {

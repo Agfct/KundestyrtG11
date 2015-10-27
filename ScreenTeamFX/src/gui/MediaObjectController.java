@@ -110,12 +110,9 @@ public class MediaObjectController extends GridPane{
 	 * @param width
 	 */
 	private void setMediaObjectWidth(double width){
-
-		//TODO: 		double scaledWidth = returnsWidthWithScaledValues(width);
-//		this.setPrefWidth(scaledWidth);
-//		this.setMaxWidth(scaledWidth);
-		this.setPrefWidth(width);
-		this.setMaxWidth(width);
+		int tempScale = AdvancedScreen.getInstance().getScreenController().getScaleCoefficient();
+		this.setPrefWidth(width*tempScale);
+		this.setMaxWidth(width*tempScale);
 	}
 	
 	/**
