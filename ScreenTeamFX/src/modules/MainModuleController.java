@@ -4,8 +4,11 @@
 package modules;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import gui.MainGUIController;
+import gui.SessionListener;
 import vlc.VLCController;
 
 /**
@@ -63,24 +66,23 @@ public class MainModuleController {
 	}
 
 	public boolean saveSession(File saveFile) {
-		SessionModule saveSession = new SessionModule(null);
 		// Need to remove some stuff, but keep it and put it back after the save
-		sessionModule.getListeners();
-		sessionModule.getVLCController();
-		sessionModule.getT1();
-		sessionModule.getTAll();
-		sessionModule.getGlobalTimeTicker();
-		sessionModule.getDisplays();
+		ArrayList<SessionListener> listeners = sessionModule.removeListeners();
+		VLCController vlcc = sessionModule.removeAndGetVLCController();
+		Thread t1 = sessionModule.removeT1();
+		Thread tAll = sessionModule.removeTAll();
+		Thread gtt = sessionModule.removeGlobalTimeTicker();
+		HashMap<Integer, TimelineModel> disp = sessionModule.removeDisplays();
 		
-		boolean result = storageController.storeSession(saveSession, saveFile);
+		boolean result = storageController.storeSession(sessionModule, saveFile);
 		
 		// Put back stuff
-		sessionModule.setListeners();
-		sessionModule.setVLCController();
-		sessionModule.setT1();
-		sessionModule.setTAll();
-		sessionModule.setGlobalTimeTicker();
-		sessionModule.setDisplays();
+		sessionModule.setListeners(listeners);
+		sessionModule.setVLCController(vlcc);
+		sessionModule.setT1(t1);
+		sessionModule.setTAll(tAll);
+		sessionModule.setGlobalTimeTicker(gtt);
+		sessionModule.setDisplays(disp);
 		
 		return result;
 	}
@@ -94,15 +96,17 @@ public class MainModuleController {
 	}
 
 	public void updateSession(SessionModule sm) {
-		int loadedNumberOfAvailableDisplays = sm.getNumberOfAbailableDisplays();
-		int currentNumberOfAvailableDisplays = sessionModule.getNumberOfAbailableDisplays();
 		
-		// If we have at least as many displays as last time, we can keep the arrangement (displays->timlines), if not we have to scrap it
-		boolean keepDisplays = false;//currentNumberOfAvailableDisplays >= loadedNumberOfAvailableDisplays;
+		// Remove the old stuff. This removes old VLCMediaPlayers
+		sessionModule.removeListeners();
+		sessionModule.removeAllTimlines();
 		
 		sessionModule = sm;
 		
-		sessionModule.reinitialize(vlc, keepDisplays);
+		sessionModule.removeAllTimlineDisplayAssignments();
+		
+		this.vlc = new VLCController(ioModule.getDisplays());
+		sessionModule.reinitialize(vlc);
 		sessionModule.updateDisplays(ioModule.getDisplays());
 		
 	}

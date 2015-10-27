@@ -55,11 +55,6 @@ public class StorageController {
 		// Ensure that the save file has the correct filetype
 		file = setCorrectFileype(file);
 		
-		sm.clearListeners();
-		sm.removeVLCController();
-		sm.removeThreads();
-		sm.removeAssignedDisplays();
-		
 		FileOutputStream f_out_stream = null;
 		ObjectOutputStream obj_out_stream = null;
 		boolean storageSuccess = false;
