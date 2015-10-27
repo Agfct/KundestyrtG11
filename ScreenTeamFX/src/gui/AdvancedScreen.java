@@ -402,7 +402,7 @@ public class AdvancedScreen implements Screen{
 									System.out.println("Point: X: " + p.getX() + " Y: " + p.getY());
 									System.out.println(" Container Point: X: " + ((Point2D) container.getValue("scene_coords")).getX() + " Y: " + ((Point2D) container.getValue("scene_coords")).getY());
 									if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
-										String result=currentSession.addMediaObjectToTimeline(container.getValue("model"), timelineController.getTimelineModel() , (int)p.getX()*1000);
+										String result=currentSession.addMediaObjectToTimeline(container.getValue("model"), timelineController.getTimelineModel() , ((int)p.getX()*1000)/scaleCoefficient);
 										System.out.println("Result of the drop of mediaObject: " + result);
 										break;
 									}

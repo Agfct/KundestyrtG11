@@ -560,6 +560,7 @@ public class SessionModule implements Serializable {
 	 * @param startTime
 	 */
 	public String addMediaObjectToTimeline(MediaObject mediaObject, TimelineModel timeline, int startTime){
+		System.out.println("AddMediaObjectToTimeline: " + startTime);
 		TimelineMediaObject tlmo;
 		MediaSourceType type = mediaObject.getType(); 
 		switch (type){

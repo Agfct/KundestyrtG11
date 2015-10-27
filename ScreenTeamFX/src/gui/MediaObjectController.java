@@ -66,7 +66,6 @@ public class MediaObjectController extends GridPane{
 //		setStyle("-fx-background-color: GRAY");
 		setGraphicType(timelineMediaObject.getParent().getType());
 		this.timelineMediaObject=timelineMediaObject;
-		this.setWidth(234);
 		
 		try {
 			fxmlLoader = new FXMLLoader(getClass().getResource("MediaObject.fxml"));
