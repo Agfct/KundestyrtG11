@@ -55,12 +55,17 @@ public class WindowDisplay {
 			if(hide==false){
 				//Show the window
 			
-				MoveWindow(WIs.getThWnd(),AllMonitor.get(display).getStart_X(),AllMonitor.get(display).getStart_Y(),200,200,true);	
+				//ShowWindow(WIs.getThWnd(),User32.SW_SHOWMAXIMIZED); 
+				ShowWindow(WIs.getThWnd(),User32.SW_MAXIMIZE); 
+				ResolutionScreen RS=new ResolutionScreen();
+				RS.setResolutionScreen(display);
+				MoveWindow(WIs.getThWnd(),AllMonitor.get(display).getStart_X(),AllMonitor.get(display).getStart_Y(),RS.getWidthResolutionScreen(),RS.getHeightResolutionScreen(),true);	
 				System.out.println(AllMonitor.get(display).getStart_X());
-				ShowWindow(WIs.getThWnd(),User32.SW_SHOWMAXIMIZED); 
+				//ShowWindow(WIs.getThWnd(),User32.SW_SHOWMAXIMIZED); 
 			}
 			else if  (hide==true){
 				//Hide the window
+				ShowWindow(WIs.getThWnd(),User32.SW_SHOWMINIMIZED);
 				MoveWindow(WIs.getThWnd(),AllMonitor.get(display).getStart_X(),AllMonitor.get(display).getStart_Y(),200,200,true);					
 				System.out.println(AllMonitor.get(display).getStart_X());
 				ShowWindow(WIs.getThWnd(),User32.SW_SHOWMINIMIZED);
