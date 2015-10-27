@@ -1,6 +1,7 @@
 .dragicon {
 	-fx-background-radius: 10;
 	-fx-background-color: rgba(75,75,75,0.1); 
+	 
 }
 
 .icon-sound {
@@ -9,6 +10,13 @@
 }
 .icon-video {
 	-fx-background-image: url("../../resources/VLC_Icon.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-background-size: cover; 
+}
+
+.icon-seeker {
+	-fx-background-image: url("../../resources/SeekerIcon.png");
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
 	-fx-background-size: cover; 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.Label?>
+
+<fx:root fx:id="root_pane" style="-fx-border-color: RED" stylesheets="@application.css"  styleClass="icon-seeker" maxHeight="25" minHeight="25" minWidth="25" prefHeight="25"  maxWidth="25" type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+	<!-- TODO Add Nodes -->
+</fx:root>
