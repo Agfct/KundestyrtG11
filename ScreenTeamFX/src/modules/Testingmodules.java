@@ -1,5 +1,7 @@
 package modules;
 
+import java.util.ArrayList;
+
 import vlc.VLCController;
 
 public class Testingmodules {
@@ -12,16 +14,20 @@ public class Testingmodules {
 	 * @throws InterruptedException 
 	 */
 	public Testingmodules() throws InterruptedException{
-//		this.vlc = new VLCController("C:\\Program Files\\VideoLAN\\VLC64");
+		ArrayList<Integer> ll = new ArrayList<Integer>();
+		ll.add(0);
+		this.vlc = new VLCController(ll);
+		this.aka = new WindowDisplay(1);
 		tlmodul = new SessionModule(vlc,aka);
 		tlmodul.addTimeline();
 		TimelineModel tlm = tlmodul.getTimelines().get(1);
 		MediaObject mO = new MediaObject("C:\\Users\\EirikZimmer\\Videos\\video_test_512kb.mp4","test",MediaSourceType.VIDEO);
-		tlmodul.addDisplay(0);
+		tlmodul.updateDisplays(ll);
 		//tlmodul.addDisplay(1);
 		tlmodul.addTimeline();
 		TimelineModel tlm2 = tlmodul.getTimelines().get(2);
 		tlmodul.assignTimeline(0, tlm);
+		System.out.println(tlmodul.getAvailableDisplays());
 //		tlmodul.assignTimeline(1, tlm2);
 		tlm.addTimelineMediaObject(0,4000,mO);
 		tlm.addTimelineMediaObject(6000, 5000,mO);
@@ -41,6 +47,11 @@ public class Testingmodules {
 		tlmodul.pauseOne(1);
 		Thread.sleep(1000);
 		tlmodul.playOne(1, 7000);*/
+		Thread.sleep(1000);
+		aka.WindowManipulation("GitHub", false, 0);
+		Thread.sleep(2000);
+		aka.WindowManipulation("GitHub", true, 0);
+		aka.WindowManipulation("scr 1", false, 0);
 	}
 	public static void main(String[] args) {
 		try {

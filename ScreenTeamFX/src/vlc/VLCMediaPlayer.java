@@ -29,6 +29,7 @@ public class VLCMediaPlayer {
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);
+		frame.setTitle("scr " + ID);
 	}
 	
 	/**
@@ -109,6 +110,7 @@ public class VLCMediaPlayer {
 		frame.getContentPane().remove(mp);
 		frame.dispose();
 		frame = new JFrame(gs[display].getDefaultConfiguration ());
+		frame.setTitle("scr " + ID);
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);
