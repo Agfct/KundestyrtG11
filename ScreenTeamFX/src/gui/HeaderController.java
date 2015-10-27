@@ -7,6 +7,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -21,7 +23,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
 import javafx.stage.FileChooser;
-
+import javafx.stage.FileChooser.ExtensionFilter;
 import modules.*;
 
 
@@ -116,6 +118,41 @@ public class HeaderController implements FXMLController{
 			this.parentController.changeGlobalTime(0);
 
 		}
+		else if(((Button)event.getSource()).getId().equals("saveSession")){
+			// If the user clicks the import media button, he will get a windows file-chooser
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Save file");
+			
+			String filetype = MainModuleController.getInstance().getSaveFiletype();
+			fileChooser.setInitialFileName("cribrum_session." + filetype);
+			
+			File saveFile = fileChooser.showSaveDialog(MainGUIController.getInstance().primaryStage);
+			if( saveFile == null ){
+				// Happens when the user closes the dialog wihtout choosing a file
+				//TODO: User did not choose a save file. Give the user a message or something? Probably OK to don't do anything, he know what he did.
+			}
+			else{
+				this.parentController.saveSession(saveFile);
+			}
+		}
+		else if(((Button)event.getSource()).getId().equals("loadSession")){
+			// If the user clicks the import media button, he will get a windows file-chooser
+			FileChooser fileChooser = new FileChooser();
+			String filetype = MainModuleController.getInstance().getSaveFiletype();
+			
+			// Set extension filter
+			ExtensionFilter filter = new ExtensionFilter("CRIBRUM files (*"+filetype+")", "*."+filetype);
+			fileChooser.getExtensionFilters().add(filter);
+			
+			// Show open file dialog
+			File loadFile = fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
+			if(loadFile==null){
+				// The user closed the window. TODO: Give some message? Probably not.
+			}
+			else{
+				this.parentController.loadSession(loadFile);
+			}
+		}
 	
 	}
 	
@@ -182,7 +219,6 @@ public class HeaderController implements FXMLController{
 				return;
 			}
 		}
-		//TODO: add support for imageFile!
 		for(String format:acceptedImageFormats){
 			if(format.equals(extension)){
 				System.out.println(fileName + " is an image! of type: "+ format);

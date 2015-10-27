@@ -11,9 +11,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.io.Serializable;
 
 
-public class VLCMediaPlayer {
+public class VLCMediaPlayer{
 	private JFrame frame = new JFrame();
 	private EmbeddedMediaPlayerComponent mp;
 	private String mediaPath = "";

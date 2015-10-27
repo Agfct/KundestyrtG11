@@ -1,5 +1,7 @@
 package modules;
 
+import java.io.Serializable;
+
 /*
  * 
  * @author ole-s
@@ -11,6 +13,7 @@ package modules;
  * 						in the video when the user presses play.	
  *
  */
-public enum Action {
+
+public enum Action implements Serializable{
 	STOP, PLAY, PLAY_WITH_OFFSET, PAUSE, SHOW, HIDE
 }
