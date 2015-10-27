@@ -46,16 +46,12 @@ public class Testingmodules {
 		mp.showhide();
 		aka.WindowManipulation("GitHub", false, 1);
 		mp.maximize();
-		mp.maximize();
 		Thread.sleep(2000);
 		mp.showhide();
-		aka.WindowManipulation("GitHub", true, 1);
-		mp.maximize();
-		mp.maximize();
-		Thread.sleep(2000);
 		mp1.showhide();
+		aka.WindowManipulation("GitHub", true, 1);
 		aka.WindowManipulation("GitHub", false, 0);
-		mp1.maximize();
+		mp.maximize();
 		Thread.sleep(2000);
 		mp1.showhide();
 		aka.WindowManipulation("GitHub", true, 0);
