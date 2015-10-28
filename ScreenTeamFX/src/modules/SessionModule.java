@@ -626,6 +626,43 @@ public class SessionModule implements Serializable {
 	}
 	
 	/**
+	 * Duplicates the content from TimlineModel tlm (except from window management) into the TimlineModel with ID == timelineInt.
+	 * Returns true if this is done successfully, and false if there is some problem. 
+	 * @param tlm
+	 * @param timelineInt
+	 */
+	public boolean duplicateToTimeline(TimelineModel tlm, int timelineInt) {
+		// Get the list of TimelineMediaObjects that shall be duplicated, and the timeline (duplicate) they shall be duplicated to
+		ArrayList<TimelineMediaObject> timelineMediaObjects = tlm.getTimelineMediaObjects();
+		TimelineModel duplicate = timelines.get(timelineInt);
+		if(duplicate == null){
+			System.out.println("[Session;odule.duplicateToTimeline()] Could not find TimelineModel with id " + timelineInt);
+			return false;
+		}
+		
+		// Go through the TimelineMediaObjects, add those that are not MediaSourceType.WINDOW, and update the timeline
+		for(TimelineMediaObject tlmToCopy : timelineMediaObjects) {
+			MediaObject parent = tlmToCopy.getParent();
+			MediaSourceType mediaSourceType = parent.getType(); 
+			if( mediaSourceType == MediaSourceType.WINDOW ){
+				// If the timelineMediaObject is a WINDOW operation, then skip to the next timelineMediaObject
+				continue;
+			}
+			
+			long startTime = tlmToCopy.getStart();
+			long startPoint = tlmToCopy.getStartPoint();
+			long duration = tlmToCopy.getDuration();
+			
+			TimelineMediaObject tlmoToAdd = new TimelineMediaObject(startTime, duration, timelineInt, parent);
+			tlmoToAdd.setStartPoint(startPoint);
+			duplicate.addTimelineMediaObject(tlmoToAdd);
+			timelineChanged(TimeLineChanges.MODIFIED, duplicate);
+			checkSessionSize(tlmoToAdd.getStart(), tlmoToAdd.getDuration());
+		}
+		return true;
+	}
+	
+	/**
 	 * When the user wants to increase the length of a session we increase the sessionLength and updates the GUI.
 	 * @param start
 	 * @param duration

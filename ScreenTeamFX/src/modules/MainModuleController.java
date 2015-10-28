@@ -1,6 +1,3 @@
-/**
- * 
- */
 package modules;
 
 import java.io.File;
@@ -96,6 +93,10 @@ public class MainModuleController {
 		return storageController.loadSession(loadFile);
 	}
 
+	/**
+	 * After loding a session, this method is called to set the loaded session as the current one.
+	 * @param sm
+	 */
 	public void updateSession(SessionModule sm) {
 		
 		// Remove the old stuff. This removes old VLCMediaPlayers
