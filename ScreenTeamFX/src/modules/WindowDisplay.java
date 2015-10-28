@@ -5,6 +5,7 @@ import static modules.psapi32dll.*;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +31,11 @@ import modules.user32dll.WNDENUMPROC;
  */
 
 
-public class WindowDisplay {
+public class WindowDisplay implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3407212486452142243L;
 	private static final int MAX_TITLE_LENGTH = 1024;
 	private HashMap <Integer,MonitorInfo> AllMonitor;
 	public ArrayList<WindowInfos> AllWindow;
