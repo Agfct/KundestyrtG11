@@ -112,8 +112,23 @@ public class TimelineMediaObject implements Serializable {
 		return startPoint;
 	}
 	
-	//TODO: update duration whenever the startpoint is changed. 
-	public void setStartPoint(int spoint){
+	public void setStartPoint(long spoint){
+		if(spoint < 0){
+			System.out.print("[TimelineMediaObject.setStartPoint]");
+			System.out.println(" Can not set startpoint to " + spoint + ". Because it is less than zero");
+			return;
+		}
+		if( parent.getLength() <= startPoint ){
+			System.out.print("[TimelineMediaObject.setStartPoint]");
+			System.out.println(" Can not set startpoint to " + spoint + ". Because it is higher than the length ("+parent.getLength()+") of the MediaObject.");
+			return;
+		}
 		this.startPoint = spoint;
+		if( parent.getLength() < spoint + duration ){
+			System.out.print("[TimelineMediaObject.setStartPoint]");
+			System.out.println(" The new start point("+spoint+") pluss the current duration("+duration+") exceeds the length("+parent.getLength()+") of the MediaObject. "
+					+ "Duration has been reduced to fit within the length.");
+			this.duration = parent.getLength() - spoint;
+		}
 	}
 }

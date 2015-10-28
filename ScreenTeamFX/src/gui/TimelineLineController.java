@@ -104,9 +104,9 @@ public class TimelineLineController implements FXMLController{
 		duplicate.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override
 		    public void handle(ActionEvent event) {
-		        System.out.println("Duplicate Timeline");
-		        //TODO: Duplicate timeline; Method in modules that takes in a timelineLine id ?
-		       
+		    	AdvancedScreenController asc = AdvancedScreen.getInstance().getInstance().getInstance().getInstance().getScreenController();
+		    	TimelineModel tlm = parentController.getTimelineModel();
+		    	asc.duplicateTimeline(tlm);
 		    }
 		});
 		rootPane.setOnMouseClicked(new EventHandler<MouseEvent>() {

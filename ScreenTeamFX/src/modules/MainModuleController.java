@@ -94,7 +94,11 @@ public class MainModuleController {
 	public SessionModule loadSession(File loadFile) {
 		return storageController.loadSession(loadFile);
 	}
-
+	
+	/**
+	 * After loding a session, this method is called to set the loaded session as the current one.
+	 * @param sm
+	 */
 	public void updateSession(SessionModule sm) {
 		
 		// Remove the old stuff. This removes old VLCMediaPlayers

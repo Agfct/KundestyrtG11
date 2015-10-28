@@ -431,6 +431,14 @@ public class AdvancedScreen implements Screen{
 //				addTimelineControllerToScreen(tempTimeController);
 			}
 			
+			public void duplicateTimeline(TimelineModel tlm) {
+				int timelineInt = currentSession.addTimeline();
+				boolean success = currentSession.duplicateToTimeline(tlm, timelineInt);
+				if(!success){
+					System.out.println("[AdvancedScreen.duplicateTimeline] Could not duplicate the contents to the new timeline");
+				}
+			}
+			
 			/**
 			 * Adds the given TimelineController to the timelineContainer (VBox).
 			 * @param newController
@@ -737,6 +745,11 @@ public class AdvancedScreen implements Screen{
 					
 				}		
 			}
+
+
+
+			
+			
 
 		}//end AdvancedScreenController
 
