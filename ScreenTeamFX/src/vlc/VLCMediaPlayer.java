@@ -30,6 +30,7 @@ public class VLCMediaPlayer{
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);
+		frame.setTitle("scr " + ID);
 	}
 	
 	/**
@@ -102,6 +103,10 @@ public class VLCMediaPlayer{
 		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
+	public void showhide(boolean show){
+		frame.setVisible(show);
+	}
+	
 	/**
 	 * Creates a new Jframe on a new graphicsDevice. Must use setMedia before media can be played again. 
 	 * @param display */
@@ -110,6 +115,7 @@ public class VLCMediaPlayer{
 		frame.getContentPane().remove(mp);
 		frame.dispose();
 		frame = new JFrame(gs[display].getDefaultConfiguration ());
+		frame.setTitle("scr " + ID);
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);
