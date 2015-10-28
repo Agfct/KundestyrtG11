@@ -739,6 +739,7 @@ public class SessionModule implements Serializable {
 			for(String wind:shownwindows){
 				windowdisplay.WindowManipulation(wind, true, 0);
 			}
+			shownwindows.clear();
 		}
 	}
 	
