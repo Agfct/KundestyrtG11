@@ -289,7 +289,7 @@ public class VLCController {
 			toPlayer(mp).hide();
 		}
 		else{
-			toPlayer(mp).unmute();
+			toPlayer(mp).show();
 		}
 	}
 	
