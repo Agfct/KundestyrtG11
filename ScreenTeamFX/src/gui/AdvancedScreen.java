@@ -730,6 +730,7 @@ public class AdvancedScreen implements Screen{
 			 * NB! A canvas cannot be very large (max 4k)
 			 */
 			public void paintTimelineBarCanvas(){
+				//TODO: This method needs to repaint when you move the scrollbar, and it needs to keep track of where you are on the timeline.
 				
 				
 				gc.setLineWidth(1.0);
