@@ -634,7 +634,6 @@ public class SessionModule implements Serializable {
 			timelineChanged(TimeLineChanges.MODIFIED, duplicate);
 			checkSessionSize(tlmoToAdd.getStart(), tlmoToAdd.getDuration());
 		}
-		
 		return true;
 	}
 	
