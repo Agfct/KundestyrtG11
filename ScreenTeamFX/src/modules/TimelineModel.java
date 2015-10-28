@@ -250,5 +250,9 @@ public class TimelineModel implements Serializable{
 			assignedDisplays.remove(dispID);			
 		}
 	}
+
+	public void removeAllDisplays() {
+		assignedDisplays = new ArrayList<Integer>(); 
+	}
 		
 }

@@ -20,7 +20,9 @@ import java.util.Iterator;
  */
 public class StorageController {
 	
-
+	String defaultFile = "default_save";
+	String filetype = "stdata";
+	
 	// storageFile is the savefile used if no file is specified. 
 	File storageFile;
 	
@@ -28,7 +30,7 @@ public class StorageController {
 	private static StorageController instance = null;
 	
 	protected StorageController() {
-		storageFile = new File("default_save.data");
+		storageFile = new File(defaultFile + "." + filetype);
 	}
 	
 	public static StorageController getInstance() {
@@ -50,7 +52,8 @@ public class StorageController {
 	
 	public boolean storeSession(SessionModule sm, File file){
 		
-		sm.clearListeners();
+		// Ensure that the save file has the correct filetype
+		file = setCorrectFileype(file);
 		
 		FileOutputStream f_out_stream = null;
 		ObjectOutputStream obj_out_stream = null;
@@ -79,9 +82,9 @@ public class StorageController {
 		return storageSuccess;
 	}
 	
-	public SessionModule loadSession(){
-		return loadSession(this.storageFile);
-	}
+//	public SessionModule loadSession(){
+//		return loadSession(this.storageFile);
+//	}
 	
 	public SessionModule loadSession(String fileString){
 		File saveFile = new File(fileString);
@@ -172,5 +175,31 @@ public class StorageController {
 	public void setStorageFile(File storageFile) {
 		this.storageFile = storageFile;
 	}
+	
+	public String getFileType(){
+		String out = ""+filetype;
+		return out;
+	}
 
+	private File setCorrectFileype(File file) {
+		String path = file.getPath();
+		int dotIndex = path.lastIndexOf('.');
+		if (dotIndex==-1){
+			// There were no '.' in the filepath. So just add the filetype
+			path += "." + filetype;
+			return new File(path);
+		}
+		
+		// Here the path contains '.' so check if the filetype is correct
+		String ending = path.substring(dotIndex+1);
+		if (ending.equals(filetype)){
+			// all good
+			return file;
+		}
+		
+		// The filetype of file is not correct. Append the correct filetype
+		path += "." + filetype;
+		return new File(path);
+	}
+	
 }

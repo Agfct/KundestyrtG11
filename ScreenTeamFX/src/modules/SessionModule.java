@@ -44,6 +44,9 @@ public class SessionModule implements Serializable {
 	private ArrayList<Integer> timelineOrder;
 	private ArrayList<String> shownwindows;
 	
+	// Used when saving and loading, to check if the loaded session has the same number of displays as the loaded one
+	private int numberOfAvailableDisplays;
+	
 	// Constant used when creating TimelineMediaObjects that are images. Used as a reasonable duration when first appearing on a timeline.
 	private final long IMAGE_DURATION = 30000;
 	
@@ -65,8 +68,9 @@ public class SessionModule implements Serializable {
 		this.t1 = new Thread();
 		this.tAll = new Thread();
 		this.globalTimeTicker = new Thread();
-		this.timelineOrder= new ArrayList<Integer>();
+		this.timelineOrder=new ArrayList<Integer>();
 		this.shownwindows = new ArrayList<String>();
+		this.numberOfAvailableDisplays = -1;
 	}
 
 	/**
@@ -96,6 +100,20 @@ public class SessionModule implements Serializable {
 		timelineOrder.remove(new Integer(id));
 		timelineChanged(TimeLineChanges.REMOVED,tlm );
 	}
+	
+	public void removeAllTimlines(){
+		// Create copy of the IDs that shall be remove (all)
+		ArrayList<Integer> timelineIDs = new ArrayList<Integer>();
+		for(int i=0; i<timelineOrder.size(); i++){
+			timelineIDs.add(new Integer(timelineOrder.get(i)));	
+		}
+		
+		// Remove the timlelines
+		for(int i=0; i<timelineIDs.size(); i++){
+			removeTimeline(timelineIDs.get(i));
+		}
+	}
+	
 	/**
 	 * goes through all displays and removes tlm if it is assigned to said display
 	 * @param tlm
@@ -162,6 +180,7 @@ public class SessionModule implements Serializable {
 			}
 		}
 		vlccontroller.updateDisplays(displays);
+		numberOfAvailableDisplays = displays.size();
 	}
 	
 	/**
@@ -178,6 +197,9 @@ public class SessionModule implements Serializable {
 		}
 	}
 	
+	public int getNumberOfAbailableDisplays(){
+		return numberOfAvailableDisplays;
+	}
 	/**
 	 * first draft of playing the whole performance. this happens when
 	 * the button to play all timelines is pushed.
@@ -651,8 +673,10 @@ public class SessionModule implements Serializable {
 	 * Makes sure all the listeners are notified whenever a change to the timelines are done.  
 	 */
 	private void timelineChanged(TimeLineChanges changeType, TimelineModel timeLineModel) {
-		for(SessionListener listener: listeners){
-			listener.fireTimelinesChanged(changeType, timeLineModel);
+		if(listeners!=null){
+			for(SessionListener listener: listeners){
+				listener.fireTimelinesChanged(changeType, timeLineModel);
+			}
 		}
 	}
 		
@@ -721,7 +745,111 @@ public class SessionModule implements Serializable {
 	public ArrayList<Integer> getAvailableDisplays(){
 		return new ArrayList<Integer>(displays.keySet());
 	}
+
+	public void removeVLCController() {
+		vlccontroller = null;
+	}
+
+	public void removeThreads() {
+		t1 = null;
+		tAll = null;
+		globalTimeTicker = null;
+	}
+
+	public void removeAssignedDisplays(){
+		for (Integer i: displays.keySet()) {
+			displays.put(i, null);
+		}
+	}
 	
+	public void reinitialize(VLCController vlc) {
+		this.displays = new HashMap<Integer,TimelineModel>();
+		this.listeners = new ArrayList<SessionListener>();
+		this.vlccontroller = vlc;
+		this.t1 = new Thread();
+		this.tAll = new Thread();
+		this.globalTimeTicker = new Thread();
+		
+		for(Integer i : timelines.keySet()){
+			vlccontroller.createMediaPlayer(i);
+		}
+		
+	}
+
+	public long getGlobalTime() {
+		return globaltime;
+	}
+
+	public ArrayList<SessionListener> removeListeners() {
+		ArrayList<SessionListener> out = listeners;
+		listeners = null;
+		return out;
+	}
+
+	public VLCController removeAndGetVLCController() {
+		VLCController out = vlccontroller;
+		vlccontroller = null;
+		return out;
+	}
+
+	public Thread removeT1() {
+		Thread out = t1;
+		t1 = null;
+		return out;
+	}
+
+	public Thread removeTAll() {
+		Thread out = tAll;
+		tAll = null;
+		return out;
+	}
+
+	public Thread removeGlobalTimeTicker() {
+		Thread out = globalTimeTicker;
+		globalTimeTicker = null;
+		return out;
+	}
+
+	public HashMap<Integer, TimelineModel> removeDisplays() {
+		HashMap<Integer, TimelineModel> out = displays;
+		displays = null;
+		return out;
+	}
+
+	public void setListeners(ArrayList<SessionListener> l) {
+		listeners = l;
+	}
+
+	public void setVLCController(VLCController vlcc) {
+		vlccontroller = vlcc;
+	}
+
+	public void setT1(Thread t) {
+		t1 = t;
+	}
+
+	public void setTAll(Thread t) {
+		tAll = t;
+	}
+
+	public void setGlobalTimeTicker(Thread gtt) {
+		globalTimeTicker = gtt;
+	}
+
+	public void setDisplays(HashMap<Integer, TimelineModel> disp) {
+		displays = disp;
+	}
+
 	
+	/**
+	 * Removes all assigned display from all the timelines. Used only when loading, before updating the GUI.
+	 */
+	public void removeAllTimlineDisplayAssignments() {
+		for(Integer i : timelines.keySet()){
+			timelines.get(i).removeAllDisplays();
+		}
+	}
+
+		
 	
 }

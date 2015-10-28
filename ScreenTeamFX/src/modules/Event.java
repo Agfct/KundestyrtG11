@@ -1,5 +1,6 @@
 package modules;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -7,7 +8,11 @@ import java.util.Comparator;
  * @author O
  * Events that happens on a timeline during a performance. An Event can be START or STOP of MediaObjects.
  */
-public class Event implements Comparable<Event>{
+public class Event implements Comparable<Event>, Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2678309540724062674L;
 	/**
 	 * TODO: should 'time' be from the start of the performance (00:00) or from where the it starts when
 	 * 	the user presses play?
