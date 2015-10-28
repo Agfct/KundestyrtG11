@@ -121,7 +121,7 @@ public class MediaObjectController extends GridPane{
 	@FXML
 	private void initialize() {
 		//NB: DRAG INSIDE A TIMELINE IS NOW DISABLED! OUTCOMMENT TO ENABLE
-//		buildNodeDragHandlers();
+		buildNodeDragHandlers();
 	}
 	
 	/**
@@ -307,14 +307,16 @@ public class MediaObjectController extends GridPane{
 			public void handle (DragEvent event) {
 				System.out.println("[MediaObjectController] Drag DONE");
 				
+				AdvancedScreenController tempAdvSrcController = AdvancedScreen.getInstance().getScreenController();
+				
 				parentController.getRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
 				parentController.getRoot().setOnDragOver(null);
-				AdvancedScreen.getInstance().getScreenController().getMasterRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
-				AdvancedScreen.getInstance().getScreenController().getMasterRoot().setOnDragOver(null);
+				tempAdvSrcController.getMasterRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
+				tempAdvSrcController.getMasterRoot().setOnDragOver(null);
 				parentController.getRoot().setOnDragDropped(null);
 				parentController.getRoot().setOnDragDone(null);
 
-				
+				tempAdvSrcController.getCurrentSession().timelineMediaObjectChanged(thisMediaObject.getParentController().getParentController().getTimelineModel(),thisMediaObject.getTimelineMediaObject(),(int)((thisMediaObject.getLayoutX()*1000)/tempAdvSrcController.getScaleCoefficient()),(int)thisMediaObject.getTimelineMediaObject().getStartPoint(),(int)thisMediaObject.getTimelineMediaObject().getDuration());
 			}
 		};
 		

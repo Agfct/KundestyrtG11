@@ -22,6 +22,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollBar;
@@ -34,6 +36,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -134,7 +137,10 @@ public class AdvancedScreen implements Screen{
 			
 			// Hashmap over the timelineIDs from the modules and the timelineControllers of the GUI
 			private HashMap<TimelineController, Integer> idTimlineControllerMap;
-
+			
+			//Canvas
+			private Canvas timelineBarCanvas = new Canvas(1000, 25);
+			GraphicsContext gc = timelineBarCanvas.getGraphicsContext2D();
 			
 			public AdvancedScreenController(){
 				System.out.println("RUNNING CONSTRUCTOR ADVANCEDSCREEN CTRL");
@@ -153,12 +159,20 @@ public class AdvancedScreen implements Screen{
 				}
 				
 				
-				timelineBarController = new TimelineBarController(this);
-				timelineBarContainer.getChildren().add(timelineBarController);
+
 				
 				//get current session
 				currentSession=MainModuleController.getInstance().getSession();
 				currentSession.addListener(this);
+				
+				//Creates the timelineBar above the timelines
+				timelineBarController = new TimelineBarController(this);
+				timelineBarContainer.getChildren().add(timelineBarCanvas);
+				timelineBarCanvas.setLayoutX(0);
+				timelineBarCanvas.setLayoutY(0);
+				paintTimelineBarCanvas();
+				timelineBarContainer.getChildren().add(timelineBarController);
+
 				
 				//InitializeScrollBar values
 				initializeScrollBar();
@@ -620,7 +634,7 @@ public class AdvancedScreen implements Screen{
 			}
 			
 			public void refreshScrollBarSize() {
-				timelineLineScrollBar.setMax((currentSession.getSessionLength() - 1000)*scaleCoefficient);
+				timelineLineScrollBar.setMax((currentSession.getSessionLength()*scaleCoefficient) - 1000);
 			}
 
 
@@ -711,7 +725,58 @@ public class AdvancedScreen implements Screen{
 				
 			}
 
+			/**
+			 * Paints the timelineBar lines and numbers according to scale
+			 * NB! A canvas cannot be very large (max 4k)
+			 */
+			public void paintTimelineBarCanvas(){
+				
+				
+				gc.setLineWidth(1.0);
+				//x = 12 to start the first line ontop of the center of the seeker
+			     for (int x = 12; x < 1000; x+=10) {
+			            double x1 ;
+			            x1 = x + 0.5; //TODO: The 0.5 is to get a clean (not blurry) line, but it might mean that x width should be +1 more pixel
+			            gc.moveTo(x1, 25);
+			            gc.lineTo(x1, 15);
+			            gc.stroke();
+			            gc.setFont(new Font(8));
+			            gc.fillText("1", x1+1, 12);
+//			            gc.strokeText("1", x1, 12);
+			     }
+				
+				
+//				root.getChildren().removeAll(currentListOfCanvases);
+//				currentListOfCanvases.clear();
+//				//11 is the added length because the bar needs to be centered when starting and stopping
+//				long barScaledSessionLength = (parentController.getCurrentSession().getSessionLength()*parentController.getScaleCoefficient())+11;
+//				long widthBetweenLines = 10;
+//				
+//				//Canvas are not scalable by default and can only have a length of 2-4k so we make 2k canvases and draws upon them.
+//				for (int i = 0; i < Math.ceil(barScaledSessionLength/2000); i++) {
+//					Canvas timelineBarCanvas = new Canvas(2000, 25);
+//					root.getChildren().add(timelineBarCanvas);
+//					currentListOfCanvases.add(timelineBarCanvas);
+//				}
+//				for (Canvas canvas : currentListOfCanvases) {
+//					GraphicsContext gc = canvas.getGraphicsContext2D();
+//					gc.setLineWidth(1.0);
+//					//x = 12 to start the first line ontop of the center of the seeker
+//				     for (int x = 12; x < barScaledSessionLength; x+=widthBetweenLines) {
+//				            double x1 ;
+//				            x1 = x + 0.5; //TODO: The 0.5 is to get a clean (not blurry) line, but it might mean that x width should be +1 more pixel
+//				            gc.moveTo(x1, 25);
+//				            gc.lineTo(x1, 15);
+//				            gc.stroke();
+//				            gc.setFont(new Font(8));
+//				            gc.fillText("1", x1+1, 12);
+////				            gc.strokeText("1", x1, 12);
+//				        }
+//				}
 
+
+			     
+			}
 
 			/* (non-Javadoc)
 			 * @see gui.SessionListener#fireSessionLenghtChanged()

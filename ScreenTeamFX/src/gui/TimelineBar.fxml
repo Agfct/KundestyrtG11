@@ -6,6 +6,5 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.canvas.Canvas?>
 
-<fx:root fx:id="root_pane" maxHeight="25" maxWidth="1011" minHeight="25" minWidth="1011" prefHeight="25" prefWidth="1011" type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-<Canvas style="-fx-background-color: RED" fx:id="timelineBarCanvas" width="200" height="25"/>
+<fx:root fx:id="root_pane" maxHeight="25" maxWidth="Infinity" minHeight="25" minWidth="2022" prefHeight="25" prefWidth="2022" type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 </fx:root>

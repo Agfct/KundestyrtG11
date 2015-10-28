@@ -5,6 +5,7 @@ package gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 
 import gui.AdvancedScreen.AdvancedScreenController;
@@ -13,6 +14,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ButtonType;
@@ -37,13 +39,11 @@ public class TimelineBarController extends Pane {
 	
 	private FXMLLoader fxmlLoader;
 	private AdvancedScreenController parentController;
-	
-	private @FXML Canvas timelineBarCanvas;
-	private GraphicsContext gc;
 	private Pane root = this;
 	
 	//Last pressed rightClick on timelineBar
 	private Point2D seekPoint;
+	private ArrayList<Canvas> currentListOfCanvases = new ArrayList<Canvas>();
 
 	private SeekerController seeker;
 	private final ContextMenu contextMenu = new ContextMenu();
@@ -66,8 +66,6 @@ public class TimelineBarController extends Pane {
 	}
 	//Creates a clipping mask to hide timelineBar outside of bounds
 	createClip();
-	
-	initializeTimeBar();
 	initializeMouse();
 	
 	seeker = new SeekerController(this);
@@ -75,31 +73,7 @@ public class TimelineBarController extends Pane {
 
 	}
 	
-	
-	/**
-	 * Creates the canvas that will be drawn upon in the timelineBar
-	 */
-	public void initializeTimeBar(){
-		long sessionLength = MainModuleController.getInstance().getSession().getSessionLength();
-		//22 is the added length because the bar needs to be centered when starting and stopping
-		long adjustedSessionlength = sessionLength +22;
-		long widthBetweenLines = 10;
-		timelineBarCanvas.setWidth(adjustedSessionlength);
-		gc = timelineBarCanvas.getGraphicsContext2D() ;
-		gc.setLineWidth(1.0);
-		//x = 12 to start the first line ontop of the center of the seeker
-	     for (int x = 12; x < adjustedSessionlength; x+=widthBetweenLines) {
-	            double x1 ;
-	            x1 = x + 0.5 ; //TODO: The 0.5 is to get a clean (not blurry) line, but it might mean that x width should be +1 more pixel
-	            gc.moveTo(x1, 25);
-	            gc.lineTo(x1, 15);
-	            gc.stroke();
-	            gc.setFont(new Font(8));
-	            gc.fillText("1", x1+1, 12);
-//	            gc.strokeText("1", x1, 12);
-	        }
-	     
-	}
+
 	
 	private void initializeMouse(){
 		//Adds different right click options to the ContextMenu that pops up on mouse click.
@@ -159,7 +133,9 @@ public class TimelineBarController extends Pane {
 	}
 	
 	public void scaleChanged(){
-		
+		System.out.println("TimelineBar: Scaling size");
+		root.setPrefWidth(parentController.getCurrentSession().getSessionLength()*parentController.getScaleCoefficient()+22);
+		//TODO: move the seeker and scale it correctly
 	}
 	
 
