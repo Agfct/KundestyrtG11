@@ -102,8 +102,8 @@ public class VLCMediaPlayer {
 		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
-	public void showhide(){
-		frame.setVisible(!frame.isVisible());
+	public void showhide(boolean show){
+		frame.setVisible(show);
 	}
 	
 	/**

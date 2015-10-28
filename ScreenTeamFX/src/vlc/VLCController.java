@@ -284,6 +284,15 @@ public class VLCController {
 		}
 	}
 	
+	public void maximize(int mp){
+		toPlayer(mp).maximize();
+	}
+		
+	
+	public void showmp(int mp,boolean show){
+		toPlayer(mp).showhide(show);
+	}
+	
 	public void identifyDisplays(){
 		GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 		

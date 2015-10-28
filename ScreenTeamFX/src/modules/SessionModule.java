@@ -42,6 +42,7 @@ public class SessionModule implements Serializable {
 	
 	private ArrayList<SessionListener> listeners;
 	private ArrayList<Integer> timelineOrder;
+	private ArrayList<String> shownwindows;
 	
 	// Constant used when creating TimelineMediaObjects that are images. Used as a reasonable duration when first appearing on a timeline.
 	private final long IMAGE_DURATION = 30000;
@@ -64,7 +65,8 @@ public class SessionModule implements Serializable {
 		this.t1 = new Thread();
 		this.tAll = new Thread();
 		this.globalTimeTicker = new Thread();
-		this.timelineOrder=new ArrayList<Integer>();
+		this.timelineOrder= new ArrayList<Integer>();
+		this.shownwindows = new ArrayList<String>();
 	}
 
 	/**
@@ -275,21 +277,20 @@ public class SessionModule implements Serializable {
 							else if(ev2.getAction()==Action.SHOW){
 								for(Integer dis:displays.keySet()){
 									if (displays.get(dis).getID()==ev2.getTimelineid()){
-										//TODO get the mediaplayer for this events timeline and call showhide() or make function just for showing the frame
+										vlccontroller.showmp(ev2.getTimelineid(), false);
 										windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), false, dis);
-										//TODO get the mediaplayer for the events timeline and call maximize()
+										vlccontroller.maximize(ev2.getTimelineid());
+										shownwindows.add(ev2.getTimelineMediaObject().getParent().getPath());
 										break;
 									}
 								}
 							}
 							else if(ev2.getAction()==Action.HIDE){
 								for(Integer dis:displays.keySet()){
-									//TODO get the mediaplayer for this events timeline and call showhide() or make own function just for hiding the frame
-									if (displays.get(dis).getID()==ev2.getTimelineid()){
-										windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), true, dis);
-										//TODO get the mediaplayer for the events timeline and call maximize()
-										break;
-									}
+									vlccontroller.showmp(ev2.getTimelineid(), false);
+									windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), true, dis);
+									vlccontroller.maximize(ev2.getTimelineid());
+									shownwindows.remove(ev2.getTimelineMediaObject().getParent().getPath());
 								}
 							}
 						}
@@ -301,8 +302,7 @@ public class SessionModule implements Serializable {
 								globalTimeTicker.start();
 							}
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							System.out.println("interrupted seekmultiple or playAll while playing");
 						}
 					}
 					//thread sleeping if its long until next event
@@ -700,8 +700,7 @@ public class SessionModule implements Serializable {
 				tAll.join();
 				globalTimeTicker.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("interrupted join on tALL or globalTimeTicker when changing globaltime");
 			}
 			
 			this.globaltime=newGlobalTime;
@@ -713,7 +712,9 @@ public class SessionModule implements Serializable {
 			for(Integer integer:vlccontroller.getMediaPlayerList().keySet()){
 				vlccontroller.stopOne(integer);
 			}
-			
+			for(String wind:shownwindows){
+				windowdisplay.WindowManipulation(wind, true, 0);
+			}
 		}
 	}
 	
