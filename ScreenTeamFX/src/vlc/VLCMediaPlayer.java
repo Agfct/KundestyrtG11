@@ -26,7 +26,7 @@ public class VLCMediaPlayer{
 	public VLCMediaPlayer(int ID){
 		this.ID = ID;
 		mp = new EmbeddedMediaPlayerComponent();
-		mp.setBackground(new Color(255, 255, 255));
+		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);
@@ -83,6 +83,8 @@ public class VLCMediaPlayer{
 	
 	public void stop(){
 		mp.getMediaPlayer().stop();
+		frame.setState(java.awt.Frame.ICONIFIED);
+		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
 	public void setMedia(String mediaPath){
@@ -103,6 +105,14 @@ public class VLCMediaPlayer{
 		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
+	public void hide(){
+		mp.setVisible(false);
+	}
+	
+	public void show(){
+		mp.setVisible(true);
+	}
+	
 	public void showhide(boolean show){
 		frame.setVisible(show);
 	}
@@ -115,11 +125,12 @@ public class VLCMediaPlayer{
 		frame.getContentPane().remove(mp);
 		frame.dispose();
 		frame = new JFrame(gs[display].getDefaultConfiguration ());
+		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setTitle("scr " + ID);
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().add(mp);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.getContentPane().add(mp);
 		frame.setVisible(true);
 	}
 	
