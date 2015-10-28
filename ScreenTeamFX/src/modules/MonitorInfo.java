@@ -1,7 +1,13 @@
 package modules;
 
-public class MonitorInfo {
+import java.io.Serializable;
 
+public class MonitorInfo implements Serializable{
+
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2321244859141548542L;
 		int Num_Monitor;
 		int Start_X, Start_Y;
 

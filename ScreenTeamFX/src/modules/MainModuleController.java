@@ -1,6 +1,3 @@
-/**
- * 
- */
 package modules;
 
 import java.io.File;
@@ -21,6 +18,7 @@ public class MainModuleController {
 	private SessionModule sessionModule;
 	private IOModule ioModule;
 	private VLCController vlc;
+	private WindowDisplay wdi;
 	// might need io if that is made
 
 	private static MainModuleController mainModuleController;
@@ -31,9 +29,9 @@ public class MainModuleController {
 		//TODO check if storage loads last session without problem, if so set timelinemodule to last session
 		//this.timelinemodule = this.storage.gettimelineModule
 		this.ioModule = new IOModule();
-		
+		this.wdi = new WindowDisplay(ioModule.getDisplays().size());
 		this.vlc = new VLCController(ioModule.getDisplays());
-		this.sessionModule= new SessionModule(vlc);
+		this.sessionModule= new SessionModule(vlc,wdi);
 		this.sessionModule.updateDisplays(ioModule.getDisplays());
 
 	}
@@ -94,7 +92,7 @@ public class MainModuleController {
 	public SessionModule loadSession(File loadFile) {
 		return storageController.loadSession(loadFile);
 	}
-	
+
 	/**
 	 * After loding a session, this method is called to set the loaded session as the current one.
 	 * @param sm

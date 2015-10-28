@@ -3,7 +3,7 @@ package modules;
 
 import com.sun.jna.platform.win32.WinDef.HWND;
 
-class WindowInfos
+public class WindowInfos
 {
    String title, process, processFilePath;
    HWND hWnd;

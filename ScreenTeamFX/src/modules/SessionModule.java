@@ -20,6 +20,7 @@ public class SessionModule implements Serializable {
 	 */
 	private static final long serialVersionUID = 3548566162984308320L;
 	private VLCController vlccontroller;
+	private WindowDisplay windowdisplay;
 	// Each display can have one or zero timelines
 	private HashMap<Integer, TimelineModel> displays;
 	private HashMap<Integer, TimelineModel> timelines;
@@ -41,6 +42,7 @@ public class SessionModule implements Serializable {
 	
 	private ArrayList<SessionListener> listeners;
 	private ArrayList<Integer> timelineOrder;
+	private ArrayList<String> shownwindows;
 	
 	// Used when saving and loading, to check if the loaded session has the same number of displays as the loaded one
 	private int numberOfAvailableDisplays;
@@ -48,8 +50,7 @@ public class SessionModule implements Serializable {
 	// Constant used when creating TimelineMediaObjects that are images. Used as a reasonable duration when first appearing on a timeline.
 	private final long IMAGE_DURATION = 30000;
 	
-	public SessionModule(VLCController vlc) {
-		System.out.println("[SessionModule.SessionModule()] Constructor started");
+	public SessionModule(VLCController vlc, WindowDisplay wdi) {
 		this.timelines = new HashMap<Integer,TimelineModel>();
 //		this.timelines.put(0,new TimelineModel(0));
 		this.mediaObjects = new ArrayList<MediaObject>();
@@ -60,6 +61,7 @@ public class SessionModule implements Serializable {
 		this.displays = new HashMap<Integer,TimelineModel>();
 		this.listeners = new ArrayList<SessionListener>();
 		this.vlccontroller = vlc;
+		this.windowdisplay = wdi;
 		this.pausing = true;
 		this.paused = true;
 //		vlccontroller.createMediaPlayer(tlmID);
@@ -67,6 +69,7 @@ public class SessionModule implements Serializable {
 		this.tAll = new Thread();
 		this.globalTimeTicker = new Thread();
 		this.timelineOrder=new ArrayList<Integer>();
+		this.shownwindows = new ArrayList<String>();
 		this.numberOfAvailableDisplays = -1;
 	}
 
@@ -293,6 +296,25 @@ public class SessionModule implements Serializable {
 								pplay.put(ev2.getTimelineid(), spoint);
 								vlccontroller.seekOne(ev2.getTimelineid(), spoint);
 							}
+							else if(ev2.getAction()==Action.SHOW){
+								for(Integer dis:displays.keySet()){
+									if (displays.get(dis).getID()==ev2.getTimelineid()){
+										vlccontroller.showmp(ev2.getTimelineid(), false);
+										windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), false, dis);
+										vlccontroller.maximize(ev2.getTimelineid());
+										shownwindows.add(ev2.getTimelineMediaObject().getParent().getPath());
+										break;
+									}
+								}
+							}
+							else if(ev2.getAction()==Action.HIDE){
+								for(Integer dis:displays.keySet()){
+									vlccontroller.showmp(ev2.getTimelineid(), false);
+									windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), true, dis);
+									vlccontroller.maximize(ev2.getTimelineid());
+									shownwindows.remove(ev2.getTimelineMediaObject().getParent().getPath());
+								}
+							}
 						}
 						try {
 							vlccontroller.SeekMultiple(pplay);
@@ -302,8 +324,7 @@ public class SessionModule implements Serializable {
 								globalTimeTicker.start();
 							}
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							System.out.println("interrupted seekmultiple or playAll while playing");
 						}
 					}
 					//thread sleeping if its long until next event
@@ -313,6 +334,10 @@ public class SessionModule implements Serializable {
 						} catch (InterruptedException e) {
 						}
 					}
+				}
+				if (!globalTimeTicker.isAlive()){
+					startp = System.currentTimeMillis();
+					globalTimeTicker.start();
 				}
 			}
 		};
@@ -736,8 +761,7 @@ public class SessionModule implements Serializable {
 				tAll.join();
 				globalTimeTicker.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("interrupted join on tALL or globalTimeTicker when changing globaltime");
 			}
 			
 			this.globaltime=newGlobalTime;
@@ -749,7 +773,10 @@ public class SessionModule implements Serializable {
 			for(Integer integer:vlccontroller.getMediaPlayerList().keySet()){
 				vlccontroller.stopOne(integer);
 			}
-			
+			for(String wind:shownwindows){
+				windowdisplay.WindowManipulation(wind, true, 0);
+			}
+			shownwindows.clear();
 		}
 	}
 	
@@ -860,6 +887,7 @@ public class SessionModule implements Serializable {
 			timelines.get(i).removeAllDisplays();
 		}
 	}
-	
+
+		
 	
 }
