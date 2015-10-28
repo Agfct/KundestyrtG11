@@ -275,9 +275,18 @@ public class VLCController {
 		}
 	}
 	
-	public void mute(int mp, boolean muted){
-		if(muted){
+	public void mute(int mp, boolean mute){
+		if(mute){
 			toPlayer(mp).mute();
+		}
+		else{
+			toPlayer(mp).unmute();
+		}
+	}
+	
+	public void hide(int mp, boolean hide){
+		if(hide){
+			toPlayer(mp).hide();
 		}
 		else{
 			toPlayer(mp).unmute();
