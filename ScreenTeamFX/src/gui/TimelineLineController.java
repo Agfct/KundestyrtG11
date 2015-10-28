@@ -201,7 +201,7 @@ public class TimelineLineController implements FXMLController{
 				mediaObjectController.updateValuesFromModel();
 				rootPane.getChildren().remove(mediaObjectController);
 				rootPane.getChildren().add(mediaObjectController); 
-				mediaObjectController.relocateToPoint(new Point2D((mediaObjectController.getTimelineMediaObject().getStart()/1000)*AdvancedScreen.getInstance().getScreenController().getScaleCoefficient(),0));
+				mediaObjectController.relocateToPoint(new Point2D((mediaObjectController.getTimelineMediaObject().getStart()*AdvancedScreen.getInstance().getScreenController().getScaleCoefficient())/1000,0));
 			}
 			
 		}
@@ -215,7 +215,7 @@ public class TimelineLineController implements FXMLController{
 			for(TimelineMediaObject tlmo:difference){
 				MediaObjectController mediaObjectController = new MediaObjectController(tlmo);
 				mediaObjectController.initializeMediaObject();
-				addMediaObject(mediaObjectController, new Point2D((tlmo.getStart()/1000)*AdvancedScreen.getInstance().getScreenController().getScaleCoefficient(), 0));
+				addMediaObject(mediaObjectController, new Point2D((tlmo.getStart()*AdvancedScreen.getInstance().getScreenController().getScaleCoefficient())/1000, 0));
 
 			}
 			timelineMediaObjectModels.clear();

@@ -109,7 +109,9 @@ public class AdvancedScreen implements Screen{
 			private Stage modalDialog;
 			
 			//Scaling
-			private int scaleCoefficient = 10;
+			private int scaleCoefficient = 1;
+			private int maxScale = 10;
+			private int minScale = 1;
 			
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
@@ -618,7 +620,7 @@ public class AdvancedScreen implements Screen{
 			}
 			
 			public void refreshScrollBarSize() {
-				timelineLineScrollBar.setMax(currentSession.getSessionLength() - 1000);
+				timelineLineScrollBar.setMax((currentSession.getSessionLength() - 1000)*scaleCoefficient);
 			}
 
 
@@ -642,7 +644,28 @@ public class AdvancedScreen implements Screen{
 			public int getScaleCoefficient(){
 				return scaleCoefficient;
 			}
+			
+			public void increaseScale(){
+				if( scaleCoefficient < maxScale){
+					scaleCoefficient *= 10;
+					fireScaleChanged();
+				}
+			}
+			
+			public void decreaseScale(){
+				if( scaleCoefficient > minScale){
+					scaleCoefficient /= 10;
+					fireScaleChanged();
+				}
+			}
 
+			private void fireScaleChanged(){
+				fireSessionLenghtChanged();
+				timelineBarController.scaleChanged();
+				for (TimelineController timelineController : timelineControllers) {
+					timelineController.getTimelineLineController().repaint();
+				}
+			}
 
 			public void changeGlobalTime(long i) {
 				currentSession.changeGlobalTime(i);
@@ -697,7 +720,7 @@ public class AdvancedScreen implements Screen{
 			public void fireSessionLenghtChanged() {
 				refreshScrollBarSize();
 				for (TimelineController timelineController : timelineControllers) {
-					timelineController.getTimelineLineController().getRoot().setPrefWidth(currentSession.getSessionLength());
+					timelineController.getTimelineLineController().getRoot().setPrefWidth(currentSession.getSessionLength()*scaleCoefficient);
 				}
 			}
 			

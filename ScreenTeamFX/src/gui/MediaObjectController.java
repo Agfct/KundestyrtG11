@@ -91,15 +91,12 @@ public class MediaObjectController extends GridPane{
 	 */
 	public void initializeMediaObject(){
 		this.nameOfFile.setText(timelineMediaObject.getParent().getName());
-		this.mediaObjectActualWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
-		System.out.println("Setting width:" + mediaObjectActualWidth);
-		setMediaObjectWidth(mediaObjectActualWidth);
+		setMediaObjectWidth();
 		
 	}
 	
 	public void updateValuesFromModel(){
-		this.mediaObjectActualWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
-		setMediaObjectWidth(mediaObjectActualWidth);
+		setMediaObjectWidth();
 //		setStyle("-fx-background-color: BLUE");
 
 	}
@@ -108,10 +105,14 @@ public class MediaObjectController extends GridPane{
 	 * This method sets the width of the mediaObject based on the zoom scale
 	 * @param width
 	 */
-	private void setMediaObjectWidth(double width){
+	private void setMediaObjectWidth(){
 		int tempScale = AdvancedScreen.getInstance().getScreenController().getScaleCoefficient();
-		this.setPrefWidth(width*tempScale);
-		this.setMaxWidth(width*tempScale);
+		System.out.println("[MediaObjectController] GetDuration raw: " + timelineMediaObject.getDuration());
+		System.out.println("[MediaObjectController] GetDuration divided by 1000: " + timelineMediaObject.getDuration()/1000);
+		this.mediaObjectActualWidth=Math.ceil((((timelineMediaObject.getDuration()*tempScale)/1000)+0.5));
+		System.out.println("[MediaObjectController] Setting width:" + mediaObjectActualWidth);
+		this.setPrefWidth(mediaObjectActualWidth);
+		this.setMaxWidth(mediaObjectActualWidth);
 	}
 	
 	/**

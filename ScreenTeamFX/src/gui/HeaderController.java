@@ -117,9 +117,11 @@ public class HeaderController implements FXMLController{
 
 		}else if(((Button)event.getSource()).getId().equals("zoomInn")){
 			// If the user clicks the zoom inn
+			parentController.increaseScale();
 
 		}else if(((Button)event.getSource()).getId().equals("zoomOut")){
 			// If the user clicks the zoom Out
+			parentController.decreaseScale();
 
 		}else if(((Button)event.getSource()).getId().equals("identifyScreens")){
 			// If the user clicks the Identify Screens button

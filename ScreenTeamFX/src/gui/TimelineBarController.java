@@ -158,6 +158,10 @@ public class TimelineBarController extends Pane {
 		return parentController;
 	}
 	
+	public void scaleChanged(){
+		
+	}
+	
 
 
 }
