@@ -42,9 +42,13 @@
 
 		<Button id="addTimeLineBtn" text="_Add Timeline" onAction="#buttonPressed"
 			mnemonicParsing="true" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-		<Button id="importMediaFromDisk" text="_Import media from disk"
-			onAction="#buttonPressed" mnemonicParsing="true" GridPane.rowIndex="0"
-			GridPane.columnIndex="1" />
+		
+		<HBox fx:id="importHbox" GridPane.rowIndex="0" GridPane.columnIndex="1" alignment="center" >
+			<Button id="importMediaFromDisk" text="_Import media from disk" onAction="#buttonPressed"
+        		mnemonicParsing="true" />
+			<Button id="importWindow" text="_Import window" onAction="#buttonPressed"
+        		mnemonicParsing="true" />
+		</HBox>
 
 
 		<!-- VLC Buttons -->

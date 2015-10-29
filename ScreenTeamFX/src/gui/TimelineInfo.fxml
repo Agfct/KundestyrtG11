@@ -44,8 +44,10 @@
 			<children>
 				<Button fx:id="removeTimelineBtn" onAction="#buttonPressed"
 					GridPane.rowIndex="0" GridPane.columnIndex="3">X</Button>
-				<CheckComboBox fx:id="checkComboBox" prefWidth="200"
+					
+				<ComboBox fx:id="displaysComboBox" prefWidth="200"
 					GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+					
 				<Button fx:id="muteVideo" onAction="#buttonPressed"
 					GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.halignment="CENTER">V</Button>
 				<Button fx:id="muteSound" onAction="#buttonPressed"

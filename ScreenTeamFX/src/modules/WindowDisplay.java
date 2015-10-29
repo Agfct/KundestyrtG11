@@ -44,6 +44,10 @@ public class WindowDisplay implements Serializable{
 		InitialisationMonitor(nb_screen);
 	}
 	
+    public ArrayList<WindowInfos> getWindowInfoList(){
+        return AllWindow;
+    }
+	
 	//Principal function	
 	public void WindowManipulation(String NameWindow, boolean hide, Integer display) {
 		
