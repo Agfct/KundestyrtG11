@@ -35,7 +35,7 @@ public class WindowChooserController implements FXMLController {
 		@FXML NumberTextField durationField;
 		@FXML Label endTimeLabel;
 		@FXML Button applyBtn;
-		@FXML ListView windowListView;
+		@FXML ListView<String> windowListView;
 		
 		ArrayList<String> windowsList;
 		
@@ -55,12 +55,13 @@ public class WindowChooserController implements FXMLController {
 		}
 		
 		
-
+		/**
+		 * This method populates the listview
+		 */
 		private void initList(){
 			windowsList= parentController.getWindows();
 			windowListView.getItems().addAll(windowsList);
-//			windowListView.
-			
+			windowListView.setMaxWidth(200); // to center the listview
 
 		}
 

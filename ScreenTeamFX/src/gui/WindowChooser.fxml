@@ -9,11 +9,10 @@
 <?import gui.NumberTextField?>
 
 <GridPane style="-fx-background-color: LIGHTBLUE" fx:id="windowContainer"
-	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40"
-	maxHeight="200" maxWidth="300" minHeight="200" minWidth="300"
-	prefHeight="200" prefWidth="300">
+	xmlns:fx="http://javafx.com/fxml/1" gridLinesVisible="true" xmlns="http://javafx.com/javafx/8.0.40" prefWidth="200"
+	>
 	<columnConstraints>
-		<ColumnConstraints halignment="CENTER" />
+		<ColumnConstraints halignment="CENTER" hgrow="ALWAYS"  />
 	</columnConstraints>
 	<rowConstraints>
 		<RowConstraints prefHeight="40" vgrow="NEVER" />
@@ -23,12 +22,12 @@
 	<children>
 		<Label text="Please select window to be imported." GridPane.rowIndex="0" />
 		
-		<ListView fx:id="windowListView" GridPane.rowIndex="1">
+		<ListView fx:id="windowListView" GridPane.rowIndex="1" >
             <items>
                <!-- The available windows will populate the listView -->
             </items>
         </ListView>
 		<Button fx:id="importWindow" text="Import" onAction="#buttonPressed"
-			GridPane.rowIndex="2" />
+			GridPane.rowIndex="2"  />
 	</children>
 </GridPane>
