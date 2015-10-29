@@ -758,28 +758,31 @@ public class AdvancedScreen implements Screen{
 
 
 
-        public void assignRequest(List<String> checkedItems, TimelineModel tlm) {
-            System.out.println("CHECKEDITEMS: " +checkedItems);
-            System.out.println("ACTUAL ASSIGNED SCREENS: "+ tlm.getAssignedDisplays() );
+        public void assignRequest(String display, TimelineModel tlm) {
 
-            if(checkedItems.size()>tlm.getAssignedDisplays().size()){
-                System.out.println("New display!");
-                //NB: only possible with one screen per timeline. Address problem with ghosts
-                currentSession.assignTimeline(Integer.parseInt(checkedItems.get(0)), tlm);
-            }
-            else if(checkedItems.size()<tlm.getAssignedDisplays().size()){
-                //TODO: implement the removal of screen if box is unchecked
-                System.out.println("RemovedScreen!");
-            }
-            else if(checkedItems.size()==tlm.getAssignedDisplays().size()){
-                for(String dispString:checkedItems){
-                    if(!tlm.getAssignedDisplays().contains(Integer.parseInt(dispString))){
-                        System.out.println("NEW DISPLAY!?");
-                    }
-                }
-            }
+//            if(checkedItems.size()>tlm.getAssignedDisplays().size()){
+//                System.out.println("New display!");
+//                //NB: only possible with one screen per timeline. Address problem with ghosts
+//                currentSession.assignTimeline(Integer.parseInt(checkedItems.get(0)), tlm);
+//            }
+//            else if(checkedItems.size()<tlm.getAssignedDisplays().size()){
+//                //TODO: implement the removal of screen if box is unchecked
+//                System.out.println("RemovedScreen!");
+//            }
+//            else if(checkedItems.size()==tlm.getAssignedDisplays().size()){
+//                for(String dispString:checkedItems){
+//                    if(!tlm.getAssignedDisplays().contains(Integer.parseInt(dispString))){
+//                        System.out.println("NEW DISPLAY!?");
+//                    }
+//                }
+//            }
+        	currentSession.assignTimeline(Integer.parseInt(display), tlm);
 
         }
+        public void removeAssignRequest(TimelineModel tlm){
+        	currentSession.unassignTimeline(tlm);
+        }
+        
 
         /**
          * Paints the timelineBar lines and numbers according to scale

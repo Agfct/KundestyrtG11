@@ -643,6 +643,7 @@ public class SessionModule implements Serializable {
                 if( checkWindowCollision(tlmo) ){
                     return "Window ("+mediaObject.getName()+") collides with another window of the same type. It was not added.";
                 }
+                break;
             }
             default:
                 tlmo = new TimelineMediaObject(startTime, mediaObject.getLength(), timeline.getID(), mediaObject);

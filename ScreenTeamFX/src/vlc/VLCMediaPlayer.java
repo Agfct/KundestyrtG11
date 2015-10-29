@@ -43,12 +43,15 @@ public class VLCMediaPlayer{
 	}
 	
 	public void play(){
+		System.out.println("[PLAY]");
 		if(display > -1){
 			if(mediaChanged){
-				mp.getMediaPlayer().startMedia(mediaPath);
+				System.out.println("[mediaChanged!]");
+				mp.getMediaPlayer().startMedia(mediaPath,":avcodec-hw=none",":no-directx-hw-yuv",":no-direct3d-hw-blending");
 				mediaChanged = false;
 			}
 			else if(getTime() > -1){
+				System.out.println("[getTime>-1]");
 				long startp = System.currentTimeMillis();
 				mp.getMediaPlayer().start();
 			}
@@ -65,13 +68,17 @@ public class VLCMediaPlayer{
 	}
 	
 	public void seek(long time){
+		System.out.println("[SEEK]");
 		if(mediaChanged){
-			mp.getMediaPlayer().startMedia(mediaPath);
+			System.out.println("[mediaChanged!]");
+			mp.getMediaPlayer().startMedia(mediaPath,":avcodec-hw=none",":no-directx-hw-yuv",":no-direct3d-hw-blending");
 			mp.getMediaPlayer().pause();
 			mp.getMediaPlayer().setTime(time);
 			mediaChanged = false;
 		}
 		else if(getTime() > -1){
+			System.out.println("[getTime>-1]");
+
 			pause();
 			mp.getMediaPlayer().setTime(time);
 		}
@@ -180,7 +187,7 @@ public class VLCMediaPlayer{
 	
 	public long isPlayable(String mediaPath){
 		frame.setVisible(true);
-		mp.getMediaPlayer().startMedia(mediaPath);
+		mp.getMediaPlayer().startMedia(mediaPath,":avcodec-hw=none",":no-directx-hw-yuv",":no-direct3d-hw-blending");
 		return mp.getMediaPlayer().getLength();
 	}
 	

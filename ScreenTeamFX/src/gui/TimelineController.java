@@ -7,6 +7,8 @@ import java.util.Iterator;
 import org.controlsfx.control.CheckComboBox;
 
 import gui.AdvancedScreen.AdvancedScreenController;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -14,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -38,7 +41,7 @@ public class TimelineController implements FXMLController {
 	@FXML GridPane timelineContainer;
 	@FXML AnchorPane timelineLineContainer;
 	@FXML Button removeTimelineBtn;
-	@FXML CheckComboBox<String> checkComboBox;
+	@FXML ComboBox<String> displaysComboBox;
 	@FXML Label listOfScreens;
 	
 	//The timelinemodel that corresponds to this controller
@@ -99,8 +102,8 @@ public class TimelineController implements FXMLController {
 	private void initializeTimelineInfo(){
 		
 		
-		checkComboBox.getItems().clear();
-		System.out.println("UPDATING TIMELINEMODEL CTRL: "+ timelineModel.getID());
+//		displaysComboBox.getItems().clear();
+//		System.out.println("UPDATING TIMELINEMODEL CTRL: "+ timelineModel.getID());
 		
 		ObservableList<String> obsList = FXCollections.observableArrayList();
 		 for (int i=0;i<parentController.getAvailableDisplays().size();i++) {
@@ -109,15 +112,16 @@ public class TimelineController implements FXMLController {
 			 obsList.add(parentController.getAvailableDisplays().get(i).toString());
 		     
 		 }
-		 checkComboBox.getItems().addAll(obsList);
-		 checkComboBox.getCheckModel().clearChecks();
-		 if(assignedDisplays.size()!=0){
-			 for(int i=0;i<checkComboBox.getItems().size();i++){
-			 if(assignedDisplays.contains(Integer.parseInt(checkComboBox.getItems().get(i)))){
-				 checkComboBox.getCheckModel().checkIndices(i);
-			 }
-			 }
-		 }
+		 displaysComboBox.getItems().add("None");
+		 displaysComboBox.getItems().addAll(obsList);
+//		 displaysComboBox.getCheckModel().clearChecks();
+//		 if(assignedDisplays.size()!=0){
+//			 for(int i=0;i<checkComboBox.getItems().size();i++){
+//			 if(assignedDisplays.contains(Integer.parseInt(checkComboBox.getItems().get(i)))){
+//				 checkComboBox.getCheckModel().checkIndices(i);
+//			 }
+//			 }
+//		 }
 		 
 		 
 //		 checkComboBox.getCheckModel().checkIndices(0);
@@ -129,19 +133,35 @@ public class TimelineController implements FXMLController {
 //		 if(assignedDisplays.size()>0){
 //			 checkComboBox.getCheckModel().getCheckedItems().addAll(assignedDisplays.get(0).toString());
 //		 }
-		 System.out.println("CHECKED ITEMS; "+checkComboBox.getCheckModel().getCheckedItems());
 		 
 //		 checkComboBox.setCheckModel(value);
 		     
 
-		 checkComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-		     public void onChanged(ListChangeListener.Change<? extends String> c) {
-		    	 System.out.println("CheckedItems: " +checkComboBox.getCheckModel().getCheckedItems());
-		    	 parentController.assignRequest(checkComboBox.getCheckModel().getCheckedItems(),timelineModel);
-		     }
-		     
+//		 displaysComboBox.addListener(new ListChangeListener<String>() {
+//		     public void onChanged(ListChangeListener.Change<? extends String> c) {
+//		    	 System.out.println("CheckedItems: " +displaysComboBox.getCheckModel().getCheckedItems());
+//		    	 parentController.assignRequest(displaysComboBox.getCheckModel().getCheckedItems(),timelineModel);
+//		     }
+//		     
+//		 });
+//		 
+		 displaysComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
+			@Override
+			public void changed(ObservableValue<? extends String> selected, String oldDisplay, String newDisplay) {
+
+				if(newDisplay!=null){
+					if(newDisplay.equals("None")){
+						parentController.removeAssignRequest(timelineModel);				
+					}
+					else{
+						parentController.assignRequest(newDisplay, timelineModel);	
+					}
+				}
+				
+			}
 		 });
 		 
+//		 
 		 
 //		List<String> supplierNames = Arrays.asList("sup1", "sup2", "sup3");
 //		screenChoiceBox.setItems(FXCollections.observableArrayList(supplierNames));
@@ -208,7 +228,8 @@ public class TimelineController implements FXMLController {
 	public void modelChanged() {
 		childController.repaint();
 		updateValuesFromModel();
-		initializeTimelineInfo();
+		//TODO: update what screen the timeline is assigned to!
+		
 		
 	}
 
