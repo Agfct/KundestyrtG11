@@ -135,7 +135,7 @@ public class TimelineBarController extends Pane {
 	public void scaleChanged(){
 		System.out.println("TimelineBar: Scaling size");
 		root.setPrefWidth(parentController.getCurrentSession().getSessionLength()*parentController.getScaleCoefficient()+22);
-		//TODO: move the seeker and scale it correctly
+		seeker.scaleChanged(parentController.getScaleCoefficient());
 	}
 	
 

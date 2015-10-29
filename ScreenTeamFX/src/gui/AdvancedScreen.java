@@ -523,6 +523,7 @@ public class AdvancedScreen implements Screen{
 					timelineControllers.add(tempTimeController);
 					addTimelineControllerToScreen(tempTimeController);
 					idTimlineControllerMap.put(tempTimeController, timeLineModel.getID());
+					tempTimeController.getTimelineLineController().getRoot().setPrefWidth(currentSession.getSessionLength()*scaleCoefficient);
 					break;
 				}
 				case REMOVED:{
@@ -571,7 +572,6 @@ public class AdvancedScreen implements Screen{
 				}
 				
 				default:
-					System.out.println("bitte nicht die enum engenehmen, Zimmer...");
 					break;
 				}
 				//Remove all timelines from view

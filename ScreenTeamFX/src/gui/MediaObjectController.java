@@ -219,6 +219,10 @@ public class MediaObjectController extends GridPane{
 //		
 		if(type == MediaSourceType.AUDIO){
 			getStyleClass().add("icon-sound");
+		}else if(type == MediaSourceType.IMAGE){
+			getStyleClass().add("background-image");
+		}else if(type == MediaSourceType.WINDOW){
+			getStyleClass().add("background-window");
 		}else{
 			getStyleClass().add("background-video");
 		}

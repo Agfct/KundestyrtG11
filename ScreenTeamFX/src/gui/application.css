@@ -30,6 +30,14 @@
 	-fx-background-radius: 10; */
 }
 
+.background-image {
+	-fx-background-image: url("../../resources/videoTypeBack.png");
+}
+
+.background-window {
+	-fx-background-image: url("../../resources/videoTypeBack.png");
+}
+
 .icon-cog {
 	-fx-background-image: url("../../resources/Icon_cog.png");
 	-fx-background-repeat: no-repeat;

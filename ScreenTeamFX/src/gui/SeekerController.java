@@ -32,6 +32,9 @@ public class SeekerController extends Pane{
 	private FXMLLoader fxmlLoader;
 	private TimelineBarController parentController;
 	private Pane root = this;
+	
+	//scaling
+	private int scale = 1;
 
 	private Canvas seekerLine;
 	private GraphicsContext seekergc;
@@ -163,7 +166,7 @@ public class SeekerController extends Pane{
 
 			@Override
 			public void handle (DragEvent event) {
-				System.out.println("[SeekerController] Drag DONE" + localToParent(0,25));
+				System.out.println("[SeekerController] Drag DONE X is: " + localToParent(0,25).getX()/scale);
 
 				parentController.getRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
 				parentController.getRoot().setOnDragOver(null);
@@ -172,7 +175,8 @@ public class SeekerController extends Pane{
 				parentController.getRoot().setOnDragDropped(null);
 				parentController.getRoot().setOnDragDone(null);
 
-
+				seekerChanged();
+				AdvancedScreen.getInstance().getScreenController().changeGlobalTime((long)((localToParent(0,25).getX()/scale)*1000));
 			}
 		};
 
@@ -221,5 +225,9 @@ public class SeekerController extends Pane{
 
 		});
 
+	}
+	
+	public void scaleChanged(int newScale){
+		this.scale = newScale;
 	}
 }
