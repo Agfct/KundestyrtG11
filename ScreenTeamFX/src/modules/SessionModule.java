@@ -47,8 +47,9 @@ public class SessionModule implements Serializable {
 	// Used when saving and loading, to check if the loaded session has the same number of displays as the loaded one
 	private int numberOfAvailableDisplays;
 	
-	// Constant used when creating TimelineMediaObjects that are images. Used as a reasonable duration when first appearing on a timeline.
+	// Constant used when creating TimelineMediaObjects that are images or windows. Used as a reasonable duration when first appearing on a timeline.
 	private final long IMAGE_DURATION = 30000;
+	private final long WINDOW_DURATION = 30000;
 	
 	public SessionModule(VLCController vlc, WindowDisplay wdi) {
 		this.timelines = new HashMap<Integer,TimelineModel>();
@@ -567,33 +568,42 @@ public class SessionModule implements Serializable {
 		}
 		
 		// Did not find an old MediaObject with equal path, so create a new one
-		
-		String name = path.substring(path.lastIndexOf('\\')+1);
-		MediaObject mo = new MediaObject(path, name, mst);
-		long lenght=vlccontroller.prerunCheck(mo.getPath());
+		String name = "";
+		long length = -1;
+		MediaObject mo = new MediaObject(path, name, mst); 
 		
 		switch(mst){
 		case IMAGE: {
-			mediaObjects.add(mo);
-			mediaObjectsChanged();
-			return "mediaObject created";
+			name = path.substring(path.lastIndexOf('\\')+1);
+			mo.setName(name);
+		}
+		case AUDIO: {
+			name = path.substring(path.lastIndexOf('\\')+1);
+			mo.setName(name);
+		}
+		case WINDOW: {
+			name = path;
+			mo.setName(name);
 		}
 		case VIDEO: {
+			name = path.substring(path.lastIndexOf('\\')+1);
+			mo.setName(name);
+			long lenght=vlccontroller.prerunCheck(mo.getPath());
 			if(lenght>0){
 				mo.setLength((int)lenght);
-				mediaObjects.add(mo);
-				mediaObjectsChanged();
-				return "mediaObject created";
-
 			}
-			return "MediaObject not created, prerunChecker in VLC failed";
+			else{
+				return "MediaObject not created, prerunChecker in VLC failed";
+			}
 		}
 		default: {
-			return "MediaObject not created, MediaSourceType not recognized in SessionModule.createNewMediaObject(MediaSourceType mst, String path)";
+			break;
 		}
 		}
 		
-
+		mediaObjects.add(mo);
+		mediaObjectsChanged();
+		return "mediaObject created";
 	}
 
 	public ArrayList<MediaObject> getMediaObjects() {
@@ -615,6 +625,13 @@ public class SessionModule implements Serializable {
 				tlmo = new TimelineMediaObject(startTime, IMAGE_DURATION, timeline.getID(), mediaObject);
 				break;
 			}
+			case WINDOW: {
+				tlmo = new TimelineMediaObject(startTime, WINDOW_DURATION, timeline.getID(), mediaObject);
+				// Check that it does not collide with anything
+				if( checkWindowCollision(tlmo) ){
+					return "Window ("+mediaObject.getName()+") collides with another window of the same type. It was not added.";
+				}
+			}
 			default:
 				tlmo = new TimelineMediaObject(startTime, mediaObject.getLength(), timeline.getID(), mediaObject);
 				break;
@@ -625,6 +642,40 @@ public class SessionModule implements Serializable {
 		return result;
 	}
 	
+	/**
+	 * Go through all timelines and check if the timlinemediaobject (which should be a WINDOW) collides with 
+	 * another timlinemediaobject for the same window.
+	 * @param tlmo
+	 * @return
+	 */
+	private boolean checkWindowCollision(TimelineMediaObject tlmo) {
+		if(tlmo.getParent().getType() != MediaSourceType.WINDOW){
+			return false;
+		}
+		
+		for(Integer i : timelines.keySet()){
+			TimelineModel tlm = timelines.get(i);
+			for(TimelineMediaObject tlmoToCompare : tlm.getTimelineMediaObjects()){
+				if(tlmoToCompare.getParent().getType() != MediaSourceType.WINDOW){
+					continue;
+				}
+				if( !tlmoToCompare.getParent().getPath().equals(tlmo.getParent().getPath()) ){
+					continue;
+				}
+				// From here on, both timelinemediaobjects are of type WINDOW and they have the same MediaObject parent
+				long sp = tlmo.getStart();
+				long ep = sp + tlmo.getDuration();
+				long osp = tlmoToCompare.getStart();
+				long oep = osp + tlmoToCompare.getDuration();
+				
+				if( osp <= sp && sp <= oep || osp <= ep && ep <= oep ){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Duplicates the content from TimlineModel tlm (except from window management) into the TimlineModel with ID == timelineInt.
 	 * Returns true if this is done successfully, and false if there is some problem. 
