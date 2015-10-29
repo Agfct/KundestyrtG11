@@ -662,8 +662,15 @@ public class SessionModule implements Serializable {
 				if( !tlmoToCompare.getParent().getPath().equals(tlmo.getParent().getPath()) ){
 					continue;
 				}
-				// From here on, bothe timelinemediaobjects are of type WINDOW and they have the same MediaObject parent
-				asdf
+				// From here on, both timelinemediaobjects are of type WINDOW and they have the same MediaObject parent
+				long sp = tlmo.getStart();
+				long ep = sp + tlmo.getDuration();
+				long osp = tlmoToCompare.getStart();
+				long oep = osp + tlmoToCompare.getDuration();
+				
+				if( osp <= sp && sp <= oep || osp <= ep && ep <= oep ){
+					return true;
+				}
 			}
 		}
 		return false;
