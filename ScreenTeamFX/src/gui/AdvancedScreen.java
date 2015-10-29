@@ -110,6 +110,8 @@ public class AdvancedScreen implements Screen{
         private SessionModule currentSession;
         private double scrollBarPosition = 0;
         private Stage modalDialog;
+        private Stage windowChooser; // stage for the windowChooser
+        
 
         //Scaling
         private int scaleCoefficient = 1;
@@ -623,6 +625,33 @@ public class AdvancedScreen implements Screen{
                 modalDialog.close();
             }
         }
+        
+        /**
+         * Shows the user a popup with the available windows that can be controlled
+         */
+        public void showWindowChooser(){
+            windowChooser = new Stage();
+            windowChooser.setResizable(false);
+            windowChooser.initModality(Modality.APPLICATION_MODAL);
+            windowChooser.initOwner(MainGUIController.getInstance().primaryStage);
+            WindowChooserController windowsChooser = new WindowChooserController(this);
+            Scene dialogScene = new Scene(windowsChooser.getRoot(), 300, 200);
+            windowChooser.setScene(dialogScene);
+            windowChooser.show();
+        }
+        public void closeWindowChooser(){
+            if(windowChooser != null){
+                windowChooser.close();
+            }
+        }
+        public ArrayList<String> getWindows() {
+            return currentSession.getAvailableWindows();
+        }
+ 
+       
+        
+        
+        
 
 
 
@@ -666,7 +695,7 @@ public class AdvancedScreen implements Screen{
         @Override
         public void fireGlobalTimeChanged(long newGlobalTime) {
             timelineBarController.getSeeker().placeSeeker(newGlobalTime);
-            System.out.println(newGlobalTime);
+//            System.out.println(newGlobalTime);
 
         }
 
