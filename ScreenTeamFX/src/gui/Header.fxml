@@ -41,7 +41,7 @@
 
 
 		<Button id="addTimeLineBtn" text="_Add Timeline" onAction="#buttonPressed"
-			mnemonicParsing="true" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+			mnemonicParsing="true" GridPane.rowIndex="3" GridPane.columnIndex="0" />
 		<Button id="importMediaFromDisk" text="_Import media from disk"
 			onAction="#buttonPressed" mnemonicParsing="true" GridPane.rowIndex="0"
 			GridPane.columnIndex="1" />
