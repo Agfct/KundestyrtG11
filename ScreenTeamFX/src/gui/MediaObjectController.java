@@ -4,6 +4,10 @@
 package gui;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 
@@ -21,6 +25,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -46,6 +51,7 @@ public class MediaObjectController extends GridPane{
 	private final MediaObjectController thisMediaObject = this;
 	private final ContextMenu contextMenu = new ContextMenu();
 	private Alert alert;
+	private Tooltip mediaTooltip = new Tooltip();
 
 	//Variables used for dragging/dropping
 	private AnchorPane masterRootPane;
@@ -88,7 +94,8 @@ public class MediaObjectController extends GridPane{
 	/**
 	 * Extracts the information from the container and adds it to the mediaObjectController
 	 * @param container
-	 * TODO: remove this? It was only useful before the modules was integrated into the program
+	 * TODO: remove this? It was only useful before the modules was integrated into the program 
+	 * NB! IS BEEING USED DO NOT REMOVE
 	 */
 	public void initializeMediaObject(){
 		this.nameOfFile.setText(timelineMediaObject.getParent().getName());
@@ -96,13 +103,36 @@ public class MediaObjectController extends GridPane{
 		System.out.println("Setting width:" + mediaObjectActualWidth);
 		setMediaObjectWidth(mediaObjectActualWidth);
 		
+		//Sets the text of the tooltip
+		mediaTooltip.setText(
+			    "Name: "+timelineMediaObject.getParent().getName()+"\n" +
+			    "StartTime: "+getStartTimeAsText()+"\n" +
+			    "Duration: "+Long.toString(timelineMediaObject.getDuration()/1000)+" Seconds\n"
+			);
+		nameOfFile.setTooltip(mediaTooltip);
+		
 	}
 	
 	public void updateValuesFromModel(){
 		this.mediaObjectActualWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
 		setMediaObjectWidth(mediaObjectActualWidth);
-//		setStyle("-fx-background-color: BLUE");
+		
+		//Updates the text of the tooltip
+		mediaTooltip.setText(
+			    "Name: "+timelineMediaObject.getParent().getName()+"\n" +
+			    "StartTime: "+getStartTimeAsText()+"\n" +
+			    "Duration: "+Long.toString(timelineMediaObject.getDuration()/1000)+" Seconds\n"
+			);
+		nameOfFile.setTooltip(mediaTooltip);
 
+	}
+	
+	private String getStartTimeAsText(){
+		long timeInSeconds = timelineMediaObject.getStart()/1000;
+		long hours = timeInSeconds/3600;
+		long minutes = (timeInSeconds % 3600) / 60;
+		long seconds = timeInSeconds % 60;;
+	    return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 	}
 	
 	/**
