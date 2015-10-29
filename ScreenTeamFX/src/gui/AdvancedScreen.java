@@ -107,6 +107,8 @@ public class AdvancedScreen implements Screen{
 			private SessionModule currentSession;
 			private double scrollBarPosition = 0;
 			private Stage modalDialog;
+			
+			private Stage windowChooser; // stage for the windowChooser
 
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
@@ -603,6 +605,11 @@ public class AdvancedScreen implements Screen{
                 modalDialog.setScene(dialogScene);
                 modalDialog.show();
 			}
+			
+			public void showWindowChooser(){
+				
+			}
+			
 			
 			public void closeModal(){
 				if(modalDialog != null){

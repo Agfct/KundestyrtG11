@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<?import gui.NumberTextField?>
+
+<GridPane style="-fx-background-color: LIGHTBLUE" fx:id="windowContainer"
+	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40"
+	maxHeight="200" maxWidth="300" minHeight="200" minWidth="300"
+	prefHeight="200" prefWidth="300">
+	<columnConstraints>
+		<ColumnConstraints halignment="CENTER" />
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints prefHeight="40" vgrow="NEVER" />
+		<RowConstraints prefHeight="200" vgrow="NEVER" />
+		<RowConstraints prefHeight="40" vgrow="NEVER" />
+	</rowConstraints>
+	<children>
+		<Label text="Please select window to be imported." GridPane.rowIndex="0" />
+		
+		<ListView fx:id="windowListView" GridPane.rowIndex="1">
+            <items>
+               <!-- The available windows will populate the listView -->
+            </items>
+        </ListView>
+		<Button fx:id="importWindow" text="Apply " onAction="#buttonPressed"
+			GridPane.rowIndex="2" />
+	</children>
+</GridPane>

@@ -99,9 +99,10 @@ public class HeaderController implements FXMLController{
 		}else if(((Button)event.getSource()).getId().equals("importMediaFromDisk")){
 			// If the user clicks the import media button, he will get a windows file-chooser
 			this.addMediaObjectFromDisk();
-			
-			
-			
+		}
+		else if(((Button)event.getSource()).getId().equals("importWindow")){
+			// If the user clicks the import window button, the window-list will open. 
+			this.importWindowFromDesktop();
 		}
 		else if(((Button)event.getSource()).getId().equals("playAllTimelines")){
 			// If the user clicks the import media button, he will get a windows file-chooser
@@ -157,6 +158,12 @@ public class HeaderController implements FXMLController{
 	}
 	
 	
+	private void importWindowFromDesktop() {
+		//Opens an windowsChooser 
+		AdvancedScreen.getInstance().getScreenController().showWindowChooser();//TODO: da
+		
+	}
+
 	/*
 	 * TODO: possibly get all mediaObjects from the currentSession first?
 	 * This method updates the tilePane in the header. This should happen every time the model is changed. 
