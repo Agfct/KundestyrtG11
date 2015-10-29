@@ -125,7 +125,7 @@ public class HeaderController implements FXMLController{
 
 		}else if(((Button)event.getSource()).getId().equals("identifyScreens")){
 			// If the user clicks the Identify Screens button
-
+			parentController.identifyDisplays();
 		}
 	
 	}

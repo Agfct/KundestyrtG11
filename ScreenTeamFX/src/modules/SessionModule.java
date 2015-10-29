@@ -194,7 +194,7 @@ public class SessionModule implements Serializable {
 			globalTimeTicker=tickGlobalTime(globaltime);
 			pausing = false;
 			tAll.start();
-//			globalTimeTicker.start();
+			globalTimeTicker.start();
 		}
 	}
 	
@@ -213,7 +213,7 @@ public class SessionModule implements Serializable {
 					globaltime=globalTimeAtStart+playp-startp;
 					globalTimeChanged();
 					try {
-						this.sleep(1000);
+						this.sleep(100);
 					} catch (InterruptedException e) {
 					}
 				}
@@ -660,6 +660,10 @@ public class SessionModule implements Serializable {
 	
 	public long getSessionLength(){
 		return sessionLength;
+	}
+	
+	public long getGlobalTime(){
+		return globaltime;
 	}
 	
 	public void globalTimeChanged(){

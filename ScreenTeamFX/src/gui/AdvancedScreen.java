@@ -115,6 +115,7 @@ public class AdvancedScreen implements Screen{
 			private int scaleCoefficient = 1;
 			private int maxScale = 10;
 			private int minScale = 1;
+			private double scrollBarDefaultValue = 0;
 			
 			private FXMLLoader fxmlLoader;
 			private AnchorPane rootPane;
@@ -202,14 +203,11 @@ public class AdvancedScreen implements Screen{
 				timelineLineScrollBar.valueProperty().addListener(new ChangeListener<Number>() {
 		            public void changed(ObservableValue<? extends Number> ov,
 		                Number old_val, Number new_val) {
-//		            	System.out.println("Scrolling: Old value: "+ old_val.doubleValue()+" NewValue: "+ new_val.doubleValue());
+		            	scrollBarDefaultValue = new_val.doubleValue()/scaleCoefficient;
+		            	System.out.println("Scrolling: Old value: "+ old_val.doubleValue()+" NewValue: "+ new_val.doubleValue());
 		            	scrollBarPosition = -new_val.doubleValue();
-		            	for (TimelineController timelineController : timelineControllers) {
-		            		
-		            		timelineController.getTimelineLineController().moveTimeline(scrollBarPosition);
-						}
-		            	timelineBarController.moveTimelineBar(scrollBarPosition);
-
+		            	System.out.println("Scroll default value" + scrollBarDefaultValue);
+		            	updateTimelinesPosition();
 		            }
 		        });
 				
@@ -633,19 +631,46 @@ public class AdvancedScreen implements Screen{
 				return scrollBarPosition;
 			}
 			
+			/**
+			 * Refreshes the scrollBar size based on the scale (usually ran when the scale has changed)
+			 * It also moves the scrollparPosition to fit the new scale.
+			 */
 			public void refreshScrollBarSize() {
+				double oldScrollBarMax = timelineLineScrollBar.getMax();
+				double oldScrollBarPos = timelineLineScrollBar.getValue();
+				double scrollBarValueScaleCoeff = 0;
+				
 				timelineLineScrollBar.setMax((currentSession.getSessionLength()*scaleCoefficient) - 1000);
+				scrollBarValueScaleCoeff = timelineLineScrollBar.getMax()/oldScrollBarMax;
+				
+				timelineLineScrollBar.setValue(oldScrollBarPos*scrollBarValueScaleCoeff);
+				updateTimelinesPosition();
+			}
+			
+        	private void updateTimelinesPosition(){
+        	for (TimelineController timelineController : timelineControllers) {
+        		
+        		timelineController.getTimelineLineController().moveTimeline(scrollBarPosition);
+			}
+        	timelineBarController.moveTimelineBar(scrollBarPosition);
+        	}
+        	
+			public void identifyDisplays(){
+				MainModuleController.getInstance().getVLCController().identifyDisplays();
 			}
 
 
 
 			@Override
 			public void fireGlobalTimeChanged(long newGlobalTime) {
-				// TODO Update timelineBar to new global time
+				timelineBarController.getSeeker().placeSeeker(newGlobalTime);
 				System.out.println(newGlobalTime);
 				
 			}
 			
+			public long getGlobalTime(){
+				return currentSession.getGlobalTime();
+			}
 			
 			public void playAllTimelines(){
 				currentSession.playAll();
