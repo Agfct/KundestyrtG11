@@ -137,10 +137,7 @@ public class MediaObjectController extends GridPane{
 	 */
 	private void setMediaObjectWidth(){
 		int tempScale = AdvancedScreen.getInstance().getScreenController().getScaleCoefficient();
-		System.out.println("[MediaObjectController] GetDuration raw: " + timelineMediaObject.getDuration());
-		System.out.println("[MediaObjectController] GetDuration divided by 1000: " + timelineMediaObject.getDuration()/1000);
 		this.mediaObjectActualWidth=Math.ceil((((timelineMediaObject.getDuration()*tempScale)/1000)+0.5));
-		System.out.println("[MediaObjectController] Setting width:" + mediaObjectActualWidth);
 		this.setPrefWidth(mediaObjectActualWidth);
 		this.setMaxWidth(mediaObjectActualWidth);
 	}

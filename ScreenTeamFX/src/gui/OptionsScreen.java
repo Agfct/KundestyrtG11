@@ -69,7 +69,6 @@ public class OptionsScreen implements Screen {
 		@FXML private GridPane rootGrid;
 		@FXML private Label vlc_version;
 		@FXML private Label java_version;
-		@FXML private Label display_output;
 		
 		public OptionsScreenController(){
 			
@@ -93,9 +92,8 @@ public class OptionsScreen implements Screen {
 		 */
 		private void initializeOptions(){
 			vlc_controller = MainModuleController.getInstance().getVLCController();
-//			java_version.setText(vlc_controller.getJavaVersion());
-//			vlc_version.setText(vlc_controller.getVLCVersion());
-//			display_output.setText(vlc_controller.getDisplayOutput());
+			java_version.setText(vlc_controller.getJavaVersion());
+			vlc_version.setText(vlc_controller.getVLCVersion());
 		}
 		
 		/**

@@ -209,6 +209,8 @@ public class AdvancedScreen implements Screen{
                     updateTimelinesPosition();
                 }
             });
+            timelineLineScrollBar.setUnitIncrement(20);
+            timelineLineScrollBar.setBlockIncrement(20);
 
         }
 
@@ -615,7 +617,7 @@ public class AdvancedScreen implements Screen{
             modalDialog.initModality(Modality.APPLICATION_MODAL);
             modalDialog.initOwner(MainGUIController.getInstance().primaryStage);
             ModalController mediaObjectModal = new ModalController(mediaObject);
-            Scene dialogScene = new Scene(mediaObjectModal.getRoot(), 300, 200);
+            Scene dialogScene = new Scene(mediaObjectModal.getRoot(), 350, 200);
             modalDialog.setScene(dialogScene);
             modalDialog.show();
         }
@@ -670,11 +672,16 @@ public class AdvancedScreen implements Screen{
             double oldScrollBarMax = timelineLineScrollBar.getMax();
             double oldScrollBarPos = timelineLineScrollBar.getValue();
             double scrollBarValueScaleCoeff = 0;
-
+            
+            timelineLineScrollBar.setUnitIncrement(20*scaleCoefficient);
+            timelineLineScrollBar.setBlockIncrement(20*scaleCoefficient);
+            
             timelineLineScrollBar.setMax((currentSession.getSessionLength()*scaleCoefficient) - 1000);
             scrollBarValueScaleCoeff = timelineLineScrollBar.getMax()/oldScrollBarMax;
 
-            timelineLineScrollBar.setValue(oldScrollBarPos*scrollBarValueScaleCoeff);
+//            timelineLineScrollBar.setValue(oldScrollBarPos*scrollBarValueScaleCoeff);
+            timelineLineScrollBar.setValue(timelineBarController.getSeeker().getSeekerPositionMiddle());
+            System.out.println("[Advanced Screen] SEEKER POSITION: "+ timelineBarController.getSeeker().getSeekerPositionMiddle());
             updateTimelinesPosition();
         }
 
@@ -730,9 +737,11 @@ public class AdvancedScreen implements Screen{
         }
 
         private void fireScaleChanged(){
-            fireSessionLenghtChanged();
+        	repaintTimelineBarCanvas();
             timelineBarController.scaleChanged();
+            refreshScrollBarSize();
             for (TimelineController timelineController : timelineControllers) {
+            	timelineController.getTimelineLineController().getRoot().setPrefWidth(currentSession.getSessionLength()*scaleCoefficient);
                 timelineController.getTimelineLineController().repaint();
             }
         }
@@ -784,14 +793,23 @@ public class AdvancedScreen implements Screen{
         }
         
 
+        public void repaintTimelineBarCanvas(){
+        	//NB! Clearing only top rect to reduce lag
+        	gc.clearRect(0, 0, 1000, 12);
+            for (int x = 12; x < 1000; x+=10) {
+                gc.setFont(new Font(8));
+                if(x%22 == 0){
+                	gc.fillText(""+scaleCoefficient, x+1, 12);
+                }
+            }
+        }
         /**
          * Paints the timelineBar lines and numbers according to scale
          * NB! A canvas cannot be very large (max 4k)
          */
         public void paintTimelineBarCanvas(){
             //TODO: This method needs to repaint when you move the scrollbar, and it needs to keep track of where you are on the timeline.
-
-
+        	
             gc.setLineWidth(1.0);
             //x = 12 to start the first line ontop of the center of the seeker
             for (int x = 12; x < 1000; x+=10) {
@@ -801,7 +819,10 @@ public class AdvancedScreen implements Screen{
                 gc.lineTo(x1, 15);
                 gc.stroke();
                 gc.setFont(new Font(8));
-                gc.fillText("1", x1+1, 12);
+                if(x%22 == 0){
+                	gc.fillText(""+scaleCoefficient, x1+1, 12);
+                }
+                
 //			            gc.strokeText("1", x1, 12);
             }
 
@@ -843,6 +864,7 @@ public class AdvancedScreen implements Screen{
          */
         @Override
         public void fireSessionLenghtChanged() {
+        	timelineBarController.getRoot().setPrefWidth((currentSession.getSessionLength()*scaleCoefficient)+22);
             refreshScrollBarSize();
             for (TimelineController timelineController : timelineControllers) {
                 timelineController.getTimelineLineController().getRoot().setPrefWidth(currentSession.getSessionLength()*scaleCoefficient);
