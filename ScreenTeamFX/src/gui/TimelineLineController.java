@@ -98,9 +98,7 @@ public class TimelineLineController implements FXMLController{
     private void initializeMouse(){
         //Adds different right click options to the ContextMenu that pops up on mouse click.
         MenuItem duplicate = new MenuItem("Duplicate");
-        MenuItem copy = new MenuItem("Copy");
-        MenuItem paste = new MenuItem("Paste");
-        contextMenu.getItems().addAll(duplicate, copy, paste);
+        contextMenu.getItems().addAll(duplicate);
         duplicate.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

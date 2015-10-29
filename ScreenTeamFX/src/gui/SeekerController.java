@@ -118,6 +118,24 @@ public class SeekerController extends Pane{
 		return root.getLayoutX()-11;
 	}
 	
+	public double getSeekerPosition(){
+		return localToParent(0,25).getX();
+	}
+	
+	public double getSeekerPositionMiddle(){
+		System.out.println("[SeekerController] parent wiIDTH !! " + parentController.getRoot().getPrefWidth());
+		double tempPos = getSeekerPosition();
+		if(tempPos < 500){
+			System.out.println("[SeekerController] Less than 500: " + tempPos);
+			return 0;
+		}else if (tempPos > 500 && tempPos < parentController.getRoot().getPrefWidth()-500){
+			System.out.println("[SeekerController] between 500: " + tempPos);
+			return tempPos - 500;
+		}
+		System.out.println("[SeekerController] NOTHING !! " + parentController.getRoot().getPrefWidth());
+		return parentController.getRoot().getPrefWidth()-1022;
+	}
+	
 	public void buildNodeDragHandlers() {
 
 

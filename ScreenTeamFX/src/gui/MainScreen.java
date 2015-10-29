@@ -109,6 +109,7 @@ public class MainScreen implements Screen {
 				MainGUIController.getInstance().changeScreen(SCREENTYPE.OPTIONS);
 				
 			}else if(((Button)event.getSource()).getId().equals("exitBtn")){
+				System.exit(0);
 				//TODO: Figure out how to close a javafx application properly
 //				MainGUIController.getInstance().primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 //				    @Override

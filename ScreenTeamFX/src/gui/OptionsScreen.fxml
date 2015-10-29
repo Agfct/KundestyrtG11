@@ -14,7 +14,7 @@
 	minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
 	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
 
-	<GridPane fx:id="rootGrid" gridLinesVisible="true" layoutX="163.0"
+	<GridPane fx:id="rootGrid"  layoutX="163.0"
 		layoutY="62.0" prefHeight="400.0" prefWidth="600.0"
 		AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
 		AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -41,7 +41,7 @@
 		<children>
 			<Text styleClass="header-smal" GridPane.columnIndex="1"
 				GridPane.halignment="CENTER"> Options</Text>
-			<GridPane gridLinesVisible="true" GridPane.rowIndex="1"
+			<GridPane  GridPane.rowIndex="1"
 				GridPane.columnIndex="0" >
 				<columnConstraints>
 					<ColumnConstraints percentWidth="50" />
@@ -64,8 +64,6 @@
 					<Label fx:id="vlc_version" GridPane.columnIndex="1" />
 					<Label text="Java version: " GridPane.rowIndex="1" GridPane.halignment="CENTER"/>
 					<Label fx:id="java_version" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-					<Label text="Display Output: " GridPane.rowIndex="2" GridPane.halignment="CENTER"/>
-					<Label fx:id="display_output" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 				</children>
 			</GridPane>
 			<Button id="mainMenuBtn" onAction="#buttonPressed" alignment="CENTER"
