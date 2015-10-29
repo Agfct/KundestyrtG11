@@ -888,6 +888,18 @@ public class SessionModule implements Serializable {
 		}
 	}
 
+	public ArrayList<String> getAvailableWindows() {
+		windowdisplay.getAllWindows(); //updates the windowsList
+		ArrayList<WindowInfos> windowInfos = windowdisplay.getWindowInfoList();
+		System.out.println(windowInfos);
+		
+		ArrayList<String> windowsListNames = new ArrayList<String>();
+		for(WindowInfos windowInfo:windowInfos){
+			windowsListNames.add(windowInfo.getTitle()); // title is the name of the window as shown at the top of the window
+		}
+		return windowsListNames;
+	}
+
 		
 	
 }

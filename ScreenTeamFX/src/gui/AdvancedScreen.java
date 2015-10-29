@@ -607,7 +607,20 @@ public class AdvancedScreen implements Screen{
 			}
 			
 			public void showWindowChooser(){
-				
+				windowChooser = new Stage();
+				windowChooser.setResizable(false);
+				windowChooser.initModality(Modality.APPLICATION_MODAL);
+				windowChooser.initOwner(MainGUIController.getInstance().primaryStage);
+                WindowChooserController windowsChooser = new WindowChooserController(this);
+                Scene dialogScene = new Scene(windowsChooser.getRoot(), 300, 200);
+                windowChooser.setScene(dialogScene);
+                windowChooser.show();
+			}
+			
+			public void closeWindowChooser(){
+				if(windowChooser != null){
+					windowChooser.close();
+				}
 			}
 			
 			
@@ -751,6 +764,12 @@ public class AdvancedScreen implements Screen{
 					timelineControllerToPaint.getTimelineLineController().repaint();
 					
 				}		
+			}
+
+
+
+			public ArrayList<String> getWindows() {
+				return currentSession.getAvailableWindows();
 			}
 
 

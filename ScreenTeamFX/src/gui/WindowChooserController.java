@@ -1,6 +1,9 @@
 package gui;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
+import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.beans.value.ObservableValue;
@@ -11,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import modules.MediaSourceType;
@@ -21,7 +25,7 @@ import modules.MediaSourceType;
 public class WindowChooserController implements FXMLController {
 
 		private FXMLLoader fxmlLoader;
-		private FXMLController parentController;
+		private AdvancedScreenController parentController;
 		
 		//Grid that contains the labels and the listView
 		private GridPane rootGrid;
@@ -31,11 +35,12 @@ public class WindowChooserController implements FXMLController {
 		@FXML NumberTextField durationField;
 		@FXML Label endTimeLabel;
 		@FXML Button applyBtn;
-		@FXML Button okBtn;
+		@FXML ListView windowListView;
 		
+		ArrayList<String> windowsList;
 		
-		public WindowChooserController(){
-
+		public WindowChooserController(AdvancedScreenController parentController){
+			this.parentController = parentController;
 			try {
 				fxmlLoader = new FXMLLoader(getClass().getResource("WindowChooser.fxml"));
 				fxmlLoader.setController(this);
@@ -45,12 +50,19 @@ public class WindowChooserController implements FXMLController {
 				System.out.println("Failed to load windowChooser FXML");
 				e.printStackTrace();
 			}
+			initList();
 
 		}
 		
 		
 
-		
+		private void initList(){
+			windowsList= parentController.getWindows();
+			windowListView.getItems().addAll(windowsList);
+//			windowListView.
+			
+
+		}
 
 		
 		/*
@@ -60,7 +72,12 @@ public class WindowChooserController implements FXMLController {
 			System.out.println("Import windows: " + event.getSource().toString() + "has been pressed");
 			
 			if(((Button)event.getSource()).getId().equals("importWindow") ){
-				System.out.println("IMPORT WINDOW");
+				String selectedWindow = (String)windowListView.getSelectionModel().getSelectedItem();
+				if(selectedWindow!=null){
+					String result = parentController.getCurrentSession().createNewMediaObject(MediaSourceType.WINDOW, selectedWindow);
+					System.out.println(result);
+				}
+				parentController.closeWindowChooser();
 			}
 			
 		}

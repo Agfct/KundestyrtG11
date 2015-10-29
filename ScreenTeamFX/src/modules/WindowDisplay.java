@@ -38,10 +38,14 @@ public class WindowDisplay implements Serializable{
 	private static final long serialVersionUID = -3407212486452142243L;
 	private static final int MAX_TITLE_LENGTH = 1024;
 	private HashMap <Integer,MonitorInfo> AllMonitor;
-	public ArrayList<WindowInfos> AllWindow;
+	private ArrayList<WindowInfos> AllWindow;
 	
 	public WindowDisplay(Integer nb_screen){
 		InitialisationMonitor(nb_screen);
+	}
+	
+	public ArrayList<WindowInfos> getWindowInfoList(){
+		return AllWindow;
 	}
 	
 	//Principal function	

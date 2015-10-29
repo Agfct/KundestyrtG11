@@ -28,7 +28,7 @@
                <!-- The available windows will populate the listView -->
             </items>
         </ListView>
-		<Button fx:id="importWindow" text="Apply " onAction="#buttonPressed"
+		<Button fx:id="importWindow" text="Import" onAction="#buttonPressed"
 			GridPane.rowIndex="2" />
 	</children>
 </GridPane>
