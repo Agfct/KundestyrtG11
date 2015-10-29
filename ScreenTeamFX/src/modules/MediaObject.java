@@ -32,7 +32,7 @@ public class MediaObject implements Serializable {
 		this.path = path;
 		this.name = name;
 		this.setType(type);
-		if ( type == MediaSourceType.IMAGE){
+		if ( type == MediaSourceType.IMAGE || type == MediaSourceType.WINDOW){
 			this.length = Long.MAX_VALUE;
 		}
 		else {
