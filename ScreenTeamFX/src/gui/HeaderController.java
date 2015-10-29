@@ -98,11 +98,12 @@ public class HeaderController implements FXMLController{
 			
 		}else if(((Button)event.getSource()).getId().equals("importMediaFromDisk")){
 			// If the user clicks the import media button, he will get a windows file-chooser
-			this.addMediaObjectFromDisk();
-			
-			
-			
+			this.addMediaObjectFromDisk();	
 		}
+        else if(((Button)event.getSource()).getId().equals("importWindow")){
+            // If the user clicks the import window button, the window-list will open.
+            this.importWindowFromDesktop();
+        }
 		else if(((Button)event.getSource()).getId().equals("playAllTimelines")){
 			// If the user clicks the import media button, he will get a windows file-chooser
 			this.parentController.playAllTimelines();
@@ -181,7 +182,6 @@ public class HeaderController implements FXMLController{
 	}
 	
 	/*
-	 * TODO: get the currentSession, and run the method currentSession.
 	 * This function sends the mediaType and Path to the session.CreateNewMediaObject()
 	 */
 	public void createNewMediaObjectFromFile(File file){
@@ -291,6 +291,14 @@ public class HeaderController implements FXMLController{
 		}		
 	}
 	
+	/**
+	 * Lets the user choose between the windows on the desktop
+	 */
+    private void importWindowFromDesktop() {
+        //Opens an windowsChooser
+        AdvancedScreen.getInstance().getScreenController().showWindowChooser();
+
+    }
 
 	
 	public GridPane getRoot() {

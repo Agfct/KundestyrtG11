@@ -299,6 +299,13 @@ public class SessionModule implements Serializable {
                             }
                             else if(ev2.getAction()==Action.SHOW){
                                 for(Integer dis:displays.keySet()){
+                                	if(displays.get(dis)==null){
+                                		continue;
+                        
+                                	}
+                                	System.out.println("[DIS] "+ dis);
+                                	System.out.println("[tlmID] "+ ev2.getTimelineid());
+                                	System.out.println("[getID] "+ displays.get(dis).getID());
                                     if (displays.get(dis).getID()==ev2.getTimelineid()){
                                         vlccontroller.showmp(ev2.getTimelineid(), false);
                                         windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), false, dis);
@@ -558,7 +565,7 @@ public class SessionModule implements Serializable {
      * @param path
      */
     public String createNewMediaObject(MediaSourceType mst, String path){
-
+    	System.out.println("[SESSION module]" + mst);
         // Check if this MediaObject is already stored in the list, by comparing paths
         for (int i=0; i<mediaObjects.size(); i++){
             if (mediaObjects.get(i).getPath().equals(path)) {
@@ -576,14 +583,17 @@ public class SessionModule implements Serializable {
             case IMAGE: {
                 name = path.substring(path.lastIndexOf('\\')+1);
                 mo.setName(name);
+                break;
             }
             case AUDIO: {
                 name = path.substring(path.lastIndexOf('\\')+1);
                 mo.setName(name);
+                break;
             }
             case WINDOW: {
                 name = path;
                 mo.setName(name);
+                break;
             }
             case VIDEO: {
                 name = path.substring(path.lastIndexOf('\\')+1);
@@ -595,6 +605,8 @@ public class SessionModule implements Serializable {
                 else{
                     return "MediaObject not created, prerunChecker in VLC failed";
                 }
+                break;
+                
             }
             default: {
                 break;
@@ -937,6 +949,21 @@ public class SessionModule implements Serializable {
         for(Integer i : timelines.keySet()){
             timelines.get(i).removeAllDisplays();
         }
+    }
+    /**
+     * Gets the available windows from the windowDisplay. Then extracts the titles of the windows, and sends it to whoever asks
+     * @return
+     */
+    public ArrayList<String> getAvailableWindows() {
+        windowdisplay.getAllWindows(); //updates the windowsList
+        ArrayList<WindowInfos> windowInfos = windowdisplay.getWindowInfoList();
+        System.out.println(windowInfos);
+
+        ArrayList<String> windowsListNames = new ArrayList<String>();
+        for(WindowInfos windowInfo:windowInfos){
+            windowsListNames.add(windowInfo.getTitle()); // title is the name of the window as shown at the top of the window
+        }
+        return windowsListNames;
     }
 
 
