@@ -32,10 +32,14 @@ public class SeekerController extends Pane{
 	private FXMLLoader fxmlLoader;
 	private TimelineBarController parentController;
 	private Pane root = this;
+	
+	//scaling
+	private int scale = 1;
 
 	private Canvas seekerLine;
 	private GraphicsContext seekergc;
 	private int seekerLineHeight = 450;
+	private double unScaledX; //This X value is unafected by scale
 
 	//Dragging:
 	private EventHandler <DragEvent> mContextDragOver;
@@ -64,6 +68,7 @@ public class SeekerController extends Pane{
 	 * This method is ran after the controller is created in order to get node position values.
 	 */
 	public void initialize() {
+		unScaledX = this.getLayoutX();
 		buildNodeDragHandlers();
 		initializeSeeker();
 		drawSeekerLine();
@@ -106,6 +111,7 @@ public class SeekerController extends Pane{
 		System.out.println("Point: " + pointX);
 		//Moves by -12 to set the pointer to the middle
 		relocateToPoint(new Point2D(pointX.getX()- 12,0));
+		seekerChanged();
 	}
 	
 	private double getActuall0X(){
@@ -163,7 +169,7 @@ public class SeekerController extends Pane{
 
 			@Override
 			public void handle (DragEvent event) {
-				System.out.println("[SeekerController] Drag DONE" + localToParent(0,25));
+				System.out.println("[SeekerController] Drag DONE X is: " + localToParent(0,25).getX()/scale);
 
 				parentController.getRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
 				parentController.getRoot().setOnDragOver(null);
@@ -172,6 +178,7 @@ public class SeekerController extends Pane{
 				parentController.getRoot().setOnDragDropped(null);
 				parentController.getRoot().setOnDragDone(null);
 
+				seekerChanged();
 
 			}
 		};
@@ -221,5 +228,22 @@ public class SeekerController extends Pane{
 
 		});
 
+	}
+	
+	private void seekerChanged(){
+		AdvancedScreen.getInstance().getScreenController().changeGlobalTime((long)((localToParent(0,25).getX()/scale)*1000));
+	}
+	public void placeSeeker( long newGlobalTime){
+		root.setLayoutX((newGlobalTime*scale)/1000);
+	}
+	
+	/**
+	 * When the scale changes we move the seeker to the new scaled location
+	 * @param newScale
+	 */
+	public void scaleChanged(int newScale){
+		System.out.println("seeker: scalechanged");
+		this.scale = newScale;
+		root.setLayoutX((AdvancedScreen.getInstance().getScreenController().getGlobalTime()*scale)/1000);
 	}
 }

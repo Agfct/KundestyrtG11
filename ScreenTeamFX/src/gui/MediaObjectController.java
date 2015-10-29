@@ -72,7 +72,6 @@ public class MediaObjectController extends GridPane{
 //		setStyle("-fx-background-color: GRAY");
 		setGraphicType(timelineMediaObject.getParent().getType());
 		this.timelineMediaObject=timelineMediaObject;
-		this.setWidth(234);
 		
 		try {
 			fxmlLoader = new FXMLLoader(getClass().getResource("MediaObject.fxml"));
@@ -99,9 +98,7 @@ public class MediaObjectController extends GridPane{
 	 */
 	public void initializeMediaObject(){
 		this.nameOfFile.setText(timelineMediaObject.getParent().getName());
-		this.mediaObjectActualWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
-		System.out.println("Setting width:" + mediaObjectActualWidth);
-		setMediaObjectWidth(mediaObjectActualWidth);
+		setMediaObjectWidth();
 		
 		//Sets the text of the tooltip
 		mediaTooltip.setText(
@@ -114,8 +111,7 @@ public class MediaObjectController extends GridPane{
 	}
 	
 	public void updateValuesFromModel(){
-		this.mediaObjectActualWidth=Math.ceil((timelineMediaObject.getDuration()/1000)+0.5);
-		setMediaObjectWidth(mediaObjectActualWidth);
+		setMediaObjectWidth();
 		
 		//Updates the text of the tooltip
 		mediaTooltip.setText(
@@ -139,13 +135,14 @@ public class MediaObjectController extends GridPane{
 	 * This method sets the width of the mediaObject based on the zoom scale
 	 * @param width
 	 */
-	private void setMediaObjectWidth(double width){
-
-		//TODO: 		double scaledWidth = returnsWidthWithScaledValues(width);
-//		this.setPrefWidth(scaledWidth);
-//		this.setMaxWidth(scaledWidth);
-		this.setPrefWidth(width);
-		this.setMaxWidth(width);
+	private void setMediaObjectWidth(){
+		int tempScale = AdvancedScreen.getInstance().getScreenController().getScaleCoefficient();
+		System.out.println("[MediaObjectController] GetDuration raw: " + timelineMediaObject.getDuration());
+		System.out.println("[MediaObjectController] GetDuration divided by 1000: " + timelineMediaObject.getDuration()/1000);
+		this.mediaObjectActualWidth=Math.ceil((((timelineMediaObject.getDuration()*tempScale)/1000)+0.5));
+		System.out.println("[MediaObjectController] Setting width:" + mediaObjectActualWidth);
+		this.setPrefWidth(mediaObjectActualWidth);
+		this.setMaxWidth(mediaObjectActualWidth);
 	}
 	
 	/**
@@ -154,7 +151,7 @@ public class MediaObjectController extends GridPane{
 	@FXML
 	private void initialize() {
 		//NB: DRAG INSIDE A TIMELINE IS NOW DISABLED! OUTCOMMENT TO ENABLE
-//		buildNodeDragHandlers();
+		buildNodeDragHandlers();
 	}
 	
 	/**
@@ -252,6 +249,10 @@ public class MediaObjectController extends GridPane{
 //		
 		if(type == MediaSourceType.AUDIO){
 			getStyleClass().add("icon-sound");
+		}else if(type == MediaSourceType.IMAGE){
+			getStyleClass().add("background-image");
+		}else if(type == MediaSourceType.WINDOW){
+			getStyleClass().add("background-window");
 		}else{
 			getStyleClass().add("background-video");
 		}
@@ -340,14 +341,16 @@ public class MediaObjectController extends GridPane{
 			public void handle (DragEvent event) {
 				System.out.println("[MediaObjectController] Drag DONE");
 				
+				AdvancedScreenController tempAdvSrcController = AdvancedScreen.getInstance().getScreenController();
+				
 				parentController.getRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
 				parentController.getRoot().setOnDragOver(null);
-				AdvancedScreen.getInstance().getScreenController().getMasterRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
-				AdvancedScreen.getInstance().getScreenController().getMasterRoot().setOnDragOver(null);
+				tempAdvSrcController.getMasterRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
+				tempAdvSrcController.getMasterRoot().setOnDragOver(null);
 				parentController.getRoot().setOnDragDropped(null);
 				parentController.getRoot().setOnDragDone(null);
 
-				
+				tempAdvSrcController.getCurrentSession().timelineMediaObjectChanged(thisMediaObject.getParentController().getParentController().getTimelineModel(),thisMediaObject.getTimelineMediaObject(),(int)((thisMediaObject.getLayoutX()*1000)/tempAdvSrcController.getScaleCoefficient()),(int)thisMediaObject.getTimelineMediaObject().getStartPoint(),(int)thisMediaObject.getTimelineMediaObject().getDuration());
 			}
 		};
 		

@@ -173,6 +173,10 @@ public class TimelineController implements FXMLController {
 			//Removes the timeline from the AdvanceScreen Children list
 			parentController.removeTimeline(this);
 			
+		}else if(((Button)event.getSource()).getId().equals("muteVideo") ){
+			//Mutes all the videos on this timeline
+		}else if(((Button)event.getSource()).getId().equals("muteSound") ){
+			//Mutes all the sound on this timeline
 		}
 		
 		

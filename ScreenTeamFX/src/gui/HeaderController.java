@@ -117,6 +117,17 @@ public class HeaderController implements FXMLController{
 			// If the user clicks the import media button, he will get a windows file-chooser
 			this.parentController.changeGlobalTime(0);
 
+		}else if(((Button)event.getSource()).getId().equals("zoomInn")){
+			// If the user clicks the zoom inn
+			parentController.increaseScale();
+
+		}else if(((Button)event.getSource()).getId().equals("zoomOut")){
+			// If the user clicks the zoom Out
+			parentController.decreaseScale();
+
+		}else if(((Button)event.getSource()).getId().equals("identifyScreens")){
+			// If the user clicks the Identify Screens button
+			parentController.identifyDisplays();
 		}
 		else if(((Button)event.getSource()).getId().equals("saveSession")){
 			// If the user clicks the import media button, he will get a windows file-chooser
