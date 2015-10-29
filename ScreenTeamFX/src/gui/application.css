@@ -38,6 +38,14 @@
 	-fx-background-image: url("../../resources/videoTypeBack.png");
 }
 
+.background-modal {
+	-fx-background-color: LIGHTBLUE;
+	/*-fx-background-image: url("../../resources/videoTypeBack.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-background-size: cover;
+	-fx-background-radius: 10; */
+}
 .icon-cog {
 	-fx-background-image: url("../../resources/Icon_cog.png");
 	-fx-background-repeat: no-repeat;

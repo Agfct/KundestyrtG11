@@ -38,6 +38,11 @@ public class ModalController implements FXMLController {
 		@FXML Button applyBtn;
 		@FXML Button okBtn;
 		
+		@FXML Label visualStartTime;
+		@FXML Label visualOffset;
+		@FXML Label visualDuration;
+		@FXML Label visualEndTime;
+		
 		
 		public ModalController(MediaObjectController mediaObject){
 
@@ -67,6 +72,19 @@ public class ModalController implements FXMLController {
 			durationField.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getDuration()));
 			endTimeLabel.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getEnd()));			
 
+			//This info will be updated on apply
+			visualStartTime.setText(getTimeAsText(currentMediaObjectController.getTimelineMediaObject().getStart()));
+//			visualOffset.setText(value);
+			visualDuration.setText((currentMediaObjectController.getTimelineMediaObject().getDuration()/1000)+"s");
+			visualEndTime.setText(getTimeAsText(currentMediaObjectController.getTimelineMediaObject().getEnd()));
+		}
+		
+		private String getTimeAsText(long time){
+			long timeInSeconds = time/1000;
+			long hours = timeInSeconds/3600;
+			long minutes = (timeInSeconds % 3600) / 60;
+			long seconds = timeInSeconds % 60;;
+		    return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 		}
 		
 		/**
@@ -78,14 +96,18 @@ public class ModalController implements FXMLController {
 //			startTimeField.setText(mediaObject.getStartTime());
 			startTimeField.textProperty().addListener((observable, oldValue, newValue) -> {
 			    System.out.println("TextField Text Changed (newValue: " + newValue + ")");
+			    if(newValue.length() > 0 && newValue.length() < 10) {
 			    temp_start = Integer.parseInt(newValue);
+			    }
 			    
 			});
 //			durationField.setText(mediaObject.getStartTime());
 			durationField.textProperty().addListener((observable, oldValue, newValue) -> {
 			    System.out.println("TextField Text Changed (newValue: " + newValue + ")");
 //			    if(Integer.parseInt(newValue) > 0 && Integer.parseInt(newValue) < currentMediaObject.getLength()){
-				    temp_duration = Integer.parseInt(newValue);
+				if(newValue.length() > 0 && newValue.length() < 10) {
+			    temp_duration = Integer.parseInt(newValue);
+				}
 //			    }
 			    
 			});
@@ -125,6 +147,8 @@ public class ModalController implements FXMLController {
 				System.out.println("OK AND APPLY: " + result);
 				AdvancedScreen.getInstance().getScreenController().closeModal();
 				
+			}else if(((Button)event.getSource()).getId().equals("maxDurBtn")){
+				durationField.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getParent().getLength()));
 			}
 		}
 
