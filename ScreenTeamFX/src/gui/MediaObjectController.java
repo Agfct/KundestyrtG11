@@ -434,7 +434,7 @@ public class MediaObjectController extends GridPane{
 	}
 	
 	private double getMediaObjectHeigth(){
-		return 75;
+		return 70;
 	}
 	
 	public TimelineMediaObject getTimelineMediaObject(){

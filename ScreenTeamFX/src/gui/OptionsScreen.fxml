@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
@@ -14,10 +15,10 @@
 	minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
 	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
 
-	<GridPane fx:id="rootGrid"  layoutX="163.0"
-		layoutY="62.0" prefHeight="400.0" prefWidth="600.0"
-		AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-		AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+	<GridPane fx:id="rootGrid" layoutX="163.0" layoutY="62.0"
+		prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0"
+		AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+		AnchorPane.topAnchor="0.0">
 		<columnConstraints>
 			<ColumnConstraints hgrow="NEVER" percentWidth="25"
 				minWidth="10.0" prefWidth="135.0" />
@@ -41,8 +42,7 @@
 		<children>
 			<Text styleClass="header-smal" GridPane.columnIndex="1"
 				GridPane.halignment="CENTER"> Options</Text>
-			<GridPane  GridPane.rowIndex="1"
-				GridPane.columnIndex="0" >
+			<GridPane GridPane.rowIndex="1" GridPane.columnIndex="0">
 				<columnConstraints>
 					<ColumnConstraints percentWidth="50" />
 					<ColumnConstraints percentWidth="50" />
@@ -60,21 +60,34 @@
 				<!-- vgrow="SOMETIMES" /> -->
 				<!-- </rowConstraints> -->
 				<children>
-					<Label text="VLC version: "  GridPane.halignment="CENTER"/>
+					<Label text="VLC version: " GridPane.halignment="CENTER" />
 					<Label fx:id="vlc_version" GridPane.columnIndex="1" />
-					<Label text="Java version: " GridPane.rowIndex="1" GridPane.halignment="CENTER"/>
-					<Label fx:id="java_version" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+					<Label text="Java version: " GridPane.rowIndex="1"
+						GridPane.halignment="CENTER" />
+					<Label fx:id="java_version" GridPane.columnIndex="1"
+						GridPane.rowIndex="1" />
+					<Text GridPane.columnIndex="1" GridPane.rowIndex="2"
+						GridPane.columnSpan="2" />
+					<Label text="VLC Commands" GridPane.columnIndex="0"
+						GridPane.rowIndex="3" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
+					<TextField fx:id="vlc_commandField" GridPane.columnIndex="0"
+						GridPane.rowIndex="4" GridPane.columnSpan="2" GridPane.halignment="CENTER">
+						<GridPane.margin>
+							<Insets left="10.0" right="10.0" />
+						</GridPane.margin>
+					</TextField>
+					<Label text='Example: ":avcodec-hw=none",":no-directx-hw-yuv"' GridPane.columnIndex="0"
+						GridPane.rowIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
 				</children>
 			</GridPane>
 			<Button id="mainMenuBtn" onAction="#buttonPressed" alignment="CENTER"
 				mnemonicParsing="false" text="MainMenu" GridPane.columnIndex="1"
 				GridPane.rowIndex="2" GridPane.halignment="CENTER" />
 			<TextFlow GridPane.columnIndex="2" GridPane.rowIndex="1"
-				GridPane.halignment="CENTER"  maxHeight="-Infinity"
-				maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-				textAlignment="CENTER">
+				GridPane.halignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
+				minHeight="-Infinity" minWidth="-Infinity" textAlignment="CENTER">
 				<children>
-					<Text text="Credits" style="-fx-font-size: 20; -fx-fill: darkred;"  />
+					<Text text="Credits" style="-fx-font-size: 20; -fx-fill: darkred;" />
 					<Text text="&#10;DevelopmentTeam:" style="-fx-font-weight: bold" />
 					<Text text="&#10;Anders Lunde" />
 					<Text text="&#10;Baptiste Masselin" />

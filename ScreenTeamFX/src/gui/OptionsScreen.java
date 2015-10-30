@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import modules.MainModuleController;
@@ -65,10 +66,12 @@ public class OptionsScreen implements Screen {
 		private AnchorPane creditsRootPane;
 		private boolean credits = false;
 		private VLCController vlc_controller;
+		private String temp_vlcCommands = "";
 		
 		@FXML private GridPane rootGrid;
 		@FXML private Label vlc_version;
 		@FXML private Label java_version;
+		@FXML private TextField vlc_commandField;
 		
 		public OptionsScreenController(){
 			
@@ -94,6 +97,14 @@ public class OptionsScreen implements Screen {
 			vlc_controller = MainModuleController.getInstance().getVLCController();
 			java_version.setText(vlc_controller.getJavaVersion());
 			vlc_version.setText(vlc_controller.getVLCVersion());
+			
+			vlc_commandField.textProperty().addListener((observable, oldValue, newValue) -> {
+			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
+			    if(newValue.length() > 0 && newValue.length() < 10) {
+			    	temp_vlcCommands = newValue;
+			    }
+			    
+			});
 		}
 		
 		/**

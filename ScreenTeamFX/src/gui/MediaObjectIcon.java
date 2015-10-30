@@ -167,14 +167,18 @@ public class MediaObjectIcon extends GridPane{
 	public void setType (MediaSourceType type) {
 		
 		mType = type;
-		
+		System.out.println("Media TYPE: " + type);
 //		getStyleClass().clear();
 //		getStyleClass().add("dragicon");
 
-			if(mType == MediaSourceType.AUDIO){
-				styleIcon.getStyleClass().add("icon-sound");
-			}else{
+			if(mType == MediaSourceType.VIDEO){
 				styleIcon.getStyleClass().add("icon-video");
+			}else if (mType == MediaSourceType.AUDIO){
+				styleIcon.getStyleClass().add("icon-sound");
+			}else if (mType == MediaSourceType.IMAGE){
+				styleIcon.getStyleClass().add("icon-image");
+			}else if (mType == MediaSourceType.WINDOW){
+				styleIcon.getStyleClass().add("icon-window");
 			}
 			
 	}
