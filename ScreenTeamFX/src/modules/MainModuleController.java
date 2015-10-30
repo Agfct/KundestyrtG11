@@ -71,6 +71,7 @@ public class MainModuleController {
 		Thread tAll = sessionModule.removeTAll();
 		Thread gtt = sessionModule.removeGlobalTimeTicker();
 		HashMap<Integer, TimelineModel> disp = sessionModule.removeDisplays();
+		WindowDisplay wd = sessionModule.removeWindowDisplay();
 		
 		boolean result = storageController.storeSession(sessionModule, saveFile);
 		
@@ -81,6 +82,7 @@ public class MainModuleController {
 		sessionModule.setTAll(tAll);
 		sessionModule.setGlobalTimeTicker(gtt);
 		sessionModule.setDisplays(disp);
+		sessionModule.setWindowDisplay(wd);
 		
 		return result;
 	}
@@ -108,7 +110,8 @@ public class MainModuleController {
 		sessionModule.removeAllTimlineDisplayAssignments();
 		
 		this.vlc = new VLCController(ioModule.getDisplays());
-		sessionModule.reinitialize(vlc);
+		this.wdi = new WindowDisplay(ioModule.getDisplays().size());
+		sessionModule.reinitialize(vlc, wdi);
 		sessionModule.updateDisplays(ioModule.getDisplays());
 		
 	}

@@ -868,10 +868,11 @@ public class SessionModule implements Serializable {
         }
     }
 
-    public void reinitialize(VLCController vlc) {
+    public void reinitialize(VLCController vlc, WindowDisplay wd) {
         this.displays = new HashMap<Integer,TimelineModel>();
         this.listeners = new ArrayList<SessionListener>();
         this.vlccontroller = vlc;
+        this.windowdisplay = wd;
         this.t1 = new Thread();
         this.tAll = new Thread();
         this.globalTimeTicker = new Thread();
@@ -917,6 +918,12 @@ public class SessionModule implements Serializable {
         displays = null;
         return out;
     }
+    
+    public WindowDisplay removeWindowDisplay(){
+    	WindowDisplay out = windowdisplay;
+    	windowdisplay = null;
+    	return out;
+    }
 
     public void setListeners(ArrayList<SessionListener> l) {
         listeners = l;
@@ -940,6 +947,10 @@ public class SessionModule implements Serializable {
 
     public void setDisplays(HashMap<Integer, TimelineModel> disp) {
         displays = disp;
+    }
+    
+    public void setWindowDisplay(WindowDisplay wd){
+    	windowdisplay = wd;
     }
 
 
