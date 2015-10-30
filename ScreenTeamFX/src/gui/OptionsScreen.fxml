@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+
+<AnchorPane stylesheets="@application.css" styleClass="background-main"
+	maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+	minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
+	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
+
+	<GridPane fx:id="rootGrid"  layoutX="163.0"
+		layoutY="62.0" prefHeight="400.0" prefWidth="600.0"
+		AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+		AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<columnConstraints>
+			<ColumnConstraints hgrow="NEVER" percentWidth="25"
+				minWidth="10.0" prefWidth="135.0" />
+			<ColumnConstraints hgrow="SOMETIMES" percentWidth="50"
+				minWidth="10.0" prefWidth="164.0" />
+			<ColumnConstraints hgrow="NEVER" percentWidth="25"
+				minWidth="10.0" prefWidth="426.0" />
+		</columnConstraints>
+		<rowConstraints>
+			<RowConstraints minHeight="10.0" prefHeight="30.0"
+				vgrow="SOMETIMES" />
+			<RowConstraints minHeight="10.0" prefHeight="30.0"
+				vgrow="SOMETIMES" />
+			<RowConstraints minHeight="10.0" prefHeight="30.0"
+				vgrow="SOMETIMES" />
+			<RowConstraints minHeight="10.0" prefHeight="30.0"
+				vgrow="SOMETIMES" />
+			<RowConstraints minHeight="10.0" prefHeight="30.0"
+				vgrow="SOMETIMES" />
+		</rowConstraints>
+		<children>
+			<Text styleClass="header-smal" GridPane.columnIndex="1"
+				GridPane.halignment="CENTER"> Options</Text>
+			<GridPane  GridPane.rowIndex="1"
+				GridPane.columnIndex="0" >
+				<columnConstraints>
+					<ColumnConstraints percentWidth="50" />
+					<ColumnConstraints percentWidth="50" />
+				</columnConstraints>
+				<!-- <rowConstraints> -->
+				<!-- <RowConstraints minHeight="10.0" prefHeight="30.0" -->
+				<!-- vgrow="SOMETIMES" /> -->
+				<!-- <RowConstraints minHeight="10.0" prefHeight="30.0" -->
+				<!-- vgrow="SOMETIMES" /> -->
+				<!-- <RowConstraints minHeight="10.0" prefHeight="30.0" -->
+				<!-- vgrow="SOMETIMES" /> -->
+				<!-- <RowConstraints minHeight="10.0" prefHeight="30.0" -->
+				<!-- vgrow="SOMETIMES" /> -->
+				<!-- <RowConstraints minHeight="10.0" prefHeight="30.0" -->
+				<!-- vgrow="SOMETIMES" /> -->
+				<!-- </rowConstraints> -->
+				<children>
+					<Label text="VLC version: "  GridPane.halignment="CENTER"/>
+					<Label fx:id="vlc_version" GridPane.columnIndex="1" />
+					<Label text="Java version: " GridPane.rowIndex="1" GridPane.halignment="CENTER"/>
+					<Label fx:id="java_version" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+				</children>
+			</GridPane>
+			<Button id="mainMenuBtn" onAction="#buttonPressed" alignment="CENTER"
+				mnemonicParsing="false" text="MainMenu" GridPane.columnIndex="1"
+				GridPane.rowIndex="2" GridPane.halignment="CENTER" />
+			<TextFlow GridPane.columnIndex="2" GridPane.rowIndex="1"
+				GridPane.halignment="CENTER"  maxHeight="-Infinity"
+				maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+				textAlignment="CENTER">
+				<children>
+					<Text text="Credits" style="-fx-font-size: 20; -fx-fill: darkred;"  />
+					<Text text="&#10;DevelopmentTeam:" style="-fx-font-weight: bold" />
+					<Text text="&#10;Anders Lunde" />
+					<Text text="&#10;Baptiste Masselin" />
+					<Text text="&#10;Kristian Midtgård" />
+					<Text text="&#10;Magnus Gundersen" />
+					<Text text="&#10;Eirik Zimmer Wold" />
+					<Text text="&#10;Ole Steinar L. Skrede" />
+				</children>
+			</TextFlow>
+		</children>
+	</GridPane>
+</AnchorPane> 

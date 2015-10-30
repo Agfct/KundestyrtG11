@@ -3,10 +3,13 @@
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.Label?>
 
 
-<Pane style="-fx-background-color: RED" maxHeight="150" maxWidth="1200" minHeight="150" minWidth="1200" prefHeight="150"  xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <TextField layoutX="2" layoutY="2" />
-   </children>
-</Pane>
+<AnchorPane styleClass="background-timeline" stylesheets="@application.css"  
+	minWidth="2000" maxWidth="Infinity" prefWidth="2000" minHeight="150" maxHeight="150" prefHeight="150"
+	xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+	</children>
+</AnchorPane>

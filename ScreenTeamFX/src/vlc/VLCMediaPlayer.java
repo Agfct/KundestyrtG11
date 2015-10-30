@@ -2,41 +2,39 @@ package vlc;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.SwingConstants;
 
-import com.sun.jna.NativeLibrary;
-
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
-import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Window;
-import java.util.ArrayList;
+import java.io.Serializable;
 
 
-public class VLCMediaPlayer {
+public class VLCMediaPlayer{
 	private JFrame frame = new JFrame();
 	private EmbeddedMediaPlayerComponent mp;
 	private String mediaPath = "";
 	private static GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-	private int display;
+	private int display = -1;
+	private int ID;
+	private boolean mediaChanged = false;
 	
-	public VLCMediaPlayer(int display){
-		this.display = display;
+	public VLCMediaPlayer(int ID){
+		this.ID = ID;
 		mp = new EmbeddedMediaPlayerComponent();
+		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mp);
-		frame.setVisible(true);
-		showOnDisplay(display);
+		frame.setTitle("scr " + ID);
 	}
 	
 	/**
-	 * Constructor for prerunChecker. Does not display the media player.
-	 */	
+	 * Constructor for prerunChecker. */	
 	public VLCMediaPlayer(){
 		mp = new EmbeddedMediaPlayerComponent();
 		frame.setUndecorated(true);
@@ -45,68 +43,156 @@ public class VLCMediaPlayer {
 	}
 	
 	public void play(){
-		if(getTime() > 0){
-			mp.getMediaPlayer().play();
-		}
-		else if(mediaPath != ""){
-			mp.getMediaPlayer().playMedia(mediaPath);
+		System.out.println("[PLAY]");
+		if(display > -1){
+			if(mediaChanged){
+				System.out.println("[mediaChanged!]");
+				mp.getMediaPlayer().startMedia(mediaPath,":avcodec-hw=none",":no-directx-hw-yuv",":no-direct3d-hw-blending");
+				mediaChanged = false;
+			}
+			else if(getTime() > -1){
+				System.out.println("[getTime>-1]");
+				long startp = System.currentTimeMillis();
+				mp.getMediaPlayer().start();
+			}
+			else{
+				System.out.println("No video attached");
+			}
 		}
 	}
 	
 	public void pause(){
-		mp.getMediaPlayer().pause();
+		if(isPlaying()){
+			mp.getMediaPlayer().pause();
+		}
 	}
 	
 	public void seek(long time){
-		if(getTime() < 0){
-			mp.getMediaPlayer().playMedia(mediaPath);
+		System.out.println("[SEEK]");
+		if(mediaChanged){
+			System.out.println("[mediaChanged!]");
+			mp.getMediaPlayer().startMedia(mediaPath,":avcodec-hw=none",":no-directx-hw-yuv",":no-direct3d-hw-blending");
+			mp.getMediaPlayer().pause();
+			mp.getMediaPlayer().setTime(time);
+			mediaChanged = false;
 		}
-		mp.getMediaPlayer().setTime(time);
+		else if(getTime() > -1){
+			System.out.println("[getTime>-1]");
+
+			pause();
+			mp.getMediaPlayer().setTime(time);
+		}
+		else{
+			System.out.println("No video attached");
+		}
+		while(isPlaying());
 	}	
 	
-	public boolean isPlaying(){
-		return mp.getMediaPlayer().isPlaying();
-	}
-	
-	public void setDisplay(int display){
-		this.display = display;
-		showOnDisplay(display);
+	public void stop(){
+		mp.getMediaPlayer().stop();
+		frame.setState(java.awt.Frame.ICONIFIED);
+		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
 	public void setMedia(String mediaPath){
+		mp.getMediaPlayer().stop();
 		this.mediaPath = mediaPath;
-		mp.getMediaPlayer().playMedia(mediaPath);
+		mediaChanged = true;
+	}
+	
+	public void mute(){
+		mp.getMediaPlayer().mute(true);
+	}
+	
+	public void unmute(){
+		mp.getMediaPlayer().mute(false);
+	}
+	
+	public void maximize(){
+		frame.setState(java.awt.Frame.NORMAL);
+	}
+	
+	public void hide(){
+		mp.setVisible(false);
+	}
+	
+	public void show(){
+		mp.setVisible(true);
+	}
+	
+	public void showhide(boolean show){
+		frame.setVisible(show);
+	}
+	
+	/**
+	 * Creates a new Jframe on a new graphicsDevice. Must use setMedia before media can be played again. 
+	 * @param display */
+	public void setDisplay(int display){
+		this.display = display;
+		frame.getContentPane().remove(mp);
+		frame.dispose();
+		frame = new JFrame(gs[display].getDefaultConfiguration ());
+		frame.getContentPane().setBackground(Color.BLACK);
+		frame.setTitle("scr " + ID);
+		frame.setUndecorated(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.getContentPane().add(mp);
+		frame.setVisible(true);
+	}
+	
+	/**
+	 * Preferred method for changing displays. Only works on Windows 8.
+	 * @param display */
+	public void setDisplayWin8(int display){
+		this.display = display;
+        gs[display].setFullScreenWindow(frame);
+        frame.setVisible(true);
+	}
+	
+	public void removeDisplay(){
+		if(System.getProperty("os.name").startsWith("Windows 8")){
+			gs[display].setFullScreenWindow(null);
+		}
+		else{
+			frame.getContentPane().removeAll();
+			frame.dispose();
+		}
+		display = -1;
+	}
+	
+	public static void updateDisplays(){
+		gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 	}
 	
 	public int getDisplay(){
 		return this.display;
 	}
 	
+	public boolean isPlaying(){
+		return mp.getMediaPlayer().isPlaying();
+	}
+	
+	public int getID(){
+		return this.ID;
+	}
+	
+	public String getMediaPath(){
+		return mediaPath;
+	}
+	
 	public long getTime(){
 		return mp.getMediaPlayer().getTime();
 	}
 	
-	public void showOnDisplay(int display){
-	    if(display > -1 && display < gs.length){
-	        gs[display].setFullScreenWindow((Window)frame);
-	    }
-	    else{
-	        throw new RuntimeException( "No Displays Found" );
-	    }
-	}
-	
-	public boolean isPlayable(String mediaPath){
+	public long isPlayable(String mediaPath){
 		frame.setVisible(true);
-		mp.getMediaPlayer().playMedia(mediaPath);
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {
-		}
-		return isPlaying();
+		mp.getMediaPlayer().startMedia(mediaPath,":avcodec-hw=none",":no-directx-hw-yuv",":no-direct3d-hw-blending");
+		return mp.getMediaPlayer().getLength();
 	}
 	
 	public void close(){
-		pause();
+		mp.getMediaPlayer().stop();
 		frame.dispose();
 	}
 }

@@ -2,13 +2,16 @@
  * This software is made by (Screen Team):
  * Anders Lunde, Mangus Gundersen, Kristian Midtgård, 
  * Baptiste Masselin, Ole Steinar Lillestøl Skrede and Eirik Zimmer Wold.
+ * Fall 2015
  */
 package application;
 	
 import gui.MainGUIController;
+import gui.MainScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import modules.MainModuleController;
+import vlc.VLCController;
 
 /**
  * 
@@ -46,5 +49,13 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+	
+	@Override
+	public void stop(){
+		System.out.println("APPLICATION TERMINATED");
+		System.exit(0);
+
+	}
+
 
 }

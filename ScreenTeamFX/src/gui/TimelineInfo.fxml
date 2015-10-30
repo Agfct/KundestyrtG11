@@ -3,20 +3,65 @@
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import org.controlsfx.control.CheckComboBox?>
 
-<GridPane maxHeight="150" maxWidth="-Infinity" minHeight="150" minWidth="-Infinity" prefHeight="150" prefWidth="200" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
-  <columnConstraints>
-    <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints minHeight="5" prefHeight="30.0" vgrow="NEVER" />
-    <RowConstraints minHeight="5" prefHeight="30.0" vgrow="NEVER" />
-    <RowConstraints minHeight="5" prefHeight="30.0" vgrow="NEVER" />
-  </rowConstraints>
-   <children>
-      <Label text="Enabled: " GridPane.rowIndex="1" />
-      <CheckBox mnemonicParsing="false" selected="true" text="CheckBox" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <ChoiceBox prefWidth="150.0" />
-   </children>
+<GridPane gridLinesVisible="true" fx:id="timelineContainer"
+	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
+	<columnConstraints>
+		<ColumnConstraints minWidth="200" prefWidth="200"
+			maxWidth="200" />
+		<ColumnConstraints hgrow="NEVER" maxWidth="1000" />
+	</columnConstraints>
+	<children>
+		<GridPane  fx:id="timelineInfo"
+			stylesheets="@application.css" styleClass="background-info"
+			GridPane.columnIndex="0" maxHeight="150" maxWidth="-Infinity"
+			minHeight="150" minWidth="-Infinity" prefHeight="150" prefWidth="200">
+			<columnConstraints>
+				<ColumnConstraints hgrow="NEVER" minWidth="25"
+					prefWidth="25" />
+				<ColumnConstraints hgrow="NEVER" minWidth="70"
+					prefWidth="70" />
+				<ColumnConstraints hgrow="NEVER" minWidth="70"
+					prefWidth="70" />
+				<ColumnConstraints hgrow="NEVER" minWidth="25"
+					prefWidth="25" />
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints minHeight="5" prefHeight="30.0"
+					vgrow="NEVER" />
+				<RowConstraints minHeight="5" prefHeight="30.0"
+					vgrow="NEVER" />
+				<RowConstraints minHeight="5" prefHeight="30.0"
+					vgrow="NEVER" />
+				<RowConstraints minHeight="5" prefHeight="30.0"
+					vgrow="NEVER" />
+				<RowConstraints minHeight="5" prefHeight="30.0"
+					vgrow="NEVER" />
+			</rowConstraints>
+			<children>
+				<Button fx:id="removeTimelineBtn" onAction="#buttonPressed"
+					GridPane.rowIndex="0" GridPane.columnIndex="3">X</Button>
+					
+				<ComboBox fx:id="displaysComboBox" prefWidth="200"
+					GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+					
+				<Button fx:id="muteVideo" onAction="#buttonPressed"
+					GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.halignment="CENTER">V</Button>
+				<Button fx:id="muteSound" onAction="#buttonPressed"
+					GridPane.rowIndex="3" GridPane.columnIndex="2" GridPane.halignment="CENTER">S</Button>
+				<!-- <Label text="Enabled: " GridPane.rowIndex="2" /> -->
+				<!-- <CheckBox mnemonicParsing="false" selected="true" text="CheckBox" -->
+				<!-- GridPane.columnIndex="1" GridPane.rowIndex="2" /> -->
+			</children>
+		</GridPane>
+		<!-- This is the underlying anchorPane of the TimelineLine, it enables 
+			the timelineLine to slide back and forth -->
+		<AnchorPane fx:id="timelineLineContainer"
+			GridPane.columnIndex="1">
+			<!-- Here is the timelineLine.fxml -->
+		</AnchorPane>
+	</children>
 </GridPane>

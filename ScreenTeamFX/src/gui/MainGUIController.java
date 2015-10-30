@@ -11,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import modules.SessionModule;
+import modules.TimeLineChanges;
 
 /**
  * @author Anders Lunde, Magnus Gundersen.
@@ -30,6 +32,7 @@ public class MainGUIController {
 	LoadingScreen loadingScreen;
 	MainScreen mainScreen;
 	AdvancedScreen advancedScreen;
+	OptionsScreen optionsScreen;
 	
 	//Screen size
 	
@@ -86,9 +89,13 @@ public class MainGUIController {
 		}else if(screenType == SCREENTYPE.ADVANCEDSCREEN){
 			primaryStage.setScene(advancedScreen.getScene());
 			primaryStage.show();
+			
+		}else if(screenType == SCREENTYPE.OPTIONS){
+			primaryStage.setScene(optionsScreen.getScene());
+			primaryStage.show();
 		}
 		
-		centerScreen();
+//		centerScreen(); //Centers the screen every time it changes
 	}
 
 	/**
@@ -100,6 +107,7 @@ public class MainGUIController {
 			
 			mainScreen = MainScreen.getInstance();
 			advancedScreen = AdvancedScreen.getInstance();
+			optionsScreen = OptionsScreen.getInstance();
 			primaryStage.hide();
 			primaryStage.setScene(mainScreen.getScene());
 			primaryStage.show();
@@ -114,6 +122,13 @@ public class MainGUIController {
 	public void centerScreen(){
         primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
         primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
+	}
+
+	public void updateSession(SessionModule sm) {
+		// TODO Auto-generated method stub
+		AdvancedScreen.getInstance().getScreenController().fireMediaObjectListChanged();
+		AdvancedScreen.getInstance().getScreenController().rebuildTimelines();
+		AdvancedScreen.getInstance().getScreenController().fireGlobalTimeChanged(sm.getGlobalTime());
 	}
 
 

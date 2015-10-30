@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<?import gui.NumberTextField?>
+
+<GridPane styleClass="background-modal" gridLinesVisible="true"
+	stylesheets="@application.css" fx:id="modalContainer" xmlns:fx="http://javafx.com/fxml/1"
+	xmlns="http://javafx.com/javafx/8.0.40" maxHeight="204" maxWidth="350"
+	minHeight="204" minWidth="350" prefHeight="204" prefWidth="350">
+	<columnConstraints>
+		<ColumnConstraints halignment="CENTER" percentWidth="29" />
+		<ColumnConstraints halignment="CENTER" percentWidth="29" />
+		<ColumnConstraints halignment="CENTER" percentWidth="13" />
+		<ColumnConstraints halignment="CENTER" percentWidth="29" />
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints prefHeight="34" vgrow="NEVER" />
+		<RowConstraints prefHeight="34" vgrow="NEVER" />
+		<RowConstraints prefHeight="34" vgrow="NEVER" />
+		<RowConstraints prefHeight="34" vgrow="NEVER" />
+		<RowConstraints prefHeight="34" vgrow="NEVER" />
+		<RowConstraints prefHeight="34" vgrow="NEVER" />
+	</rowConstraints>
+	<children>
+		<!-- Left side -->
+		<Label text="Name: " GridPane.rowIndex="0" />
+		<Label text="StartTime: " GridPane.rowIndex="1" />
+		<NumberTextField fx:id="startTimeField"
+			GridPane.columnIndex="0" GridPane.rowIndex="2">
+			<GridPane.margin>
+				<Insets left="10.0" right="10.0" />
+			</GridPane.margin>
+		</NumberTextField>
+		<Label fx:id="visualStartTime" text="Actual Name "
+			GridPane.columnIndex="0" GridPane.rowIndex="3" />
+		<Label text="Offset: " GridPane.rowIndex="4" />
+		<Button fx:id="applyBtn" text="Apply " onAction="#buttonPressed"
+			GridPane.rowIndex="5" />
+
+		<!-- Middle Left -->
+		<Label fx:id="nameLabel" text="Actual Name "
+			GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2" />
+		<Label text="Duration: " GridPane.columnIndex="1"
+			GridPane.rowIndex="1" />
+		<NumberTextField fx:id="durationField"
+			GridPane.columnIndex="1" GridPane.rowIndex="2">
+			<GridPane.margin>
+				<Insets left="10.0" right="10.0" />
+			</GridPane.margin>
+		</NumberTextField>
+		<Label fx:id="visualDuration" text="Actual Name "
+			GridPane.columnIndex="1" GridPane.rowIndex="3" />
+		<!-- <NumberTextField fx:id="offsetField" -->
+		<!-- GridPane.columnIndex="1" GridPane.rowIndex="2" /> -->
+
+		<!-- Middle Right -->
+		<Button fx:id="maxDurBtn" text="Max " onAction="#buttonPressed"
+			GridPane.columnIndex="2" GridPane.rowIndex="2" />
+
+		<!-- Right side -->
+		<Label text="EndTime: " GridPane.columnIndex="3"
+			GridPane.rowIndex="1" />
+		<Label fx:id="endTimeLabel" text="EndTime "
+			GridPane.columnIndex="3" GridPane.rowIndex="2" />
+		<Label fx:id="visualEndTime" text="EndTime "
+			GridPane.columnIndex="3" GridPane.rowIndex="3" />
+
+		<Label fx:id="visualOffset" text="Actual Offset "
+			GridPane.columnIndex="3" GridPane.rowIndex="4" />
+
+
+		<Button fx:id="okBtn" text="Ok " onAction="#buttonPressed"
+			GridPane.columnIndex="3" GridPane.rowIndex="5" />
+
+	</children>
+</GridPane>

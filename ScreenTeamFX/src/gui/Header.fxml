@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<?import java.lang.*?>
+<!-- This is the top GridPane, containing all the GUI elements in the top 
+	part of the advanced screen -->
+<!-- NB: The GridPane.rowIndex sets the rowindex for the gridPane in advancedScreenFXML -->
+<GridPane fx:id="rootPane" gridLinesVisible="true"
+	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40"
+	GridPane.rowIndex="0">
+	<columnConstraints>
+		<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+			prefWidth="100.0" />
+		<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"
+			prefWidth="100.0" />
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints minHeight="10.0" prefHeight="30.0"
+			vgrow="SOMETIMES" percentHeight="25" />
+		<RowConstraints minHeight="10.0" prefHeight="30.0"
+			vgrow="SOMETIMES" percentHeight="25" />
+		<RowConstraints minHeight="10.0" prefHeight="30.0"
+			vgrow="SOMETIMES" percentHeight="25" />
+		<RowConstraints minHeight="10.0" prefHeight="30.0"
+			vgrow="SOMETIMES" percentHeight="25" />
+	</rowConstraints>
+	<children>
+
+		<HBox fx:id="mainPlayerHBox" GridPane.rowIndex="0"
+			GridPane.columnIndex="0" alignment="center">
+			<Button id="menuBtn" text="_MainMenu" onAction="#buttonPressed"
+				mnemonicParsing="true" />
+			<Button id="saveSession" text="_Save session" onAction="#buttonPressed"
+				mnemonicParsing="true" />
+			<Button id="loadSession" text="_Load session" onAction="#buttonPressed"
+				mnemonicParsing="true" />
+		</HBox>
+
+
+		<Button id="addTimeLineBtn" text="_Add Timeline" onAction="#buttonPressed"
+			mnemonicParsing="true" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+		
+		<HBox fx:id="importHbox" GridPane.rowIndex="0" GridPane.columnIndex="1" alignment="center" >
+			<Button id="importMediaFromDisk" text="_Import media from disk" onAction="#buttonPressed"
+        		mnemonicParsing="true" />
+			<Button id="importWindow" text="_Import window" onAction="#buttonPressed"
+        		mnemonicParsing="true" />
+		</HBox>
+
+
+		<!-- VLC Buttons -->
+		<Button id="identifyScreens" text="Identify" onAction="#buttonPressed"
+			GridPane.rowIndex="2" GridPane.columnIndex="0" />
+		<!-- Zoom buttons -->
+		<HBox fx:id="zoomBtns" GridPane.rowIndex="3"
+			GridPane.columnIndex="1" alignment="center">
+			<Button id="zoomInn" text=" +" onAction="#buttonPressed"
+				mnemonicParsing="true" />
+			<Button id="zoomOut" text=" - " onAction="#buttonPressed"
+				mnemonicParsing="true" />
+		</HBox>
+
+		<HBox fx:id="mainPlayerHBox" GridPane.rowIndex="1"
+			GridPane.columnIndex="0" alignment="center">
+			<Button id="playAllTimelines" text="_Play all timelines"
+				onAction="#buttonPressed" mnemonicParsing="true" />
+			<Button id="pauseAllTimelines" text="_Pause all timelines"
+				onAction="#buttonPressed" mnemonicParsing="true" />
+			<Button id="resetGlobalTime" text="_Reset global time"
+				onAction="#buttonPressed" mnemonicParsing="true" />
+		</HBox>
+
+
+		<ScrollPane fx:id="mediaViewScrollPane" GridPane.rowIndex="1"
+			GridPane.columnIndex="1" GridPane.RowSpan="2" fitToWidth="true">
+			<TilePane fx:id="mediaViewPane">
+				<children>
+
+				</children>
+			</TilePane>
+		</ScrollPane>
+
+
+	</children>
+</GridPane>
