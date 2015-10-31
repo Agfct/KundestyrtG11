@@ -69,7 +69,7 @@
 				</ScrollPane>
 				<!-- This is the Scroll Bar at the bottom of the screen that vertically 
 					scrolls timelines -->
-				<GridPane GridPane.rowIndex="3">
+				<GridPane GridPane.rowIndex="3" style="-fx-background-color: #ece4d4">
 					<columnConstraints>
 						<ColumnConstraints minWidth="200" prefWidth="200"
 							maxWidth="200" />

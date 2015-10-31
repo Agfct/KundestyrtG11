@@ -38,7 +38,7 @@ public class SeekerController extends Pane{
 
 	private Canvas seekerLine;
 	private GraphicsContext seekergc;
-	private int seekerLineHeight = 450;
+	private int seekerLineHeight = 1000;
 	private double unScaledX; //This X value is unafected by scale
 
 	//Dragging:
