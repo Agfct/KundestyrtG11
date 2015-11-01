@@ -179,6 +179,8 @@ public class MediaObjectIcon extends GridPane{
 				styleIcon.getStyleClass().add("icon-image");
 			}else if (mType == MediaSourceType.WINDOW){
 				styleIcon.getStyleClass().add("icon-window");
+			}else{
+				styleIcon.getStyleClass().add("icon-video");
 			}
 			
 	}

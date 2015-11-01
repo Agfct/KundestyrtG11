@@ -11,6 +11,7 @@
 <?import javafx.scene.control.ScrollBar?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
 	stylesheets="@application.css" styleClass="background-advancedScreen"
@@ -38,22 +39,23 @@
 			</rowConstraints>
 			<children>
 				<!-- The header will be inserted here in javacode -->
-				<GridPane fx:id="barGrid" gridLinesVisible="true"
-					GridPane.rowIndex="1">
+				<GridPane fx:id="barGrid" GridPane.rowIndex="1">
 					<columnConstraints>
 						<ColumnConstraints minWidth="190" prefWidth="190"
 							maxWidth="190" />
-						<ColumnConstraints hgrow="NEVER" maxWidth="1011" prefWidth="1011"/>
+						<ColumnConstraints hgrow="NEVER" maxWidth="1011"
+							prefWidth="1011" />
 					</columnConstraints>
 					<rowConstraints>
 						<RowConstraints minHeight="25" prefHeight="25"
 							vgrow="NEVER" />
 					</rowConstraints>
 					<children>
-						<AnchorPane fx:id="timelineBarContainer"
-							GridPane.columnIndex="1">
-							<!-- Here is the timelineBar.fxml -->
-						</AnchorPane>
+						<Label fx:id="timelineBarGlobalTime" text="Global time"/>
+							<AnchorPane fx:id="timelineBarContainer"
+								GridPane.columnIndex="1">
+								<!-- Here is the timelineBar.fxml -->
+							</AnchorPane>
 					</children>
 				</GridPane>
 				<!-- This is the Scroll pane that contains the GridPane that has TimeLines 

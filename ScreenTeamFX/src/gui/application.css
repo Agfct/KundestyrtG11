@@ -41,7 +41,6 @@
 
 .background-video {
 	-fx-background-image: url("../../resources/videoTypeBack.png");
-	-fx-background-position: center;
 	/*-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
 	-fx-background-size: cover;
@@ -49,17 +48,20 @@
 }
 
 .background-image {
-	-fx-background-image: url("../../resources/videoTypeBack.png");
+	-fx-background-image: url("../../resources/background_image.png");
+}
+
+.background-sound {
+	-fx-background-image: url("../../resources/background_sound.png");
 }
 
 .background-window {
-	-fx-background-image: url("../../resources/videoTypeBack.png");
+	-fx-background-image: url("../../resources/background_window.png");
 }
 
 .background-modal {
-	-fx-background-color: LIGHTBLUE;
-	/*-fx-background-image: url("../../resources/videoTypeBack.png");
-	-fx-background-repeat: no-repeat;
+	-fx-background-image: url("../../resources/background_modal.png");
+	/*-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
 	-fx-background-size: cover;
 	-fx-background-radius: 10; */
