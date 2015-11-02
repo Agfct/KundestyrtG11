@@ -82,7 +82,8 @@ public class SessionModule implements Serializable {
         tlmID +=1;
         TimelineModel tlm = new TimelineModel(tlmID);
         timelines.put(tlmID,tlm);
-        vlccontroller.createMediaPlayer(tlmID);
+        String[] options = {"--video-filter=motionblur:transform", "--blur-factor=100", "--transform-type=90"};
+        vlccontroller.createMediaPlayer(tlmID, options);
         timelineOrder.add(0,tlm.getID()); //Added the timeLine to the beginning of the list. This means the new timeline will be at the first positision in the gui
         timelineChanged(TimeLineChanges.ADDED, tlm);
         return tlmID;
@@ -877,8 +878,9 @@ public class SessionModule implements Serializable {
         this.tAll = new Thread();
         this.globalTimeTicker = new Thread();
 
+        String[] options = {};
         for(Integer i : timelines.keySet()){
-            vlccontroller.createMediaPlayer(i);
+            vlccontroller.createMediaPlayer(i, options);
         }
 
     }
