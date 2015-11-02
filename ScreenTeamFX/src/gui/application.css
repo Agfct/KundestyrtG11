@@ -32,6 +32,13 @@
 	-fx-background-size: cover; 
 }
 
+.icon-cog {
+	-fx-background-image: url("../../resources/Icon_cog.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-background-size: cover;
+}
+
 .background-seeker {
 	-fx-background-image: url("../../resources/SeekerIcon.png");
 	-fx-background-repeat: no-repeat;
@@ -42,6 +49,13 @@
 .background-seekerpopup {
 	-fx-background-radius: 10;
 	-fx-background-color: rgba(0,0,0,0.5); 
+}
+
+.background-stopobject {
+	-fx-background-image: url("../../resources/stopObject.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-background-size: cover; 
 }
 
 .background-video {
@@ -71,12 +85,6 @@
 	-fx-background-size: cover;
 	-fx-background-radius: 10; */
 }
-.icon-cog {
-	-fx-background-image: url("../../resources/Icon_cog.png");
-	-fx-background-repeat: no-repeat;
-	-fx-background-position: center;
-	-fx-background-size: cover;
-}
 
 .background-timeline {
 	-fx-background-image: url("../../resources/timelineBackTemp.png");
@@ -104,12 +112,7 @@
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: cover;
 }
-.scroll-pane > .viewport {
-   -fx-background-color: transparent;
-}
-.scroll-pane {
-   -fx-background-color: transparent;
-}
+
 
 .background-transparent {
 	-fx-background-color:rgba(0,100, 100, 0.5);
@@ -131,4 +134,11 @@
 	-fx-fill: linear-gradient(cyan,white);
 	-fx-font-family: Helvetica;
 	-fx-font-size: 48;
+}
+
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+.scroll-pane {
+   -fx-background-color: transparent;
 }
