@@ -43,6 +43,7 @@ public class SessionModule implements Serializable {
     private ArrayList<SessionListener> listeners;
     private ArrayList<Integer> timelineOrder;
     private ArrayList<String> shownwindows;
+    private ArrayList<Event> lastEvents;
 
     // Used when saving and loading, to check if the loaded session has the same number of displays as the loaded one
     private int numberOfAvailableDisplays;
@@ -129,6 +130,7 @@ public class SessionModule implements Serializable {
                     displays.put(i,null);
                     vlccontroller.unassignDisplay(tlm.getID());
                     tlm.removeDisplay(i);
+                    System.out.println(i);
                 }
             }
         }
@@ -145,6 +147,8 @@ public class SessionModule implements Serializable {
             System.out.println("this display is not added to the list, please add it");
         }
         else{
+        	tlm.removeDisplay(display);
+            unassignTimeline(tlm);
             TimelineModel prevtlm = displays.put(display,tlm);
             tlm.addDisplay(display);
             if(prevtlm !=null){
@@ -210,16 +214,21 @@ public class SessionModule implements Serializable {
         if(paused){
             System.out.println("PLAYALL");
             paused = false;
+            //waiting for the threads to finish if paused earlier
             try {
                 tAll.join();
                 globalTimeTicker.join();
             } catch (InterruptedException e) {
                 System.out.println("interrupted waiting for tAll and/or the globalTimeTicker to die");
             }
+            //rebuilds the performance in case of changes or new startpoint/globaltime
             buildPerformance();
+            //creates the thread for excecuting the performance
             tAll = allPlay(globaltime);
+            //creates the thread for increasing the globaltime
             globalTimeTicker=tickGlobalTime(globaltime);
             pausing = false;
+            //starts the threads
             tAll.start();
             globalTimeTicker.start();
         }
@@ -259,54 +268,65 @@ public class SessionModule implements Serializable {
      * creates a thread to go through the performancestack and tell vlccontroller when and what
      * to play and stop.
      * @param glbtime the global point the timeline begins, 0 is start 1000 is one second in.
-     * @return
+     * @return the thread created, to be started elsewhere
      */
     private synchronized Thread allPlay(long glbtime){
-        System.out.println();
+        //creates a thread
         Thread tAll1 = new Thread(){
             public void run(){
                 System.out.println("RUN ALLPLAY");
                 System.out.println(performancestack.size());
+                //set startp and playp to get a view on real time seconds
                 long startp = System.currentTimeMillis();
                 long playp = System.currentTimeMillis();
+                //a map for seeking multiple videos with the seekmultiple method further down
                 Map<Integer,Long> pplay = new HashMap<Integer,Long>();
+                //if there are no more tasks to be done or the program has been paused, then the while loop ends
                 while (!performancestack.isEmpty() && pausing == false){
+                	//update playp to current time to gage the time since start
                     playp = System.currentTimeMillis();
+                    //checks if next event should happen yet continues if yes
                     if (performancestack.get(0).getTime()-glbtime<= playp-startp){
                         ArrayList<Event> temp = new ArrayList<Event>();
                         temp.add(performancestack.remove(0));
                         pplay.clear();
+                        //find all events that should happen at the same time
                         while (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime<=playp-startp){
                             temp.add(performancestack.remove(0));
                         }
+                        //go through all events that should happen and checks what should be done through the action of the event
                         for (Event ev2 : temp){
+                        	//if its a PLAY event then a video should be played from the beginning, so we set the video to the mediaplayer corresponding to the timeline and then play it
                             if (ev2.getAction()==Action.PLAY){
                                 vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
                                 pplay.put(ev2.getTimelineid(), ev2.getTimelineMediaObject().getStartPoint());
-                                vlccontroller.seekOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
 
                             }
+                            //if its a STOP event then we stop the video on the mediaplayer corresponding to the timeline
                             else if(ev2.getAction()==Action.STOP){
                                 vlccontroller.stopOne(ev2.getTimelineid());
                             }
+                            //if its a PLAY_WITH_OFFSET event then the video should start somewhere out into the video so we need to seek before playing
+                            //this happens if you dont start at the beginning of the playsession (globaltime is not 0)
                             else if(ev2.getAction()==Action.PLAY_WITH_OFFSET){
                                 if (vlccontroller.getMediaPlayerList().get(ev2.getTimelineid()).getMediaPath()!=ev2.getTimelineMediaObject().getParent().getPath()){
                                     vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
                                 }
+                                //calculate where in the video to start
                                 long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
                                 pplay.put(ev2.getTimelineid(), spoint);
-                                vlccontroller.seekOne(ev2.getTimelineid(), spoint);
                             }
+                            //if its a SHOW event then a window should be shown on the display with the timeline assigned to it.
                             else if(ev2.getAction()==Action.SHOW){
+                            	//go through all displays
                                 for(Integer dis:displays.keySet()){
                                 	if(displays.get(dis)==null){
                                 		continue;
                         
                                 	}
-                                	System.out.println("[DIS] "+ dis);
-                                	System.out.println("[tlmID] "+ ev2.getTimelineid());
-                                	System.out.println("[getID] "+ displays.get(dis).getID());
+                                	//if dis has the timeline assigned to it
                                     if (displays.get(dis).getID()==ev2.getTimelineid()){
+                                    	//hide the jframe for the vlc and maximize the window on the display
                                         vlccontroller.showmp(ev2.getTimelineid(), false);
                                         windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), false, dis);
                                         vlccontroller.maximize(ev2.getTimelineid());
@@ -315,19 +335,21 @@ public class SessionModule implements Serializable {
                                     }
                                 }
                             }
+                            //if its a HIDE event then we try to hide the window/minimize the window
                             else if(ev2.getAction()==Action.HIDE){
-                                for(Integer dis:displays.keySet()){
-                                    vlccontroller.showmp(ev2.getTimelineid(), false);
-                                    windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), true, dis);
-                                    vlccontroller.maximize(ev2.getTimelineid());
-                                    shownwindows.remove(ev2.getTimelineMediaObject().getParent().getPath());
-                                }
+                            	//show the jframe for for the vlc corresponding to the timeline and minimize the window
+                                vlccontroller.showmp(ev2.getTimelineid(), true);
+                                windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), true, 0);
+                                vlccontroller.maximize(ev2.getTimelineid());
+                                shownwindows.remove(ev2.getTimelineMediaObject().getParent().getPath());
                             }
                         }
                         try {
+                        	//seek in all the videos then play all
                             vlccontroller.SeekMultiple(pplay);
                             vlccontroller.playAll();
-                            if (!globalTimeTicker.isAlive()){
+                            //start the globaltimeticker if it has not started yet
+                            if (!globalTimeTicker.isAlive() && pausing == false){
                                 startp = System.currentTimeMillis();
                                 globalTimeTicker.start();
                             }
@@ -343,20 +365,21 @@ public class SessionModule implements Serializable {
                         }
                     }
                 }
-                if (!globalTimeTicker.isAlive()){
+                //failsafe to allow the globaltimelineticker to start if there are no timelinemediaobject assigned/the performancestack is empty
+                if (!globalTimeTicker.isAlive() && pausing == false){
                     startp = System.currentTimeMillis();
                     globalTimeTicker.start();
                 }
             }
         };
-
+        //returns the thread so it can be started in playAll function
         return tAll1;
     }
 
 
     /**
-     * Goes through all timelines on displays, get all their stacks of events and sort them based on when they
-     * begin and end. Also check where we are on the globaltime.
+     * Goes through all timelines assigned to a display, get all their stacks of events and sort them based on when they
+     * begin and end. Also check where we are on the globaltime and set videos to play with offset if the already should have begun but not yet ended.
      */
     private void buildPerformance(){
         System.out.println("BUILD PERFORMANCE");
@@ -368,18 +391,22 @@ public class SessionModule implements Serializable {
         for(Integer dis : displays.keySet()){
             if (displays.get(dis) != null){
                 for(Event ev2 : displays.get(dis).getTimelineStack()){
+                	//creates a new Event so that in case we change the action to PLAY_WITH_OFFSET then we don't change the event in the timelinemodels.
                     Event ev = new Event(ev2.getTime(), ev2.getTimelineid(), ev2.getAction(), ev2.getTimelineMediaObject());
                     if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.VIDEO){
                         if(ev.getAction() == Action.PLAY){
+                        	//if its play, check when it should be started and add the event if it is after current time
                             if(ev.getTime()>=globaltime){
                                 performancestack.add(ev);
                             }
+                            //change to PLAY_WITH_OFFSET if the globaltime is between the start and end of the timelinemediaobject
                             else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
                                 ev.setAction(Action.PLAY_WITH_OFFSET);
                                 performancestack.add(ev);
                             }
                         }
                         else if(ev.getAction()==Action.STOP){
+                        	//if stop happens after current time then add it
                             if (ev.getTime()>=globaltime){
                                 performancestack.add(ev);
                             }
@@ -392,6 +419,7 @@ public class SessionModule implements Serializable {
                          */
                         System.out.println("Adding events for streams is not implemented in TimelineModule.java: buildPerformance() yet.");
                     }
+                    //Does the same as with objects that are VIDEO only that they are IMAGEs
                     else if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.IMAGE){
                         if(ev.getAction() == Action.PLAY){
                             if(ev.getTime()>=globaltime){
@@ -408,8 +436,10 @@ public class SessionModule implements Serializable {
                             }
                         }
                     }
+                    //if the type is a WINDOW then the possible actions are SHOW and HIDE
                     else if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.WINDOW){
-                        if (ev.getAction()==Action.SHOW){//change play to show?
+                    	//if action is SHOW and it should be shown after or during current time then add
+                        if (ev.getAction()==Action.SHOW){
                             if(ev.getTime()>=globaltime){
                                 performancestack.add(ev);
                             }
@@ -417,7 +447,8 @@ public class SessionModule implements Serializable {
                                 performancestack.add(ev);
                             }
                         }
-                        else if(ev.getAction()==Action.HIDE){//change stop to hide?
+                        else if(ev.getAction()==Action.HIDE){
+                        	//add event to hide the window if it should happen after current time
                             if(ev.getTime()>=globaltime){
                                 performancestack.add(ev);
                             }
@@ -426,6 +457,7 @@ public class SessionModule implements Serializable {
                 }
             }
         }
+        //sort the stack in case something got wierd. sorted by time the event happens in increasing order.
         performancestack.sort(Event.EventTimeComperator);
     }
 
@@ -521,19 +553,22 @@ public class SessionModule implements Serializable {
      * pause all the displays and timelines.
      */
     public void pauseAll(){
+    	//nothing should happen if already pausing
         if (!pausing){
+        	//set pausing to true so that the threads will end.
             pausing = true;
+            //wake the threads if they sleep so they can end
             globalTimeTicker.interrupt();
             tAll.interrupt();
             try {
+            	//call the pauseAll function to pause the videos that are playing
                 vlccontroller.pauseAll();
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             paused = true;
-        }
-        //TODO: Go through displays and pause timelines
+        }        
     }
 
     /**
@@ -836,15 +871,17 @@ public class SessionModule implements Serializable {
             globalTimeChanged();
 
 
+            for(String wind:shownwindows){
+            	windowdisplay.WindowManipulation(wind, true, 0);
+            }
+            shownwindows.clear();
 
             //stop all mediaPlayers
             for(Integer integer:vlccontroller.getMediaPlayerList().keySet()){
                 vlccontroller.stopOne(integer);
+                vlccontroller.showmp(integer, true);
+                vlccontroller.maximize(integer);
             }
-            for(String wind:shownwindows){
-                windowdisplay.WindowManipulation(wind, true, 0);
-            }
-            shownwindows.clear();
         }
     }
 

@@ -90,6 +90,7 @@ public class VLCMediaPlayer{
 	
 	public void stop(){
 		mp.getMediaPlayer().stop();
+		mediaPath = "";
 		frame.setState(java.awt.Frame.ICONIFIED);
 		frame.setState(java.awt.Frame.NORMAL);
 	}

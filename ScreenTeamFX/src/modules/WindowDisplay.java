@@ -65,7 +65,6 @@ public class WindowDisplay implements Serializable{
 					
 			System.out.println("Info Monitor to display: num Monitor " + AllMonitor.get(display).getNum_Monitor() +" | x:"+ AllMonitor.get(display).getStart_X());
 			int bordure =50;
-			
 			if(hide==false){
 				//Show the window
 			
