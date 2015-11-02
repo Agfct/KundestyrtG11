@@ -385,6 +385,22 @@ public class SessionModule implements Serializable {
                             }
                         }
                     }
+                    else if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.AUDIO){
+                        if(ev.getAction() == Action.PLAY){
+                            if(ev.getTime()>=globaltime){
+                                performancestack.add(ev);
+                            }
+                            else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
+                                ev.setAction(Action.PLAY_WITH_OFFSET);
+                                performancestack.add(ev);
+                            }
+                        }
+                        else if(ev.getAction()==Action.STOP){
+                            if (ev.getTime()>=globaltime){
+                                performancestack.add(ev);
+                            }
+                        }
+                    }
                     else if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.STREAM){
                         /**
                          * TODO: Handle streams here. (Do they have both a start and end time? Might want to change between
@@ -576,7 +592,6 @@ public class SessionModule implements Serializable {
 
         // Did not find an old MediaObject with equal path, so create a new one
         String name = "";
-        long length = -1;
         MediaObject mo = new MediaObject(path, name, mst);
 
         switch(mst){
@@ -588,6 +603,13 @@ public class SessionModule implements Serializable {
             case AUDIO: {
                 name = path.substring(path.lastIndexOf('\\')+1);
                 mo.setName(name);
+                long lenght=vlccontroller.prerunCheck(mo.getPath());
+                if(lenght>0){
+                    mo.setLength((int)lenght);
+                }
+                else{
+                    return "MediaObject not created, prerunChecker in VLC failed";
+                }
                 break;
             }
             case WINDOW: {

@@ -226,7 +226,7 @@ public class HeaderController implements FXMLController{
 		for(String format:acceptedAudioFormats){
 			if(format.equals(extension)){
 				System.out.println(fileName + " is a sound! of type:  "+ format);
-				//TODO: currentSession.createMediaObject(MediaSourceType.AUDIO,path);
+				parentController.getCurrentSession().createNewMediaObject(MediaSourceType.AUDIO ,path);
 				return;
 			}
 		}
