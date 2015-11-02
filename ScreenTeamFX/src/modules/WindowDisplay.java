@@ -3,6 +3,8 @@ import static modules.user32dll.*;
 import static modules.kernel32dll.*;
 import static modules.psapi32dll.*;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.Serializable;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -39,8 +42,10 @@ public class WindowDisplay implements Serializable{
 	private static final int MAX_TITLE_LENGTH = 1024;
 	private HashMap <Integer,MonitorInfo> AllMonitor;
 	public ArrayList<WindowInfos> AllWindow;
+	public HashMap<String,JFrame> AllJFrameHide;
 	
 	public WindowDisplay(Integer nb_screen){
+		AllJFrameHide = new HashMap<String,JFrame>();
 		InitialisationMonitor(nb_screen);
 	}
 	
@@ -50,34 +55,86 @@ public class WindowDisplay implements Serializable{
 	
 	//Principal function	
 	public void WindowManipulation(String NameWindow, boolean hide, Integer display) {
-		
 		WindowInfos WIs= new WindowInfos(null,null,null,null);
-		
+		String FindLola="Lola";
 		WIs=getWindows(NameWindow);     
 		if(WIs.getProcessFilePath()== null){	
 			System.out.println("No Process File Path");
 		}
 		else{
 					
-			System.out.println("Monitor: " + AllMonitor.get(display).getNum_Monitor() +" x:"+ AllMonitor.get(display).getStart_X());
+			System.out.println("Info Monitor to display: num Monitor " + AllMonitor.get(display).getNum_Monitor() +" | x:"+ AllMonitor.get(display).getStart_X());
+			int bordure =50;
 			
 			if(hide==false){
 				//Show the window
 			
-				//ShowWindow(WIs.getThWnd(),User32.SW_SHOWMAXIMIZED); 
+				//ShowWindow(WIs.getThWnd(),User32.SW_SHOWMAXIMIZED);
 				ShowWindow(WIs.getThWnd(),User32.SW_MAXIMIZE); 
 				ResolutionScreen RS=new ResolutionScreen();
 				RS.setResolutionScreen(display);
-				MoveWindow(WIs.getThWnd(),AllMonitor.get(display).getStart_X(),AllMonitor.get(display).getStart_Y(),RS.getWidthResolutionScreen(),RS.getHeightResolutionScreen(),true);	
-				System.out.println(AllMonitor.get(display).getStart_X());
+				MoveWindow(WIs.getThWnd(),AllMonitor.get(display).getStart_X(),(AllMonitor.get(display).getStart_Y()),RS.getWidthResolutionScreen(),RS.getHeightResolutionScreen(),true);	
+				
+				//Put a Jframe to hide the menu
+				
+				//if (NameWindow.toLowerCase().contains(FindLola.toLowerCase())){
+					System.out.println("I found Lola");	
+					System.out.println("Hide menu Lola");
+					
+				    
+					GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+					JFrame JFHideMenuTop = new JFrame(gs[display].getDefaultConfiguration());
+					JFHideMenuTop.setSize( (int) (RS.getWidthResolutionScreen()), (int) ((RS.getHeightResolutionScreen())*0.02));
+					JFHideMenuTop.setUndecorated(true);
+					JFHideMenuTop.getContentPane().setBackground(Color.BLACK);
+					JFHideMenuTop.setTitle("JFrame Hide Top"+NameWindow);
+					//JFHideMenu.setName("JFrame Hide"+NameWindow);
+					JFHideMenuTop.setVisible(true);
+					AllJFrameHide.put(JFHideMenuTop.getTitle(),JFHideMenuTop);
+					
+					JFrame JFHideMenuBottom = new JFrame(gs[display].getDefaultConfiguration());
+					JFHideMenuBottom.setSize( (int) (RS.getWidthResolutionScreen()),(int) ((RS.getHeightResolutionScreen())*0.02));
+					System.out.println("Width: "+ RS.getWidthResolutionScreen() +" Height: " +RS.getHeightResolutionScreen());
+					JFHideMenuBottom.setLocation(AllMonitor.get(display).getStart_X(), (int) (((RS.getHeightResolutionScreen())-(RS.getHeightResolutionScreen())*0.02)));
+					JFHideMenuBottom.setUndecorated(true);
+					JFHideMenuBottom.getContentPane().setBackground(Color.BLACK);
+					JFHideMenuBottom.setTitle("JFrame Hide Bottom"+NameWindow);
+					//JFHideMenu.setName("JFrame Hide"+NameWindow);
+					JFHideMenuBottom.setVisible(true);
+					AllJFrameHide.put(JFHideMenuBottom.getTitle(),JFHideMenuBottom);
+					
+			//	} else{
+			//		System.out.println("I don't know Lola");
+			//	}
+				
 				//ShowWindow(WIs.getThWnd(),User32.SW_SHOWMAXIMIZED); 
 			}
 			else if  (hide==true){
+				
+				System.out.println("Vive la france");
 				//Hide the window
+			//	if (NameWindow.toLowerCase().contains(FindLola.toLowerCase())){	
+					System.out.println("Close Hide menu Lola");
+
+					if (AllJFrameHide.containsKey("JFrame Hide Top"+NameWindow)){
+						System.out.println("Close Top Hide window for Lola");
+						AllJFrameHide.get("JFrame Hide Top"+NameWindow).dispose();
+					}
+					if (AllJFrameHide.containsKey("JFrame Hide Bottom"+NameWindow)){
+						System.out.println("Close Top Bottom window for Lola");
+						AllJFrameHide.get("JFrame Hide Bottom"+NameWindow).dispose();
+					}
+			//	} else{
+			//		System.out.println("I don't know Lola");
+			//	}				
 				ShowWindow(WIs.getThWnd(),User32.SW_SHOWMINIMIZED);
 				MoveWindow(WIs.getThWnd(),AllMonitor.get(display).getStart_X(),AllMonitor.get(display).getStart_Y(),200,200,true);					
 				System.out.println(AllMonitor.get(display).getStart_X());
 				ShowWindow(WIs.getThWnd(),User32.SW_SHOWMINIMIZED);
+				//System.out.println("Name JFrame"+AllJFrameHide.contains(o)
+				
+
+				
 			}
 			else{
 				System.out.println("boolean hide no assigned: "+hide);
@@ -109,7 +166,6 @@ public class WindowDisplay implements Serializable{
 	public void getAllWindows()
 	   {
 		   this.AllWindow = new ArrayList<WindowInfos>();	
-	       final WindowInfos V = new WindowInfos(null,null,null,null);
 	       EnumWindows(new WNDENUMPROC()
 	       {
 	           public boolean callback(Pointer hWndPointer, Pointer userData)
