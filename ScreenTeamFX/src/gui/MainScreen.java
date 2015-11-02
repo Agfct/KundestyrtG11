@@ -96,7 +96,8 @@ public class MainScreen implements Screen {
 			
 			if(((Button)event.getSource()).getId().equals("testBtn") ){
 				VLCController vlcc = MainModuleController.getInstance().getVLCController();
-				vlcc.identifyDisplays();
+				String[] options = {"--avcodec-hw=none"};
+				vlcc.updateOptions(1, options);
 				
 				
 			}else if(((Button)event.getSource()).getId().equals("advScrBtn")){

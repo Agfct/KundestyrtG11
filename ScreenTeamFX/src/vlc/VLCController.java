@@ -1,11 +1,9 @@
 package vlc;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +13,8 @@ import java.util.concurrent.CyclicBarrier;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
-import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 public class VLCController {
@@ -44,9 +40,8 @@ public class VLCController {
 			vlcPathSet = true;
 		}
 		catch(Exception e){
-			System.out.println("Can't add VLC native library. The path may be invalid or you have the wrong version."
-					+ " You need VLC " + System.getProperty("sun.arch.data.model") + "-bit."
-					+ " Try setting a working path with setVlcPath()");
+			System.out.println("Can't find VLC native library. You need VLC " + System.getProperty("sun.arch.data.model") + "-bit.");
+	
 		}
 		this.displays = displays;
 		availableDisplays = displays;
@@ -70,25 +65,12 @@ public class VLCController {
 		VLCMediaPlayer.updateDisplays();
 	}
 	
-	public void setVlcPath(String vlcPath){
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
-		try{
-			prerunCheckPlayer = new VLCMediaPlayer();
-			vlcPathSet = true;
-		}
-		catch(Exception e){
-			System.out.println("Can't add VLC native library. The path may be invalid or you have the wrong version."
-					+ " You need VLC " + System.getProperty("sun.arch.data.model") + "-bit."
-					+ "T ry setting a working path with setVlcPath()");
-		}
-	}
-	
 	/** 
 	 * * Create a VLC media player. ID is linked to a timeline. 
 	 * @param ID */
-	public VLCMediaPlayer createMediaPlayer(int ID){
+	public VLCMediaPlayer createMediaPlayer(int ID, String[] options){
 		if(vlcPathSet){
-			VLCMediaPlayer mp = new VLCMediaPlayer(ID);
+			VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
 			mediaPlayerList.put(ID, mp);
 			return mp;
 		}
@@ -109,6 +91,16 @@ public class VLCController {
 				availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
 				mediaPlayerDisplayConnections.remove(mp);
 			}
+		}
+	}
+	
+	public void updateOptions(int mp, String[] options){
+		if(mediaPlayerList.containsKey(mp)){
+			int ID = toPlayer(mp).getID();
+			int display = toPlayer(mp).getDisplay();
+			deleteMediaPlayer(mp);
+			createMediaPlayer(ID, options);
+			assignDisplay(ID, display);			
 		}
 	}
 	

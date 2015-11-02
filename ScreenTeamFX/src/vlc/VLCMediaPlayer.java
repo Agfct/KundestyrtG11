@@ -1,44 +1,57 @@
 package vlc;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.SwingConstants;
 
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.io.Serializable;
+import java.util.Arrays;
 
 
 public class VLCMediaPlayer{
 	private JFrame frame = new JFrame();
-	private EmbeddedMediaPlayerComponent mp;
+	private EmbeddedMediaPlayerComponent mediaPlayerComponent;
 	private String mediaPath = "";
 	private static GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 	private int display = -1;
 	private int ID;
+	private String[] libvlcOptions;
 	private boolean mediaChanged = false;
+	protected static final String[] DEFAULT_FACTORY_ARGUMENTS = {
+	        "--video-title=vlcj video output",
+	        "--no-snapshot-preview",
+	        "--quiet-synchro",
+	        "--sub-filter=logo:marq",
+	        "--intf=dummy"
+	    }; 
 	
-	public VLCMediaPlayer(int ID){
+	public VLCMediaPlayer(int ID, String[] options){
 		this.ID = ID;
-		mp = new EmbeddedMediaPlayerComponent();
+		mediaPlayerComponent = new EmbeddedMediaPlayerComponent() {
+			private static final long serialVersionUID = 1L;
+
+			protected String[] onGetMediaPlayerFactoryArgs() {
+				String[] mergedOptions = concat(DEFAULT_FACTORY_ARGUMENTS, options);
+				System.out.println("vlc options:" + Arrays.toString(mergedOptions));
+				return mergedOptions;
+			}
+		};
+		libvlcOptions = options;
 		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().add(mp);
+		frame.getContentPane().add(mediaPlayerComponent);
 		frame.setTitle("scr " + ID);
 	}
 	
 	/**
 	 * Constructor for prerunChecker. */	
 	public VLCMediaPlayer(){
-		mp = new EmbeddedMediaPlayerComponent();
+		mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 		frame.setUndecorated(true);
-		frame.getContentPane().add(mp);
+		frame.getContentPane().add(mediaPlayerComponent);
 		frame.setSize(0, 0);
 	}
 	
@@ -47,13 +60,12 @@ public class VLCMediaPlayer{
 		if(display > -1){
 			if(mediaChanged){
 				System.out.println("[mediaChanged!]");
-				mp.getMediaPlayer().startMedia(mediaPath,":avcodec-hw=none",":no-directx-hw-yuv",":no-direct3d-hw-blending");
+				mediaPlayerComponent.getMediaPlayer().startMedia(mediaPath);
 				mediaChanged = false;
 			}
 			else if(getTime() > -1){
 				System.out.println("[getTime>-1]");
-				long startp = System.currentTimeMillis();
-				mp.getMediaPlayer().start();
+				mediaPlayerComponent.getMediaPlayer().start();
 			}
 			else{
 				System.out.println("No video attached");
@@ -63,7 +75,7 @@ public class VLCMediaPlayer{
 	
 	public void pause(){
 		if(isPlaying()){
-			mp.getMediaPlayer().pause();
+			mediaPlayerComponent.getMediaPlayer().pause();
 		}
 	}
 	
@@ -71,16 +83,16 @@ public class VLCMediaPlayer{
 		System.out.println("[SEEK]");
 		if(mediaChanged){
 			System.out.println("[mediaChanged!]");
-			mp.getMediaPlayer().startMedia(mediaPath,":avcodec-hw=none",":no-directx-hw-yuv",":no-direct3d-hw-blending");
-			mp.getMediaPlayer().pause();
-			mp.getMediaPlayer().setTime(time);
+			mediaPlayerComponent.getMediaPlayer().startMedia(mediaPath);
+			mediaPlayerComponent.getMediaPlayer().pause();
+			mediaPlayerComponent.getMediaPlayer().setTime(time);
 			mediaChanged = false;
 		}
 		else if(getTime() > -1){
 			System.out.println("[getTime>-1]");
 
 			pause();
-			mp.getMediaPlayer().setTime(time);
+			mediaPlayerComponent.getMediaPlayer().setTime(time);
 		}
 		else{
 			System.out.println("No video attached");
@@ -89,24 +101,25 @@ public class VLCMediaPlayer{
 	}	
 	
 	public void stop(){
-		mp.getMediaPlayer().stop();
 		mediaPath = "";
+		mediaPlayerComponent.getMediaPlayer().stop();
 		frame.setState(java.awt.Frame.ICONIFIED);
 		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
 	public void setMedia(String mediaPath){
-		mp.getMediaPlayer().stop();
+		mediaPlayerComponent.getMediaPlayer().stop();
+		mediaPlayerComponent.getMediaPlayer().prepareMedia(mediaPath);
 		this.mediaPath = mediaPath;
 		mediaChanged = true;
 	}
 	
 	public void mute(){
-		mp.getMediaPlayer().mute(true);
+		mediaPlayerComponent.getMediaPlayer().mute(true);
 	}
 	
 	public void unmute(){
-		mp.getMediaPlayer().mute(false);
+		mediaPlayerComponent.getMediaPlayer().mute(false);
 	}
 	
 	public void maximize(){
@@ -114,11 +127,11 @@ public class VLCMediaPlayer{
 	}
 	
 	public void hide(){
-		mp.setVisible(false);
+		mediaPlayerComponent.setVisible(false);
 	}
 	
 	public void show(){
-		mp.setVisible(true);
+		mediaPlayerComponent.setVisible(true);
 	}
 	
 	public void showhide(boolean show){
@@ -130,7 +143,7 @@ public class VLCMediaPlayer{
 	 * @param display */
 	public void setDisplay(int display){
 		this.display = display;
-		frame.getContentPane().remove(mp);
+		frame.getContentPane().remove(mediaPlayerComponent);
 		frame.dispose();
 		frame = new JFrame(gs[display].getDefaultConfiguration ());
 		frame.getContentPane().setBackground(Color.BLACK);
@@ -138,7 +151,7 @@ public class VLCMediaPlayer{
 		frame.setUndecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.getContentPane().add(mp);
+		frame.getContentPane().add(mediaPlayerComponent);
 		frame.setVisible(true);
 	}
 	
@@ -171,7 +184,7 @@ public class VLCMediaPlayer{
 	}
 	
 	public boolean isPlaying(){
-		return mp.getMediaPlayer().isPlaying();
+		return mediaPlayerComponent.getMediaPlayer().isPlaying();
 	}
 	
 	public int getID(){
@@ -182,18 +195,38 @@ public class VLCMediaPlayer{
 		return mediaPath;
 	}
 	
+	public String[] getOptions(){
+		return libvlcOptions;
+	}
+	
 	public long getTime(){
-		return mp.getMediaPlayer().getTime();
+		return mediaPlayerComponent.getMediaPlayer().getTime();
 	}
 	
 	public long isPlayable(String mediaPath){
 		frame.setVisible(true);
-		mp.getMediaPlayer().startMedia(mediaPath,":avcodec-hw=none",":no-directx-hw-yuv",":no-direct3d-hw-blending");
-		return mp.getMediaPlayer().getLength();
+		mediaPlayerComponent.getMediaPlayer().startMedia(mediaPath);
+		return mediaPlayerComponent.getMediaPlayer().getLength();
 	}
 	
 	public void close(){
-		mp.getMediaPlayer().stop();
+		mediaPlayerComponent.getMediaPlayer().stop();
 		frame.dispose();
+	}
+	
+	static String[] concat(String[]... arrays) {
+	    int length = 0;
+	    for (String[] array : arrays) {
+	        length += array.length;
+	    }
+	    String[] result = new String[length];
+	    int pos = 0;
+	    for (String[] array : arrays) {
+	        for (String element : array) {
+	            result[pos] = element;
+	            pos++;
+	        }
+	    }
+	    return result;
 	}
 }
