@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.control.ScrollBar?>
 <?import javafx.scene.control.ListView?>
@@ -52,15 +53,15 @@
 					</rowConstraints>
 					<children>
 						<Label fx:id="timelineBarGlobalTime" text="Global time"/>
-							<AnchorPane fx:id="timelineBarContainer"
-								GridPane.columnIndex="1">
-								<!-- Here is the timelineBar.fxml -->
-							</AnchorPane>
+						<AnchorPane fx:id="timelineBarContainer"
+							GridPane.columnIndex="1">
+							<!-- Here is the timelineBar.fxml -->
+						</AnchorPane>
 					</children>
 				</GridPane>
 				<!-- This is the Scroll pane that contains the GridPane that has TimeLines 
 					in it -->
-				<ScrollPane hbarPolicy="NEVER" GridPane.rowIndex="2">
+				<ScrollPane fx:id="timelineScrollPane" hbarPolicy="NEVER"  GridPane.rowIndex="2">
 					<content>
 						<!-- The Timelines are controlled by at TimelineController -->
 						<VBox fx:id="timelineContainer">

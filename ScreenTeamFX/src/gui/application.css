@@ -39,6 +39,11 @@
 	-fx-background-size: cover; 
 }
 
+.background-seekerpopup {
+	-fx-background-radius: 10;
+	-fx-background-color: rgba(0,0,0,0.5); 
+}
+
 .background-video {
 	-fx-background-image: url("../../resources/videoTypeBack.png");
 	/*-fx-background-repeat: no-repeat;

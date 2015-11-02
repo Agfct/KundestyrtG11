@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sun.webkit.dom.KeyboardEventImpl;
+
+import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
@@ -28,8 +31,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
@@ -132,6 +137,7 @@ public class AdvancedScreen implements Screen{
 		private EventHandler<DragEvent> mIconDragDropped = null;
 		private EventHandler<DragEvent> mIconDragDone = null;
 		private EventHandler<DragEvent> mIconDragOverTimeline = null;
+		private SeekerPopupController seekerPopup = null;
 
 		// Pointers to the fx:id in the fxml
 		@FXML private VBox timelineContainer;
@@ -139,6 +145,7 @@ public class AdvancedScreen implements Screen{
 		@FXML private ListView fileListView;
 		@FXML private ScrollBar timelineLineScrollBar;
 		@FXML private Label timelineBarGlobalTime;
+		@FXML private ScrollPane timelineScrollPane;
 
 		// Hashmap over the timelineIDs from the modules and the timelineControllers of the GUI
 		private HashMap<TimelineController, Integer> idTimlineControllerMap;
@@ -175,16 +182,22 @@ public class AdvancedScreen implements Screen{
 			timelineBarCanvas.setLayoutY(0);
 			paintTimelineBarCanvas();
 			timelineBarContainer.getChildren().add(timelineBarController);
-			
+
 			//Displays global time to the userinterface
 			timelineBarGlobalTime.setText("GlobalTime: " + getTimeAsText(currentSession.getGlobalTime()));
 
 
+			//initializeScrollPane
+			initializeTimelineScrollPane();
+			
 			//InitializeScrollBar values
 			initializeScrollBar();
 
 			//Drag&drop functionality
-			initialize();
+			initializeDrag();
+
+			//Seeker Popup
+			initializeSeekerPopup();
 
 			// Initialize the header
 			initHeader(this);
@@ -193,8 +206,17 @@ public class AdvancedScreen implements Screen{
 			idTimlineControllerMap = new HashMap<TimelineController, Integer>();
 
 		}
-
-
+		
+		
+		private void initializeTimelineScrollPane(){
+			
+			timelineScrollPane.addEventFilter(KeyEvent.ANY,new EventHandler<KeyEvent>() {
+		        @Override
+		        public void handle(KeyEvent event) {
+		                event.consume();
+		        }
+		    });
+		}
 
 		/**
 		 * initializes the Scroll bar and its listener
@@ -226,7 +248,7 @@ public class AdvancedScreen implements Screen{
 		 * accross panes.
 		 *
 		 */
-		private void initialize(){
+		private void initializeDrag(){
 
 			mDragOverIcon = new MediaObjectIcon(null);
 			mDragOverIcon.setVisible(false);
@@ -234,6 +256,19 @@ public class AdvancedScreen implements Screen{
 			rootPane.getChildren().add(mDragOverIcon);
 
 			buildDragHandlers();
+		}
+
+		/**
+		 * Initializes a dummy icon that will be displayed when dragging
+		 * the seeker.
+		 *
+		 */
+		private void initializeSeekerPopup(){
+
+			seekerPopup = new SeekerPopupController(timelineBarController.getSeeker());
+			seekerPopup.setVisible(false);
+			rootPane.getChildren().add(seekerPopup);
+
 		}
 
 		/**
@@ -707,7 +742,12 @@ public class AdvancedScreen implements Screen{
 		@Override
 		public void fireGlobalTimeChanged(long newGlobalTime) {
 			timelineBarController.getSeeker().placeSeeker(newGlobalTime);
-			timelineBarGlobalTime.setText("GlobalTime: " + getTimeAsText(currentSession.getGlobalTime()));
+			Platform.runLater(new Runnable() {
+				@Override public void run() {
+					timelineBarGlobalTime.setText("GlobalTime: " + getTimeAsText(newGlobalTime));                      
+				}
+			});
+
 			//            System.out.println(newGlobalTime);
 
 		}
@@ -807,14 +847,14 @@ public class AdvancedScreen implements Screen{
 			}else if(scaleCoefficient == 10) {
 				gc.fillText("6 sec", 72+1, 12);
 			}
-//			int k = 0;
-//			for (int x = 12; x < 1000; x+=10) {
-//				gc.setFont(new Font(8));
-//				k = 0;
-//				if(x == 112){
-//					gc.fillText(100*scaleCoefficient+"s", x+1, 12);
-//				}
-//			}
+			//			int k = 0;
+			//			for (int x = 12; x < 1000; x+=10) {
+			//				gc.setFont(new Font(8));
+			//				k = 0;
+			//				if(x == 112){
+			//					gc.fillText(100*scaleCoefficient+"s", x+1, 12);
+			//				}
+			//			}
 		}
 		/**
 		 * Paints the timelineBar lines and numbers according to scale
@@ -825,25 +865,25 @@ public class AdvancedScreen implements Screen{
 
 			gc.setLineWidth(1.0);
 			//x = 12 to start the first line ontop of the center of the seeker
-			int k = 0;
+			int k = 5;
 			for (int x = 12; x < 1000; x+=10) {
 				double x1 = 0;
 				x1 = x; //TODO: The 0.5 is to get a clean (not blurry) line, but it might mean that x width should be +1 more pixel
 				gc.setFont(new Font(8));
-				if(k == 6){
+				if(k == 5){
 					k = 0;
 					if(x == 72){
 						if(scaleCoefficient == 1){
 							gc.fillText("1 min", x1+1, 12);
 						}else if(scaleCoefficient == 10) {
-							gc.fillText("1 min", x1+1, 12);
+							gc.fillText("6 sec", x1+1, 12);
 						}
 					}
 					x1 = x + 0.5;
 					gc.moveTo(x1, 25);
 					gc.lineTo(x1, 15);
 					gc.stroke();
-				}else if(k == 3){
+				}else if(k == 2){
 					k += 1;
 					x1 = x + 0.5;
 					gc.moveTo(x1, 25);
@@ -960,6 +1000,42 @@ public class AdvancedScreen implements Screen{
 			long seconds = timeInSeconds % 60;
 			long milliseconds = time%1000;
 			return String.format("%02dh : %02dm : %02ds : %02dms", hours, minutes, seconds,milliseconds);
+		}
+
+		public void setSeekerPopoupVisibility(boolean visibility){
+			seekerPopup.setVisible(visibility);
+		}
+		public void moveSeekerPopup(Point2D moveToThisPoint){
+			seekerPopup.relocate(moveToThisPoint.getX(), moveToThisPoint.getY());
+			seekerPopup.updateText();
+		}
+
+		public void ifSeekerIsOutsideThenScroll(Point2D checkThisPoint){
+			System.out.println("[Advanced Screen]: pos" + scrollBarPosition + " ScrollMax: "+ timelineLineScrollBar.getMax() + " GetX: "+ checkThisPoint.getX() );
+			int unitsMoved = 10;
+			//If the seeker is going outside the left side
+			if(checkThisPoint.getX() <= 199 && scrollBarPosition < 0){
+				System.out.println("NR1");
+				if(-scrollBarPosition - unitsMoved > 0){
+					System.out.println("lOLnr1");
+					scrollBarPosition += unitsMoved;
+					timelineLineScrollBar.setValue(-scrollBarPosition);
+				}else{ 
+					//If pointer is below zero, then zero is set as the minimum value
+					scrollBarPosition = 0;
+					timelineLineScrollBar.setValue(-scrollBarPosition);
+				}
+				updateTimelinesPosition();
+
+			}else if(checkThisPoint.getX() > 1188 && -scrollBarPosition < timelineLineScrollBar.getMax()){
+				System.out.println("NR3");
+				if(-scrollBarPosition + unitsMoved < timelineLineScrollBar.getMax()+200){
+					scrollBarPosition -= unitsMoved;
+					timelineLineScrollBar.setValue(-scrollBarPosition);
+				}
+				updateTimelinesPosition();
+
+			}
 		}
 
 
