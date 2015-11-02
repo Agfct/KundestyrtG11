@@ -24,7 +24,7 @@ public class user32dll{
 	    public static native boolean IsWindowVisible(HWND hWnd);
 	    public static native HWND GetDesktopWindow();
 	    public static native boolean MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, boolean bRepaint);
-	    
+	    public static native boolean DestroyWindow(HWND hWnd);
 	    // Monitor display		
 
 	    public static native int GetWindowThreadProcessId(HWND hWnd, PointerByReference pref);
