@@ -25,7 +25,7 @@ public class ModalController implements FXMLController {
 
 	//Temp variables for keeping MediaObject information (new start points and such)
 	private long temp_start;
-	private long temp_startPoint = 0;
+	private long temp_startPoint;
 	private long temp_duration;
 	private long endTime;
 
@@ -37,6 +37,7 @@ public class ModalController implements FXMLController {
 	@FXML NumberTextField startTimeMinutes;
 	@FXML NumberTextField startTimeSeconds;
 	@FXML NumberTextField startTimeMiliSeconds;
+	@FXML NumberTextField offsetField;
 
 	@FXML NumberTextField durationField;
 	@FXML Label endTimeLabel;
@@ -84,6 +85,7 @@ public class ModalController implements FXMLController {
 		//			visualOffset.setText(value);
 		visualDuration.setText((currentMediaObjectController.getTimelineMediaObject().getDuration()/1000)+"s");
 		visualEndTime.setText(getTimeAsText(currentMediaObjectController.getTimelineMediaObject().getEnd()));
+		offsetField.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getStartPoint()));
 	}
 
 	private void setStartTimeField(long time){
@@ -164,6 +166,19 @@ public class ModalController implements FXMLController {
 			//			    if(Integer.parseInt(newValue) > 0 && Integer.parseInt(newValue) < currentMediaObject.getLength()){
 			if(newValue.length() > 0 && newValue.length() < 10) {
 				temp_duration = Integer.parseInt(newValue);
+			}
+			//			    }
+
+		});
+
+		offsetField.textProperty().addListener((observable, oldValue, newValue) -> {
+			System.out.println("[Offset] Offset Text Changed (newValue: " + newValue + ")");
+			//Checks that the string is not bigger than long size, checks that the newValue is not larger or equal to duration, 
+			if(newValue.length() > 0 && newValue.length() < 10 ){
+				int intNewValue = Integer.parseInt(newValue);
+				if( intNewValue < currentMediaObjectController.getTimelineMediaObject().getParent().getLength()) {
+					temp_startPoint = intNewValue;
+				}
 			}
 			//			    }
 

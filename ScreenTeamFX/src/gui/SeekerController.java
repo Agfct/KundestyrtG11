@@ -249,7 +249,10 @@ public class SeekerController extends Pane{
 				
 				//Showing the seekerPopup to display temp globaltime
 				AdvancedScreen.getInstance().getScreenController().setSeekerPopoupVisibility(true);
-
+				
+				//Pauses all timelines when you start to drag
+				AdvancedScreen.getInstance().getScreenController().pauseAllTimelines();
+				
 				startDragAndDrop (TransferMode.MOVE).setContent(content);      
 
 				event.consume();					
