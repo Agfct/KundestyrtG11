@@ -221,6 +221,12 @@ public class TimelineModel implements Serializable{
 				timelineStack.add(start);
 				timelineStack.add(end);
 			}
+			else if (mO.getParent().getType()==MediaSourceType.VIDEO){
+				start = new Event(mO.getStart(), id, Action.PLAY, mO);
+				end = new Event(mO.getEnd(), id, Action.STOP, mO);
+				timelineStack.add(start);
+				timelineStack.add(end);
+			}
 			else if(mO.getParent().getType()==MediaSourceType.WINDOW){
 				start = new Event(mO.getStart(),id,Action.SHOW,mO);
 				end = new Event(mO.getEnd(), id, Action.HIDE, mO);
