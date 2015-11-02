@@ -245,7 +245,7 @@ public class MediaObjectController extends GridPane{
 //		getStyleClass().add("dragicon");
 //		
 		if(type == MediaSourceType.AUDIO){
-			getStyleClass().add("icon-sound");
+			getStyleClass().add("background-sound");
 		}else if(type == MediaSourceType.IMAGE){
 			getStyleClass().add("background-image");
 		}else if(type == MediaSourceType.WINDOW){
@@ -434,7 +434,7 @@ public class MediaObjectController extends GridPane{
 	}
 	
 	private double getMediaObjectHeigth(){
-		return 75;
+		return 70;
 	}
 	
 	public TimelineMediaObject getTimelineMediaObject(){

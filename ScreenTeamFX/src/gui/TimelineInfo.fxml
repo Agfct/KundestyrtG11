@@ -17,41 +17,37 @@
 	<children>
 		<GridPane  fx:id="timelineInfo"
 			stylesheets="@application.css" styleClass="background-info"
-			GridPane.columnIndex="0" maxHeight="150" maxWidth="-Infinity"
-			minHeight="150" minWidth="-Infinity" prefHeight="150" prefWidth="200">
+			GridPane.columnIndex="0" maxHeight="80" maxWidth="-Infinity"
+			minHeight="80" minWidth="-Infinity" prefHeight="80" prefWidth="200">
 			<columnConstraints>
-				<ColumnConstraints hgrow="NEVER" minWidth="25"
+				<ColumnConstraints hgrow="NEVER" minWidth="30"
 					prefWidth="25" />
-				<ColumnConstraints hgrow="NEVER" minWidth="70"
+				<ColumnConstraints hgrow="NEVER" minWidth="65"
 					prefWidth="70" />
-				<ColumnConstraints hgrow="NEVER" minWidth="70"
+				<ColumnConstraints hgrow="NEVER" minWidth="65"
 					prefWidth="70" />
-				<ColumnConstraints hgrow="NEVER" minWidth="25"
+				<ColumnConstraints hgrow="NEVER" minWidth="30"
 					prefWidth="25" />
 			</columnConstraints>
 			<rowConstraints>
-				<RowConstraints minHeight="5" prefHeight="30.0"
+				<RowConstraints minHeight="5" percentHeight="33"
 					vgrow="NEVER" />
-				<RowConstraints minHeight="5" prefHeight="30.0"
+				<RowConstraints minHeight="5" percentHeight="33"
 					vgrow="NEVER" />
-				<RowConstraints minHeight="5" prefHeight="30.0"
-					vgrow="NEVER" />
-				<RowConstraints minHeight="5" prefHeight="30.0"
-					vgrow="NEVER" />
-				<RowConstraints minHeight="5" prefHeight="30.0"
+				<RowConstraints minHeight="5" percentHeight="33"
 					vgrow="NEVER" />
 			</rowConstraints>
 			<children>
 				<Button fx:id="removeTimelineBtn" onAction="#buttonPressed"
 					GridPane.rowIndex="0" GridPane.columnIndex="3">X</Button>
 					
-				<ComboBox fx:id="displaysComboBox" prefWidth="200"
-					GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+				<ComboBox fx:id="displaysComboBox" 
+					GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
 					
 				<Button fx:id="muteVideo" onAction="#buttonPressed"
-					GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.halignment="CENTER">V</Button>
+					GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.halignment="CENTER">V</Button>
 				<Button fx:id="muteSound" onAction="#buttonPressed"
-					GridPane.rowIndex="3" GridPane.columnIndex="2" GridPane.halignment="CENTER">S</Button>
+					GridPane.rowIndex="2" GridPane.columnIndex="2" GridPane.halignment="CENTER">S</Button>
 				<!-- <Label text="Enabled: " GridPane.rowIndex="2" /> -->
 				<!-- <CheckBox mnemonicParsing="false" selected="true" text="CheckBox" -->
 				<!-- GridPane.columnIndex="1" GridPane.rowIndex="2" /> -->

@@ -250,7 +250,7 @@ public class HeaderController implements FXMLController{
 		for(MediaObject m:newListOfMediaObjects){
 			MediaObjectIcon icn = new MediaObjectIcon(m);
 			icn.setMediaObject(m);
-			icn.setType(MediaSourceType.VIDEO);
+			icn.setType(m.getType());
 			icn.setTitle(m.getName());
 			importedMediaObjects.add(icn);
 		}

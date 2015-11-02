@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
@@ -27,42 +28,56 @@ public class MediaObjectIcon extends GridPane{
 	@FXML GridPane grid_pane;
 	private @FXML Label nameOfFile;
 	private @FXML Region styleIcon;
-	
+
+	private Tooltip mediaTooltip = new Tooltip();
+
 	//Drag&Drop
 	private EventHandler <DragEvent> mContextDragOver;
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
 	private MediaSourceType mType = null;
-	
+
 	private MediaObject mediaObject;
 
 	public MediaObjectIcon(MediaObject mediaObject) {
-		
+
 		FXMLLoader fxmlLoader = new FXMLLoader(
 				getClass().getResource("MediaObjectIcon.fxml")
 				);
-		
+
 		fxmlLoader.setRoot(this); 
 		fxmlLoader.setController(this);
-		
+
 		try { 
 			fxmlLoader.load();
-        
-		} catch (IOException exception) {
-		    throw new RuntimeException(exception);
-		}
-		
-		this.mediaObject = mediaObject;
 
-		
+		} catch (IOException exception) {
+			throw new RuntimeException(exception);
+		}
+
+		this.mediaObject = mediaObject;
+		initializeTooltip();
+
 	}
+
+	private void initializeTooltip(){
+		//Sets the text of the tooltip
+		if(mediaObject != null){
+			mediaTooltip.setText(
+				"Name: "+mediaObject.getName()+"\n" +
+						"Duration: "+Long.toString(mediaObject.getLength()/1000)+" Seconds\n"
+				);
+		nameOfFile.setTooltip(mediaTooltip);
+		}
+	}
+
 	/*
 	 * Method for setting the title of the Icon
 	 */
 	public void setTitle(String s){
 		nameOfFile.setText(s);
 	}
-	
+
 	@FXML
 	private void initialize() {
 		buildNodeDragHandlers();
@@ -73,112 +88,118 @@ public class MediaObjectIcon extends GridPane{
 	}
 
 	public void buildNodeDragHandlers() {
-		
-	mContextDragOver = new EventHandler <DragEvent>() {
 
-		//dragover to handle node dragging inside the timeline
-		@Override
-		public void handle(DragEvent event) {		
-	
-			event.acceptTransferModes(TransferMode.ANY);				
-			relocateToPoint(new Point2D( event.getSceneX(), event.getSceneY()));
+		mContextDragOver = new EventHandler <DragEvent>() {
 
-			event.consume();
-		}
-	};
-	
-	//dragdrop for node dragging
-	mContextDragDropped = new EventHandler <DragEvent> () {
+			//dragover to handle node dragging inside the timeline
+			@Override
+			public void handle(DragEvent event) {		
 
-		@Override
-		public void handle(DragEvent event) {
-		
-			getParent().setOnDragOver(null);
-			getParent().setOnDragDropped(null);
-			
-			event.setDropCompleted(true);
-			
-			event.consume();
-		}
-	};
-	//close button click
-//	close_button.setOnMouseClicked( new EventHandler <MouseEvent> () {
-//
-//		@Override
-//		public void handle(MouseEvent event) {
-//			AnchorPane parent  = (AnchorPane) self.getParent();
-//			parent.getChildren().remove(self);
-//		}
-//		
-//	});
-	
-	//drag detection for node dragging
-	//TODO: use like a title bar for dragging ? not dragging the whole ting ?
-//	title_bar.setOnDragDetected ( new EventHandler <MouseEvent> () {
-	setOnDragDetected ( new EventHandler <MouseEvent> () {
+				event.acceptTransferModes(TransferMode.ANY);				
+				relocateToPoint(new Point2D( event.getSceneX(), event.getSceneY()));
 
-		@Override
-		public void handle(MouseEvent event) {
-		
-			getParent().setOnDragOver(null);
-			getParent().setOnDragDropped(null);
+				event.consume();
+			}
+		};
 
-			getParent().setOnDragOver (mContextDragOver);
-			getParent().setOnDragDropped (mContextDragDropped);
+		//dragdrop for node dragging
+		mContextDragDropped = new EventHandler <DragEvent> () {
 
-            //begin drag ops
-            mDragOffset = new Point2D(event.getX(), event.getY());
-            
-            relocateToPoint(
-            		new Point2D(event.getSceneX(), event.getSceneY())
-            		);
-            
-            ClipboardContent content = new ClipboardContent();
-			MediaObjectContainer container = new MediaObjectContainer();
-			
-			container.addData ("type", mType.toString());
-			content.put(MediaObjectContainer.AddNode, container);
-			
-            startDragAndDrop(TransferMode.ANY).setContent(content);                
-            
-            event.consume();					
-		}
-		
-	});		
-}	
-	
+			@Override
+			public void handle(DragEvent event) {
+
+				getParent().setOnDragOver(null);
+				getParent().setOnDragDropped(null);
+
+				event.setDropCompleted(true);
+
+				event.consume();
+			}
+		};
+		//close button click
+		//	close_button.setOnMouseClicked( new EventHandler <MouseEvent> () {
+		//
+		//		@Override
+		//		public void handle(MouseEvent event) {
+		//			AnchorPane parent  = (AnchorPane) self.getParent();
+		//			parent.getChildren().remove(self);
+		//		}
+		//		
+		//	});
+
+		//drag detection for node dragging
+		//TODO: use like a title bar for dragging ? not dragging the whole ting ?
+		//	title_bar.setOnDragDetected ( new EventHandler <MouseEvent> () {
+		setOnDragDetected ( new EventHandler <MouseEvent> () {
+
+			@Override
+			public void handle(MouseEvent event) {
+
+				getParent().setOnDragOver(null);
+				getParent().setOnDragDropped(null);
+
+				getParent().setOnDragOver (mContextDragOver);
+				getParent().setOnDragDropped (mContextDragDropped);
+
+				//begin drag ops
+				mDragOffset = new Point2D(event.getX(), event.getY());
+
+				relocateToPoint(
+						new Point2D(event.getSceneX(), event.getSceneY())
+						);
+
+				ClipboardContent content = new ClipboardContent();
+				MediaObjectContainer container = new MediaObjectContainer();
+
+				container.addData ("type", mType.toString());
+				content.put(MediaObjectContainer.AddNode, container);
+
+				startDragAndDrop(TransferMode.ANY).setContent(content);                
+
+				event.consume();					
+			}
+
+		});		
+	}	
+
 	public void relocateToPoint (Point2D p) {
 
-	
+
 		//relocates the object to a point that has been converted to
 		//scene coordinates
 		Point2D localCoords = getParent().sceneToLocal(p);
-		
+
 		relocate ( 
 				(int) (localCoords.getX() - (getBoundsInLocal().getWidth() / 2)),
 				(int) (localCoords.getY() - (getBoundsInLocal().getHeight() / 2))
-			);
+				);
 	}
-	
+
 	public MediaSourceType getType () {
 		return mType; 
-		}
-	
-	public void setType (MediaSourceType type) {
-		
-		mType = type;
-		
-//		getStyleClass().clear();
-//		getStyleClass().add("dragicon");
-
-			if(mType == MediaSourceType.AUDIO){
-				styleIcon.getStyleClass().add("icon-sound");
-			}else{
-				styleIcon.getStyleClass().add("icon-video");
-			}
-			
 	}
-	
+
+	public void setType (MediaSourceType type) {
+
+		mType = type;
+		System.out.println("Media TYPE: " + type);
+		//		getStyleClass().clear();
+		//		getStyleClass().add("dragicon");
+
+		if(mType == MediaSourceType.VIDEO){
+			styleIcon.getStyleClass().add("icon-video");
+		}else if (mType == MediaSourceType.AUDIO){
+			styleIcon.getStyleClass().add("icon-sound");
+		}else if (mType == MediaSourceType.IMAGE){
+			styleIcon.getStyleClass().add("icon-image");
+		}else if (mType == MediaSourceType.WINDOW){
+			styleIcon.getStyleClass().add("icon-window");
+		}else{
+			styleIcon.getStyleClass().add("icon-video");
+		}
+
+	}
+
 	public MediaObject getMediaObject(){
 		return mediaObject;
 	}

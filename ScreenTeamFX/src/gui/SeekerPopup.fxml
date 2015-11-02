@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Label?>
+
+<fx:root fx:id="root_pane" stylesheets="@application.css"
+	styleClass="background-seekerpopup" maxHeight="25" minHeight="25"
+	minWidth="150" prefHeight="25" prefWidth="150" maxWidth="150"
+	type="javafx.scene.layout.BorderPane" xmlns="http://javafx.com/javafx/8"
+	xmlns:fx="http://javafx.com/fxml/1">
+	<center>
+		<Label fx:id="timeLabel" text="00:00:00" style="	-fx-text-fill: white" />
+	</center>
+</fx:root>

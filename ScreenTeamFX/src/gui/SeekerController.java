@@ -38,7 +38,7 @@ public class SeekerController extends Pane{
 
 	private Canvas seekerLine;
 	private GraphicsContext seekergc;
-	private int seekerLineHeight = 450;
+	private int seekerLineHeight = 1000;
 	private double unScaledX; //This X value is unafected by scale
 
 	//Dragging:
@@ -161,6 +161,9 @@ public class SeekerController extends Pane{
 				if (timelineBarController.getBoundsInLocal().contains(mediaControllerRect)) {
 					event.acceptTransferModes(TransferMode.MOVE);
 					relocateToPoint(new Point2D(mediaControllerRect.getMinX(),mediaControllerRect.getMinY()));
+					//TODO: Local point in advanced sceen
+					AdvancedScreen.getInstance().getScreenController().moveSeekerPopup(localToScene(0,25));
+					AdvancedScreen.getInstance().getScreenController().ifSeekerIsOutsideThenScroll(localToScene(0,25));
 				}
 				event.consume();
 			}
@@ -177,6 +180,8 @@ public class SeekerController extends Pane{
 				//				parentController.getRoot().setOnDragOver(null);
 				//				parentController.getRoot().setOnDragDropped(null);
 				//				
+				
+
 				event.setDropCompleted(true);
 
 				event.consume();
@@ -195,6 +200,9 @@ public class SeekerController extends Pane{
 				AdvancedScreen.getInstance().getScreenController().getMasterRoot().setOnDragOver(null);
 				parentController.getRoot().setOnDragDropped(null);
 				parentController.getRoot().setOnDragDone(null);
+				
+				//Hiding the seekerPopup
+				AdvancedScreen.getInstance().getScreenController().setSeekerPopoupVisibility(false);
 
 				seekerChanged();
 
@@ -237,7 +245,10 @@ public class SeekerController extends Pane{
 				//				container.addData ("type", timelineMediaObject.getParent().getType().toString());
 
 				//Putting the data container onto the content
-				content.put(MediaObjectContainer.DragNode, container); //TODO: AddNode ??
+				content.put(MediaObjectContainer.DragNode, container);
+				
+				//Showing the seekerPopup to display temp globaltime
+				AdvancedScreen.getInstance().getScreenController().setSeekerPopoupVisibility(true);
 
 				startDragAndDrop (TransferMode.MOVE).setContent(content);      
 
@@ -249,7 +260,11 @@ public class SeekerController extends Pane{
 	}
 	
 	private void seekerChanged(){
-		AdvancedScreen.getInstance().getScreenController().changeGlobalTime((long)((localToParent(0,25).getX()/scale)*1000));
+		AdvancedScreen.getInstance().getScreenController().changeGlobalTime(getTempGlobalTime());
+	}
+	
+	public long getTempGlobalTime(){
+		return (long)((localToParent(0,25).getX()/scale)*1000);
 	}
 	public void placeSeeker( long newGlobalTime){
 		root.setLayoutX((newGlobalTime*scale)/1000);
