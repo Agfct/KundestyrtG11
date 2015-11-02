@@ -43,6 +43,7 @@ public class SessionModule implements Serializable {
     private ArrayList<SessionListener> listeners;
     private ArrayList<Integer> timelineOrder;
     private ArrayList<String> shownwindows;
+    private ArrayList<Event> lastEvents;
 
     // Used when saving and loading, to check if the loaded session has the same number of displays as the loaded one
     private int numberOfAvailableDisplays;
@@ -129,8 +130,10 @@ public class SessionModule implements Serializable {
                     displays.put(i,null);
                     vlccontroller.unassignDisplay(tlm.getID());
                     tlm.removeDisplay(i);
+                    System.out.println(i);
                 }
             }
+            System.out.println("---------------------------" + displays.get(1));
         }
         timelineChanged(TimeLineChanges.MODIFIED, tlm);
     }
@@ -145,7 +148,10 @@ public class SessionModule implements Serializable {
             System.out.println("this display is not added to the list, please add it");
         }
         else{
+        	tlm.removeDisplay(display);
+            unassignTimeline(tlm);
             TimelineModel prevtlm = displays.put(display,tlm);
+            System.out.println(prevtlm);
             tlm.addDisplay(display);
             if(prevtlm !=null){
                 prevtlm.removeDisplay(display);
@@ -156,6 +162,7 @@ public class SessionModule implements Serializable {
         }
 
         timelineChanged(TimeLineChanges.MODIFIED,tlm);
+        System.out.println("---------------------------" + displays.get(1));
     }
 
     /**
@@ -280,10 +287,10 @@ public class SessionModule implements Serializable {
                             temp.add(performancestack.remove(0));
                         }
                         for (Event ev2 : temp){
+                        	System.out.println(vlccontroller.getMediaPlayerList().get(ev2.getTimelineid()).getMediaPath());
                             if (ev2.getAction()==Action.PLAY){
                                 vlccontroller.setMedia(ev2.getTimelineid(), ev2.getTimelineMediaObject().getParent().getPath());
                                 pplay.put(ev2.getTimelineid(), ev2.getTimelineMediaObject().getStartPoint());
-                                vlccontroller.seekOne(ev2.getTimelineid(),ev2.getTimelineMediaObject().getStartPoint());
 
                             }
                             else if(ev2.getAction()==Action.STOP){
@@ -295,7 +302,6 @@ public class SessionModule implements Serializable {
                                 }
                                 long spoint = ev2.getTimelineMediaObject().getStartPoint()+ (glbtime-ev2.getTimelineMediaObject().getStart());
                                 pplay.put(ev2.getTimelineid(), spoint);
-                                vlccontroller.seekOne(ev2.getTimelineid(), spoint);
                             }
                             else if(ev2.getAction()==Action.SHOW){
                                 for(Integer dis:displays.keySet()){
@@ -317,7 +323,7 @@ public class SessionModule implements Serializable {
                             }
                             else if(ev2.getAction()==Action.HIDE){
                                 for(Integer dis:displays.keySet()){
-                                    vlccontroller.showmp(ev2.getTimelineid(), false);
+                                    vlccontroller.showmp(ev2.getTimelineid(), true);
                                     windowdisplay.WindowManipulation(ev2.getTimelineMediaObject().getParent().getPath(), true, dis);
                                     vlccontroller.maximize(ev2.getTimelineid());
                                     shownwindows.remove(ev2.getTimelineMediaObject().getParent().getPath());
@@ -325,6 +331,7 @@ public class SessionModule implements Serializable {
                             }
                         }
                         try {
+                        	System.out.println(pplay.size());
                             vlccontroller.SeekMultiple(pplay);
                             vlccontroller.playAll();
                             if (!globalTimeTicker.isAlive()){
@@ -836,15 +843,17 @@ public class SessionModule implements Serializable {
             globalTimeChanged();
 
 
+            for(String wind:shownwindows){
+            	windowdisplay.WindowManipulation(wind, true, 0);
+            }
+            shownwindows.clear();
 
             //stop all mediaPlayers
             for(Integer integer:vlccontroller.getMediaPlayerList().keySet()){
                 vlccontroller.stopOne(integer);
+                vlccontroller.showmp(integer, true);
+                vlccontroller.maximize(integer);
             }
-            for(String wind:shownwindows){
-                windowdisplay.WindowManipulation(wind, true, 0);
-            }
-            shownwindows.clear();
         }
     }
 
