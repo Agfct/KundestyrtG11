@@ -74,18 +74,22 @@ public class ModalController implements FXMLController {
 	 * This function gets the info from the model, and sets the fields. It is run every time the user does some changes to the values that are displayed. 
 	 */
 	private void setInfo(){
+		temp_start = currentMediaObjectController.getTimelineMediaObject().getStart();
+		temp_startPoint = currentMediaObjectController.getTimelineMediaObject().getStartPoint();
+		temp_duration = currentMediaObjectController.getTimelineMediaObject().getDuration();
+		endTime = currentMediaObjectController.getTimelineMediaObject().getEnd();
 		nameLabel.setText(currentMediaObjectController.getTimelineMediaObject().getParent().getName());
-		setStartTimeField(currentMediaObjectController.getTimelineMediaObject().getStart());
+		setStartTimeField(temp_start);
 		//			startTimeField.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getStart()));
-		durationField.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getDuration()));
-		endTimeLabel.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getEnd()));			
+		durationField.setText(Long.toString(temp_duration));
+		endTimeLabel.setText(Long.toString(endTime));			
 
 		//This info will be updated on apply
 		visualStartTime.setText(getTimeAsText(currentMediaObjectController.getTimelineMediaObject().getStart()));
 		//			visualOffset.setText(value);
 		visualDuration.setText((currentMediaObjectController.getTimelineMediaObject().getDuration()/1000)+"s");
 		visualEndTime.setText(getTimeAsText(currentMediaObjectController.getTimelineMediaObject().getEnd()));
-		offsetField.setText(Long.toString(currentMediaObjectController.getTimelineMediaObject().getStartPoint()));
+		offsetField.setText(Long.toString(temp_startPoint));
 	}
 
 	private void setStartTimeField(long time){
