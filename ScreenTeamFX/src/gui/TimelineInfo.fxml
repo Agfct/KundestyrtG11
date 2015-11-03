@@ -7,6 +7,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import org.controlsfx.control.CheckComboBox?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 
 <GridPane gridLinesVisible="true" fx:id="timelineContainer"
 	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
@@ -16,6 +25,7 @@
 		<ColumnConstraints hgrow="NEVER" maxWidth="1000" />
 	</columnConstraints>
 	<children>
+	
 		<GridPane  fx:id="timelineInfo"  gridLinesVisible="true" 
 			stylesheets="@application.css" styleClass=""
 			GridPane.columnIndex="0" maxHeight="80" maxWidth="-Infinity"
@@ -40,7 +50,8 @@
 			</rowConstraints>
 			<children>
 				<Label fx:id="titleLabel" text="Title" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.halignment="CENTER"></Label>
-				<TextField fx:id="nameOfTimeLineField" editable="true" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.columnSpan="2"></TextField>
+				<TextArea fx:id="nameOfTimeLineField" text="FUCK" >
+			</TextArea>
 				
 				<Button fx:id="removeTimelineBtn" onAction="#buttonPressed"
 					GridPane.rowIndex="0" GridPane.columnIndex="3">X</Button>
