@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.javafx.tk.FileChooserType;
-
 import gui.*;
 import vlc.VLCController;
 import vlc.VLCMediaPlayer;
@@ -134,10 +132,10 @@ public class SessionModule implements Serializable {
                     vlccontroller.unassignDisplay(tlm.getID());
                     tlm.removeDisplay(i);
                     System.out.println(i);
+                    timelineChanged(TimeLineChanges.MODIFIED, tlm);
                 }
             }
         }
-        timelineChanged(TimeLineChanges.MODIFIED, tlm);
     }
 
     /**
@@ -147,7 +145,6 @@ public class SessionModule implements Serializable {
      */
     public void assignTimeline(Integer display, TimelineModel tlm){
         if(!displays.containsKey(display)){
-            System.out.println("this display is not added to the list, please add it");
         }
         else{
         	tlm.removeDisplay(display);
@@ -161,7 +158,6 @@ public class SessionModule implements Serializable {
             }
             vlccontroller.assignDisplay(tlm.getID(), display);
         }
-
         timelineChanged(TimeLineChanges.MODIFIED,tlm);
     }
 
