@@ -273,7 +273,7 @@ public class TimelineModel implements Serializable{
 		assignedDisplays = new ArrayList<Integer>(); 
 	}
 	
-	public String getNameOfTimline(){
+	public String getNameOfTimeline(){
 		return nameOfTimeline;
 	}
 	

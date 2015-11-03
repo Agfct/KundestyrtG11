@@ -40,7 +40,7 @@
 			</rowConstraints>
 			<children>
 				<Label fx:id="titleLabel" text="Title" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.halignment="CENTER"></Label>
-				<TextField fx:id="titelTextField" text="Timeline 1" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.columnSpan="2"></TextField>
+				<TextField fx:id="nameOfTimeLineField" text="Timeline X" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.columnSpan="2"></TextField>
 				
 				<Button fx:id="removeTimelineBtn" onAction="#buttonPressed"
 					GridPane.rowIndex="0" GridPane.columnIndex="3">X</Button>

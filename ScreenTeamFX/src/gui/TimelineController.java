@@ -18,11 +18,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import modules.TimelineModel;
 import sun.misc.Cleaner;
+import sun.nio.cs.ext.TIS_620;
 
 /**
  * 
@@ -43,12 +45,18 @@ public class TimelineController implements FXMLController {
 	@FXML Button removeTimelineBtn;
 	@FXML ComboBox<String> displaysComboBox;
 	@FXML Label listOfScreens;
+	@FXML TextField nameOfTimeLineField;
+	
+	@FXML Button moveUp;
+	@FXML Button moveDown;
 	
 	//The timelinemodel that corresponds to this controller
 	TimelineModel timelineModel;
 	
 	ArrayList<Integer> assignedDisplays;
 	protected boolean updatingDisplayList=false;  //variable to prevent the listener from firing when the model is updated
+	
+	String nameOfTimeLine = "";
 	
 	/**
 	 *
@@ -118,7 +126,7 @@ public class TimelineController implements FXMLController {
 		 //adds the listener
 		 initDisplayChooserListener();
 		 
-		 //TODO: add the name of the timeline?
+		 nameOfTimeLineField.setText(nameOfTimeLine);
 
 		
 	}
@@ -220,6 +228,8 @@ public class TimelineController implements FXMLController {
 	 */
 	private void updateValuesFromModel() {
 		assignedDisplays=timelineModel.getAssignedDisplays(); //gets the assigned display.
+		nameOfTimeLine=timelineModel.getNameOfTimeline();
+		
 	}
 	
 	
