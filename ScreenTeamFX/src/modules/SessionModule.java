@@ -860,10 +860,6 @@ public class SessionModule implements Serializable {
     }
 
 
-    public void changeOrderOfTimelines(int timelineID, int newPos ){
-        //TODO: Change order of tha timelines
-        //This means sending the new order to the GUI,and the GUI must clear all controllers from the timelineContainer. And then reAdd them in the order specified by the timelineOrder
-    }
 
     public ArrayList<Integer> getTimelineOrder() {
         return timelineOrder;
@@ -1041,6 +1037,37 @@ public class SessionModule implements Serializable {
         }
         return windowsListNames;
     }
+    /**
+     * This methods rearranges the order of the timelines
+     * @param direction
+     * @param timelineModel
+     */
+	public void moveTimeline(String direction, TimelineModel timelineModel) {
+		//Finds the given model in the order-arrayList:
+		for(int i =0; i<timelineOrder.size();i++){
+			if(timelineOrder.get(i)==timelineModel.getID()){
+				//Found the corresponding timeline
+				if(direction.equals("down")){
+					System.out.println("[SessionModule] DOWN");
+					if(i!=0){//If the timeline is not on the top of the stack:
+						Integer timelineToBeRearranged=timelineOrder.remove(i);
+						timelineOrder.add(i+1);
+					}
+				}
+				else if(direction.equals("up")){
+					System.out.println("[SessionModule] UP");
+					if(i!=timelineOrder.size()-1){
+						Integer timelineToBeRearranged=timelineOrder.remove(i);
+						timelineOrder.add(i-1);
+						
+					}
+					
+				}
+				break;
+			}
+		}
+		
+	}
 
 
 

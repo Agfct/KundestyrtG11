@@ -47,10 +47,13 @@ public class TimelineController implements FXMLController {
 	@FXML Button removeTimelineBtn;
 	@FXML ComboBox<String> displaysComboBox;
 	@FXML Label listOfScreens;
-	@FXML TextArea nameOfTimeLineField;
+	@FXML TextField nameOfTimeLineField;
 	
 	@FXML Button moveUp;
 	@FXML Button moveDown;
+	
+	@FXML Label titleLabel;
+	@FXML Label muteLabel;
 	
 	//The timelinemodel that corresponds to this controller
 	TimelineModel timelineModel;
@@ -128,27 +131,15 @@ public class TimelineController implements FXMLController {
 		 //adds the listener
 		 initDisplayChooserListener();
 //		 System.out.println("STYLEFUCK: "+nameOfTimeLineField.getStyle());
-
-//		 nameOfTimeLineField.setEditable(true);
-//		 nameOfTimeLineField.setDisable(false);
-//		 nameOfTimeLineField.setText(nameOfTimeLine);
-//		 nameOfTimeLineField.setStyle(" -fx-focus-color: black;");
-//		 nameOfTimeLineField.
-//		 nameOfTimeLineField.setFocusTraversable(false); //Disable tab
-//		 nameOfTimeLineField.deselect();
-//		 addListenerToTextField();
-//		 nameOfTimeLineField.r
+		 nameOfTimeLineField.setText(nameOfTimeLine);
+		 nameOfTimeLineField.textProperty().addListener((observable, oldValue, newValue) -> {
+			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
+			    if(newValue.length() > 0 && newValue.length() < 10) {
+			    	System.out.println("YEAH");;
+			    }
+			    
+			});
 		 
-//		 nameOfTimeLineField.setDisable(true);
-//		 nameOfTimeLineField.set
-//		 nameOfTimeLineField.textProperty().addListener((observable, oldValue, newValue) -> {
-//			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
-//			    if(newValue.length() > 0 && newValue.length() < 10) {
-//			    	System.out.println(newValue);
-//			    }
-//			    
-//			});
-
 		
 	}
 
@@ -170,6 +161,13 @@ public class TimelineController implements FXMLController {
 			//Mutes all the videos on this timeline
 		}else if(((Button)event.getSource()).getId().equals("muteSound") ){
 			//Mutes all the sound on this timeline
+		}
+		else if(((Button)event.getSource()).getId().equals("moveUp") ){
+			parentController.moveTimeline("up",timelineModel);
+		}
+		else if(((Button)event.getSource()).getId().equals("moveDown") ){
+			//Mutes all the sound on this timeline
+			parentController.moveTimeline("down",timelineModel);
 		}
 		
 		

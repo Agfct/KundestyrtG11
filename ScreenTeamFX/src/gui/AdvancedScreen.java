@@ -1030,6 +1030,12 @@ public class AdvancedScreen implements Screen{
 		}
 
 
+		public void moveTimeline(String direction, TimelineModel timelineModel) {
+			currentSession.moveTimeline(direction,timelineModel);
+			
+		}
+
+
 
 
 	}//end AdvancedScreenController
