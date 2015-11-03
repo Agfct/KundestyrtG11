@@ -1037,6 +1037,11 @@ public class SessionModule implements Serializable {
         }
         return windowsListNames;
     }
+    
+    public void fireAllTimelinesChanged(){
+    	
+    }
+    
     /**
      * This methods rearranges the order of the timelines
      * @param direction
@@ -1045,28 +1050,27 @@ public class SessionModule implements Serializable {
 	public void moveTimeline(String direction, TimelineModel timelineModel) {
 		//Finds the given model in the order-arrayList:
 		for(int i =0; i<timelineOrder.size();i++){
-			if(timelineOrder.get(i)==timelineModel.getID()){
-				//Found the corresponding timeline
-				if(direction.equals("down")){
-					System.out.println("[SessionModule] DOWN");
+			if(timelineOrder.get(i)==timelineModel.getID()){//Found the corresponding timeline
+				if(direction.equals("up")){
+
 					if(i!=0){//If the timeline is not on the top of the stack:
+						System.out.println("PREV ORDERING: "+timelineOrder);
 						Integer timelineToBeRearranged=timelineOrder.remove(i);
-						timelineOrder.add(i+1);
+						timelineOrder.add(i-1,timelineToBeRearranged); //puts it in the position above
+						System.out.println("NEW ORDERING: "+timelineOrder);
+						timelineChanged(TimeLineChanges.ORDER, timelineModel);
 					}
 				}
-				else if(direction.equals("up")){
-					System.out.println("[SessionModule] UP");
+				else if(direction.equals("down")){//If the timeline is not at the bottom of the stack:
 					if(i!=timelineOrder.size()-1){
 						Integer timelineToBeRearranged=timelineOrder.remove(i);
-						timelineOrder.add(i-1);
-						
+						timelineOrder.add(i+1,timelineToBeRearranged);//puts it in the position below
+						timelineChanged(TimeLineChanges.ORDER, timelineModel);
 					}
-					
 				}
 				break;
 			}
 		}
-		
 	}
 
 

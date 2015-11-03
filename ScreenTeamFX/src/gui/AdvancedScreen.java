@@ -600,8 +600,10 @@ public class AdvancedScreen implements Screen{
 				break;
 			}
 			case ORDER:{
+				System.out.println("ORDERING");
 				removeAllTimelineControllersFromScreen();
 				ArrayList<Integer> orderedListOfTimelines = currentSession.getTimelineOrder();
+				System.out.println("NEWORDER: " + orderedListOfTimelines);
 
 				//We need to reverse the ordering because we always bring the newest timeline to the top of the view.
 				for(int i=orderedListOfTimelines.size()-1;i>=0;i--){
