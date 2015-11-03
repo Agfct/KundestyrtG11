@@ -204,6 +204,14 @@ public class SessionModule implements Serializable {
     public int getNumberOfAbailableDisplays(){
         return numberOfAvailableDisplays;
     }
+    
+    /**
+     * calls a method in vlccontroller that recreates all media players with new settings specified in options.
+     * @param options the new set of options
+     */
+    public void updateMediaPlayers(String[]options){
+    	vlccontroller.updateOptions(options);
+    }
     /**
      * first draft of playing the whole performance. this happens when
      * the button to play all timelines is pushed.
