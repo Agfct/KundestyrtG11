@@ -155,11 +155,9 @@ public class SessionModule implements Serializable {
             if(prevtlm !=null){
                 prevtlm.removeDisplay(display);
                 vlccontroller.unassignDisplay(prevtlm.getID());
-                timelineChanged(TimeLineChanges.MODIFIED, prevtlm);
             }
             vlccontroller.assignDisplay(tlm.getID(), display);
         }
-
         timelineChanged(TimeLineChanges.MODIFIED,tlm);
     }
 
