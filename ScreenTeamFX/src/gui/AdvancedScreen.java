@@ -1011,7 +1011,7 @@ public class AdvancedScreen implements Screen{
 		}
 
 		public void ifSeekerIsOutsideThenScroll(Point2D checkThisPoint){
-			System.out.println("[Advanced Screen]: pos" + scrollBarPosition + " ScrollMax: "+ timelineLineScrollBar.getMax() + " GetX: "+ checkThisPoint.getX() );
+//			System.out.println("[Advanced Screen]: pos" + scrollBarPosition + " ScrollMax: "+ timelineLineScrollBar.getMax() + " GetX: "+ checkThisPoint.getX() );
 			int unitsMoved = 10;
 			//If the seeker is going outside the left side
 			if(checkThisPoint.getX() <= 199 && scrollBarPosition < 0){

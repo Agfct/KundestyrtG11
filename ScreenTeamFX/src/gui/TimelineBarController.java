@@ -152,11 +152,17 @@ public class TimelineBarController extends Pane {
 	}
 
 	public void scaleChanged(){
-		System.out.println("TimelineBar: Scaling size");
+		double oldWidth = root.getPrefWidth();
 		root.setPrefWidth(parentController.getCurrentSession().getSessionLength()*parentController.getScaleCoefficient()+22);
+		System.out.println("TimelineBar: Scaling size From: "+ oldWidth + "to" + root.getPrefWidth());
 		seeker.scaleChanged(parentController.getScaleCoefficient());
+		
+		//Making a scale value based on the difference in root size instead of sending in the new scale
+		double timelineBarValueScaleCoeff = (root.getPrefWidth()-22)/(oldWidth-22);
+		System.out.println("TimelineBar: scaleCoeff: " + timelineBarValueScaleCoeff);
 		for (StopPointController stopPoint : stopPointControllers) {
-			stopPoint.scaleChanged(parentController.getScaleCoefficient());
+//			stopPoint.scaleChanged(parentController.getScaleCoefficient());
+			stopPoint.scaleChangedCoeff(timelineBarValueScaleCoeff, parentController.getScaleCoefficient());
 		}
 	}
 

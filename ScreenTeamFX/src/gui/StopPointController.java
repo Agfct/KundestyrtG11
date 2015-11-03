@@ -41,6 +41,7 @@ public class StopPointController extends Pane{
 
 	public StopPointController(TimelineBarController parent){
 		parentController = parent;
+		scale = parentController.getAdvancedScreenController().getScaleCoefficient();
 
 
 		try {
@@ -62,13 +63,14 @@ public class StopPointController extends Pane{
 		relocateToPoint(new Point2D((point.getX()- 2),0));
 		initializeTooltip();
 		System.out.println("Stop point point: " + this.getLayoutX());
+		System.out.println("StopPoint, ToScale: "+ localToParent(-10,25).getX()/scale);
 
 	}
 
 	private void initializeTooltip(){
 		//Sets the text of the tooltip
 		mediaTooltip.setText(
-						"StartTime: "+getStartTimeAsText()+"\n"
+						"PauseTime: "+getStartTimeAsText()+"\n"
 				);
 		hoverOverLabel.setTooltip(mediaTooltip);
 	}
@@ -121,22 +123,35 @@ public class StopPointController extends Pane{
 				);
 	}
 	public long getStopPointPosition(){
-		return (long)((localToParent(-10,25).getX()*scale));
+		return (long)((getLayoutX()-10)/scale);
 	}
 
+//	/**
+//	 * When the scale changes we move the Stop to the new scaled location
+//	 * @param newScale
+//	 */
+//	public void scaleChanged(int newScale){
+//		System.out.println("StopPoint: scalechanged" );
+//		this.scale = newScale;
+//		System.out.println("StopPoint new GlobalTime: " + AdvancedScreen.getInstance().getScreenController().getGlobalTime() + " New Scale: " + newScale + " Gives you: " + (AdvancedScreen.getInstance().getScreenController().getGlobalTime()*scale)/1000);
+//		System.out.println("StopPoint: layoutX*scale = "+ getLayoutX()*scale);
+//		root.setLayoutX(((getLayoutX()-10)*scale)); //TODO: FIX
+//		initializeTooltip();
+//	}
+	
 	/**
-	 * When the scale changes we move the Stop to the new scaled location
-	 * @param newScale
+	 * This method was made because stopPoint had no saved value in modules so it has to rescale based on a legth coeff from timelineBarController.
+	 * @param newScaleCoeff
 	 */
-	public void scaleChanged(int newScale){
-		System.out.println("StopPoint: scalechanged" );
+	public void scaleChangedCoeff(double newScaleCoeff, int newScale){
 		this.scale = newScale;
-		System.out.println("StopPoint new GlobalTime: " + AdvancedScreen.getInstance().getScreenController().getGlobalTime() + " New Scale: " + newScale + " Gives you: " + (AdvancedScreen.getInstance().getScreenController().getGlobalTime()*scale)/1000);
-		System.out.println("StopPoint: layoutX*scale = "+ getLayoutX()*scale);
-		root.setLayoutX(((ge tLayoutX()-10)*scale)); //TODO: FIX
+		System.out.println("StopPoint, OldX: "+ root.getLayoutX()+ " NewX: "+ (getLayoutX()-10)*newScaleCoeff);
+		System.out.println("StopPoint, OldToScale: "+ localToParent(-10,25).getX()/scale);
+		//The reason for the +-10 is because the stopPoint has to be 10 longer in the GUI (610 in GUI is 600 seconds, cause we start 0 at 10)
+		root.setLayoutX(((getLayoutX()-10)*newScaleCoeff)+10);
+		System.out.println("StopPoint, NewToScale: "+ localToParent(-10,25).getX()/scale + " NewLayoutX " + getLayoutX());
 		initializeTooltip();
 	}
-	
 	private String getStartTimeAsText(){
 		long timeInSeconds = getStopPointPosition();
 		long hours = timeInSeconds/3600;
