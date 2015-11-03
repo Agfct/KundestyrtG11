@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.JOptionPane;
+
 import gui.MainGUIController;
 import gui.SessionListener;
 import vlc.VLCController;
@@ -25,6 +27,7 @@ public class MainModuleController {
 	
 	
 	private MainModuleController(){
+		FileController.initialize();
 		this.storageController = StorageController.getInstance();
 		//TODO check if storage loads last session without problem, if so set timelinemodule to last session
 		//this.timelinemodule = this.storage.gettimelineModule
@@ -114,6 +117,21 @@ public class MainModuleController {
 		sessionModule.reinitialize(vlc, wdi);
 		sessionModule.updateDisplays(ioModule.getDisplays());
 		
+		// Run the PreRunChecker to see if any MediaObjects are not found. Give a warning to the user.
+		ArrayList<MediaObject> nonExistingMediaObject = PreRunChecker.getNonExsitingMediaObjects();
+		if( 0 < nonExistingMediaObject.size() ){
+			String message = "";
+			message += "The following media files are missing (not found on the old path):\n\n";
+			for(MediaObject mo : nonExistingMediaObject){
+				if(mo.getType()==MediaSourceType.WINDOW){
+					message += "Could not find the window:        "+ mo.getPath() +"\n";
+				}
+				else{
+					message += "Coudl not find the media file:    "+ mo.getPath() +"\n";
+				}
+			}
+			JOptionPane.showMessageDialog(null, message, "Warning: Some media files were not found.", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 	
 }

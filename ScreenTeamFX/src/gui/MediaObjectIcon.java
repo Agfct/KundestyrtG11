@@ -3,7 +3,9 @@
  */
 package gui;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import javafx.event.ActionEvent;
@@ -26,6 +28,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
+import javafx.stage.FileChooser;
 import modules.*;
 
 /**
@@ -90,7 +93,9 @@ public class MediaObjectIcon extends GridPane{
 		initializeAlerts();
 		//Adds different right click options to the ContextMenu that pops up on mouse click.
 		MenuItem remove = new MenuItem("Remove");
-		contextMenu.getItems().addAll(remove);
+		MenuItem setPath = new MenuItem("Set path");
+		contextMenu.getItems().add(remove);
+		contextMenu.getItems().add(setPath);
 		remove.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override
 		    public void handle(ActionEvent event) {
@@ -99,11 +104,39 @@ public class MediaObjectIcon extends GridPane{
 				if (result.get() == ButtonType.OK){
 					//TODO: Remove
 //					AdvancedScreen.getInstance().getScreenController().getCurrentSession().removeTimelineMediaObjectFromTimeline(parentController.getParentController().getTimelineModel(),timelineMediaObject);
+					AdvancedScreen.getInstance().getScreenController().getCurrentSession().removeMediaObject(mediaObject);
 				} else {
 				    // ... user chose CANCEL or closed the dialog
 				}
 		        
 		    }
+		});
+		setPath.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				System.out.println("Set path MediaObject");
+				if(mediaObject.getType()==MediaSourceType.WINDOW){
+					AdvancedScreen.getInstance().getScreenController().showWindowChooser(mediaObject);
+				}
+				else{
+					FileChooser fileChooser;
+					File selectedFile = null;
+					try {
+						fileChooser = new FileChooser();
+						fileChooser.setTitle("Choose file");
+						selectedFile = fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage); //Possibilty to select more files at the time
+					} catch(Exception e) {
+						System.out.println("[MediaObjectIcon.initializeMouse(): setPath.setOnAction] FileChooser caught an expection");
+					}
+				//	checks for aborted file import
+					if(selectedFile==null){
+						return;
+					}
+					
+					AdvancedScreen.getInstance().getScreenController().getCurrentSession().changeMediaObject(mediaObject, selectedFile.getAbsolutePath());
+				}
+					
+			}
 		});
 		grid_pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			 
