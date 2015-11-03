@@ -114,12 +114,12 @@ public class TimelineLineController implements FXMLController{
                 contextMenu.hide();
                 MouseButton button = event.getButton();
                 if(button==MouseButton.PRIMARY){
-                    System.out.println("PRIMARY button clicked");
+//                    System.out.println("PRIMARY button clicked");
                 }else if(button==MouseButton.SECONDARY){
-                    System.out.println("SECONDARY button clicked");
-                    contextMenu.show(rootPane, event.getScreenX(), event.getScreenY());
+//                    System.out.println("SECONDARY button clicked");
+                    contextMenu.show(rootPane, event.getScreenX(), event.getScreenY()); // this brings up the "duplicate" option
                 }else if(button==MouseButton.MIDDLE){
-                    System.out.println("MIDDLE button clicked");
+//                    System.out.println("MIDDLE button clicked");
                 }
                 event.consume(); //Consumes the event so it wont go deeper down into the hierarchy 
             }
@@ -183,18 +183,23 @@ public class TimelineLineController implements FXMLController{
 //		System.out.println("TimelineLineController Moving the Root");
         rootPane.setLayoutX(newPosition);
     }
-
+    /**
+     * This method repaints the timelineMediaObjects that is currently on the timelineLine
+     * 
+     * This method has other posible implementations:
+     * 1. In the TimelineChanged changeType Enum we can add a parameter that tell the timelineLine what the change was. T
+     * 	  This must be propagated all the way from the timelineModel in the modules. 
+     * 2. Repaint the whole thing each time. This will cause problems with the drag and drop
+     */
     public void repaint() {
-        System.out.println("---Repainting---");
-        // TODO Go through all mediaObjectControllers, and repaint according to the new model.
-
-
+    	//Gets the new list of timelineMediaObjects from the model
         TimelineModel model=parentController.getTimelineModel();
         ArrayList<TimelineMediaObject> newListOfTimelineMediaObject=model.getTimelineMediaObjects();
-        System.out.println("Local: " + timelineMediaObjectModels);
-        System.out.println("Remote: " + newListOfTimelineMediaObject);
+        
+        //Checks if the number of timelineMediaOBject is the same
+        //This means that they have only been changed, which again means that we have to repaint the existing mediaObjectControllers
         if(newListOfTimelineMediaObject.size()==timelineMediaObjectModels.size()){
-            System.out.println("SAME CONTENT! THIS MEANS SOME OF THEM HAS BEEN CHANGED. REPAINT ONLY");
+        	//removes and adds the mediaObjectControllers currently on the timeline
             for(MediaObjectController mediaObjectController:mediaObjectControllers){
                 mediaObjectController.updateValuesFromModel();
                 rootPane.getChildren().remove(mediaObjectController);
@@ -203,29 +208,37 @@ public class TimelineLineController implements FXMLController{
             }
 
         }
-
+        // Checks if the new size is bigger. This means that an element has been added
         else if(newListOfTimelineMediaObject.size()>timelineMediaObjectModels.size()){
-            System.out.println("THIS MEANS AN OBJECT HAS BEEN ADDED");
-            ArrayList<TimelineMediaObject> difference= new ArrayList<>();
+        	//gets the difference, namely the new object
+            ArrayList<TimelineMediaObject> difference= new ArrayList<>();  
             difference.addAll(newListOfTimelineMediaObject);
             difference.removeAll(timelineMediaObjectModels);
-
+            
+            
+            //Paints the new one
             for(TimelineMediaObject tlmo:difference){
                 MediaObjectController mediaObjectController = new MediaObjectController(tlmo);
                 mediaObjectController.initializeMediaObject();
                 addMediaObject(mediaObjectController, new Point2D((tlmo.getStart()*AdvancedScreen.getInstance().getScreenController().getScaleCoefficient())/1000, 0));
 
             }
+            
+            //clear all and adds all
             timelineMediaObjectModels.clear();
             timelineMediaObjectModels.addAll(newListOfTimelineMediaObject);
 
         }
+        
+        
+        //This means an object has been removed. 
         else if(newListOfTimelineMediaObject.size()<timelineMediaObjectModels.size()){
-            System.out.println("THIS MEANS AN OBJECT HAS BEEN REMOVED");
+        	//finds the removed object
             ArrayList<TimelineMediaObject> difference= new ArrayList<>();
             difference.addAll(timelineMediaObjectModels);
             difference.removeAll(newListOfTimelineMediaObject);
-
+            
+            //removes it from the timeline
             for(TimelineMediaObject tlmo:difference){
                 MediaObjectController mediaObjectController = mediaObjectToControllerMap.get(tlmo);
                 removeMediaObject(mediaObjectController);
@@ -235,19 +248,5 @@ public class TimelineLineController implements FXMLController{
             timelineMediaObjectModels.addAll(newListOfTimelineMediaObject);
 
         }
-
-
-
-//		for(TimelineMediaObject tlmo:timelineMediaObjectModels){
-//			// TODO: should we avoid creating a new Controller each time?
-//			MediaObjectController mediaObjectController = new MediaObjectController(tlmo);
-//			mediaObjectController.initializeMediaObject();
-//			addMediaObject(mediaObjectController, new Point2D(tlmo.getStart()/1000, 0));
-//			
-//		}
-
-
-
     }
-
 }

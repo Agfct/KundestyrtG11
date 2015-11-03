@@ -116,7 +116,11 @@ public class TimelineController implements FXMLController {
 		 displaysComboBox.getItems().addAll(obsList);
 		 
 		 //selects none as no display is selected
-		 displaysComboBox.
+		 displaysComboBox.getSelectionModel().select(0);
+		 //adds the listener
+		 initDisplayChooserListener();
+		 
+		 //TODO: add the name of the timeline?
 
 		
 	}
@@ -168,6 +172,7 @@ public class TimelineController implements FXMLController {
 	}
 
 	public void modelChanged() {
+		System.out.println("--------Model has Changed---------");
 		childController.repaint();
 		updateValuesFromModel();
 		updateDisplayList();
@@ -178,7 +183,18 @@ public class TimelineController implements FXMLController {
 	 * This method adds the available displays to the list, and selects the one that is displayed to this timeline
 	 */
 	private void updateDisplayList() {
-		// TODO Auto-generated method stub
+		System.out.println("");
+		System.out.println("APPDATING: "+timelineModel.getID());
+		updatingDisplayList=true;
+		if(!assignedDisplays.isEmpty()){//make sure a display is actually assigned	
+			System.out.println("--NOTEMPTY--: We are assigning timeline with the ID: "+ timelineModel.getID() + " to the display with number: " + assignedDisplays.get(0));
+			displaysComboBox.getSelectionModel().select(assignedDisplays.get(0)+1);
+		}
+		else{
+			System.out.println("--EMPTY--:  We are assigning timeline with the ID: "+ timelineModel.getID() + " to NONE" );
+			displaysComboBox.getSelectionModel().select(0);
+		}
+		updatingDisplayList=false;
 		
 	}
 	
@@ -194,10 +210,13 @@ public class TimelineController implements FXMLController {
 					
 					if(newDisplay!=null){
 						if(newDisplay.equals("None")){
-							parentController.removeAssignRequest(timelineModel);				
+							System.out.println("CHANGED TO NONE");
+							parentController.removeAssignRequest(timelineModel);		
 						}
 						else{
+							System.out.println("CHANGED TO: " + newDisplay);
 							parentController.assignRequest(newDisplay, timelineModel);	
+
 						}
 					}
 				}
@@ -206,10 +225,13 @@ public class TimelineController implements FXMLController {
 		 });
 		
 	}
-
+	/**
+	 * Update the saved values from the model
+	 * 
+	 */
 	private void updateValuesFromModel() {
-		assignedDisplays=timelineModel.getAssignedDisplays();
-		
+		assignedDisplays=timelineModel.getAssignedDisplays(); //gets the assigned display.
+		System.out.println("ass disp: "+assignedDisplays);
 	}
 	
 	
