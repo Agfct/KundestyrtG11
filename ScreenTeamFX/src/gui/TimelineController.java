@@ -48,6 +48,7 @@ public class TimelineController implements FXMLController {
 	TimelineModel timelineModel;
 	
 	ArrayList<Integer> assignedDisplays;
+	protected boolean updatingDisplayList=false;  //variable to prevent the listener from firing when the model is updated
 	
 	/**
 	 *
@@ -99,87 +100,30 @@ public class TimelineController implements FXMLController {
 		timelineLineContainer.setClip(clipSize);
 	}
 	
+	/**
+	 * Initialises the info from the model on the left hand side of the timeline (timelineInfo)
+	 */
 	private void initializeTimelineInfo(){
 		
-		
-//		displaysComboBox.getItems().clear();
-//		System.out.println("UPDATING TIMELINEMODEL CTRL: "+ timelineModel.getID());
-		
+		//Populates the list with the available screens
 		ObservableList<String> obsList = FXCollections.observableArrayList();
 		 for (int i=0;i<parentController.getAvailableDisplays().size();i++) {
-//		     obsDisplays.add(i.toString());
-//		     checkComboBox.getItems().add(parentController.getAvailableDisplays().get(i).toString());
 			 obsList.add(parentController.getAvailableDisplays().get(i).toString());
 		     
 		 }
 		 displaysComboBox.getItems().add("None");
 		 displaysComboBox.getItems().addAll(obsList);
-//		 displaysComboBox.getCheckModel().clearChecks();
-//		 if(assignedDisplays.size()!=0){
-//			 for(int i=0;i<checkComboBox.getItems().size();i++){
-//			 if(assignedDisplays.contains(Integer.parseInt(checkComboBox.getItems().get(i)))){
-//				 checkComboBox.getCheckModel().checkIndices(i);
-//			 }
-//			 }
-//		 }
+		 //selects none as no display is selected
+		 displaysComboBox.getSelectionModel().select(0);
+		 //adds the listener
+		 initDisplayChooserListener();
 		 
-		 
-//		 checkComboBox.getCheckModel().checkIndices(0);
-		 //Checks who is suppose to be checked:
-		 
-//		 checkComboBox = new CheckComboBox<String>(obsDisplays);
-//		 checkComboBox.getItems().addAll(obsDisplays);
-//		 checkComboBox.getCheckModel().getCheckedItems().clear();
-//		 if(assignedDisplays.size()>0){
-//			 checkComboBox.getCheckModel().getCheckedItems().addAll(assignedDisplays.get(0).toString());
-//		 }
-		 
-//		 checkComboBox.setCheckModel(value);
-		     
+		 //TODO: add the name of the timeline?
 
-//		 displaysComboBox.addListener(new ListChangeListener<String>() {
-//		     public void onChanged(ListChangeListener.Change<? extends String> c) {
-//		    	 System.out.println("CheckedItems: " +displaysComboBox.getCheckModel().getCheckedItems());
-//		    	 parentController.assignRequest(displaysComboBox.getCheckModel().getCheckedItems(),timelineModel);
-//		     }
-//		     
-//		 });
-//		 
-		 displaysComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
-			@Override
-			public void changed(ObservableValue<? extends String> selected, String oldDisplay, String newDisplay) {
-
-				if(newDisplay!=null){
-					if(newDisplay.equals("None")){
-						parentController.removeAssignRequest(timelineModel);				
-					}
-					else{
-						parentController.assignRequest(newDisplay, timelineModel);	
-					}
-				}
-				
-			}
-		 });
-		 
-//		 
-		 
-//		List<String> supplierNames = Arrays.asList("sup1", "sup2", "sup3");
-//		screenChoiceBox.setItems(FXCollections.observableArrayList(supplierNames));
-//		typeChoiseBox.getSelectionModel().select(currentMediaObject.getType());
-//		screenChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-//	        @Override public void changed(ObservableValue<? extends String> ov, String oldType, String newType) {
-//	        	currentMediaObject.setType(newType);
-//	          }    
-//	      });
-//		typeChoiseBox.getSelectionModel().selectedIndexProperty().addListener(new
-//				ChangeListener<Number>() {
-//			@Override
-//			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-//				name.setText(newValue.toString());
-//			}
-//		});
+		
 	}
 
+	
 	
 	/**
 	 * This method is ran when you press a button in the TimelineInfo screen (Left side of timeline).
@@ -224,18 +168,58 @@ public class TimelineController implements FXMLController {
 	public TimelineModel getTimelineModel(){
 		return timelineModel;
 	}
-
+	/**
+	 * This method is run by advancedScreen when fireTimelineChanges is ran 
+	 */
 	public void modelChanged() {
-		childController.repaint();
-		updateValuesFromModel();
-		//TODO: update what screen the timeline is assigned to!
+		childController.repaint();// repaints the timelineline
+		updateValuesFromModel(); //Gets the updated values from the model
+		updateDisplayList(); // Use the updated values to update the list of the selected screens.
 		
 		
 	}
+	/**
+	 * This method adds the available displays to the list, and selects the one that is displayed to this timeline
+	 */
+	private void updateDisplayList() {
+		updatingDisplayList=true; // set this variable to true in order for the listener not to fire
+		if(!assignedDisplays.isEmpty()){//make sure a display is actually assigned	
+			displaysComboBox.getSelectionModel().select(assignedDisplays.get(0)+1);
+		}
+		else{
+			displaysComboBox.getSelectionModel().select(0);
+		}
+		updatingDisplayList=false;
+	}
+	
+	/**
+	 * This method starts the listener for the displayChooserCombobox
+	 */
+	private void initDisplayChooserListener(){
+		displaysComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
+			@Override
+			public void changed(ObservableValue<? extends String> selected, String oldDisplay, String newDisplay) {
+				if(updatingDisplayList==false){
+					if(newDisplay!=null){
+						if(newDisplay.equals("None")){
+							parentController.removeAssignRequest(timelineModel);		
+						}
+						else{
+							parentController.assignRequest(newDisplay, timelineModel);	
 
-	private void updateValuesFromModel() {
-		assignedDisplays=timelineModel.getAssignedDisplays();
+						}
+					}
+				}
+			}
+		 });
 		
+	}
+	/**
+	 * Update the saved values from the model
+	 * 
+	 */
+	private void updateValuesFromModel() {
+		assignedDisplays=timelineModel.getAssignedDisplays(); //gets the assigned display.
 	}
 	
 	
