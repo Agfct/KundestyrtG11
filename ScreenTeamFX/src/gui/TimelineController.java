@@ -105,7 +105,6 @@ public class TimelineController implements FXMLController {
 	 */
 	private void initializeTimelineInfo(){
 		
-		
 		//Populates the list with the available screens
 		ObservableList<String> obsList = FXCollections.observableArrayList();
 		 for (int i=0;i<parentController.getAvailableDisplays().size();i++) {
@@ -114,7 +113,6 @@ public class TimelineController implements FXMLController {
 		 }
 		 displaysComboBox.getItems().add("None");
 		 displaysComboBox.getItems().addAll(obsList);
-		 
 		 //selects none as no display is selected
 		 displaysComboBox.getSelectionModel().select(0);
 		 //adds the listener
@@ -170,12 +168,13 @@ public class TimelineController implements FXMLController {
 	public TimelineModel getTimelineModel(){
 		return timelineModel;
 	}
-
+	/**
+	 * This method is run by advancedScreen when fireTimelineChanges is ran 
+	 */
 	public void modelChanged() {
-		System.out.println("--------Model has Changed---------");
-		childController.repaint();
-		updateValuesFromModel();
-		updateDisplayList();
+		childController.repaint();// repaints the timelineline
+		updateValuesFromModel(); //Gets the updated values from the model
+		updateDisplayList(); // Use the updated values to update the list of the selected screens.
 		
 		
 	}
@@ -183,44 +182,34 @@ public class TimelineController implements FXMLController {
 	 * This method adds the available displays to the list, and selects the one that is displayed to this timeline
 	 */
 	private void updateDisplayList() {
-		System.out.println("");
-		System.out.println("APPDATING: "+timelineModel.getID());
-		updatingDisplayList=true;
+		updatingDisplayList=true; // set this variable to true in order for the listener not to fire
 		if(!assignedDisplays.isEmpty()){//make sure a display is actually assigned	
-			System.out.println("--NOTEMPTY--: We are assigning timeline with the ID: "+ timelineModel.getID() + " to the display with number: " + assignedDisplays.get(0));
 			displaysComboBox.getSelectionModel().select(assignedDisplays.get(0)+1);
 		}
 		else{
-			System.out.println("--EMPTY--:  We are assigning timeline with the ID: "+ timelineModel.getID() + " to NONE" );
 			displaysComboBox.getSelectionModel().select(0);
 		}
 		updatingDisplayList=false;
-		
 	}
 	
 	/**
 	 * This method starts the listener for the displayChooserCombobox
 	 */
 	private void initDisplayChooserListener(){
-		
 		displaysComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
 			@Override
 			public void changed(ObservableValue<? extends String> selected, String oldDisplay, String newDisplay) {
 				if(updatingDisplayList==false){
-					
 					if(newDisplay!=null){
 						if(newDisplay.equals("None")){
-							System.out.println("CHANGED TO NONE");
 							parentController.removeAssignRequest(timelineModel);		
 						}
 						else{
-							System.out.println("CHANGED TO: " + newDisplay);
 							parentController.assignRequest(newDisplay, timelineModel);	
 
 						}
 					}
 				}
-				
 			}
 		 });
 		
@@ -231,7 +220,6 @@ public class TimelineController implements FXMLController {
 	 */
 	private void updateValuesFromModel() {
 		assignedDisplays=timelineModel.getAssignedDisplays(); //gets the assigned display.
-		System.out.println("ass disp: "+assignedDisplays);
 	}
 	
 	
