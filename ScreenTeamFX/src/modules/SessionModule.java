@@ -794,7 +794,9 @@ public class SessionModule implements Serializable {
         if(start+duration > sessionLength*1000){
             sessionLength = sessionLength*2; //Doubles the size of the session
             sessionLenghtChanged();
+            checkSessionSize(start, duration);
         }
+       
     }
 
     private void sessionLenghtChanged(){
@@ -814,6 +816,7 @@ public class SessionModule implements Serializable {
     public String timelineMediaObjectChanged(TimelineModel tlm, TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){
         String result = tlm.timelineMediaObjectChanged(tlmo, newStart, newInternalStart, newDuration);
         timelineChanged(TimeLineChanges.MODIFIED, tlm);
+        checkSessionSize(tlmo.getStart(), tlmo.getDuration());
         return result;
     }
 

@@ -4,15 +4,23 @@
 package gui;
 
 import java.io.IOException;
+import java.util.Optional;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
@@ -36,6 +44,9 @@ public class MediaObjectIcon extends GridPane{
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
 	private MediaSourceType mType = null;
+	
+	private final ContextMenu contextMenu = new ContextMenu();
+	private Alert alert;
 
 	private MediaObject mediaObject;
 
@@ -57,6 +68,7 @@ public class MediaObjectIcon extends GridPane{
 
 		this.mediaObject = mediaObject;
 		initializeTooltip();
+		initializeMouse();
 
 	}
 
@@ -71,6 +83,56 @@ public class MediaObjectIcon extends GridPane{
 		}
 	}
 
+	/**
+	 * Adds the right click functions to the MediaObject, edit, remove. and puts an event handler onto them.
+	 */
+	private void initializeMouse(){
+		initializeAlerts();
+		//Adds different right click options to the ContextMenu that pops up on mouse click.
+		MenuItem remove = new MenuItem("Remove");
+		contextMenu.getItems().addAll(remove);
+		remove.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent event) {
+		        System.out.println("Remove MediaObject");
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.get() == ButtonType.OK){
+					//TODO: Remove
+//					AdvancedScreen.getInstance().getScreenController().getCurrentSession().removeTimelineMediaObjectFromTimeline(parentController.getParentController().getTimelineModel(),timelineMediaObject);
+				} else {
+				    // ... user chose CANCEL or closed the dialog
+				}
+		        
+		    }
+		});
+		grid_pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			 
+            @Override
+            public void handle(MouseEvent event) {
+            	contextMenu.hide();
+//            	parentController.getContextMenu().hide();
+                MouseButton button = event.getButton();
+                if(button==MouseButton.SECONDARY){
+                    System.out.println("Right Cliked a MediaObject");
+                    contextMenu.show(grid_pane, event.getScreenX(), event.getScreenY());
+                }
+                event.consume(); //Consumes the event so it wont go deeper down into the hierarchy 
+            }
+        });
+		
+
+	}
+	
+	/**
+	 *Initializes the alert box that is displayed when the user right clicks the mediaObject and presses remove.
+	 */
+	private void initializeAlerts(){
+		alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Confirmation Dialog");
+		alert.setHeaderText("Delete MediaObject");
+		alert.setContentText("Do you really want to delete this MediaObject?");
+	}
+	
 	/*
 	 * Method for setting the title of the Icon
 	 */

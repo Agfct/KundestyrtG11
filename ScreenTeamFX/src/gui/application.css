@@ -66,10 +66,10 @@
 
 .background-modal {
 	-fx-background-image: url("../../resources/background_modal.png");
-	/*-fx-background-repeat: no-repeat;
+	fx-background-repeat: no-repeat;
 	-fx-background-position: center;
 	-fx-background-size: cover;
-	-fx-background-radius: 10; */
+	/*-fx-background-radius: 10; */
 }
 .icon-cog {
 	-fx-background-image: url("../../resources/Icon_cog.png");
