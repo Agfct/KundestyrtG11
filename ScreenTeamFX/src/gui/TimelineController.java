@@ -13,12 +13,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
@@ -126,7 +128,22 @@ public class TimelineController implements FXMLController {
 		 //adds the listener
 		 initDisplayChooserListener();
 		 
-		 nameOfTimeLineField.setText(nameOfTimeLine);
+//		 nameOfTimeLineField.setText(nameOfTimeLine);
+//		 nameOfTimeLineField.setStyle(" -fx-focus-color: black; -fx-accent: transparent; -fx-background-color: transparent;");
+		 nameOfTimeLineField.setFocusTraversable(false); //Disable tab
+//		 nameOfTimeLineField.deselect();
+//		 addListenerToTextField();
+//		 nameOfTimeLineField.r
+		 
+//		 nameOfTimeLineField.setDisable(true);
+//		 nameOfTimeLineField.set
+		 nameOfTimeLineField.textProperty().addListener((observable, oldValue, newValue) -> {
+			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
+			    if(newValue.length() > 0 && newValue.length() < 10) {
+			    	System.out.println(newValue);
+			    }
+			    
+			});
 
 		
 	}
@@ -230,6 +247,54 @@ public class TimelineController implements FXMLController {
 		assignedDisplays=timelineModel.getAssignedDisplays(); //gets the assigned display.
 		nameOfTimeLine=timelineModel.getNameOfTimeline();
 		
+	}
+	
+	private void addListenerToTextField(){
+//		nameOfTimeLineField.setOnMouseClicked(new EventHandler<MouseEvent>() {  
+//			  @Override  
+//			  public void handle(MouseEvent event) {  
+//			    if (event.getClickCount()==2) {  
+//			      textField.setText(label.getText());  
+//			      tab.setGraphic(textField);  
+//			      textField.selectAll();  
+//			      textField.requestFocus();  
+//			    }  
+//			  }  
+//			}); 
+//
+//
+			nameOfTimeLineField.setOnMouseClicked(new EventHandler<MouseEvent>() {  
+			  @Override  
+			  public void handle(MouseEvent event) {
+				  System.out.println("Suq madiq");
+//				  nameOfTimeLineField.setStyle(" -fx-focus-color: black; -fx-accent: transparent; -fx-background-color: white;");
+				  nameOfTimeLineField.requestFocus();
+				  nameOfTimeLineField.setEditable(true);
+
+//			    label.setText(textField.getText());  
+//			    tab.setGraphic(label);  
+			  }  
+			});
+			nameOfTimeLineField.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					System.out.println("ENTERKAY");
+					
+				}
+				
+			});
+//
+//			textField.focusedProperty().addListener(new ChangeListener<Boolean>() {  
+//			  @Override  
+//			  public void changed(ObservableValue<? extends Boolean> observable,  
+//			      Boolean oldValue, Boolean newValue) {  
+//			    if (! newValue) {  
+//			      label.setText(textField.getText());  
+//			      tab.setGraphic(label);            
+//			    }  
+//			  }  
+//			});  
 	}
 	
 	

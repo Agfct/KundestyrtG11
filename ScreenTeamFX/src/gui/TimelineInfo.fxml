@@ -17,7 +17,7 @@
 	</columnConstraints>
 	<children>
 		<GridPane  fx:id="timelineInfo"  gridLinesVisible="true" 
-			stylesheets="@application.css" styleClass="background-info"
+			stylesheets="@application.css" styleClass=""
 			GridPane.columnIndex="0" maxHeight="80" maxWidth="-Infinity"
 			minHeight="80" minWidth="-Infinity" prefHeight="80" prefWidth="200">
 			<columnConstraints>
@@ -40,7 +40,7 @@
 			</rowConstraints>
 			<children>
 				<Label fx:id="titleLabel" text="Title" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.halignment="CENTER"></Label>
-				<TextField fx:id="nameOfTimeLineField" text="Timeline X" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.columnSpan="2"></TextField>
+				<TextField fx:id="nameOfTimeLineField" editable="true" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.columnSpan="2"></TextField>
 				
 				<Button fx:id="removeTimelineBtn" onAction="#buttonPressed"
 					GridPane.rowIndex="0" GridPane.columnIndex="3">X</Button>
