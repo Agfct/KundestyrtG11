@@ -683,7 +683,7 @@ public class SessionModule implements Serializable {
      * the parameter MediaObject from this SessionModule
      * @param mo
      */
-    public void deleteMediaObject(MediaObject mo){
+    public void removeMediaObject(MediaObject mo){
     	// For all timelines
     	for(Integer i : timelines.keySet()){
     		TimelineModel timeline = timelines.get(i);
@@ -716,6 +716,7 @@ public class SessionModule implements Serializable {
     public boolean changeMediaObject(MediaObject mo, String newPath){
     	if(mo.getType()==MediaSourceType.WINDOW){
     		mo.setPath(newPath);
+    		mo.setName(newPath);
     	}
     	else{
     		MediaSourceType newMST = FileController.getMediaSourceType(newPath);
@@ -734,6 +735,8 @@ public class SessionModule implements Serializable {
     		}
     		// Passed all the tests, so we can set the new path.
     		mo.setPath(newPath);
+    		String name = FileController.getTitle(newPath);
+    		mo.setName(name);
     	}
     	
     	MainGUIController.getInstance().updateSession(this);
