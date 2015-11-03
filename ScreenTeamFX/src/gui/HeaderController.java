@@ -186,58 +186,13 @@ public class HeaderController implements FXMLController{
 	 */
 	public void createNewMediaObjectFromFile(File file){
 		String path=file.getAbsolutePath();
-		
-		//Checks if the file is a video file, an audio file or a not accepted file
-		ArrayList<String> acceptedVideoFormats = new ArrayList<String>();
-		acceptedVideoFormats.add("avi");
-		acceptedVideoFormats.add("mpg");
-		acceptedVideoFormats.add("mkv");
-		acceptedVideoFormats.add("wmv");
-		acceptedVideoFormats.add("mp4");
-		acceptedVideoFormats.add("mov");
-		ArrayList<String> acceptedAudioFormats = new ArrayList<String>();
-		acceptedAudioFormats.add("mp3");
-		acceptedAudioFormats.add("flac");
-		acceptedAudioFormats.add("wma");
-		acceptedAudioFormats.add("waw");
-		ArrayList<String> acceptedImageFormats = new ArrayList<String>();
-		acceptedImageFormats.add("img");
-		acceptedImageFormats.add("jpg");
-		acceptedImageFormats.add("jpeg");
-		acceptedImageFormats.add("png");
-		//acceptedImageFormats.add("gif");
-		//Checks the validity of the files imported by checking the file extension
-		String extension = "";
-		String fileName = file.getName();
-		int i = fileName.lastIndexOf('.');
-		int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
-		if (i > p) {
-		    extension = fileName.substring(i+1).toLowerCase();
+		MediaSourceType mst = FileController.getMediaSourceType(path);
+		if( mst==null ){
+			System.out.println("The file was neither a video nor a sound: " + FileController.getFileExtension(file));
 		}
-		
-		
-		for(String format:acceptedVideoFormats){
-			if(format.equals(extension)){
-				System.out.println(fileName + " is a video! of type:  "+ format);
-				parentController.getCurrentSession().createNewMediaObject(MediaSourceType.VIDEO,path);
-				return;
-			}
-		}
-		for(String format:acceptedAudioFormats){
-			if(format.equals(extension)){
-				System.out.println(fileName + " is a sound! of type:  "+ format);
-				parentController.getCurrentSession().createNewMediaObject(MediaSourceType.AUDIO ,path);
-				return;
-			}
-		}
-		for(String format:acceptedImageFormats){
-			if(format.equals(extension)){
-				System.out.println(fileName + " is an image! of type: "+ format);
-				parentController.getCurrentSession().createNewMediaObject(MediaSourceType.IMAGE,path);
-				return;
-			}
-		}
-		System.out.println("The file was neither a video nor a sound: " + extension);
+		else{
+			parentController.getCurrentSession().createNewMediaObject(mst,path);
+		}	
 	}
 	
 	/*

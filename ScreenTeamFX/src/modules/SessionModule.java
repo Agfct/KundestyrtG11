@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sun.javafx.tk.FileChooserType;
+
 import gui.*;
 import vlc.VLCController;
 import vlc.VLCMediaPlayer;
@@ -676,6 +678,68 @@ public class SessionModule implements Serializable {
         return "mediaObject created";
     }
 
+    /**
+     * Removes all TimelineMediaObjects with the parameter MediaObject as parent, and removes
+     * the parameter MediaObject from this SessionModule
+     * @param mo
+     */
+    public void deleteMediaObject(MediaObject mo){
+    	// For all timelines
+    	for(Integer i : timelines.keySet()){
+    		TimelineModel timeline = timelines.get(i);
+    		ArrayList<TimelineMediaObject> tlmoToRemove = new ArrayList<TimelineMediaObject>();
+    		// Find all the TimelineMediaObects that we want to remove. Can't remove from the list we are iterating through
+    		for(TimelineMediaObject tlmo : timeline.getTimelineMediaObjects()){
+    			if( tlmo.getParent().getPath().equals(mo.getPath()) ){
+    				tlmoToRemove.add(tlmo);
+    			}
+    		}
+    		// Remove them
+    		for(TimelineMediaObject tlmo : tlmoToRemove){
+    			this.removeTimelineMediaObjectFromTimeline(timeline, tlmo);
+    		}
+    	}
+    	
+    	// Finally remove the mediaObject
+    	mediaObjects.remove(mo);
+    	this.mediaObjectsChanged();
+    }
+    
+    /**
+     * Changes the path of the parameter MediaObject to the parameter String newPath. Checks that the new path points to a 
+     * MediaObject of the same type, and if it is a VIDEO or AUDIO then also check the length. If anything is different, the change 
+     * is not performed.
+     * @param mo
+     * @param newPath
+     * @return
+     */
+    public boolean changeMediaObject(MediaObject mo, String newPath){
+    	if(mo.getType()==MediaSourceType.WINDOW){
+    		mo.setPath(newPath);
+    	}
+    	else{
+    		MediaSourceType newMST = FileController.getMediaSourceType(newPath);
+    		if(newMST==null){
+    			return false;
+    		}
+    		if(newMST != mo.getType()){
+    			return false;
+    		}
+    		
+    		if(newMST==MediaSourceType.AUDIO || newMST==MediaSourceType.VIDEO){
+    			long length = vlccontroller.prerunCheck(newPath);
+    			if( length != mo.getLength() ){
+    				return false;
+    			}
+    		}
+    		// Passed all the tests, so we can set the new path.
+    		mo.setPath(newPath);
+    	}
+    	
+    	MainGUIController.getInstance().updateSession(this);
+    	return true;
+    }
+    
     public ArrayList<MediaObject> getMediaObjects() {
         return this.mediaObjects;
     }
