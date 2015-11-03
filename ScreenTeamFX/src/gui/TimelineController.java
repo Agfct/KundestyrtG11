@@ -132,14 +132,14 @@ public class TimelineController implements FXMLController {
 		 initDisplayChooserListener();
 //		 System.out.println("STYLEFUCK: "+nameOfTimeLineField.getStyle());
 		 nameOfTimeLineField.setText(nameOfTimeLine);
-		 nameOfTimeLineField.textProperty().addListener((observable, oldValue, newValue) -> {
-			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
-			    if(newValue.length() > 0 && newValue.length() < 10) {
-			    	System.out.println("YEAH");;
-			    }
-			    
-			});
-		 
+//		 nameOfTimeLineField.textProperty().addListener((observable, oldValue, newValue) -> {
+//			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
+//			    if(newValue.length() > 0 && newValue.length() < 10) {
+//			    	System.out.println("YEAH");;
+//			    }
+//			    
+//			});
+//		 
 		
 	}
 
