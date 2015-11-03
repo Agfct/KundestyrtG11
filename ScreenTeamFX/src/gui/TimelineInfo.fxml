@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import org.controlsfx.control.CheckComboBox?>
+<?import javafx.scene.control.TextField?>
 
 <GridPane gridLinesVisible="true" fx:id="timelineContainer"
 	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
@@ -15,18 +16,18 @@
 		<ColumnConstraints hgrow="NEVER" maxWidth="1000" />
 	</columnConstraints>
 	<children>
-		<GridPane  fx:id="timelineInfo"
+		<GridPane  fx:id="timelineInfo"  gridLinesVisible="true" 
 			stylesheets="@application.css" styleClass="background-info"
 			GridPane.columnIndex="0" maxHeight="80" maxWidth="-Infinity"
 			minHeight="80" minWidth="-Infinity" prefHeight="80" prefWidth="200">
 			<columnConstraints>
-				<ColumnConstraints hgrow="NEVER" minWidth="30"
+				<ColumnConstraints hgrow="NEVER" minWidth="50"
 					prefWidth="25" />
-				<ColumnConstraints hgrow="NEVER" minWidth="65"
+				<ColumnConstraints hgrow="NEVER" minWidth="50"
 					prefWidth="70" />
 				<ColumnConstraints hgrow="NEVER" minWidth="65"
 					prefWidth="70" />
-				<ColumnConstraints hgrow="NEVER" minWidth="30"
+				<ColumnConstraints hgrow="NEVER" minWidth="25"
 					prefWidth="25" />
 			</columnConstraints>
 			<rowConstraints>
@@ -38,16 +39,25 @@
 					vgrow="NEVER" />
 			</rowConstraints>
 			<children>
+				<Label fx:id="titleLabel" text="Title" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.halignment="CENTER"></Label>
+				<TextField fx:id="titelTextField" text="Timeline 1" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.columnSpan="2"></TextField>
+				
 				<Button fx:id="removeTimelineBtn" onAction="#buttonPressed"
 					GridPane.rowIndex="0" GridPane.columnIndex="3">X</Button>
 					
 				<ComboBox fx:id="displaysComboBox" 
 					GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
-					
+				
+				<Label fx:id="muteLabel" text="Mute:" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.halignment="CENTER"></Label>
 				<Button fx:id="muteVideo" onAction="#buttonPressed"
 					GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.halignment="CENTER">V</Button>
 				<Button fx:id="muteSound" onAction="#buttonPressed"
 					GridPane.rowIndex="2" GridPane.columnIndex="2" GridPane.halignment="CENTER">S</Button>
+					
+				<Button fx:id="moveUp" onAction="#buttonPressed"
+					GridPane.rowIndex="1" GridPane.columnIndex="3" GridPane.halignment="CENTER">U</Button>
+				<Button fx:id="moveDown" onAction="#buttonPressed"
+					GridPane.rowIndex="2" GridPane.columnIndex="3" GridPane.halignment="CENTER">D</Button>
 				<!-- <Label text="Enabled: " GridPane.rowIndex="2" /> -->
 				<!-- <CheckBox mnemonicParsing="false" selected="true" text="CheckBox" -->
 				<!-- GridPane.columnIndex="1" GridPane.rowIndex="2" /> -->
