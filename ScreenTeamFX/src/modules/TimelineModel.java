@@ -153,6 +153,7 @@ public class TimelineModel implements Serializable{
 	
 	public void addTimelineMediaObject(long start, long dur, MediaObject parent){
 		TimelineMediaObject temp = new TimelineMediaObject(start,dur,this.id,parent);
+		
 		timelineMediaObjects.add(temp);
 		timelinechanged();
 	}
@@ -184,6 +185,14 @@ public class TimelineModel implements Serializable{
 		}
 		
 		TimelineMediaObject newTimelineMediaObject = new TimelineMediaObject(newStart, newInternalStart, newDuration, tlmo.getTimelineid(), tlmo.getParent());
+		
+		// Check window collision
+		if(MainModuleController.getInstance().getSession().checkWindowCollision(newTimelineMediaObject)){
+			// Collision detected. Add back the old timelineMediaObject
+			this.addTimelineMediaObject(tlmo);
+			return "Window would collide in new position, window not moved";
+		}
+		
 		String result = this.addTimelineMediaObject(newTimelineMediaObject);
 		this.removeTimelineMediaObject(newTimelineMediaObject);
 		// Check the result, if the new one was not added, put back the old one

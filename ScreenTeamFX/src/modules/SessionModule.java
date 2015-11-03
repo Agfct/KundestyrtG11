@@ -716,10 +716,11 @@ public class SessionModule implements Serializable {
     /**
      * Go through all timelines and check if the timlinemediaobject (which should be a WINDOW) collides with
      * another timlinemediaobject for the same window.
+     * Returns true if there is a collision
      * @param tlmo
      * @return
      */
-    private boolean checkWindowCollision(TimelineMediaObject tlmo) {
+    public boolean checkWindowCollision(TimelineMediaObject tlmo) {
         if(tlmo.getParent().getType() != MediaSourceType.WINDOW){
             return false;
         }
