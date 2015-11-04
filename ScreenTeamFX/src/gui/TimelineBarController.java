@@ -29,6 +29,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import modules.Event;
 import modules.MainModuleController;
 
 /**
@@ -118,6 +119,18 @@ public class TimelineBarController extends Pane {
 		});
 
 
+	}
+	
+	public void repaint(){
+		ArrayList<Event> breakpoints = parentController.getCurrentSession().getBreakpoints();
+		for(Event e : breakpoints){
+			long timespot = e.getTime();
+			StopPointController tempStopPoint = new StopPointController(thisBarController);
+			root.getChildren().add(tempStopPoint);
+			stopPointControllers.add(tempStopPoint);
+			tempStopPoint.setStopPosition(timespot);
+			tempStopPoint.toBack();
+		}
 	}
 
 	public Point2D getNewSeekPoint(MouseEvent event){
