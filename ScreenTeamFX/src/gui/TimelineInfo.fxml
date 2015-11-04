@@ -88,10 +88,10 @@
 				</Button>
 
 				<Button fx:id="moveUp" onAction="#buttonPressed" styleClass="up-button"
-					GridPane.rowIndex="1" GridPane.columnIndex="3" GridPane.halignment="CENTER">
-					And
+					GridPane.rowIndex="1" GridPane.columnIndex="3" GridPane.halignment="CENTER"
+					prefWidth="32" prefHeight="8">
 					<GridPane.margin>
-						<Insets top="10.0" right="1.0" />
+						<Insets top="8" right="1.0" />
 					</GridPane.margin>
 				</Button>
 				<Button fx:id="moveDown" onAction="#buttonPressed"
@@ -100,7 +100,7 @@
 					prefHeight="8">
 
 					<GridPane.margin>
-						<Insets bottom="10.0" right="1.0" />
+						<Insets bottom="8" right="1.0" />
 					</GridPane.margin>
 				</Button>
 

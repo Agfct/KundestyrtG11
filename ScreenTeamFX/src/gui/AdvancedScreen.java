@@ -665,7 +665,7 @@ public class AdvancedScreen implements Screen{
 			modalDialog.initModality(Modality.APPLICATION_MODAL);
 			modalDialog.initOwner(MainGUIController.getInstance().primaryStage);
 			ModalController mediaObjectModal = new ModalController(mediaObject);
-			Scene dialogScene = new Scene(mediaObjectModal.getRoot(), 500, 230);
+			Scene dialogScene = new Scene(mediaObjectModal.getRoot(), 600, 230);
 			modalDialog.setScene(dialogScene);
 			modalDialog.show();
 		}

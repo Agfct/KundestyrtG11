@@ -150,13 +150,10 @@
 
 
 .up-button{
-
 	-fx-background-image: url("../../resources/arrowUp.png");
-	-fx-background-size: 20;
 	-fx-background-repeat: no-repeat;
-	-fx-background-size: cover;
-	-fx-font: 7 arial;
-	-fx-text-fill: rgba(100,100, 100, 0);
+	-fx-background-position: center;
+	-fx-padding: 1, 1, 1, 1;
 }
 
 .down-button{
@@ -171,6 +168,7 @@
 	-fx-background-size: 20;
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
+	-fx-padding: 1, 1, 1, 1;
 }
 
 .icon-soundmuteon{
