@@ -276,11 +276,18 @@ public class TimelineModel implements Serializable{
 	public String getNameOfTimeline(){
 		return nameOfTimeline;
 	}
-	
+	/**
+	 * Sets the name of the timeline.
+	 * Rejects the request if name is above 50 chars
+	 * NB: this is not proper MVC as it should run fireTimelineChanged() in sessionmodule. It does however not affect any user exp
+	 * @param s
+	 * @return
+	 */
 	public boolean setNameOfTimeline(String s){
-		if(s.length()<20){
+		if(s.length()<50){
 			nameOfTimeline=s;
 			return true;
+			
 		}
 		return false;
 	}

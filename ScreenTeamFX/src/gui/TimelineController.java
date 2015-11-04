@@ -130,16 +130,11 @@ public class TimelineController implements FXMLController {
 		 displaysComboBox.getSelectionModel().select(0);
 		 //adds the listener
 		 initDisplayChooserListener();
-//		 System.out.println("STYLEFUCK: "+nameOfTimeLineField.getStyle());
+		 
+		 
+		 //TextField for editing the name of a timeline
 		 nameOfTimeLineField.setText(nameOfTimeLine);
-//		 nameOfTimeLineField.textProperty().addListener((observable, oldValue, newValue) -> {
-//			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
-//			    if(newValue.length() > 0 && newValue.length() < 10) {
-//			    	System.out.println("YEAH");;
-//			    }
-//			    
-//			});
-//		 
+		 addListenerToNameOfTimelineTextField();
 		
 	}
 
@@ -166,7 +161,6 @@ public class TimelineController implements FXMLController {
 			parentController.moveTimeline("up",timelineModel);
 		}
 		else if(((Button)event.getSource()).getId().equals("moveDown") ){
-			//Mutes all the sound on this timeline
 			parentController.moveTimeline("down",timelineModel);
 		}
 		
@@ -252,53 +246,57 @@ public class TimelineController implements FXMLController {
 		
 	}
 	
-//	private void addListenerToTextField(){
-////		nameOfTimeLineField.setOnMouseClicked(new EventHandler<MouseEvent>() {  
-////			  @Override  
-////			  public void handle(MouseEvent event) {  
-////			    if (event.getClickCount()==2) {  
-////			      textField.setText(label.getText());  
-////			      tab.setGraphic(textField);  
-////			      textField.selectAll();  
-////			      textField.requestFocus();  
-////			    }  
-////			  }  
-////			}); 
-////
-////
-//			nameOfTimeLineField.setOnMouseClicked(new EventHandler<MouseEvent>() {  
-//			  @Override  
-//			  public void handle(MouseEvent event) {
-//				  System.out.println("Suq madiq");
-////				  nameOfTimeLineField.setStyle(" -fx-focus-color: black; -fx-accent: transparent; -fx-background-color: white;");
-//				  nameOfTimeLineField.requestFocus();
-//				  nameOfTimeLineField.setEditable(true);
-//
-////			    label.setText(textField.getText());  
-////			    tab.setGraphic(label);  
-//			  }  
-//			});
-//			nameOfTimeLineField.setOnAction(new EventHandler<ActionEvent>() {
-//
-//				@Override
-//				public void handle(ActionEvent event) {
-//					System.out.println("ENTERKAY");
-//					
-//				}
-//				
-//			});
-////
-////			textField.focusedProperty().addListener(new ChangeListener<Boolean>() {  
-////			  @Override  
-////			  public void changed(ObservableValue<? extends Boolean> observable,  
-////			      Boolean oldValue, Boolean newValue) {  
-////			    if (! newValue) {  
-////			      label.setText(textField.getText());  
-////			      tab.setGraphic(label);            
-////			    }  
-////			  }  
-////			});  
-//	}
+	/**
+	 * Adds listeners to the name of timeline-textField. 
+	 */
+	private void addListenerToNameOfTimelineTextField(){
+
+			/*
+			 * Fires when the user clicks the field. This method can be used if the appearance of the field shall change when clicked on
+			 */
+			nameOfTimeLineField.setOnMouseClicked(new EventHandler<MouseEvent>() {  
+			  @Override  
+			  public void handle(MouseEvent event) {
+//				  nameOfTimeLineField.setStyle(" -fx-focus-color: black; -fx-accent: transparent; -fx-background-color: white;");
+				  nameOfTimeLineField.requestFocus();
+				  nameOfTimeLineField.setEditable(true); 
+			  }  
+			});
+			
+			/*
+			 * OnAction listener. Currently only firing when the ENTER-key is pressed. 
+			 */
+			nameOfTimeLineField.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					//Sends the info to the modules when pressing enter
+					timelineModel.setNameOfTimeline(nameOfTimeLineField.getText());
+					
+				}
+				
+			});
+			/*
+			 * Send the new text if the user defocuses the textField
+			 */
+			nameOfTimeLineField.focusedProperty().addListener(new ChangeListener<Boolean>()
+			{
+			    @Override
+			    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+			    {
+			        if (newPropertyValue)
+			        {
+			            //TextField is not in focus
+			        }
+			        else
+			        {
+			            //TextField is not out of focus
+			            timelineModel.setNameOfTimeline(nameOfTimeLineField.getText());
+			            
+			        }
+			    }
+			});
+	}
 	
 	
 

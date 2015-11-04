@@ -34,6 +34,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -213,7 +214,12 @@ public class AdvancedScreen implements Screen{
 			timelineScrollPane.addEventFilter(KeyEvent.ANY,new EventHandler<KeyEvent>() {
 		        @Override
 		        public void handle(KeyEvent event) {
-		                event.consume();
+		        	//Consumes the event if the arrowKeys are pressed. This is to avoid destruction of the scrollpane
+		        	KeyCode keyCode = event.getCode();
+		        	if(keyCode==KeyCode.UP || keyCode==KeyCode.DOWN || keyCode==KeyCode.LEFT || keyCode==KeyCode.RIGHT){
+		        		event.consume();
+		        	}
+
 		        }
 		    });
 		}
