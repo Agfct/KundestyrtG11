@@ -129,6 +129,7 @@ public class MainGUIController {
 		AdvancedScreen.getInstance().getScreenController().fireMediaObjectListChanged();
 		AdvancedScreen.getInstance().getScreenController().rebuildTimelines();
 		AdvancedScreen.getInstance().getScreenController().fireGlobalTimeChanged(sm.getGlobalTime());
+		AdvancedScreen.getInstance().getScreenController().repaintTimelinebarBreakpoints();
 	}
 
 

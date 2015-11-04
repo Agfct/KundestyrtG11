@@ -34,6 +34,7 @@ public class SessionModule implements Serializable {
     private boolean pausing;
     private boolean paused;
     private boolean inter;
+    private boolean tAllCalledPause;
     private Thread t1;
     private Thread tAll;
 
@@ -72,6 +73,7 @@ public class SessionModule implements Serializable {
         this.pausing = true;
         this.paused = true;
         this.inter = false;
+        this.tAllCalledPause = false;
 //		vlccontroller.createMediaPlayer(tlmID);
         this.t1 = new Thread();
         this.tAll = new Thread();
@@ -245,6 +247,7 @@ public class SessionModule implements Serializable {
             //creates the thread for increasing the globaltime
             globalTimeTicker=tickGlobalTime(globaltime);
             pausing = false;
+            tAllCalledPause = false;
             //starts the threads
             tAll.start();
             System.out.println("started");
@@ -302,6 +305,7 @@ public class SessionModule implements Serializable {
                 //a check if a part of the thread is interrupted
                 inter =false;
                 //if there are no more tasks to be done or the program has been paused, then the while loop ends
+                outerloop:
                 while (!performancestack.isEmpty() && pausing == false){
                 	//update playp to current time to gage the time since start
                     playp = System.currentTimeMillis();
@@ -364,7 +368,10 @@ public class SessionModule implements Serializable {
                                 shownwindows.remove(ev2.getTimelineMediaObject().getParent().getPath());
                             }
                             else if(ev2.getAction()==Action.PAUSE_ALL){
-                            	MainModuleController.getInstance().getSession().pauseAll();
+                            	tAllCalledPause = true;
+                            	pauseAll();
+                            	break outerloop;
+//                            	MainModuleController.getInstance().getSession().pauseAll();
                             }
                         }
                         try {
@@ -402,6 +409,10 @@ public class SessionModule implements Serializable {
         };
         //returns the thread so it can be started in playAll function
         return tAll1;
+    }
+    
+    public ArrayList<Event> getBreakpoints(){
+    	return timelinebarStopEvents;
     }
     
     public void addBreakpoint(long time){
@@ -536,7 +547,7 @@ public class SessionModule implements Serializable {
         }
         
         for(int i=0; i<timelinebarStopEvents.size(); i++){
-        	if( globaltime < timelinebarStopEvents.get(i).getTime() ){
+        	if( (globaltime+2) < timelinebarStopEvents.get(i).getTime() ){
         		performancestack.add(timelinebarStopEvents.get(i));
         	}
         }
@@ -643,7 +654,10 @@ public class SessionModule implements Serializable {
             //wake the threads if they sleep so they can end
             inter = true;
             globalTimeTicker.interrupt();
-            tAll.interrupt();
+            if(!tAllCalledPause){
+            	tAll.interrupt();
+            	tAllCalledPause = false;
+            }
             try {
             	//call the pauseAll function to pause the videos that are playing
                 vlccontroller.pauseAll();

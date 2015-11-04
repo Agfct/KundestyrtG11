@@ -1057,6 +1057,12 @@ public class AdvancedScreen implements Screen{
 
 		public void fireTimelinebarChanged() {
 			// TODO: update timelinebar
+			// Implement to use mvc correctly, currently hacked
+		}
+		
+		public void repaintTimelinebarBreakpoints(){
+			timelineBarController.removeAllBreakpoints();
+			timelineBarController.repaint();
 		}
 
 
