@@ -12,6 +12,7 @@ public interface SessionListener {
 	public void fireMediaObjectListChanged();
 	public void fireGlobalTimeChanged(long newGlobalTime);
 	public void fireSessionLenghtChanged();
+	public void fireTimelinesbarChanged();
 	
 	
 	

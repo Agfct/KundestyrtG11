@@ -389,29 +389,44 @@ public class SessionModule implements Serializable {
         return tAll1;
     }
     
-    public void addStopToTimelinebar(long time){
+    public void addBreakpoint(long time){
     	Event newStop = new Event(time, 0, Action.PAUSE_ALL, null);
-    	insertEventInTimelinebarStopEvents(newStop);
+    	if(insertEventInTimelinebarStopEvents(newStop)){
+    		timelinebarChanged();
+    	}
     }
     
     /**
      * Insertion sort to 
      * @param e
      */
-    private void insertEventInTimelinebarStopEvents(Event e){
+    private boolean insertEventInTimelinebarStopEvents(Event e){
     	long thisETime = e.getTime();
     	for(int i=0; i<timelinebarStopEvents.size(); i++){
     		long otherETime = timelinebarStopEvents.get(i).getTime();
+    		if( thisETime==otherETime ){
+    			return false;
+    		}
     		if( thisETime<otherETime ){
     			timelinebarStopEvents.add(i, e);
+    			return true;
+    		}
+    	}
+    	// If Event e does not happen before any of the existing ones, add it to the end.
+    	timelinebarStopEvents.add(e);
+    	return true;
+    }
+
+    public void removeBreakpoint(long time){
+    	for(int i=0; i<timelinebarStopEvents.size(); i++){
+    		if( timelinebarStopEvents.get(i).getTime() == time ){
+    			timelinebarStopEvents.remove(i);
+    			timelinebarChanged();
     			return;
     		}
     	}
-    	
-    	// If Event e does not happen before any of the existing ones, add it to the end.
-    	timelinebarStopEvents.add(e);
     }
-
+    
     /**
      * Goes through all timelines assigned to a display, get all their stacks of events and sort them based on when they
      * begin and end. Also check where we are on the globaltime and set videos to play with offset if the already should have begun but not yet ended.
@@ -509,7 +524,11 @@ public class SessionModule implements Serializable {
             }
         }
         
-        performancestack.addAll(timelinebarStopEvents);
+        for(int i=0; i<timelinebarStopEvents.size(); i++){
+    		if( globaltime < timelinebarStopEvents.get(i).getTime() ){
+    			performancestack.add(timelinebarStopEvents.get(i));
+    		}
+    	}
         
         //sort the stack in case something got wierd. sorted by time the event happens in increasing order.
         performancestack.sort(Event.EventTimeComperator);
@@ -945,11 +964,21 @@ public class SessionModule implements Serializable {
         }
     }
 
+    private void timelinebarChanged(){
+    	if(listeners!=null){
+            for(SessionListener listener: listeners){
+                listener.fireTimelinesbarChanged();
+            }
+        }
+    }
+    
     //TODO: we need to specify which mediaobject has been changed.
     private void mediaObjectsChanged(){
-        for(SessionListener listener: listeners){
-            listener.fireMediaObjectListChanged();
-        }
+    	if(listeners!=null){
+    		for(SessionListener listener: listeners){
+    			listener.fireMediaObjectListChanged();
+    		}
+    	}
     }
     /**
      * removes the timelinemediaobject from the given timelinemodel
