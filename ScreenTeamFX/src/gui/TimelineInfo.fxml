@@ -16,6 +16,8 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
 
 <GridPane gridLinesVisible="true" fx:id="timelineContainer"
 	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
@@ -25,11 +27,11 @@
 		<ColumnConstraints hgrow="NEVER" maxWidth="1000" />
 	</columnConstraints>
 	<children>
-	
-		<GridPane  fx:id="timelineInfo"  
-			stylesheets="@application.css" styleClass=""
-			GridPane.columnIndex="0" maxHeight="80" maxWidth="-Infinity"
-			minHeight="80" minWidth="-Infinity" prefHeight="80" prefWidth="200">
+
+		<GridPane fx:id="timelineInfo" stylesheets="@application.css"
+			styleClass="background-fileimporter" GridPane.columnIndex="0"
+			maxHeight="80" maxWidth="-Infinity" minHeight="80" minWidth="-Infinity"
+			prefHeight="80" prefWidth="200">
 			<columnConstraints>
 				<ColumnConstraints hgrow="NEVER" minWidth="50"
 					prefWidth="25" />
@@ -49,27 +51,59 @@
 					vgrow="NEVER" />
 			</rowConstraints>
 			<children>
-				<Label fx:id="titleLabel" text="Title" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.halignment="CENTER"></Label>
-				<TextField fx:id="nameOfTimeLineField" text="Timeline X" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="2" >
-			    </TextField>
-				
+				<Label fx:id="titleLabel" text="Title" GridPane.rowIndex="0"
+					GridPane.columnIndex="0" GridPane.halignment="CENTER"></Label>
+				<TextField fx:id="nameOfTimeLineField" text="Timeline X"
+					GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="2">
+				</TextField>
+
 				<Button fx:id="removeTimelineBtn" onAction="#buttonPressed"
-					GridPane.rowIndex="0" GridPane.columnIndex="3">X</Button>
-				<Label fx:id="displayLabel" text="Display:" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.halignment="CENTER"></Label>
-					
-				<ComboBox fx:id="displaysComboBox" 
-					GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
-				
-				<Label fx:id="muteLabel" text="Mute:" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.halignment="CENTER"></Label>
-				<Button fx:id="muteVideo" onAction="#buttonPressed"
-					GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.halignment="CENTER" >V</Button>
-				<Button fx:id="muteSound" onAction="#buttonPressed"
-					GridPane.rowIndex="2" GridPane.columnIndex="2" GridPane.halignment="CENTER">S</Button>
-					
-				<Button fx:id="moveUp" onAction="#buttonPressed"
-					GridPane.rowIndex="1" GridPane.columnIndex="3" GridPane.halignment="CENTER" styleClass="up-button" >U</Button>
+					GridPane.rowIndex="0" GridPane.columnIndex="3" styleClass="remove-timeline-btn">
+					X
+					<GridPane.margin>
+						<Insets left="2.0" />
+					</GridPane.margin>
+				</Button>
+				<Label fx:id="displayLabel" text="Display:" GridPane.rowIndex="1"
+					GridPane.columnIndex="0" GridPane.halignment="CENTER">
+				</Label>
+
+				<ComboBox fx:id="displaysComboBox" GridPane.rowIndex="1"
+					GridPane.columnIndex="1" GridPane.columnSpan="2"
+					GridPane.halignment="CENTER" />
+
+				<Label fx:id="muteLabel" text="Mute:" GridPane.rowIndex="2"
+					GridPane.columnIndex="0" GridPane.halignment="CENTER"></Label>
+				<Button fx:id="muteVideo" styleClass="icon-videomuteoff"
+					onAction="#buttonPressed" GridPane.rowIndex="2"
+					GridPane.columnIndex="1" GridPane.halignment="CENTER" prefWidth="32"
+					prefHeight="16">
+
+				</Button>
+				<Button fx:id="muteSound" styleClass="icon-soundmuteoff"
+					onAction="#buttonPressed" GridPane.rowIndex="2"
+					GridPane.columnIndex="2" GridPane.halignment="CENTER" prefWidth="32"
+					prefHeight="16">
+
+				</Button>
+
+				<Button fx:id="moveUp" onAction="#buttonPressed" styleClass="up-button"
+					GridPane.rowIndex="1" GridPane.columnIndex="3" GridPane.halignment="CENTER">
+					And
+					<GridPane.margin>
+						<Insets top="10.0" right="1.0" />
+					</GridPane.margin>
+				</Button>
 				<Button fx:id="moveDown" onAction="#buttonPressed"
-					GridPane.rowIndex="2" GridPane.columnIndex="3" GridPane.halignment="CENTER" styleClass="down-button" >D</Button>
+					styleClass="down-button" GridPane.rowIndex="2"
+					GridPane.columnIndex="3" GridPane.halignment="CENTER" prefWidth="32"
+					prefHeight="8">
+
+					<GridPane.margin>
+						<Insets bottom="10.0" right="1.0" />
+					</GridPane.margin>
+				</Button>
+
 				<!-- <Label text="Enabled: " GridPane.rowIndex="2" /> -->
 				<!-- <CheckBox mnemonicParsing="false" selected="true" text="CheckBox" -->
 				<!-- GridPane.columnIndex="1" GridPane.rowIndex="2" /> -->

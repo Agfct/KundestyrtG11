@@ -185,7 +185,7 @@ public class AdvancedScreen implements Screen{
 			timelineBarContainer.getChildren().add(timelineBarController);
 
 			//Displays global time to the userinterface
-			timelineBarGlobalTime.setText("GlobalTime: " + getTimeAsText(currentSession.getGlobalTime()));
+			timelineBarGlobalTime.setText("Time: " + getTimeAsText(currentSession.getGlobalTime()));
 
 
 			//initializeScrollPane
@@ -764,7 +764,7 @@ public class AdvancedScreen implements Screen{
 			timelineBarController.getSeeker().placeSeeker(newGlobalTime);
 			Platform.runLater(new Runnable() {
 				@Override public void run() {
-					timelineBarGlobalTime.setText("GlobalTime: " + getTimeAsText(newGlobalTime));                      
+					timelineBarGlobalTime.setText("Time: " + getTimeAsText(newGlobalTime));                      
 				}
 			});
 
