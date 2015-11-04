@@ -132,6 +132,13 @@ public class TimelineBarController extends Pane {
 			tempStopPoint.toBack();
 		}
 	}
+	
+	public void removeAllBreakpoints(){
+		while( 0<stopPointControllers.size() ){
+			StopPointController spc = stopPointControllers.get(0);
+			removeStopPoint(spc);
+		}
+	}
 
 	public Point2D getNewSeekPoint(MouseEvent event){
 		return root.sceneToLocal(event.getSceneX(),0);

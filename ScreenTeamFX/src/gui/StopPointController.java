@@ -70,9 +70,11 @@ public class StopPointController extends Pane{
 	}
 	
 	public void setStopPosition(long time){
-		relocateToPoint(new Point2D(((time/1000)*scale+10),0));
+		relocateToPoint(new Point2D((((time/1000))*scale+10),0));
 		initializeTooltip();
 	}
+	
+
 
 	private void initializeTooltip(){
 		//Sets the text of the tooltip

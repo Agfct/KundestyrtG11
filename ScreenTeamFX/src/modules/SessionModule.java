@@ -547,7 +547,7 @@ public class SessionModule implements Serializable {
         }
         
         for(int i=0; i<timelinebarStopEvents.size(); i++){
-        	if( globaltime < timelinebarStopEvents.get(i).getTime() ){
+        	if( (globaltime+2) < timelinebarStopEvents.get(i).getTime() ){
         		performancestack.add(timelinebarStopEvents.get(i));
         	}
         }
@@ -656,6 +656,7 @@ public class SessionModule implements Serializable {
             globalTimeTicker.interrupt();
             if(!tAllCalledPause){
             	tAll.interrupt();
+            	tAllCalledPause = false;
             }
             try {
             	//call the pauseAll function to pause the videos that are playing

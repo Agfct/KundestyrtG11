@@ -1061,6 +1061,7 @@ public class AdvancedScreen implements Screen{
 		}
 		
 		public void repaintTimelinebarBreakpoints(){
+			timelineBarController.removeAllBreakpoints();
 			timelineBarController.repaint();
 		}
 
