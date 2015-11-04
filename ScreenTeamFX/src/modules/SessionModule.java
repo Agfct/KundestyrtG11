@@ -1217,9 +1217,7 @@ public class SessionModule implements Serializable {
 	public long getIMAGE_DURATION() {
 		return IMAGE_DURATION;
 	}
-	public void setMediaObjects(ArrayList<MediaObject> mediaObjects) {
-		this.mediaObjects = mediaObjects;
-	}
+
 	
 
 
