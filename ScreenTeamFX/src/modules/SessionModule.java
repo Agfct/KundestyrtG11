@@ -1152,6 +1152,75 @@ public class SessionModule implements Serializable {
 			}
 		}
 	}
+	
+	/*
+	 * Baptiste: Get creation for the test
+	 */
+
+    
+   public boolean getPausing(){
+	   return pausing;
+   }
+   public boolean getPaused(){
+	   return paused;
+   }
+
+   public WindowDisplay getWindowDisplay(){
+    	return windowdisplay;
+    }
+    public int gettlmID(){
+    	return tlmID;
+    }
+    public HashMap<Integer,TimelineModel> getdisplays(){
+    	return displays;
+    }
+
+    public VLCController getvlccontroller(){
+    	return vlccontroller;
+    }
+    public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	public long getGlobaltime() {
+		return globaltime;
+	}
+	public ArrayList<Event> getPerformancestack() {
+		return performancestack;
+	}
+	public boolean isPausing() {
+		return pausing;
+	}
+	public boolean isPaused() {
+		return paused;
+	}
+	public Thread getT1() {
+		return t1;
+	}
+	public Thread gettAll() {
+		return tAll;
+	}
+	public Thread getGlobalTimeTicker() {
+		return globalTimeTicker;
+	}
+	public ArrayList<SessionListener> getListeners() {
+		return listeners;
+	}
+	public ArrayList<String> getShownwindows() {
+		return shownwindows;
+	}
+	public ArrayList<Event> getLastEvents() {
+		return lastEvents;
+	}
+	public int getNumberOfAvailableDisplays() {
+		return numberOfAvailableDisplays;
+	}
+	public long getIMAGE_DURATION() {
+		return IMAGE_DURATION;
+	}
+	public void setMediaObjects(ArrayList<MediaObject> mediaObjects) {
+		this.mediaObjects = mediaObjects;
+	}
+	
 
 
 
