@@ -132,11 +132,15 @@ public class OptionsScreen implements Screen {
 		}
 		
 		public void paintVLCConfigValues(){
+			String[] vlcConfig = AdvancedScreen.getInstance().getScreenController().getCurrentSession().getVLCConfiguration();
 			
 		}
 		
 		public void setVLCConfigAlternatives(){
-			vOutputComboBox.getItems().addAll("DirectDraw","");
+			vOutputComboBox.getItems().addAll(
+					"Auto",
+					"DirectX (DirectDraw)"
+					);
 		}
 
 		/* (non-Javadoc)
