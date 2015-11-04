@@ -244,7 +244,7 @@ public class SessionModule implements Serializable {
             //starts the threads
             tAll.start();
             System.out.println("started");
-            globalTimeTicker.start();
+//            globalTimeTicker.start();
         }
     }
 
@@ -362,8 +362,10 @@ public class SessionModule implements Serializable {
                         }
                         try {
                         	//seek in all the videos then play all
-                            vlccontroller.SeekMultiple(pplay);
-                            vlccontroller.playAll();
+                        	if (pplay.size()>0){
+                        		vlccontroller.SeekMultiple(pplay);
+                        		vlccontroller.playAll();
+                        	}
                             //start the globaltimeticker if it has not started yet
                             if (!globalTimeTicker.isAlive() && pausing == false){
                                 startp = System.currentTimeMillis();
