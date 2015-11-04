@@ -1055,9 +1055,7 @@ public class AdvancedScreen implements Screen{
 			
 		}
 
-		public void fireTimelinebarChanged() {
-			// TODO: update timelinebar
-		}
+
 
 
 	}//end AdvancedScreenController
