@@ -223,20 +223,25 @@ public class SessionModule implements Serializable {
             paused = false;
             //waiting for the threads to finish if paused earlier
             try {
+            	System.out.println("nononononono");
                 tAll.join();
+                System.out.println("yeyeyyeyyyeye");
                 globalTimeTicker.join();
             } catch (InterruptedException e) {
                 System.out.println("interrupted waiting for tAll and/or the globalTimeTicker to die");
             }
             //rebuilds the performance in case of changes or new startpoint/globaltime
             buildPerformance();
+            System.out.println("built");
             //creates the thread for excecuting the performance
             tAll = allPlay(globaltime);
+            System.out.println("created");
             //creates the thread for increasing the globaltime
             globalTimeTicker=tickGlobalTime(globaltime);
             pausing = false;
             //starts the threads
             tAll.start();
+            System.out.println("started");
             globalTimeTicker.start();
         }
     }
@@ -288,6 +293,8 @@ public class SessionModule implements Serializable {
                 long playp = System.currentTimeMillis();
                 //a map for seeking multiple videos with the seekmultiple method further down
                 Map<Integer,Long> pplay = new HashMap<Integer,Long>();
+                //a check if a part of the thread is interrupted
+                boolean inter =false;
                 //if there are no more tasks to be done or the program has been paused, then the while loop ends
                 while (!performancestack.isEmpty() && pausing == false){
                 	//update playp to current time to gage the time since start
@@ -362,13 +369,16 @@ public class SessionModule implements Serializable {
                             }
                         } catch (InterruptedException e) {
                             System.out.println("interrupted seekmultiple or playAll while playing");
+                            inter = true;
+                            
                         }
                     }
                     //thread sleeping if its long until next event
-                    if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp)){
-                        try {
+                    if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp) && !inter){
+                        try {                        	
                             this.sleep((performancestack.get(0).getTime()-glbtime)-(playp-startp)-1500);
                         } catch (InterruptedException e) {
+                        	inter = true;
                         }
                     }
                 }
