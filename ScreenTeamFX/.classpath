@@ -5,6 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/vlcj-3.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/controlsfx-8.40.10.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jna-platform-4.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/jna-4.2.0.jar"/>
