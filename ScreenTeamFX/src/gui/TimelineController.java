@@ -134,6 +134,7 @@ public class TimelineController implements FXMLController {
 		 
 		 //TextField for editing the name of a timeline
 		 nameOfTimeLineField.setText(nameOfTimeLine);
+		 nameOfTimeLineField.setFocusTraversable(false);
 		 addListenerToNameOfTimelineTextField();
 		
 	}
