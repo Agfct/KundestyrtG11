@@ -199,25 +199,27 @@ public class VLCController {
 	 * @throws BrokenBarrierException 
 	 * @throws InterruptedException */	
 	public synchronized void playAll() throws InterruptedException{
-		ArrayList<Thread> threads = new ArrayList<Thread>();
-		final CyclicBarrier gate = new CyclicBarrier(mediaPlayerDisplayConnections.size() + 1);
-		for(int mp : mediaPlayerDisplayConnections.keySet()){
-			Thread t = new Thread(){
-				public void run(){
-					try {
-						gate.await();
-					} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
-					toPlayer(mp).play();
-				}
-			};
-			t.start();
-			threads.add(t);
-		}
-		try {
-			gate.await();
-		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
-		for(int i= 0; i < threads.size(); i++){
-			threads.get(i).join();
+		if(mediaPlayerDisplayConnections.size()>0){
+			ArrayList<Thread> threads = new ArrayList<Thread>();
+			final CyclicBarrier gate = new CyclicBarrier(mediaPlayerDisplayConnections.size());
+			for(int mp : mediaPlayerDisplayConnections.keySet()){
+				Thread t = new Thread(){
+					public void run(){
+						try {
+							gate.await();
+							toPlayer(mp).play();
+						} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+					}
+				};
+				t.start();
+				threads.add(t);
+			}
+	//		try {
+	//			gate.await();
+	//		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+			for(int i= 0; i < threads.size(); i++){
+				threads.get(i).join();
+			}
 		}
 	}
 	
@@ -225,26 +227,28 @@ public class VLCController {
 	 * @throws BrokenBarrierException 
 	 * @throws InterruptedException */
 	public synchronized void pauseAll() throws InterruptedException{
-		ArrayList<Thread> threads1 = new ArrayList<Thread>();
-		final CyclicBarrier gate = new CyclicBarrier(mediaPlayerDisplayConnections.size() + 1);
-		for(int mp : mediaPlayerDisplayConnections.keySet()){
-			Thread t1 = new Thread(){
-				public void run(){
-					try {
-						gate.await();
-					} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
-					toPlayer(mp).pause();
-					
-				}
-			};
-			t1.start();
-			threads1.add(t1);
-		}
-		try {
-			gate.await();
-		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
-		for(int i= 0; i < threads1.size(); i++){
-			threads1.get(i).join();
+		if(mediaPlayerDisplayConnections.size()>0){
+			ArrayList<Thread> threads1 = new ArrayList<Thread>();
+			final CyclicBarrier gate = new CyclicBarrier(mediaPlayerDisplayConnections.size());
+			for(int mp : mediaPlayerDisplayConnections.keySet()){
+				Thread t1 = new Thread(){
+					public void run(){
+						try {
+							gate.await();
+							toPlayer(mp).pause();
+						} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+						
+					}
+				};
+				t1.start();
+				threads1.add(t1);
+			}
+	//		try {
+	//			gate.await();
+	//		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+			for(int i= 0; i < threads1.size(); i++){
+				threads1.get(i).join();
+			}
 		}
 	}
 	
@@ -254,25 +258,27 @@ public class VLCController {
 	 * @param map
 	 * @throws InterruptedException */
 	public synchronized void SeekMultiple(Map<Integer, Long> map) throws InterruptedException{
-		ArrayList<Thread> threads = new ArrayList<Thread>();
-		final CyclicBarrier gate = new CyclicBarrier(map.size() + 1);
-		for(int mp : map.keySet()){
-			Thread t = new Thread(){
-				public void run(){
-					try {
-						gate.await();
-					} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
-					toPlayer(mp).seek(map.get(mp));
-				}
-			};
-			t.start();
-			threads.add(t);
-		}
-		try {
-			gate.await();
-		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
-		for(int i= 0; i < threads.size(); i++){
-			threads.get(i).join();
+		if(mediaPlayerDisplayConnections.size()>0){
+			ArrayList<Thread> threads = new ArrayList<Thread>();
+			final CyclicBarrier gate = new CyclicBarrier(map.size());
+			for(int mp : map.keySet()){
+				Thread t = new Thread(){
+					public void run(){
+						try {
+							gate.await();
+							toPlayer(mp).seek(map.get(mp));
+						} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+					}
+				};
+				t.start();
+				threads.add(t);
+			}
+	//		try {
+	//			gate.await();
+	//		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+			for(int i= 0; i < threads.size(); i++){
+				threads.get(i).join();
+			}
 		}
 	}
 	
