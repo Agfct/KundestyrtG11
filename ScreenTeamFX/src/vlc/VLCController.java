@@ -6,6 +6,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -94,13 +95,21 @@ public class VLCController {
 		}
 	}
 	
-	public void updateOptions(int mp, String[] options){
-		if(mediaPlayerList.containsKey(mp)){
-			int ID = toPlayer(mp).getID();
-			int display = toPlayer(mp).getDisplay();
-			deleteMediaPlayer(mp);
-			createMediaPlayer(ID, options);
-			assignDisplay(ID, display);			
+	public void updateMediaPlayer(Integer ID, String[] options){
+		VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
+		VLCMediaPlayer oldmp = mediaPlayerList.put(ID, mp);
+		oldmp.close();
+		if(mediaPlayerDisplayConnections.containsKey(ID)){
+			Integer dis = oldmp.getDisplay();
+			availableDisplays.add(mediaPlayerDisplayConnections.get(ID));
+			mediaPlayerDisplayConnections.remove(oldmp.getID());
+			assignDisplay(ID,dis);
+		}
+	}
+	
+	public void updateOptions(String[] options){
+		for(Integer mp : mediaPlayerList.keySet()){
+			updateMediaPlayer(mp,options);
 		}
 	}
 	

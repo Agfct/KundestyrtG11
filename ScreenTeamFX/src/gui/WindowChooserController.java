@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import modules.MediaObject;
 import modules.MediaSourceType;
 
 /**
@@ -38,8 +39,10 @@ public class WindowChooserController implements FXMLController {
 		@FXML ListView<String> windowListView;
 		
 		ArrayList<String> windowsList;
+		private MediaObject mediaObject;
 		
 		public WindowChooserController(AdvancedScreenController parentController){
+			mediaObject = null;
 			this.parentController = parentController;
 			try {
 				fxmlLoader = new FXMLLoader(getClass().getResource("WindowChooser.fxml"));
@@ -54,6 +57,21 @@ public class WindowChooserController implements FXMLController {
 
 		}
 		
+		public WindowChooserController(AdvancedScreenController parentController, MediaObject mo){
+			mediaObject = mo;
+			this.parentController = parentController;
+			try {
+				fxmlLoader = new FXMLLoader(getClass().getResource("WindowChooser.fxml"));
+				fxmlLoader.setController(this);
+				fxmlLoader.load();
+				rootGrid = fxmlLoader.getRoot();
+			} catch (IOException e) {
+				System.out.println("Failed to load windowChooser FXML");
+				e.printStackTrace();
+			}
+			initList();
+
+		}
 		
 		/**
 		 * This method populates the listview
@@ -77,8 +95,13 @@ public class WindowChooserController implements FXMLController {
 				String selectedWindow = (String)windowListView.getSelectionModel().getSelectedItem();
 				System.out.println(selectedWindow);
 				if(selectedWindow!=null){
-					String result = parentController.getCurrentSession().createNewMediaObject(MediaSourceType.WINDOW, selectedWindow);
-					System.out.println("[WindowChooserController] "+result);
+					if(mediaObject == null){
+						String result = parentController.getCurrentSession().createNewMediaObject(MediaSourceType.WINDOW, selectedWindow);
+						System.out.println("[WindowChooserController] "+result);
+					}
+					else{
+						parentController.getCurrentSession().changeMediaObject(mediaObject, selectedWindow);
+					}
 				}
 				parentController.closeWindowChooser();
 			}
