@@ -1056,6 +1056,13 @@ public class AdvancedScreen implements Screen{
 		}
 
 
+		@Override
+		public void fireTimelinebarChanged() {
+			// TODO Auto-generated method stub
+			
+		}
+
+
 
 
 	}//end AdvancedScreenController
