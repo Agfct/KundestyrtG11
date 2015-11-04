@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -72,6 +74,10 @@ public class OptionsScreen implements Screen {
 		@FXML private Label vlc_version;
 		@FXML private Label java_version;
 //		@FXML private TextField vlc_commandField;
+		@FXML private CheckBox hwDecoding;
+		@FXML private CheckBox hwOverlay;
+		@FXML private CheckBox yuvToRGB;
+		@FXML private ComboBox<String> vOutputComboBox;
 		
 		public OptionsScreenController(){
 			
@@ -105,6 +111,7 @@ public class OptionsScreen implements Screen {
 //			    }
 //			    
 //			});
+			setVLCConfigAlternatives();
 		}
 		
 		/**
@@ -122,6 +129,14 @@ public class OptionsScreen implements Screen {
 			else if(((Button)event.getSource()).getId().equals("applyVLCconfig")){
 				System.out.println("Apply");
 			}
+		}
+		
+		public void paintVLCConfigValues(){
+			
+		}
+		
+		public void setVLCConfigAlternatives(){
+			vOutputComboBox.getItems().addAll("DirectDraw","");
 		}
 
 		/* (non-Javadoc)

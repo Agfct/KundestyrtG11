@@ -73,7 +73,7 @@
 							<CheckBox fx:id="hwOverlay" GridPane.columnIndex="1"	GridPane.rowIndex="1"></CheckBox>
 							
 							<Label text="Video output" GridPane.columnIndex="0"	GridPane.rowIndex="2" GridPane.halignment="CENTER" />
-							<ComboBox GridPane.columnIndex="1"	GridPane.rowIndex="2"></ComboBox>
+							<ComboBox fx:id ="vOutputComboBox" GridPane.columnIndex="1"	GridPane.rowIndex="2"></ComboBox>
 							
 							<Label text="YUV -> RGB" GridPane.columnIndex="0"	GridPane.rowIndex="3" GridPane.halignment="CENTER" />
 							<CheckBox fx:id="yuvToRGB" GridPane.columnIndex="1"	GridPane.rowIndex="3"></CheckBox>
