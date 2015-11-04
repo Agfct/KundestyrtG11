@@ -70,6 +70,8 @@ public class OptionsScreen implements Screen {
 		private VLCController vlc_controller;
 		private String temp_vlcCommands = "";
 		
+		private String[] vlcConfig ={};
+		
 		@FXML private GridPane rootGrid;
 		@FXML private Label vlc_version;
 		@FXML private Label java_version;
@@ -127,12 +129,23 @@ public class OptionsScreen implements Screen {
 				MainGUIController.getInstance().changeScreen(SCREENTYPE.MAINMENU);
 			}
 			else if(((Button)event.getSource()).getId().equals("applyVLCconfig")){
-				System.out.println("Apply");
+				String[] newVlcConfig={"--vout=directdraw","--no-overlay"};
+
+				AdvancedScreen.getInstance().getScreenController().getCurrentSession().updateMediaPlayers(newVlcConfig);
+				paintVLCConfigValues();
 			}
 		}
 		
 		public void paintVLCConfigValues(){
-			String[] vlcConfig = AdvancedScreen.getInstance().getScreenController().getCurrentSession().getVLCConfiguration();
+			vlcConfig = AdvancedScreen.getInstance().getScreenController().getCurrentSession().getVLCConfiguration();
+			System.out.println("VLCCONFIG: " + vlcConfig);
+//			if(vOutputComboBox.getSelectionModel().getSelectedItem().equals("--vout=directdraw")){
+//				System.out.println("Selected: " + "--vout=directdraw" );
+//			}
+			for(String s: vlcConfig){
+				System.out.println("[VLC config:] "+s);
+			}
+			
 			
 		}
 		
@@ -141,6 +154,7 @@ public class OptionsScreen implements Screen {
 					"Auto",
 					"DirectX (DirectDraw)"
 					);
+			vOutputComboBox.getSelectionModel().select("Auto");
 		}
 
 		/* (non-Javadoc)
