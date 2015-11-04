@@ -15,5 +15,5 @@ import java.io.Serializable;
  */
 
 public enum Action implements Serializable{
-	STOP, PLAY, PLAY_WITH_OFFSET, PAUSE, SHOW, HIDE
+	STOP, PLAY, PLAY_WITH_OFFSET, PAUSE, SHOW, HIDE, PAUSE_ALL
 }

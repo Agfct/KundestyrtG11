@@ -44,6 +44,8 @@ public class SessionModule implements Serializable {
     private ArrayList<Integer> timelineOrder;
     private ArrayList<String> shownwindows;
     private ArrayList<Event> lastEvents;
+    
+    private ArrayList<Event> timelinebarStopEvents;
 
     // Used when saving and loading, to check if the loaded session has the same number of displays as the loaded one
     private int numberOfAvailableDisplays;
@@ -73,6 +75,7 @@ public class SessionModule implements Serializable {
         this.timelineOrder=new ArrayList<Integer>();
         this.shownwindows = new ArrayList<String>();
         this.numberOfAvailableDisplays = -1;
+        this.timelinebarStopEvents = new ArrayList<Event>();
     }
 
     /**
@@ -357,6 +360,9 @@ public class SessionModule implements Serializable {
                                 vlccontroller.maximize(ev2.getTimelineid());
                                 shownwindows.remove(ev2.getTimelineMediaObject().getParent().getPath());
                             }
+                            else if(ev2.getAction()==Action.PAUSE_ALL){
+                            	MainModuleController.getInstance().getSession().pauseAll();
+                            }
                         }
                         try {
                         	//seek in all the videos then play all
@@ -394,6 +400,45 @@ public class SessionModule implements Serializable {
     }
 
 
+    public void addBreakpoint(long time){
+    	Event newStop = new Event(time, 0, Action.PAUSE_ALL, null);
+    	if(insertEventInTimelinebarStopEvents(newStop)){
+    		timelinebarChanged();
+    	}
+    }
+    	    
+    /**
+    * Insertion sort to 
+    * @param e
+    */
+    private boolean insertEventInTimelinebarStopEvents(Event e){
+    	long thisETime = e.getTime();
+    	for(int i=0; i<timelinebarStopEvents.size(); i++){
+    		long otherETime = timelinebarStopEvents.get(i).getTime();
+    		if( thisETime==otherETime ){
+    			return false;
+    		}
+    		if( thisETime<otherETime ){
+    			timelinebarStopEvents.add(i, e);
+    			return true;
+    		}
+    	}
+    	
+    	// If Event e does not happen before any of the existing ones, add it to the end.
+    	timelinebarStopEvents.add(e);
+    	return true;
+    }
+    	 		 
+    public void removeBreakpoint(long time){
+    	for(int i=0; i<timelinebarStopEvents.size(); i++){
+    		if( timelinebarStopEvents.get(i).getTime() == time ){
+    			timelinebarStopEvents.remove(i);
+    			timelinebarChanged();
+    			return;
+    		}
+    	}
+    }
+    
     /**
      * Goes through all timelines assigned to a display, get all their stacks of events and sort them based on when they
      * begin and end. Also check where we are on the globaltime and set videos to play with offset if the already should have begun but not yet ended.
@@ -490,6 +535,14 @@ public class SessionModule implements Serializable {
                 }
             }
         }
+        
+        // Add breakpoints
+        for(int i=0; i<timelinebarStopEvents.size(); i++){
+        	if( globaltime < timelinebarStopEvents.get(i).getTime() ){
+        		performancestack.add(timelinebarStopEvents.get(i));
+        	}
+        }
+        
         //sort the stack in case something got wierd. sorted by time the event happens in increasing order.
         performancestack.sort(Event.EventTimeComperator);
     }
@@ -924,11 +977,21 @@ public class SessionModule implements Serializable {
         }
     }
 
+    private void timelinebarChanged(){
+    	if(listeners!=null){
+    		for(SessionListener listener: listeners){
+    			listener.fireTimelinebarChanged();
+    		}
+    	}
+    }
+    
     //TODO: we need to specify which mediaobject has been changed.
     private void mediaObjectsChanged(){
-        for(SessionListener listener: listeners){
-            listener.fireMediaObjectListChanged();
-        }
+    	if(listeners!=null){
+    		for(SessionListener listener: listeners){
+    			listener.fireMediaObjectListChanged();
+    		}
+    	}
     }
     /**
      * removes the timelinemediaobject from the given timelinemodel
