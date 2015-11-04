@@ -51,34 +51,29 @@
 					<Label text="VLC configuration" GridPane.halignment="CENTER" />
 					<GridPane GridPane.rowIndex="1">
 						<columnConstraints>
-							<ColumnConstraints percentWidth="75" />
-							<ColumnConstraints percentWidth="25" />
+							<ColumnConstraints percentWidth="65" />
+							<ColumnConstraints percentWidth="35" />
 						</columnConstraints>
 						<rowConstraints>
 							<RowConstraints minHeight="10.0" prefHeight="30.0" />
 							<RowConstraints minHeight="10.0" prefHeight="30.0" />
-							<RowConstraints minHeight="10.0" prefHeight="30.0" />
-							<RowConstraints minHeight="10.0" prefHeight="30.0" />
-							<RowConstraints minHeight="10.0" prefHeight="30.0" />
-							<RowConstraints minHeight="10.0" prefHeight="30.0" />
-							<RowConstraints minHeight="10.0" prefHeight="30.0" />
-							<RowConstraints minHeight="10.0" prefHeight="30.0" />
+
 						</rowConstraints>
 						
 						<children><!-- The innermost gridpane with the options in it -->
-							<Label text="HW-decoding(auto)" GridPane.columnIndex="0"	GridPane.rowIndex="0" GridPane.halignment="CENTER" />
-							<CheckBox fx:id="hwDecoding" GridPane.columnIndex="1"	GridPane.rowIndex="0"></CheckBox>
+							<Label text="Video output" GridPane.columnIndex="0"	GridPane.rowIndex="0" GridPane.halignment="CENTER" />
+							<ComboBox fx:id ="vOutputComboBox" GridPane.columnIndex="1"	GridPane.rowIndex="2"></ComboBox>							
 							
 							<Label text="HW-overlay" GridPane.columnIndex="0"	GridPane.rowIndex="1" GridPane.halignment="CENTER" />
 							<CheckBox fx:id="hwOverlay" GridPane.columnIndex="1"	GridPane.rowIndex="1"></CheckBox>
-							
-							<Label text="Video output" GridPane.columnIndex="0"	GridPane.rowIndex="2" GridPane.halignment="CENTER" />
-							<ComboBox fx:id ="vOutputComboBox" GridPane.columnIndex="1"	GridPane.rowIndex="2"></ComboBox>
-							
+							<!--  
+							<Label text="HW-decoding(auto)" GridPane.columnIndex="0"	GridPane.rowIndex="0" GridPane.halignment="CENTER" />
+							<CheckBox fx:id="hwDecoding" GridPane.columnIndex="1"	GridPane.rowIndex="0"></CheckBox>
 							<Label text="YUV -> RGB" GridPane.columnIndex="0"	GridPane.rowIndex="3" GridPane.halignment="CENTER" />
 							<CheckBox fx:id="yuvToRGB" GridPane.columnIndex="1"	GridPane.rowIndex="3"></CheckBox>
 							
 							<Label text="Cache?" GridPane.columnIndex="0"	GridPane.rowIndex="4" GridPane.halignment="CENTER" />
+							-->
 							<!-- Here it will be a checkBOX -->
 							
 						</children>

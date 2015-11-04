@@ -217,8 +217,8 @@ public class SessionModule implements Serializable {
      * calls a method in vlccontroller that recreates all media players with new settings specified in options.
      * @param options the new set of options
      */
-    public void updateMediaPlayers(String[]options){
-    	vlccontroller.updateOptions(options);
+    public void updateMediaPlayers(){
+    	vlccontroller.updateOptions(vlcConfiguration);
     }
     /**
      * first draft of playing the whole performance. this happens when
@@ -547,7 +547,7 @@ public class SessionModule implements Serializable {
         }
         
         for(int i=0; i<timelinebarStopEvents.size(); i++){
-        	if( (globaltime+2) < timelinebarStopEvents.get(i).getTime() ){
+        	if( (globaltime+7) < timelinebarStopEvents.get(i).getTime() ){
         		performancestack.add(timelinebarStopEvents.get(i));
         	}
         }
@@ -1230,6 +1230,13 @@ public class SessionModule implements Serializable {
 	public String[] getVLCConfiguration(){
 		return vlcConfiguration;
 	}
+	
+	public void setVLCConfiguration(String[] newConfig){
+		vlcConfiguration=newConfig;
+		updateMediaPlayers();
+	}
+	
+	
 	
 	/*
 	 * Baptiste: Get creation for the test
