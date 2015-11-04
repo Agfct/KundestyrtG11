@@ -52,6 +52,10 @@ public class SessionModule implements Serializable {
     // Constant used when creating TimelineMediaObjects that are images or windows. Used as a reasonable duration when first appearing on a timeline.
     private final long IMAGE_DURATION = 30000;
     private final long WINDOW_DURATION = 30000;
+    
+    //configuration for the vlc. 
+    String[] vlcConfiguration = {};
+
 
     public SessionModule(VLCController vlc, WindowDisplay wdi) {
         this.timelines = new HashMap<Integer,TimelineModel>();
@@ -86,8 +90,7 @@ public class SessionModule implements Serializable {
         tlmID +=1;
         TimelineModel tlm = new TimelineModel(tlmID);
         timelines.put(tlmID,tlm);
-        String[] options = {};
-        vlccontroller.createMediaPlayer(tlmID, options);
+        vlccontroller.createMediaPlayer(tlmID, vlcConfiguration);
         timelineOrder.add(0,tlm.getID()); //Added the timeLine to the beginning of the list. This means the new timeline will be at the first positision in the gui
         timelineChanged(TimeLineChanges.ADDED, tlm);
         return tlmID;
@@ -1078,9 +1081,8 @@ public class SessionModule implements Serializable {
         this.tAll = new Thread();
         this.globalTimeTicker = new Thread();
 
-        String[] options = {};
         for(Integer i : timelines.keySet()){
-            vlccontroller.createMediaPlayer(i, options);
+            vlccontroller.createMediaPlayer(i, vlcConfiguration);
         }
 
     }
@@ -1207,6 +1209,10 @@ public class SessionModule implements Serializable {
 				break;
 			}
 		}
+	}
+	
+	public String[] getVLCConfiguration(){
+		return vlcConfiguration;
 	}
 	
 	/*

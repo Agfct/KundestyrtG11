@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -17,7 +19,7 @@ import modules.MainModuleController;
 import vlc.VLCController;
 
 /**
- * @author Anders
+ * @author Anders, Magnus
  * Singleton  class
  */
 public class OptionsScreen implements Screen {
@@ -71,7 +73,11 @@ public class OptionsScreen implements Screen {
 		@FXML private GridPane rootGrid;
 		@FXML private Label vlc_version;
 		@FXML private Label java_version;
-		@FXML private TextField vlc_commandField;
+//		@FXML private TextField vlc_commandField;
+		@FXML private CheckBox hwDecoding;
+		@FXML private CheckBox hwOverlay;
+		@FXML private CheckBox yuvToRGB;
+		@FXML private ComboBox<String> vOutputComboBox;
 		
 		public OptionsScreenController(){
 			
@@ -98,13 +104,14 @@ public class OptionsScreen implements Screen {
 			java_version.setText(vlc_controller.getJavaVersion());
 			vlc_version.setText(vlc_controller.getVLCVersion());
 			
-			vlc_commandField.textProperty().addListener((observable, oldValue, newValue) -> {
-			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
-			    if(newValue.length() > 0 && newValue.length() < 10) {
-			    	temp_vlcCommands = newValue;
-			    }
-			    
-			});
+//			vlc_commandField.textProperty().addListener((observable, oldValue, newValue) -> {
+//			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
+//			    if(newValue.length() > 0 && newValue.length() < 10) {
+//			    	temp_vlcCommands = newValue;
+//			    }
+//			    
+//			});
+			setVLCConfigAlternatives();
 		}
 		
 		/**
@@ -118,8 +125,22 @@ public class OptionsScreen implements Screen {
 				System.out.println("Pressing mainMenu screen btn");
 				//If the mainMenu screen button is pressed the MainGUIController changes the screen to be the mainMenu screen
 				MainGUIController.getInstance().changeScreen(SCREENTYPE.MAINMENU);
-				
 			}
+			else if(((Button)event.getSource()).getId().equals("applyVLCconfig")){
+				System.out.println("Apply");
+			}
+		}
+		
+		public void paintVLCConfigValues(){
+			String[] vlcConfig = AdvancedScreen.getInstance().getScreenController().getCurrentSession().getVLCConfiguration();
+			
+		}
+		
+		public void setVLCConfigAlternatives(){
+			vOutputComboBox.getItems().addAll(
+					"Auto",
+					"DirectX (DirectDraw)"
+					);
 		}
 
 		/* (non-Javadoc)
