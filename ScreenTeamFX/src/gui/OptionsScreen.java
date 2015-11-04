@@ -4,6 +4,9 @@
 package gui;
 
 import java.io.IOException;
+
+import com.sun.org.apache.xpath.internal.operations.Equals;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -114,6 +117,7 @@ public class OptionsScreen implements Screen {
 //			    
 //			});
 			setVLCConfigAlternatives();
+			paintVLCConfigValues();
 		}
 		
 		/**
@@ -129,9 +133,30 @@ public class OptionsScreen implements Screen {
 				MainGUIController.getInstance().changeScreen(SCREENTYPE.MAINMENU);
 			}
 			else if(((Button)event.getSource()).getId().equals("applyVLCconfig")){
-				String[] newVlcConfig={"--vout=directdraw","--no-overlay"};
-
-				AdvancedScreen.getInstance().getScreenController().getCurrentSession().updateMediaPlayers(newVlcConfig);
+				
+				//generating the new configArray
+				String[] newVlcConfig;
+				if(hwOverlay.isSelected()){
+					if(vOutputComboBox.getSelectionModel().getSelectedItem().equals("DirectX (DirectDraw)")){
+						newVlcConfig=new String[]{"--vout=directdraw"};
+					}
+					else{
+						newVlcConfig=new String[]{};
+					}
+				}
+				else{
+					if(vOutputComboBox.getSelectionModel().getSelectedItem().equals("DirectX (DirectDraw)")){
+						newVlcConfig=new String[]{"--vout=directdraw","--no-overlay"};
+					}
+					else{
+						newVlcConfig=new String[]{"--no-overlay"};
+					}
+				}
+				
+				
+				
+				AdvancedScreen.getInstance().getScreenController().getCurrentSession().setVLCConfiguration(newVlcConfig);
+				AdvancedScreen.getInstance().getScreenController().getCurrentSession().updateMediaPlayers();
 				paintVLCConfigValues();
 			}
 		}
@@ -143,10 +168,16 @@ public class OptionsScreen implements Screen {
 //				System.out.println("Selected: " + "--vout=directdraw" );
 //			}
 			for(String s: vlcConfig){
-				System.out.println("[VLC config:] "+s);
-			}
-			
-			
+				System.out.println("SELECTED config: " +s);
+				if(s.equals("--vout=directdraw")){
+					vOutputComboBox.getSelectionModel().select("DirectX (DirectDraw)");
+					
+				}
+				else if(s.equals("--no-overlay")){
+					hwOverlay.setSelected(false);
+					
+				}
+			}				
 		}
 		
 		public void setVLCConfigAlternatives(){
