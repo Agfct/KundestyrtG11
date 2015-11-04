@@ -124,12 +124,15 @@ public class MainModuleController {
 			message += "The following media files are missing (not found on the old path):\n\n";
 			for(MediaObject mo : nonExistingMediaObject){
 				if(mo.getType()==MediaSourceType.WINDOW){
-					message += "Could not find the window:        "+ mo.getPath() +"\n";
+					message += "- Window:   "+ mo.getPath() +"\n";
 				}
 				else{
-					message += "Coudl not find the media file:    "+ mo.getPath() +"\n";
+					message += "- Media:       "+ mo.getPath() +"\n";
 				}
 			}
+			message += "\nPlease right-click on these imported windows/medias and choose \"Set path\" to update the paths.\n"
+					+ "If, for some reason, you can not set the correct path on some of them, then please right-click and remove them. \n"
+					+ "If you try to press \"Play\", whith the wrong path, the program will not work correctly.";
 			JOptionPane.showMessageDialog(null, message, "Warning: Some media files were not found.", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
