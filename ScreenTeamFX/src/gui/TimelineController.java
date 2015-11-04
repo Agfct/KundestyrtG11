@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Optional;
 
 import org.controlsfx.control.CheckComboBox;
 
@@ -16,11 +17,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -40,6 +44,7 @@ public class TimelineController implements FXMLController {
 	private AdvancedScreenController parentController;
 	private TimelineLineController childController;
 	private GridPane rootPane;
+	private Alert alert;
 	
 	@FXML GridPane timelineInfo;
 	@FXML GridPane timelineContainer;
@@ -54,6 +59,8 @@ public class TimelineController implements FXMLController {
 	
 	@FXML Label titleLabel;
 	@FXML Label muteLabel;
+	@FXML Button muteVideo;
+	@FXML Button muteSound;
 	
 	//The timelinemodel that corresponds to this controller
 	TimelineModel timelineModel;
@@ -97,9 +104,20 @@ public class TimelineController implements FXMLController {
 		getTimelineLineController().moveTimeline(parentController.getScrollBarPosition());
 		
 		initializeTimelineInfo();
+		initializeAlerts();
 		
 		
-		
+	}
+	
+	
+	/**
+	 *Initializes the alert box that is displayed when the user right clicks the mediaObject and presses remove.
+	 */
+	private void initializeAlerts(){
+		alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Confirmation Dialog");
+		alert.setHeaderText("Delete Timeline");
+		alert.setContentText("Do you really want to delete this Timeline?");
 	}
 	
 	/**
@@ -151,12 +169,30 @@ public class TimelineController implements FXMLController {
 		
 		if(((Button)event.getSource()).getId().equals("removeTimelineBtn") ){
 			//Removes the timeline from the AdvanceScreen Children list
-			parentController.removeTimeline(this);
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.OK){
+			    // ... user chose OK
+				parentController.removeTimeline(this);
+			} else {
+			    // ... user chose CANCEL or closed the dialog
+			}
+			
 			
 		}else if(((Button)event.getSource()).getId().equals("muteVideo") ){
 			//Mutes all the videos on this timeline
+			
 		}else if(((Button)event.getSource()).getId().equals("muteSound") ){
 			//Mutes all the sound on this timeline
+//			if(muted){
+//				muteSound.getStyleClass().remove("icon-soundmuteon");
+//				muteSound.getStyleClass().add("icon-soundmuteoff");
+//				//UnMute
+//			}else{
+//				muteSound.getStyleClass().remove("icon-soundmuteoff");
+//				muteSound.getStyleClass().add("icon-soundmuteon");
+//				//Mutes
+//			}
+			
 		}
 		else if(((Button)event.getSource()).getId().equals("moveUp") ){
 			parentController.moveTimeline("up",timelineModel);

@@ -70,7 +70,7 @@ public class MainScreen implements Screen {
 		private FXMLLoader fxmlLoader;
 		private AnchorPane rootPane;
 		
-		@FXML private Button testButton;
+//		@FXML private Button testButton;
 		
 		public MainScreenController(){
 			
@@ -94,13 +94,8 @@ public class MainScreen implements Screen {
 		@FXML protected void buttonPressed(ActionEvent event) throws InterruptedException {
 			System.out.println("Button has been pressed");
 			
-			if(((Button)event.getSource()).getId().equals("testBtn") ){
-				VLCController vlcc = MainModuleController.getInstance().getVLCController();
-				String[] options = {"--avcodec-hw=none", "--vout=directdraw", "--no-overlay"};
-				vlcc.updateOptions(options);
-				
-				
-			}else if(((Button)event.getSource()).getId().equals("advScrBtn")){
+
+			if(((Button)event.getSource()).getId().equals("advScrBtn")){
 				System.out.println("Pressing advanced screen btn");
 				//If the advanced screen button is pressed the MainGUIController changes the screen to be the advanced screen
 				MainGUIController.getInstance().changeScreen(SCREENTYPE.ADVANCEDSCREEN);
@@ -120,6 +115,12 @@ public class MainScreen implements Screen {
 //				    }
 //				});
 			}
+//			else if(((Button)event.getSource()).getId().equals("testBtn") ){
+//			VLCController vlcc = MainModuleController.getInstance().getVLCController();
+//			String[] options = {"--avcodec-hw=none", "--vout=directdraw", "--no-overlay"};
+//			vlcc.updateOptions(options);
+//			}
+			
 		}
 
 		/* (non-Javadoc)

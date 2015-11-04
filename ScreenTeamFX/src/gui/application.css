@@ -1,6 +1,6 @@
 .dragicon {
 	-fx-background-radius: 10;
-	-fx-background-color: rgba(75,75,75,0.1); 
+	-fx-background-color: rgba(50,50,50,0.1); 
 	 
 }
 
@@ -107,6 +107,12 @@
 	/*-fx-background-color: rgba(255,255,0,0.5); */
 }
 
+.background-fileimporter{
+	-fx-background-image: url("../../resources/background_fileimporter.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+}
+
 .background-advancedScreen {
 	-fx-background-image: url("../../resources/background_dokkhuset.png");
 	-fx-background-repeat: no-repeat;
@@ -130,6 +136,12 @@
 	-fx-font-size: 72;
 }
 
+.header-medium {
+	-fx-fill: linear-gradient(palegreen,seagreen);
+	-fx-font-family: Helvetica;
+	-fx-font-size: 48;
+}
+
 .header-smal {
 	-fx-fill: linear-gradient(cyan,white);
 	-fx-font-family: Helvetica;
@@ -138,17 +150,54 @@
 
 
 .up-button{
-	/*
-	-fx-background-image: url("../../resources/timelineInfo_up.png");
+	-fx-background-image: url("../../resources/arrowUp.png");
+	-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
-	*/
+	-fx-padding: 1, 1, 1, 1;
 }
 
 .down-button{
-	/*
-	-fx-background-image: url("../../resources/timelineInfo_down.png");
+	-fx-background-image: url("../../resources/arrowDown.png");
+	-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
-	*/
+	-fx-padding: 1, 1, 1, 1;
+}
+
+.icon-soundmuteoff{
+	-fx-background-image: url("../../resources/icon_muteSoundOff.png");
+	-fx-background-size: 20;
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-padding: 1, 1, 1, 1;
+}
+
+.icon-soundmuteon{
+	-fx-background-image: url("../../resources/icon_muteSoundOn.png");
+	-fx-background-size: 20;
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-padding: 1, 1, 1, 1;
+}
+
+.remove-timeline-btn {
+	-fx-font: 8 arial;
+	-fx-text-fill: RED;
+}
+
+.icon-videomuteoff{
+	-fx-background-image: url("../../resources/icon_muteVideoOff.png");
+	-fx-background-size: 20;
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-padding: 1, 1, 1, 1;
+}
+
+.icon-videomuteon{
+	-fx-background-image: url("../../resources/icon_muteVideoOn.png");
+	-fx-background-size: 20;
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-padding: 1, 1, 1, 1;
 }
 
 

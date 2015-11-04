@@ -43,9 +43,9 @@
 			<Button id="advScrBtn" onAction="#buttonPressed" alignment="CENTER"
 				maxWidth="200" maxHeight="100" mnemonicParsing="false" text="Session Builder"
 				GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.halignment="CENTER" />
-			<Button id="testBtn" onAction="#buttonPressed" alignment="CENTER"
-				mnemonicParsing="false" text="Button" GridPane.columnIndex="1"
-				GridPane.rowIndex="3" GridPane.halignment="CENTER" />
+<!-- 			<Button id="testBtn" onAction="#buttonPressed" alignment="CENTER" -->
+<!-- 				mnemonicParsing="false" text="Button" GridPane.columnIndex="1" -->
+<!-- 				GridPane.rowIndex="3" GridPane.halignment="CENTER" /> -->
 			<Button id="exitBtn" onAction="#buttonPressed" alignment="CENTER"
 				mnemonicParsing="false" text="Exit" GridPane.columnIndex="2"
 				GridPane.rowIndex="4" GridPane.halignment="CENTER" />
