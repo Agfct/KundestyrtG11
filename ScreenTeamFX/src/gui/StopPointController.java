@@ -64,7 +64,14 @@ public class StopPointController extends Pane{
 		initializeTooltip();
 		System.out.println("Stop point point: " + this.getLayoutX());
 		System.out.println("StopPoint, ToScale: "+ localToParent(-10,25).getX()/scale);
+		long time = (long)(((getLayoutX()-10)/scale)*1000);
+		parentController.getAdvancedScreenController().getCurrentSession().addBreakpoint(time);
 
+	}
+	
+	public void setStopPosition(long time){
+		relocateToPoint(new Point2D(((time/1000)*scale+10),0));
+		initializeTooltip();
 	}
 
 	private void initializeTooltip(){
@@ -92,6 +99,8 @@ public class StopPointController extends Pane{
 			public void handle(ActionEvent event) {
 				System.out.println("Removing Stop point");
 				parentController.removeStopPoint(thisStopPoint);
+				long time = (long)(((getLayoutX()-10)/scale)*1000);
+				parentController.getAdvancedScreenController().getCurrentSession().removeBreakpoint(time);
 			}
 		});
 		root.setOnMouseClicked(new EventHandler<MouseEvent>() {
