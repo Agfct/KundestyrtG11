@@ -61,6 +61,7 @@
 				mnemonicParsing="true" />
 			<Button id="zoomOut" text=" - " onAction="#buttonPressed"
 				mnemonicParsing="true" />
+				
 		</HBox>
 
 		<HBox fx:id="mainPlayerHBox" GridPane.rowIndex="1"

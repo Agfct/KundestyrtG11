@@ -132,3 +132,18 @@
 	-fx-font-family: Helvetica;
 	-fx-font-size: 48;
 }
+
+.up-button{
+	/*
+	-fx-background-image: url("../../resources/timelineInfo_up.png");
+	-fx-background-position: center;
+	*/
+}
+
+.down-button{
+	/*
+	-fx-background-image: url("../../resources/timelineInfo_down.png");
+	-fx-background-position: center;
+	*/
+}
+

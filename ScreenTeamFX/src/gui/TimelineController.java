@@ -13,16 +13,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import modules.TimelineModel;
-import sun.misc.Cleaner;
+
 
 /**
  * 
@@ -43,12 +47,21 @@ public class TimelineController implements FXMLController {
 	@FXML Button removeTimelineBtn;
 	@FXML ComboBox<String> displaysComboBox;
 	@FXML Label listOfScreens;
+	@FXML TextField nameOfTimeLineField;
+	
+	@FXML Button moveUp;
+	@FXML Button moveDown;
+	
+	@FXML Label titleLabel;
+	@FXML Label muteLabel;
 	
 	//The timelinemodel that corresponds to this controller
 	TimelineModel timelineModel;
 	
 	ArrayList<Integer> assignedDisplays;
 	protected boolean updatingDisplayList=false;  //variable to prevent the listener from firing when the model is updated
+	
+	String nameOfTimeLine = "";
 	
 	/**
 	 *
@@ -118,8 +131,10 @@ public class TimelineController implements FXMLController {
 		 //adds the listener
 		 initDisplayChooserListener();
 		 
-		 //TODO: add the name of the timeline?
-
+		 
+		 //TextField for editing the name of a timeline
+		 nameOfTimeLineField.setText(nameOfTimeLine);
+		 addListenerToNameOfTimelineTextField();
 		
 	}
 
@@ -141,6 +156,12 @@ public class TimelineController implements FXMLController {
 			//Mutes all the videos on this timeline
 		}else if(((Button)event.getSource()).getId().equals("muteSound") ){
 			//Mutes all the sound on this timeline
+		}
+		else if(((Button)event.getSource()).getId().equals("moveUp") ){
+			parentController.moveTimeline("up",timelineModel);
+		}
+		else if(((Button)event.getSource()).getId().equals("moveDown") ){
+			parentController.moveTimeline("down",timelineModel);
 		}
 		
 		
@@ -220,6 +241,60 @@ public class TimelineController implements FXMLController {
 	 */
 	private void updateValuesFromModel() {
 		assignedDisplays=timelineModel.getAssignedDisplays(); //gets the assigned display.
+		nameOfTimeLine=timelineModel.getNameOfTimeline();
+		
+	}
+	
+	/**
+	 * Adds listeners to the name of timeline-textField. 
+	 */
+	private void addListenerToNameOfTimelineTextField(){
+
+			/*
+			 * Fires when the user clicks the field. This method can be used if the appearance of the field shall change when clicked on
+			 */
+			nameOfTimeLineField.setOnMouseClicked(new EventHandler<MouseEvent>() {  
+			  @Override  
+			  public void handle(MouseEvent event) {
+//				  nameOfTimeLineField.setStyle(" -fx-focus-color: black; -fx-accent: transparent; -fx-background-color: white;");
+				  nameOfTimeLineField.requestFocus();
+				  nameOfTimeLineField.setEditable(true); 
+			  }  
+			});
+			
+			/*
+			 * OnAction listener. Currently only firing when the ENTER-key is pressed. 
+			 */
+			nameOfTimeLineField.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					//Sends the info to the modules when pressing enter
+					timelineModel.setNameOfTimeline(nameOfTimeLineField.getText());
+					
+				}
+				
+			});
+			/*
+			 * Send the new text if the user defocuses the textField
+			 */
+			nameOfTimeLineField.focusedProperty().addListener(new ChangeListener<Boolean>()
+			{
+			    @Override
+			    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+			    {
+			        if (newPropertyValue)
+			        {
+			            //TextField is not in focus
+			        }
+			        else
+			        {
+			            //TextField is not out of focus
+			            timelineModel.setNameOfTimeline(nameOfTimeLineField.getText());
+			            
+			        }
+			    }
+			});
 	}
 	
 	

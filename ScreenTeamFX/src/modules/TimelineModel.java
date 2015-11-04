@@ -17,12 +17,15 @@ public class TimelineModel implements Serializable{
 	
 	private ArrayList<Integer> assignedDisplays;
 	
+	private String nameOfTimeline;
+	
 	public TimelineModel(int id) {
 		super();
 		this.timelineMediaObjects = new ArrayList<TimelineMediaObject>();
 		this.id = id;
 		this.timelineStack = new ArrayList<Event>();
 		this.assignedDisplays=new ArrayList<Integer>();
+		this.nameOfTimeline= "Timeline " + id;
 		
 	}
 
@@ -268,6 +271,25 @@ public class TimelineModel implements Serializable{
 
 	public void removeAllDisplays() {
 		assignedDisplays = new ArrayList<Integer>(); 
+	}
+	
+	public String getNameOfTimeline(){
+		return nameOfTimeline;
+	}
+	/**
+	 * Sets the name of the timeline.
+	 * Rejects the request if name is above 50 chars
+	 * NB: this is not proper MVC as it should run fireTimelineChanged() in sessionmodule. It does however not affect any user exp
+	 * @param s
+	 * @return
+	 */
+	public boolean setNameOfTimeline(String s){
+		if(s.length()<50){
+			nameOfTimeline=s;
+			return true;
+			
+		}
+		return false;
 	}
 		
 }
