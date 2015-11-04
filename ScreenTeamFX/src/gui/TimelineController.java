@@ -242,7 +242,6 @@ public class TimelineController implements FXMLController {
 	private void updateValuesFromModel() {
 		assignedDisplays=timelineModel.getAssignedDisplays(); //gets the assigned display.
 		nameOfTimeLine=timelineModel.getNameOfTimeline();
-		System.out.println("Name of timline: "+nameOfTimeLine );
 		
 	}
 	
