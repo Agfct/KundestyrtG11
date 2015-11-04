@@ -33,6 +33,7 @@ public class SessionModule implements Serializable {
     private int tlmID;
     private boolean pausing;
     private boolean paused;
+    private boolean inter;
     private Thread t1;
     private Thread tAll;
 
@@ -66,6 +67,7 @@ public class SessionModule implements Serializable {
         this.windowdisplay = wdi;
         this.pausing = true;
         this.paused = true;
+        this.inter = false;
 //		vlccontroller.createMediaPlayer(tlmID);
         this.t1 = new Thread();
         this.tAll = new Thread();
@@ -294,7 +296,7 @@ public class SessionModule implements Serializable {
                 //a map for seeking multiple videos with the seekmultiple method further down
                 Map<Integer,Long> pplay = new HashMap<Integer,Long>();
                 //a check if a part of the thread is interrupted
-                boolean inter =false;
+                inter =false;
                 //if there are no more tasks to be done or the program has been paused, then the while loop ends
                 while (!performancestack.isEmpty() && pausing == false){
                 	//update playp to current time to gage the time since start
@@ -459,7 +461,7 @@ public class SessionModule implements Serializable {
                                 performancestack.add(ev);
                             }
                             else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
-                                ev.setAction(Action.PLAY_WITH_OFFSET);
+                                ev.setAction(Action.PLAY);
                                 performancestack.add(ev);
                             }
                         }
@@ -591,6 +593,7 @@ public class SessionModule implements Serializable {
         	//set pausing to true so that the threads will end.
             pausing = true;
             //wake the threads if they sleep so they can end
+            inter = true;
             globalTimeTicker.interrupt();
             tAll.interrupt();
             try {
@@ -987,8 +990,10 @@ public class SessionModule implements Serializable {
             //stop all mediaPlayers
             for(Integer integer:vlccontroller.getMediaPlayerList().keySet()){
                 vlccontroller.stopOne(integer);
-                vlccontroller.showmp(integer, true);
-                vlccontroller.maximize(integer);
+                if (vlccontroller.getMediaPlayerList().get(integer).getDisplay()!=-1){
+                	vlccontroller.showmp(integer, true);
+                	vlccontroller.maximize(integer);
+                }
             }
         }
     }
