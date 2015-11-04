@@ -33,7 +33,6 @@ public class SessionModule implements Serializable {
     private int tlmID;
     private boolean pausing;
     private boolean paused;
-    private boolean inter;
     private Thread t1;
     private Thread tAll;
 
@@ -45,7 +44,7 @@ public class SessionModule implements Serializable {
     private ArrayList<Integer> timelineOrder;
     private ArrayList<String> shownwindows;
     private ArrayList<Event> lastEvents;
-    private ArrayList<Event> timelinebarStopEvents;
+
     // Used when saving and loading, to check if the loaded session has the same number of displays as the loaded one
     private int numberOfAvailableDisplays;
 
@@ -71,7 +70,6 @@ public class SessionModule implements Serializable {
         this.windowdisplay = wdi;
         this.pausing = true;
         this.paused = true;
-        this.inter = false;
 //		vlccontroller.createMediaPlayer(tlmID);
         this.t1 = new Thread();
         this.tAll = new Thread();
@@ -79,7 +77,6 @@ public class SessionModule implements Serializable {
         this.timelineOrder=new ArrayList<Integer>();
         this.shownwindows = new ArrayList<String>();
         this.numberOfAvailableDisplays = -1;
-        this.timelinebarStopEvents = new ArrayList<Event>();
     }
 
     /**
@@ -229,25 +226,20 @@ public class SessionModule implements Serializable {
             paused = false;
             //waiting for the threads to finish if paused earlier
             try {
-            	System.out.println("nononononono");
                 tAll.join();
-                System.out.println("yeyeyyeyyyeye");
                 globalTimeTicker.join();
             } catch (InterruptedException e) {
                 System.out.println("interrupted waiting for tAll and/or the globalTimeTicker to die");
             }
             //rebuilds the performance in case of changes or new startpoint/globaltime
             buildPerformance();
-            System.out.println("built");
             //creates the thread for excecuting the performance
             tAll = allPlay(globaltime);
-            System.out.println("created");
             //creates the thread for increasing the globaltime
             globalTimeTicker=tickGlobalTime(globaltime);
             pausing = false;
             //starts the threads
             tAll.start();
-            System.out.println("started");
             globalTimeTicker.start();
         }
     }
@@ -299,8 +291,6 @@ public class SessionModule implements Serializable {
                 long playp = System.currentTimeMillis();
                 //a map for seeking multiple videos with the seekmultiple method further down
                 Map<Integer,Long> pplay = new HashMap<Integer,Long>();
-                //a check if a part of the thread is interrupted
-                inter =false;
                 //if there are no more tasks to be done or the program has been paused, then the while loop ends
                 while (!performancestack.isEmpty() && pausing == false){
                 	//update playp to current time to gage the time since start
@@ -363,9 +353,6 @@ public class SessionModule implements Serializable {
                                 vlccontroller.maximize(ev2.getTimelineid());
                                 shownwindows.remove(ev2.getTimelineMediaObject().getParent().getPath());
                             }
-                            else if(ev2.getAction()==Action.PAUSE_ALL){
-                            	MainModuleController.getInstance().getSession().pauseAll();
-                            }
                         }
                         try {
                         	//seek in all the videos then play all
@@ -378,16 +365,13 @@ public class SessionModule implements Serializable {
                             }
                         } catch (InterruptedException e) {
                             System.out.println("interrupted seekmultiple or playAll while playing");
-                            inter = true;
-                            
                         }
                     }
                     //thread sleeping if its long until next event
-                    if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp) && !inter){
-                        try {                        	
+                    if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp)){
+                        try {
                             this.sleep((performancestack.get(0).getTime()-glbtime)-(playp-startp)-1500);
                         } catch (InterruptedException e) {
-                        	inter = true;
                         }
                     }
                 }
@@ -400,39 +384,6 @@ public class SessionModule implements Serializable {
         };
         //returns the thread so it can be started in playAll function
         return tAll1;
-    }
-    
-    public void addBreakpoint(long time){
-    	Event newStop = new Event(time, 0, Action.PAUSE_ALL, null);
-    	if(insertEventInTimelinebarStopEvents(newStop)){
-    		timelinebarChanged();
-    	}
-    }
-    
-    private boolean insertEventInTimelinebarStopEvents(Event e){
-    	long thisETime = e.getTime();
-    	for(int i=0; i<timelinebarStopEvents.size(); i++){
-    		long otherETime = timelinebarStopEvents.get(i).getTime();
-    		if( thisETime==otherETime ){
-    			return false;
-    		}
-    		if( thisETime<otherETime ){
-    			timelinebarStopEvents.add(i, e);
-    			return true;
-    		}
-    	}
-    	timelinebarStopEvents.add(e);
-    	return true;
-    }
-    
-    public void removeBreakpoint(long time){
-    	for(int i=0; i<timelinebarStopEvents.size(); i++){
-    		if( timelinebarStopEvents.get(i).getTime() == time ){
-    			timelinebarStopEvents.remove(i);
-    			timelinebarChanged();
-    			return;
-    		}
-    	}
     }
 
 
@@ -501,7 +452,7 @@ public class SessionModule implements Serializable {
                                 performancestack.add(ev);
                             }
                             else if(ev.getTime()<globaltime && ev.getTimelineMediaObject().getEnd()>globaltime){
-                                ev.setAction(Action.PLAY);
+                                ev.setAction(Action.PLAY_WITH_OFFSET);
                                 performancestack.add(ev);
                             }
                         }
@@ -531,12 +482,6 @@ public class SessionModule implements Serializable {
                     }
                 }
             }
-        }
-        
-        for(int i=0; i<timelinebarStopEvents.size(); i++){
-        	if( globaltime < timelinebarStopEvents.get(i).getTime() ){
-        		performancestack.add(timelinebarStopEvents.get(i));
-        	}
         }
         //sort the stack in case something got wierd. sorted by time the event happens in increasing order.
         performancestack.sort(Event.EventTimeComperator);
@@ -639,7 +584,6 @@ public class SessionModule implements Serializable {
         	//set pausing to true so that the threads will end.
             pausing = true;
             //wake the threads if they sleep so they can end
-            inter = true;
             globalTimeTicker.interrupt();
             tAll.interrupt();
             try {
@@ -972,14 +916,6 @@ public class SessionModule implements Serializable {
             }
         }
     }
-    
-    private void timelinebarChanged(){
-    	if(listeners!=null){
-    		for(SessionListener listener : listeners){
-    			listener.fireTimelinebarChanged();
-    		}
-    	}
-    }
 
     //TODO: we need to specify which mediaobject has been changed.
     private void mediaObjectsChanged(){
@@ -1044,10 +980,8 @@ public class SessionModule implements Serializable {
             //stop all mediaPlayers
             for(Integer integer:vlccontroller.getMediaPlayerList().keySet()){
                 vlccontroller.stopOne(integer);
-                if (vlccontroller.getMediaPlayerList().get(integer).getDisplay()!=-1){
-                	vlccontroller.showmp(integer, true);
-                	vlccontroller.maximize(integer);
-                }
+                vlccontroller.showmp(integer, true);
+                vlccontroller.maximize(integer);
             }
         }
     }
@@ -1212,77 +1146,9 @@ public class SessionModule implements Serializable {
 		}
 	}
 	
-
 	public String[] getVLCConfiguration(){
-		return vlcConfiguration;
+		return null;
 	}
-
-	/*
-	 * Baptiste: Get creation for the test
-	 */
-
-    
-   public boolean getPausing(){
-	   return pausing;
-   }
-   public boolean getPaused(){
-	   return paused;
-   }
-
-   public WindowDisplay getWindowDisplay(){
-    	return windowdisplay;
-    }
-    public int gettlmID(){
-    	return tlmID;
-    }
-    public HashMap<Integer,TimelineModel> getdisplays(){
-    	return displays;
-    }
-
-    public VLCController getvlccontroller(){
-    	return vlccontroller;
-    }
-    public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-	public long getGlobaltime() {
-		return globaltime;
-	}
-	public ArrayList<Event> getPerformancestack() {
-		return performancestack;
-	}
-	public boolean isPausing() {
-		return pausing;
-	}
-	public boolean isPaused() {
-		return paused;
-	}
-	public Thread getT1() {
-		return t1;
-	}
-	public Thread gettAll() {
-		return tAll;
-	}
-	public Thread getGlobalTimeTicker() {
-		return globalTimeTicker;
-	}
-	public ArrayList<SessionListener> getListeners() {
-		return listeners;
-	}
-	public ArrayList<String> getShownwindows() {
-		return shownwindows;
-	}
-	public ArrayList<Event> getLastEvents() {
-		return lastEvents;
-	}
-	public int getNumberOfAvailableDisplays() {
-		return numberOfAvailableDisplays;
-	}
-	public long getIMAGE_DURATION() {
-		return IMAGE_DURATION;
-	}
-
-	
 
 
 

@@ -224,7 +224,7 @@ public class VLCController {
 	/** * Pause all the media players at the exact same time. 
 	 * @throws BrokenBarrierException 
 	 * @throws InterruptedException */
-	public synchronized void pauseAll() throws InterruptedException{
+	public void pauseAll() throws InterruptedException{
 		ArrayList<Thread> threads1 = new ArrayList<Thread>();
 		final CyclicBarrier gate = new CyclicBarrier(mediaPlayerDisplayConnections.size() + 1);
 		for(int mp : mediaPlayerDisplayConnections.keySet()){
@@ -253,7 +253,7 @@ public class VLCController {
 	 * Seeks to that time for each media player at the exact same time
 	 * @param map
 	 * @throws InterruptedException */
-	public synchronized void SeekMultiple(Map<Integer, Long> map) throws InterruptedException{
+	public void SeekMultiple(Map<Integer, Long> map) throws InterruptedException{
 		ArrayList<Thread> threads = new ArrayList<Thread>();
 		final CyclicBarrier gate = new CyclicBarrier(map.size() + 1);
 		for(int mp : map.keySet()){

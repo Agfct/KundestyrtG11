@@ -131,7 +131,6 @@ public class HeaderController implements FXMLController{
 			parentController.identifyDisplays();
 		}
 		else if(((Button)event.getSource()).getId().equals("saveSession")){
-			parentController.getCurrentSession().pauseAll();
 			// If the user clicks the import media button, he will get a windows file-chooser
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Save file");
