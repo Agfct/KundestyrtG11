@@ -71,7 +71,7 @@ public class OptionsScreen implements Screen {
 		@FXML private GridPane rootGrid;
 		@FXML private Label vlc_version;
 		@FXML private Label java_version;
-		@FXML private TextField vlc_commandField;
+//		@FXML private TextField vlc_commandField;
 		
 		public OptionsScreenController(){
 			
@@ -98,13 +98,13 @@ public class OptionsScreen implements Screen {
 			java_version.setText(vlc_controller.getJavaVersion());
 			vlc_version.setText(vlc_controller.getVLCVersion());
 			
-			vlc_commandField.textProperty().addListener((observable, oldValue, newValue) -> {
-			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
-			    if(newValue.length() > 0 && newValue.length() < 10) {
-			    	temp_vlcCommands = newValue;
-			    }
-			    
-			});
+//			vlc_commandField.textProperty().addListener((observable, oldValue, newValue) -> {
+//			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
+//			    if(newValue.length() > 0 && newValue.length() < 10) {
+//			    	temp_vlcCommands = newValue;
+//			    }
+//			    
+//			});
 		}
 		
 		/**
@@ -118,7 +118,9 @@ public class OptionsScreen implements Screen {
 				System.out.println("Pressing mainMenu screen btn");
 				//If the mainMenu screen button is pressed the MainGUIController changes the screen to be the mainMenu screen
 				MainGUIController.getInstance().changeScreen(SCREENTYPE.MAINMENU);
-				
+			}
+			else if(((Button)event.getSource()).getId().equals("applyVLCconfig")){
+				System.out.println("Apply");
 			}
 		}
 
