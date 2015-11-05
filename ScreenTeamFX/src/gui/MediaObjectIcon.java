@@ -47,7 +47,7 @@ public class MediaObjectIcon extends GridPane{
 	private EventHandler <DragEvent> mContextDragDropped;
 	private Point2D mDragOffset = new Point2D (0.0, 0.0);
 	private MediaSourceType mType = null;
-	
+
 	private final ContextMenu contextMenu = new ContextMenu();
 	private Alert alert;
 
@@ -72,17 +72,32 @@ public class MediaObjectIcon extends GridPane{
 		this.mediaObject = mediaObject;
 		initializeTooltip();
 		initializeMouse();
+		checkPath();
 
 	}
 
+	/**
+	 * Checks if the path of the video is available else puts a red border around the media
+	 */
+	private void checkPath(){
+		// Checks if Null because the draggable icon is a mediaObject icon but is set as null
+		if(mediaObject != null){
+			if(!mediaObject.getValidPath()){
+				grid_pane.setStyle("-fx-border-color: RED");
+			}
+		}
+	}
+	/**
+	 * Sets the text of the tooltip
+	 */
 	private void initializeTooltip(){
-		//Sets the text of the tooltip
+		// Checks if Null because the draggable icon is a mediaObject icon but is set as null
 		if(mediaObject != null){
 			mediaTooltip.setText(
-				"Name: "+mediaObject.getName()+"\n" +
-						"Duration: "+Long.toString(mediaObject.getLength()/1000)+" Seconds\n"
-				);
-		nameOfFile.setTooltip(mediaTooltip);
+					"Name: "+mediaObject.getName()+"\n" +
+							"Duration: "+Long.toString(mediaObject.getLength()/1000)+" Seconds\n"
+					);
+			nameOfFile.setTooltip(mediaTooltip);
 		}
 	}
 
@@ -97,19 +112,19 @@ public class MediaObjectIcon extends GridPane{
 		contextMenu.getItems().add(remove);
 		contextMenu.getItems().add(setPath);
 		remove.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent event) {
-		        System.out.println("Remove MediaObject");
+			@Override
+			public void handle(ActionEvent event) {
+				System.out.println("Remove MediaObject");
 				Optional<ButtonType> result = alert.showAndWait();
 				if (result.get() == ButtonType.OK){
 					//TODO: Remove
-//					AdvancedScreen.getInstance().getScreenController().getCurrentSession().removeTimelineMediaObjectFromTimeline(parentController.getParentController().getTimelineModel(),timelineMediaObject);
+					//					AdvancedScreen.getInstance().getScreenController().getCurrentSession().removeTimelineMediaObjectFromTimeline(parentController.getParentController().getTimelineModel(),timelineMediaObject);
 					AdvancedScreen.getInstance().getScreenController().getCurrentSession().removeMediaObject(mediaObject);
 				} else {
-				    // ... user chose CANCEL or closed the dialog
+					// ... user chose CANCEL or closed the dialog
 				}
-		        
-		    }
+
+			}
 		});
 		setPath.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -128,34 +143,34 @@ public class MediaObjectIcon extends GridPane{
 					} catch(Exception e) {
 						System.out.println("[MediaObjectIcon.initializeMouse(): setPath.setOnAction] FileChooser caught an expection");
 					}
-				//	checks for aborted file import
+					//	checks for aborted file import
 					if(selectedFile==null){
 						return;
 					}
-					
+
 					AdvancedScreen.getInstance().getScreenController().getCurrentSession().changeMediaObject(mediaObject, selectedFile.getAbsolutePath());
 				}
-					
+
 			}
 		});
 		grid_pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			 
-            @Override
-            public void handle(MouseEvent event) {
-            	contextMenu.hide();
-//            	parentController.getContextMenu().hide();
-                MouseButton button = event.getButton();
-                if(button==MouseButton.SECONDARY){
-                    System.out.println("Right Cliked a MediaObject");
-                    contextMenu.show(grid_pane, event.getScreenX(), event.getScreenY());
-                }
-                event.consume(); //Consumes the event so it wont go deeper down into the hierarchy 
-            }
-        });
-		
+
+			@Override
+			public void handle(MouseEvent event) {
+				contextMenu.hide();
+				//            	parentController.getContextMenu().hide();
+				MouseButton button = event.getButton();
+				if(button==MouseButton.SECONDARY){
+					System.out.println("Right Cliked a MediaObject");
+					contextMenu.show(grid_pane, event.getScreenX(), event.getScreenY());
+				}
+				event.consume(); //Consumes the event so it wont go deeper down into the hierarchy 
+			}
+		});
+
 
 	}
-	
+
 	/**
 	 *Initializes the alert box that is displayed when the user right clicks the mediaObject and presses remove.
 	 */
@@ -165,7 +180,7 @@ public class MediaObjectIcon extends GridPane{
 		alert.setHeaderText("Delete MediaObject");
 		alert.setContentText("Do you really want to delete this MediaObject?");
 	}
-	
+
 	/*
 	 * Method for setting the title of the Icon
 	 */

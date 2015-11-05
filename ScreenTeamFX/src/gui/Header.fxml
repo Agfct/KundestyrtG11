@@ -41,6 +41,8 @@
 				mnemonicParsing="true" />
 			<Button id="loadSession" text="_Load session" onAction="#buttonPressed"
 				mnemonicParsing="true" />
+						<Button id="newSession" text="_New session" onAction="#buttonPressed"
+				mnemonicParsing="true" />
 		</HBox>
 
 		<Text styleClass="header-medium" GridPane.columnIndex="1"
