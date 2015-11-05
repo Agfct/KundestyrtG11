@@ -971,6 +971,14 @@ public class AdvancedScreen implements Screen{
 			MainGUIController.getInstance().updateSession(sm);
 			MainModuleController.getInstance().getSession().addListener(this);
 		}
+		
+		public void createNewSession(){
+			SessionModule sm = MainModuleController.getInstance().createNewSession();
+			MainModuleController.getInstance().updateSession(sm);
+			currentSession = sm;
+			MainGUIController.getInstance().updateSession(sm);
+			MainModuleController.getInstance().getSession().addListener(this);
+		}
 
 
 
