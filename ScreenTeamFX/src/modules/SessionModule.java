@@ -138,6 +138,7 @@ public class SessionModule implements Serializable {
                 if(displays.get(i)==tlm){
                     displays.put(i,null);
                     vlccontroller.unassignDisplay(tlm.getID());
+                    vlccontroller.stopOne(tlm.getID());
                     tlm.removeDisplay(i);
                     System.out.println(i);
                     timelineChanged(TimeLineChanges.MODIFIED, tlm);
@@ -162,6 +163,7 @@ public class SessionModule implements Serializable {
             if(prevtlm !=null){
                 prevtlm.removeDisplay(display);
                 vlccontroller.unassignDisplay(prevtlm.getID());
+                vlccontroller.stopOne(prevtlm.getID());
                 timelineChanged(TimeLineChanges.MODIFIED, prevtlm);
             }
             vlccontroller.assignDisplay(tlm.getID(), display);
@@ -205,12 +207,30 @@ public class SessionModule implements Serializable {
             System.out.println("no such display to remove");
         }
         else{
-            vlccontroller.unassignDisplay(displays.remove(display).getID());
+        	TimelineModel tlm = displays.remove(display);
+            vlccontroller.unassignDisplay(tlm.getID());
+            vlccontroller.stopOne(tlm.getID());
         }
     }
 
     public int getNumberOfAbailableDisplays(){
         return numberOfAvailableDisplays;
+    }
+    
+    
+    public void muteTimeline(TimelineModel tlm){
+    	tlm.pressMuteButton();
+    	vlccontroller.mute(tlm.getID(), tlm.getMuted());
+    	timelineChanged(TimeLineChanges.MODIFIED,tlm);
+    }
+    
+    public void hideTimeline(TimelineModel tlm){
+    	tlm.pressHideButton();
+    	vlccontroller.hide(tlm.getID(), tlm.getHidden());
+    	if (pausing){
+    		vlccontroller.stopOne(tlm.getID());
+    	}
+    	timelineChanged(TimeLineChanges.MODIFIED,tlm);
     }
     
     /**
@@ -390,6 +410,10 @@ public class SessionModule implements Serializable {
                             inter = true;
                             
                         }
+                    }
+                    if (!globalTimeTicker.isAlive() && pausing == false){
+                        startp = System.currentTimeMillis();
+                        globalTimeTicker.start();
                     }
                     //thread sleeping if its long until next event
                     if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp) && !inter){

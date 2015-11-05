@@ -73,6 +73,7 @@ public class VLCController {
 		if(vlcPathSet){
 			VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
 			mediaPlayerList.put(ID, mp);
+			mp.stop();
 			return mp;
 		}
 		else{
@@ -97,6 +98,7 @@ public class VLCController {
 	
 	public void updateMediaPlayer(Integer ID, String[] options){
 		VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
+		mp.stop();
 		VLCMediaPlayer oldmp = mediaPlayerList.put(ID, mp);
 		oldmp.close();
 		if(mediaPlayerDisplayConnections.containsKey(ID)){
@@ -227,10 +229,10 @@ public class VLCController {
 	 * @throws BrokenBarrierException 
 	 * @throws InterruptedException */
 	public synchronized void pauseAll() throws InterruptedException{
-		if(mediaPlayerDisplayConnections.size()>0){
+		if(mediaPlayerList.size()>0){
 			ArrayList<Thread> threads1 = new ArrayList<Thread>();
-			final CyclicBarrier gate = new CyclicBarrier(mediaPlayerDisplayConnections.size());
-			for(int mp : mediaPlayerDisplayConnections.keySet()){
+			final CyclicBarrier gate = new CyclicBarrier(mediaPlayerList.size());
+			for(int mp : mediaPlayerList.keySet()){
 				Thread t1 = new Thread(){
 					public void run(){
 						try {
