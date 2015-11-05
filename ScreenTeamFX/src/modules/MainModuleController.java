@@ -112,8 +112,9 @@ public class MainModuleController {
 	public void updateSession(SessionModule sm) {
 		
 		// Remove the old stuff. This removes old VLCMediaPlayers
-		sessionModule.removeListeners();
 		sessionModule.removeAllTimlines();
+		sessionModule.removeListeners();
+		
 		
 		sessionModule = sm;
 		
