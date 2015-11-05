@@ -217,6 +217,15 @@ public class SessionModule implements Serializable {
         return numberOfAvailableDisplays;
     }
     
+    
+    public void muteTimeline(TimelineModel tlm, boolean mute){
+    	vlccontroller.mute(tlm.getID(), mute);
+    }
+    
+    public void hideTimeline(TimelineModel tlm, boolean hide){
+    	vlccontroller.hide(tlm.getID(), hide);
+    }
+    
     /**
      * calls a method in vlccontroller that recreates all media players with new settings specified in options.
      * @param options the new set of options
