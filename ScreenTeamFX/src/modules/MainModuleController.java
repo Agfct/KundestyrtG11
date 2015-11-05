@@ -65,6 +65,10 @@ public class MainModuleController {
 	public boolean saveSession(){
 		return storageController.storeSession(sessionModule);
 	}
+	
+	public SessionModule createNewSession(){
+		return new SessionModule(vlc,wdi);
+	}
 
 	public boolean saveSession(File saveFile) {
 		// Need to remove some stuff, but keep it and put it back after the save
