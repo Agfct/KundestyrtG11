@@ -138,6 +138,7 @@ public class SessionModule implements Serializable {
                 if(displays.get(i)==tlm){
                     displays.put(i,null);
                     vlccontroller.unassignDisplay(tlm.getID());
+                    vlccontroller.stopOne(tlm.getID());
                     tlm.removeDisplay(i);
                     System.out.println(i);
                     timelineChanged(TimeLineChanges.MODIFIED, tlm);
@@ -162,6 +163,7 @@ public class SessionModule implements Serializable {
             if(prevtlm !=null){
                 prevtlm.removeDisplay(display);
                 vlccontroller.unassignDisplay(prevtlm.getID());
+                vlccontroller.stopOne(prevtlm.getID());
                 timelineChanged(TimeLineChanges.MODIFIED, prevtlm);
             }
             vlccontroller.assignDisplay(tlm.getID(), display);
@@ -205,7 +207,9 @@ public class SessionModule implements Serializable {
             System.out.println("no such display to remove");
         }
         else{
-            vlccontroller.unassignDisplay(displays.remove(display).getID());
+        	TimelineModel tlm = displays.remove(display);
+            vlccontroller.unassignDisplay(tlm.getID());
+            vlccontroller.stopOne(tlm.getID());
         }
     }
 
