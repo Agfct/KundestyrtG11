@@ -123,6 +123,8 @@ public class MainModuleController {
 			String message = "";
 			message += "The following media files are missing (not found on the old path):\n\n";
 			for(MediaObject mo : nonExistingMediaObject){
+				mo.setValidPath(false);
+				
 				if(mo.getType()==MediaSourceType.WINDOW){
 					message += "- Window:   "+ mo.getPath() +"\n";
 				}

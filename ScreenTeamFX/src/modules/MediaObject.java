@@ -19,7 +19,8 @@ public class MediaObject implements Serializable {
 	private String path;
 	private String name;
 	private long length;
-	private MediaSourceType type;;
+	private MediaSourceType type;
+	private boolean validPath;
 	
 	/**
 	 * 
@@ -38,12 +39,20 @@ public class MediaObject implements Serializable {
 		else {
 			this.length=(long) Math.max(3000,(Math.random()*100000)); //TODO: get proper length from VLC. Now it gets random value between 3000 and 100000
 		}
+		validPath = true;
 	}
 	
 	public String getName() {
 		return name;
 	}
 	
+	public void setValidPath(boolean vp){
+		validPath = vp;
+	}
+	
+	public boolean getValidPath(){
+		return validPath;
+	}
 	
 
 	public void setName(String name) {
