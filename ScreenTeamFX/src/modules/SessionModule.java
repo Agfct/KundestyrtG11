@@ -391,6 +391,10 @@ public class SessionModule implements Serializable {
                             
                         }
                     }
+                    if (!globalTimeTicker.isAlive() && pausing == false){
+                        startp = System.currentTimeMillis();
+                        globalTimeTicker.start();
+                    }
                     //thread sleeping if its long until next event
                     if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp) && !inter){
                         try {                        	
