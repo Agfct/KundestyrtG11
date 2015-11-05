@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -62,6 +63,9 @@ public class TimelineController implements FXMLController {
 	@FXML Button muteVideo;
 	@FXML Button muteSound;
 	
+	boolean timelineMuted;
+	boolean timelineHidden;
+	
 	//The timelinemodel that corresponds to this controller
 	TimelineModel timelineModel;
 	
@@ -105,6 +109,8 @@ public class TimelineController implements FXMLController {
 		
 		initializeTimelineInfo();
 		initializeAlerts();
+		updateMutationValues();
+		
 		
 		
 	}
@@ -179,19 +185,10 @@ public class TimelineController implements FXMLController {
 			
 			
 		}else if(((Button)event.getSource()).getId().equals("muteVideo") ){
-			//Mutes all the videos on this timeline
+			parentController.getCurrentSession().hideTimeline(timelineModel);
 			
 		}else if(((Button)event.getSource()).getId().equals("muteSound") ){
-			//Mutes all the sound on this timeline
-//			if(muted){
-//				muteSound.getStyleClass().remove("icon-soundmuteon");
-//				muteSound.getStyleClass().add("icon-soundmuteoff");
-//				//UnMute
-//			}else{
-//				muteSound.getStyleClass().remove("icon-soundmuteoff");
-//				muteSound.getStyleClass().add("icon-soundmuteon");
-//				//Mutes
-//			}
+			parentController.getCurrentSession().muteTimeline(timelineModel);
 			
 		}
 		else if(((Button)event.getSource()).getId().equals("moveUp") ){
@@ -233,7 +230,32 @@ public class TimelineController implements FXMLController {
 		childController.repaint();// repaints the timelineline
 		updateValuesFromModel(); //Gets the updated values from the model
 		updateDisplayList(); // Use the updated values to update the list of the selected screens.
+		updateMutationValues();
 		
+	}
+	
+	public void updateMutationValues(){
+		//Mutes all the sound on this timeline
+		if(!timelineMuted){
+			muteSound.getStyleClass().removeAll(Collections.singleton("icon-soundmuteon"));
+			muteSound.getStyleClass().add("icon-soundmuteoff");
+			//UnMute
+		}
+		if(timelineMuted){
+			muteSound.getStyleClass().removeAll(Collections.singleton("icon-soundmuteoff"));
+			muteSound.getStyleClass().add("icon-soundmuteon");
+			//Mutes
+		}
+		if(!timelineHidden){
+			muteVideo.getStyleClass().removeAll(Collections.singleton("icon-videomuteon"));
+			muteVideo.getStyleClass().add("icon-videomuteoff");
+			//UnMute
+		}
+		if(timelineHidden){
+			muteVideo.getStyleClass().removeAll(Collections.singleton("icon-videomuteoff"));
+			muteVideo.getStyleClass().add("icon-videomuteon");
+			//Mutes
+		}
 		
 	}
 	/**
@@ -279,6 +301,8 @@ public class TimelineController implements FXMLController {
 	private void updateValuesFromModel() {
 		assignedDisplays=timelineModel.getAssignedDisplays(); //gets the assigned display.
 		nameOfTimeLine=timelineModel.getNameOfTimeline();
+		timelineMuted=timelineModel.getMuted();
+		timelineHidden=timelineModel.getHidden();
 		
 	}
 	

@@ -73,6 +73,7 @@ public class VLCController {
 		if(vlcPathSet){
 			VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
 			mediaPlayerList.put(ID, mp);
+			mp.stop();
 			return mp;
 		}
 		else{
@@ -97,6 +98,7 @@ public class VLCController {
 	
 	public void updateMediaPlayer(Integer ID, String[] options){
 		VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
+		mp.stop();
 		VLCMediaPlayer oldmp = mediaPlayerList.put(ID, mp);
 		oldmp.close();
 		if(mediaPlayerDisplayConnections.containsKey(ID)){

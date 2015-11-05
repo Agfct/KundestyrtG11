@@ -218,12 +218,19 @@ public class SessionModule implements Serializable {
     }
     
     
-    public void muteTimeline(TimelineModel tlm, boolean mute){
-    	vlccontroller.mute(tlm.getID(), mute);
+    public void muteTimeline(TimelineModel tlm){
+    	tlm.pressMuteButton();
+    	vlccontroller.mute(tlm.getID(), tlm.getMuted());
+    	timelineChanged(TimeLineChanges.MODIFIED,tlm);
     }
     
-    public void hideTimeline(TimelineModel tlm, boolean hide){
-    	vlccontroller.hide(tlm.getID(), hide);
+    public void hideTimeline(TimelineModel tlm){
+    	tlm.pressHideButton();
+    	vlccontroller.hide(tlm.getID(), tlm.getHidden());
+    	if (pausing){
+    		vlccontroller.stopOne(tlm.getID());
+    	}
+    	timelineChanged(TimeLineChanges.MODIFIED,tlm);
     }
     
     /**

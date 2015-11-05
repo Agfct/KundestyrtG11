@@ -18,6 +18,8 @@ public class TimelineModel implements Serializable{
 	private ArrayList<Integer> assignedDisplays;
 	
 	private String nameOfTimeline;
+	private boolean muted;
+	private boolean hidden; 
 	
 	public TimelineModel(int id) {
 		super();
@@ -26,11 +28,27 @@ public class TimelineModel implements Serializable{
 		this.timelineStack = new ArrayList<Event>();
 		this.assignedDisplays=new ArrayList<Integer>();
 		this.nameOfTimeline= "Timeline " + id;
+		this.muted = true;
+		this.hidden = false;
 		
 	}
 
 	public int getID() {
 		return id;
+	}
+	
+	public void pressMuteButton(){
+		muted = !muted;
+	}
+	public boolean getMuted(){
+		return muted;
+	}
+	
+	public void pressHideButton(){
+		hidden = !hidden;
+	}
+	public boolean getHidden(){
+		return hidden;
 	}
 	
 	public ArrayList<Event> getTimelineStack(){
