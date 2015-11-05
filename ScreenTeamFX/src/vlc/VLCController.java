@@ -73,7 +73,6 @@ public class VLCController {
 		if(vlcPathSet){
 			VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
 			mediaPlayerList.put(ID, mp);
-			mp.stop();
 			return mp;
 		}
 		else{
@@ -96,22 +95,40 @@ public class VLCController {
 		}
 	}
 	
-	public void updateMediaPlayer(Integer ID, String[] options){
-		VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
-		mp.stop();
-		VLCMediaPlayer oldmp = mediaPlayerList.put(ID, mp);
-		oldmp.close();
-		if(mediaPlayerDisplayConnections.containsKey(ID)){
-			Integer dis = oldmp.getDisplay();
-			availableDisplays.add(mediaPlayerDisplayConnections.get(ID));
-			mediaPlayerDisplayConnections.remove(oldmp.getID());
-			assignDisplay(ID,dis);
+//	public void updateMediaPlayer(Integer ID, String[] options){
+//		VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
+//		VLCMediaPlayer oldmp = mediaPlayerList.put(ID, mp);
+//		oldmp.close();
+//		if(mediaPlayerDisplayConnections.containsKey(ID)){
+//			Integer dis = oldmp.getDisplay();
+//			availableDisplays.add(mediaPlayerDisplayConnections.get(ID));
+//			mediaPlayerDisplayConnections.remove(oldmp.getID());
+//			assignDisplay(ID,dis);
+//		}
+//	}
+//	
+//	public void updateOptions(String[] options){
+//		for(Integer mp : mediaPlayerList.keySet()){
+//			updateMediaPlayer(mp,options);
+//		}
+//	}
+	public void updateMediaPlayer(int mp, String[] options){
+		int ID = toPlayer(mp).getID();
+		int display = toPlayer(mp).getDisplay();
+		deleteMediaPlayer(mp);
+		createMediaPlayer(ID, options);
+		if(display > -1){
+			assignDisplay(ID, display);
 		}
 	}
 	
 	public void updateOptions(String[] options){
-		for(Integer mp : mediaPlayerList.keySet()){
-			updateMediaPlayer(mp,options);
+		ArrayList<Integer> mps = new ArrayList<Integer>();
+		for(int mp : mediaPlayerList.keySet()){
+			mps.add(mp);
+		}
+		for(int mp : mps){
+			updateMediaPlayer(mp, options);
 		}
 	}
 	

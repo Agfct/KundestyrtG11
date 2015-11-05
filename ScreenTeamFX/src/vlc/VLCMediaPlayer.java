@@ -44,6 +44,8 @@ public class VLCMediaPlayer{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(mediaPlayerComponent);
 		frame.setTitle("scr " + ID);
+		mute();
+		show();
 	}
 	
 	/**
@@ -128,10 +130,14 @@ public class VLCMediaPlayer{
 	
 	public void hide(){
 		mediaPlayerComponent.setVisible(false);
+		frame.setState(java.awt.Frame.ICONIFIED);
+		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
 	public void show(){
 		mediaPlayerComponent.setVisible(true);
+		frame.setState(java.awt.Frame.ICONIFIED);
+		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
 	public void showhide(boolean show){
