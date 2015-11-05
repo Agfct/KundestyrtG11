@@ -65,6 +65,21 @@ public class MainModuleController {
 	public boolean saveSession(){
 		return storageController.storeSession(sessionModule);
 	}
+	
+	public void createNewSession(){
+		FileController.initialize();
+		this.storageController = StorageController.getInstance();
+		//TODO check if storage loads last session without problem, if so set timelinemodule to last session
+		//this.timelinemodule = this.storage.gettimelineModule
+		this.ioModule = new IOModule();
+		this.wdi = new WindowDisplay(ioModule.getDisplays().size());
+		this.vlc = new VLCController(ioModule.getDisplays());
+		this.sessionModule= new SessionModule(vlc,wdi);
+		this.sessionModule.updateDisplays(ioModule.getDisplays());
+		updateSession(sessionModule);
+		
+		MainGUIController.getInstance().updateSession(sessionModule);
+	}
 
 	public boolean saveSession(File saveFile) {
 		// Need to remove some stuff, but keep it and put it back after the save

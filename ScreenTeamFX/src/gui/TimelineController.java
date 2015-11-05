@@ -29,6 +29,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
+import modules.MainModuleController;
 import modules.TimelineModel;
 
 
@@ -180,6 +181,7 @@ public class TimelineController implements FXMLController {
 			
 		}else if(((Button)event.getSource()).getId().equals("muteVideo") ){
 			//Mutes all the videos on this timeline
+			MainModuleController.getInstance().createNewSession();
 			
 		}else if(((Button)event.getSource()).getId().equals("muteSound") ){
 			//Mutes all the sound on this timeline
