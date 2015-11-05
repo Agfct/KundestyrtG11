@@ -105,17 +105,17 @@ public class HeaderController implements FXMLController{
             this.importWindowFromDesktop();
         }
 		else if(((Button)event.getSource()).getId().equals("playAllTimelines")){
-			// If the user clicks the import media button, he will get a windows file-chooser
+			// Play all timelines
 			this.parentController.playAllTimelines();
 
 		}
 		else if(((Button)event.getSource()).getId().equals("pauseAllTimelines")){
-			// If the user clicks the import media button, he will get a windows file-chooser
+			// Pauses all timelines
 			this.parentController.pauseAllTimelines();
 
 		}
 		else if(((Button)event.getSource()).getId().equals("resetGlobalTime")){
-			// If the user clicks the import media button, he will get a windows file-chooser
+			//Resets the global time
 			this.parentController.changeGlobalTime(0);
 
 		}else if(((Button)event.getSource()).getId().equals("zoomInn")){
@@ -129,10 +129,14 @@ public class HeaderController implements FXMLController{
 		}else if(((Button)event.getSource()).getId().equals("identifyScreens")){
 			// If the user clicks the Identify Screens button
 			parentController.identifyDisplays();
+		}else if(((Button)event.getSource()).getId().equals("newSession")){
+			// If the user clicks the new Session button
+			parentController.getCurrentSession().pauseAll();
+			parentController.createNewSession();
 		}
 		else if(((Button)event.getSource()).getId().equals("saveSession")){
 			parentController.getCurrentSession().pauseAll();
-			// If the user clicks the import media button, he will get a windows file-chooser
+			// Opens the file chooser so that the user can save the session as a .stdata
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Save file");
 			
