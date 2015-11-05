@@ -796,6 +796,7 @@ public class SessionModule implements Serializable {
     	if(mo.getType()==MediaSourceType.WINDOW){
     		mo.setPath(newPath);
     		mo.setName(newPath);
+    		mo.setValidPath(true);
     	}
     	else{
     		MediaSourceType newMST = FileController.getMediaSourceType(newPath);
@@ -816,9 +817,11 @@ public class SessionModule implements Serializable {
     		mo.setPath(newPath);
     		String name = FileController.getTitle(newPath);
     		mo.setName(name);
+    		mo.setValidPath(true);
     	}
     	
-    	MainGUIController.getInstance().updateSession(this);
+    	
+    	MainGUIController.getInstance().updateMediaObjects();
     	return true;
     }
     
