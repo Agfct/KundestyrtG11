@@ -1,5 +1,6 @@
 package modules;
 
+import java.awt.EventQueue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +9,8 @@ import javax.swing.JOptionPane;
 
 import gui.MainGUIController;
 import gui.SessionListener;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import vlc.VLCController;
 
 /**
@@ -138,8 +141,16 @@ public class MainModuleController {
 			}
 			message += "\nPlease right-click on these imported windows/medias and choose \"Set path\" to update the paths.\n"
 					+ "If, for some reason, you can not set the correct path on some of them, then please right-click and remove them. \n"
-					+ "If you try to press \"Play\", whith the wrong path, the program will not work correctly.";
-			JOptionPane.showMessageDialog(null, message, "Warning: Some media files were not found.", JOptionPane.INFORMATION_MESSAGE);
+					+ "If you try to press \"Play\", whith the wrong path, the program will not work correctly.";			
+			
+			// JavaFX Information Dialog
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning Dialog");
+			alert.setHeaderText("Warning: Media/window not found");
+			alert.setContentText(message);
+			alert.setResizable(true);
+			alert.getDialogPane().setPrefWidth(650);
+			alert.showAndWait();
 		}
 	}
 	
