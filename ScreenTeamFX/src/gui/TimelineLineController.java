@@ -116,7 +116,6 @@ public class TimelineLineController implements FXMLController{
                 if(button==MouseButton.PRIMARY){
 //                    System.out.println("PRIMARY button clicked");
                 }else if(button==MouseButton.SECONDARY){
-//                    System.out.println("SECONDARY button clicked");
                     contextMenu.show(rootPane, event.getScreenX(), event.getScreenY()); // this brings up the "duplicate" option
                 }else if(button==MouseButton.MIDDLE){
 //                    System.out.println("MIDDLE button clicked");
@@ -180,7 +179,6 @@ public class TimelineLineController implements FXMLController{
     }
 
     protected void moveTimeline(Double newPosition){
-//		System.out.println("TimelineLineController Moving the Root");
         rootPane.setLayoutX(newPosition);
     }
     /**

@@ -99,7 +99,6 @@ public class StorageController {
 	public SessionModule loadSession(File file){
 		// Check that the requested file exists
 		if(!file.exists()){
-			System.out.println("File: " + file + ", not found.");
 			return null;
 		}
 		
@@ -133,7 +132,6 @@ public class StorageController {
 			loadedSessionModule = ((SessionModule)loadedSessionModule);
 			return this.synchronizeMediaObjects((SessionModule)loadedSessionModule);
 		}
-		System.out.println("The loaded object was not an instance of SessionMOdule");
 		return null;
 	}
 	

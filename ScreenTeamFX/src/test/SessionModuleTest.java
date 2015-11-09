@@ -83,13 +83,10 @@ public class SessionModuleTest {
 		
 		//Creation of a second time line to check if the data change very well
 		SM.addTimeline();
-		//System.out.println(" VlCcontroler: "+SM.getvlccontroller().getMediaPlayerList().get(SM.gettlmID()).getID() );
 		assertEquals("testAddTimeline vlccontroller test the size:",2,SM.getvlccontroller().getMediaPlayerList().size());
-		//System.out.println(" tlmID: "+SM.gettlmID() );
 		assertEquals("testAddTimeline vlccontroller test the ID of th emedia player:",2,SM.getvlccontroller().getMediaPlayerList().get(SM.gettlmID()).getID());
 		//It should return the  Id of the timeline and fix this new timeline at the position zero
 		int tlmid=SM.gettlmID();
-		//System.out.println(" data inside timeline order: " + SM.getTimelineOrder().get(0).intValue());
 		assertEquals("testAddTimeline timelineorder",tlmid,SM.getTimelineOrder().get(0).intValue());
 		//Check if we change the position or not of the time line, depend of the type of "modules.TimeLineChanges"
 		//This is check in the class time line model
@@ -144,7 +141,6 @@ public class SessionModuleTest {
 		SM.getTimelines().get(SM.getTimelines().size()).addDisplay(1);
 		SM.getTimelines().get(SM.getTimelines().size()).addDisplay(2);
 		SM.getTimelines().get(SM.getTimelines().size()).addDisplay(3);
-		//System.out.println(SM.getdisplays().size());
 		assertEquals("testUnassignTimeline check the number of display:",3,SM.getTimelines().get(SM.getTimelines().size()).getAssignedDisplays().size());
 		SM.unassignTimeline(SM.getTimelines().get(SM.getTimelines().size()));
 		assertEquals("testUnassignTimeline check the number of display:",3,SM.getTimelines().get(SM.getTimelines().size()).getAssignedDisplays().size());	

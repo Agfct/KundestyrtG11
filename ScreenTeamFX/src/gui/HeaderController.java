@@ -62,7 +62,6 @@ public class HeaderController implements FXMLController{
 	
 	public HeaderController(AdvancedScreenController AdvParentController) {
 		this.parentController=AdvParentController;
-		System.out.println("HEADERCONST");
 	
 		
 //		 Trying to fetch the FXML
@@ -87,7 +86,6 @@ public class HeaderController implements FXMLController{
 	 * Button-listener for the header. 
 	 */
 	@FXML protected void buttonPressed(ActionEvent event) {
-		System.out.println("Header:" + event.getSource().toString() + "has been pressed");
 		
 		if(((Button)event.getSource()).getId().equals("menuBtn") ){
 			//If the menu screen button is pressed the MainGUIController changes the screen to be the menu screen

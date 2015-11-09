@@ -34,7 +34,6 @@ public class VLCMediaPlayer{
 
 			protected String[] onGetMediaPlayerFactoryArgs() {
 				String[] mergedOptions = concat(DEFAULT_FACTORY_ARGUMENTS, options);
-				System.out.println("vlc options:" + Arrays.toString(mergedOptions));
 				return mergedOptions;
 			}
 		};
@@ -58,15 +57,12 @@ public class VLCMediaPlayer{
 	}
 	
 	public void play(){
-		System.out.println("[PLAY]");
 		if(display > -1){
 			if(mediaChanged){
-				System.out.println("[mediaChanged!]");
 				mediaPlayerComponent.getMediaPlayer().startMedia(mediaPath);
 				mediaChanged = false;
 			}
 			else if(getTime() > -1){
-				System.out.println("[getTime>-1]");
 				mediaPlayerComponent.getMediaPlayer().start();
 			}
 			else{
@@ -82,17 +78,13 @@ public class VLCMediaPlayer{
 	}
 	
 	public void seek(long time){
-		System.out.println("[SEEK]");
 		if(mediaChanged){
-			System.out.println("[mediaChanged!]");
 			mediaPlayerComponent.getMediaPlayer().startMedia(mediaPath);
 			mediaPlayerComponent.getMediaPlayer().pause();
 			mediaPlayerComponent.getMediaPlayer().setTime(time);
 			mediaChanged = false;
 		}
 		else if(getTime() > -1){
-			System.out.println("[getTime>-1]");
-
 			pause();
 			mediaPlayerComponent.getMediaPlayer().setTime(time);
 		}

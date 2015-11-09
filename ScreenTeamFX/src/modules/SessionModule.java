@@ -140,7 +140,6 @@ public class SessionModule implements Serializable {
                     vlccontroller.unassignDisplay(tlm.getID());
                     vlccontroller.stopOne(tlm.getID());
                     tlm.removeDisplay(i);
-                    System.out.println(i);
                     timelineChanged(TimeLineChanges.MODIFIED, tlm);
                 }
             }
@@ -247,30 +246,24 @@ public class SessionModule implements Serializable {
      */
     public void playAll(){
         if(paused){
-            System.out.println("PLAYALL");
             paused = false;
             //waiting for the threads to finish if paused earlier
             try {
-            	System.out.println("nononononono");
                 tAll.join();
-                System.out.println("yeyeyyeyyyeye");
                 globalTimeTicker.join();
             } catch (InterruptedException e) {
                 System.out.println("interrupted waiting for tAll and/or the globalTimeTicker to die");
             }
             //rebuilds the performance in case of changes or new startpoint/globaltime
             buildPerformance();
-            System.out.println("built");
             //creates the thread for excecuting the performance
             tAll = allPlay(globaltime);
-            System.out.println("created");
             //creates the thread for increasing the globaltime
             globalTimeTicker=tickGlobalTime(globaltime);
             pausing = false;
             tAllCalledPause = false;
             //starts the threads
             tAll.start();
-            System.out.println("started");
 //            globalTimeTicker.start();
         }
     }
@@ -315,8 +308,6 @@ public class SessionModule implements Serializable {
         //creates a thread
         Thread tAll1 = new Thread(){
             public void run(){
-                System.out.println("RUN ALLPLAY");
-                System.out.println(performancestack.size());
                 //set startp and playp to get a view on real time seconds
                 long startp = System.currentTimeMillis();
                 long playp = System.currentTimeMillis();
@@ -478,12 +469,10 @@ public class SessionModule implements Serializable {
      * begin and end. Also check where we are on the globaltime and set videos to play with offset if the already should have begun but not yet ended.
      */
     private void buildPerformance(){
-        System.out.println("BUILD PERFORMANCE");
         //Add all Events to list, then sort it
         performancestack = new ArrayList<Event>();
         //TODO change to only the timelines that is assigned to a display??
         // maybe for (Integer dis : displays.keyset())
-        System.out.println("Displays: "+ displays.keySet());
         for(Integer dis : displays.keySet()){
             if (displays.get(dis) != null){
                 for(Event ev2 : displays.get(dis).getTimelineStack()){
@@ -594,7 +583,6 @@ public class SessionModule implements Serializable {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            System.out.println("playing");
             performancestack.clear();
             ArrayList<Event> tempstack = timelines.get(timeline).getTimelineStack();
             for (Event ev2 : tempstack){
@@ -620,7 +608,6 @@ public class SessionModule implements Serializable {
             t1 = new Thread(){
                 public void run(){
                     onePlay(globaltime);
-//				System.out.println("im done");
                 }
             };
             globalTimeTicker=tickGlobalTime(globaltime);
@@ -658,9 +645,7 @@ public class SessionModule implements Serializable {
             //thread sleeping if its long until next event
             if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp)){
                 try {
-//					System.out.println("night night");
                     Thread.sleep((performancestack.get(0).getTime()-glbtime)-(playp-startp)-1500);
-//					System.out.println("wake up");
                 } catch (InterruptedException e) {
                 }
             }
@@ -702,8 +687,6 @@ public class SessionModule implements Serializable {
         t1.interrupt();
         globalTimeTicker.interrupt();
         vlccontroller.pauseOne(timelineid);
-        System.out.println("paused");
-        //TODO: Pause the timeline for this display
     }
 
     /**
@@ -722,7 +705,6 @@ public class SessionModule implements Serializable {
      * @param path
      */
     public String createNewMediaObject(MediaSourceType mst, String path){
-    	System.out.println("[SESSION module]" + mst);
         // Check if this MediaObject is already stored in the list, by comparing paths
         for (int i=0; i<mediaObjects.size(); i++){
             if (mediaObjects.get(i).getPath().equals(path)) {
@@ -932,7 +914,6 @@ public class SessionModule implements Serializable {
         ArrayList<TimelineMediaObject> timelineMediaObjects = tlm.getTimelineMediaObjects();
         TimelineModel duplicate = timelines.get(timelineInt);
         if(duplicate == null){
-            System.out.println("[Session;odule.duplicateToTimeline()] Could not find TimelineModel with id " + timelineInt);
             return false;
         }
 
@@ -1216,7 +1197,6 @@ public class SessionModule implements Serializable {
     public ArrayList<String> getAvailableWindows() {
         windowdisplay.getAllWindows(); //updates the windowsList
         ArrayList<WindowInfos> windowInfos = windowdisplay.getWindowInfoList();
-        System.out.println(windowInfos);
 
         ArrayList<String> windowsListNames = new ArrayList<String>();
         for(WindowInfos windowInfo:windowInfos){

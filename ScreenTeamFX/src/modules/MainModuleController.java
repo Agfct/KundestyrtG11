@@ -61,7 +61,6 @@ public class MainModuleController {
 	}
 	
 	public SessionModule getSession(){
-		System.out.println(sessionModule);
 		return sessionModule;
 	}
 	

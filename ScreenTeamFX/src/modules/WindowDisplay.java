@@ -63,7 +63,6 @@ public class WindowDisplay implements Serializable{
 		}
 		else{
 					
-			System.out.println("Info Monitor to display: num Monitor " + AllMonitor.get(display).getNum_Monitor() +" | x:"+ AllMonitor.get(display).getStart_X());
 			int bordure =50;
 			if(hide==false){
 				//Show the window
@@ -77,9 +76,6 @@ public class WindowDisplay implements Serializable{
 				//Put a Jframe to hide the menu
 				
 				//if (NameWindow.toLowerCase().contains(FindLola.toLowerCase())){
-					System.out.println("I found Lola");	
-					System.out.println("Hide menu Lola");
-					
 				    
 					GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 					JFrame JFHideMenuTop = new JFrame(gs[display].getDefaultConfiguration());
@@ -93,7 +89,6 @@ public class WindowDisplay implements Serializable{
 					
 					JFrame JFHideMenuBottom = new JFrame(gs[display].getDefaultConfiguration());
 					JFHideMenuBottom.setSize( (int) (RS.getWidthResolutionScreen()),(int) ((RS.getHeightResolutionScreen())*0.02));
-					System.out.println("Width: "+ RS.getWidthResolutionScreen() +" Height: " +RS.getHeightResolutionScreen());
 					JFHideMenuBottom.setLocation(AllMonitor.get(display).getStart_X(), (int) (((RS.getHeightResolutionScreen())-(RS.getHeightResolutionScreen())*0.02)));
 					JFHideMenuBottom.setUndecorated(true);
 					JFHideMenuBottom.getContentPane().setBackground(Color.BLACK);
@@ -102,37 +97,19 @@ public class WindowDisplay implements Serializable{
 					JFHideMenuBottom.setVisible(true);
 					AllJFrameHide.put(JFHideMenuBottom.getTitle(),JFHideMenuBottom);
 					
-			//	} else{
-			//		System.out.println("I don't know Lola");
-			//	}
-				
-				//ShowWindow(WIs.getThWnd(),User32.SW_SHOWMAXIMIZED); 
 			}
 			else if  (hide==true){
 				
-				System.out.println("Vive la france");
-				//Hide the window
-			//	if (NameWindow.toLowerCase().contains(FindLola.toLowerCase())){	
-					System.out.println("Close Hide menu Lola");
 
 					if (AllJFrameHide.containsKey("JFrame Hide Top"+NameWindow)){
-						System.out.println("Close Top Hide window for Lola");
 						AllJFrameHide.get("JFrame Hide Top"+NameWindow).dispose();
 					}
 					if (AllJFrameHide.containsKey("JFrame Hide Bottom"+NameWindow)){
-						System.out.println("Close Top Bottom window for Lola");
 						AllJFrameHide.get("JFrame Hide Bottom"+NameWindow).dispose();
 					}
-			//	} else{
-			//		System.out.println("I don't know Lola");
-			//	}				
 				ShowWindow(WIs.getThWnd(),User32.SW_SHOWMINIMIZED);
 				MoveWindow(WIs.getThWnd(),AllMonitor.get(display).getStart_X(),AllMonitor.get(display).getStart_Y(),200,200,true);					
-				System.out.println(AllMonitor.get(display).getStart_X());
 				ShowWindow(WIs.getThWnd(),User32.SW_SHOWMINIMIZED);
-				//System.out.println("Name JFrame"+AllJFrameHide.contains(o)
-				
-
 				
 			}
 			else{
@@ -236,7 +213,6 @@ public class WindowDisplay implements Serializable{
 	                    	   AllWindow.add(info.getTitle());
 	                    	   
 		                    	if((info.title.equals(NameTitle))) {
-		                    	   System.out.println(" Window " + NameTitle + " Find");
 		                    	   GetWindowRect(hWnd, rect);
 	                    		   V.setTitle(info.getTitle());
 	                    		   V.setProcess(info.getProcess());

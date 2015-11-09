@@ -109,13 +109,6 @@ public class OptionsScreen implements Screen {
 			java_version.setText(vlc_controller.getJavaVersion());
 			vlc_version.setText(vlc_controller.getVLCVersion());
 			
-//			vlc_commandField.textProperty().addListener((observable, oldValue, newValue) -> {
-//			    System.out.println("[Options]TextField Text Changed (newValue: " + newValue + ")");
-//			    if(newValue.length() > 0 && newValue.length() < 10) {
-//			    	temp_vlcCommands = newValue;
-//			    }
-//			    
-//			});
 			setVLCConfigAlternatives();
 			paintVLCConfigValues();
 		}
@@ -125,10 +118,8 @@ public class OptionsScreen implements Screen {
 		 * @param event
 		 */
 		@FXML protected void buttonPressed(ActionEvent event) {
-			System.out.println("Button has been pressed");
 			
 			if(((Button)event.getSource()).getId().equals("mainMenuBtn") ){
-				System.out.println("Pressing mainMenu screen btn");
 				//If the mainMenu screen button is pressed the MainGUIController changes the screen to be the mainMenu screen
 				MainGUIController.getInstance().changeScreen(SCREENTYPE.MAINMENU);
 			}
@@ -163,12 +154,7 @@ public class OptionsScreen implements Screen {
 		
 		public void paintVLCConfigValues(){
 			vlcConfig = AdvancedScreen.getInstance().getScreenController().getCurrentSession().getVLCConfiguration();
-			System.out.println("VLCCONFIG: " + vlcConfig);
-//			if(vOutputComboBox.getSelectionModel().getSelectedItem().equals("--vout=directdraw")){
-//				System.out.println("Selected: " + "--vout=directdraw" );
-//			}
 			for(String s: vlcConfig){
-				System.out.println("SELECTED config: " +s);
 				if(s.equals("--vout=directdraw")){
 					vOutputComboBox.getSelectionModel().select("DirectX (DirectDraw)");
 					

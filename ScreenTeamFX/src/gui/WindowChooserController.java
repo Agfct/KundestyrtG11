@@ -88,16 +88,12 @@ public class WindowChooserController implements FXMLController {
 		 * Button-listener for the  
 		 */
 		@FXML protected void buttonPressed(ActionEvent event) {
-			System.out.println("Import windows: " + event.getSource().toString() + "has been pressed");
 			
 			if(((Button)event.getSource()).getId().equals("importWindowChooser") ){
-				System.out.println("INSIDE BUTTONEVENT");
 				String selectedWindow = (String)windowListView.getSelectionModel().getSelectedItem();
-				System.out.println(selectedWindow);
 				if(selectedWindow!=null){
 					if(mediaObject == null){
 						String result = parentController.getCurrentSession().createNewMediaObject(MediaSourceType.WINDOW, selectedWindow);
-						System.out.println("[WindowChooserController] "+result);
 					}
 					else{
 						parentController.getCurrentSession().changeMediaObject(mediaObject, selectedWindow);

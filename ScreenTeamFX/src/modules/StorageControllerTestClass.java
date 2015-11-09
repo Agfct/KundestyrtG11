@@ -54,7 +54,6 @@ public class StorageControllerTestClass {
 		tlm3.addTimelineMediaObject(tlmo9);
 		tlm3.addTimelineMediaObject(tlmo10);
 		
-//		System.out.println("Result success = " + sc.storeSession(smModule, savefile));
 		
 		SessionModule loadedSM = sc.loadSession(savefile);
 		
@@ -62,8 +61,5 @@ public class StorageControllerTestClass {
 		 *  Put a break point here and use the debugger to check that the saved and loaded objects are the same.
 		 *  (Or write code to do it for you)
 		 */
-		System.out.println("debug_point");
-		
-		System.out.println("Finnished");
 	}
 }

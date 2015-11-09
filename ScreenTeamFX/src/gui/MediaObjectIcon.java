@@ -114,11 +114,8 @@ public class MediaObjectIcon extends GridPane{
 		remove.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Remove MediaObject");
 				Optional<ButtonType> result = alert.showAndWait();
 				if (result.get() == ButtonType.OK){
-					//TODO: Remove
-					//					AdvancedScreen.getInstance().getScreenController().getCurrentSession().removeTimelineMediaObjectFromTimeline(parentController.getParentController().getTimelineModel(),timelineMediaObject);
 					AdvancedScreen.getInstance().getScreenController().getCurrentSession().removeMediaObject(mediaObject);
 				} else {
 					// ... user chose CANCEL or closed the dialog
@@ -129,7 +126,6 @@ public class MediaObjectIcon extends GridPane{
 		setPath.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Set path MediaObject");
 				if(mediaObject.getType()==MediaSourceType.WINDOW){
 					AdvancedScreen.getInstance().getScreenController().showWindowChooser(mediaObject);
 				}
@@ -161,7 +157,6 @@ public class MediaObjectIcon extends GridPane{
 				//            	parentController.getContextMenu().hide();
 				MouseButton button = event.getButton();
 				if(button==MouseButton.SECONDARY){
-					System.out.println("Right Cliked a MediaObject");
 					contextMenu.show(grid_pane, event.getScreenX(), event.getScreenY());
 				}
 				event.consume(); //Consumes the event so it wont go deeper down into the hierarchy 
@@ -292,9 +287,6 @@ public class MediaObjectIcon extends GridPane{
 	public void setType (MediaSourceType type) {
 
 		mType = type;
-		System.out.println("Media TYPE: " + type);
-		//		getStyleClass().clear();
-		//		getStyleClass().add("dragicon");
 
 		if(mType == MediaSourceType.VIDEO){
 			styleIcon.getStyleClass().add("icon-video");

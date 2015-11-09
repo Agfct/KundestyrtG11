@@ -156,7 +156,6 @@ public class AdvancedScreen implements Screen{
 		GraphicsContext gc = timelineBarCanvas.getGraphicsContext2D();
 
 		public AdvancedScreenController(){
-			System.out.println("RUNNING CONSTRUCTOR ADVANCEDSCREEN CTRL");
 			//Instantiating controller list
 			timelineControllers = new ArrayList<TimelineController>();
 
@@ -167,7 +166,6 @@ public class AdvancedScreen implements Screen{
 				fxmlLoader.load();
 				rootPane = fxmlLoader.getRoot();
 			} catch (IOException e) {
-				System.out.println("Failed to load AdvancedScreenController FXML");
 				e.printStackTrace();
 			}
 
@@ -236,9 +234,7 @@ public class AdvancedScreen implements Screen{
 				public void changed(ObservableValue<? extends Number> ov,
 						Number old_val, Number new_val) {
 					scrollBarDefaultValue = new_val.doubleValue()/scaleCoefficient;
-					System.out.println("Scrolling: Old value: "+ old_val.doubleValue()+" NewValue: "+ new_val.doubleValue());
 					scrollBarPosition = -new_val.doubleValue();
-					System.out.println("Scroll default value" + scrollBarDefaultValue);
 					updateTimelinesPosition();
 				}
 			});
@@ -287,7 +283,6 @@ public class AdvancedScreen implements Screen{
 
 				@Override
 				public void handle(MouseEvent event) {
-					System.out.println("[AdvancedScreen] Drag started");
 
 					// Sets the drag handler for the rootPane.
 					// Telling the root how to handle the dragIcon
@@ -344,7 +339,6 @@ public class AdvancedScreen implements Screen{
 
 				@Override
 				public void handle(DragEvent event) {
-					//						System.out.println("[AdvancedScreen] Dargging over root");
 
 					//We only want the drop icon to display "ok to drop here" when you are hovering over a timeline.
 					for (FXMLController timelineController : timelineControllers) {
@@ -391,14 +385,12 @@ public class AdvancedScreen implements Screen{
 
 				@Override
 				public void handle(DragEvent event) {
-					System.out.println("[AdvancedScreen] DragDropped");
 
 					MediaObjectContainer container =
 							(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.AddNode);
 
 					//TODO: TESTING REMOVE THE pk point and sysout
 					Point2D pk = new Point2D(event.getSceneX(),event.getSceneY());
-					System.out.println("Dropped scene coords: X:" +pk.getX() + "Y:"+ pk.getY());
 
 					//Adds the coordinates where the icon was dropped to the MediaObjectContainer
 					container.addData("scene_coords",
@@ -422,7 +414,6 @@ public class AdvancedScreen implements Screen{
 
 				@Override
 				public void handle (DragEvent event) {
-					System.out.println("[AdvancedScreen] Drag DONE");
 
 					//Cleaning up the DragEvents
 					rootPane.removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverRoot);
@@ -444,7 +435,6 @@ public class AdvancedScreen implements Screen{
 					if (container != null) {
 						//If the drop is inside the view
 						if (container.getValue("scene_coords") != null) {
-							//								System.out.println("Not EMPTY");
 
 							//								MediaObjectController node = new MediaObjectController();
 
@@ -459,12 +449,8 @@ public class AdvancedScreen implements Screen{
 								Pane timelineLinePane = currentTimelineLineController.getRoot();
 								Point2D containerPoints = (Point2D)container.getValue("scene_coords");
 								Point2D p = timelineLinePane.sceneToLocal(containerPoints);
-								System.out.println("Pane:" + timelineLinePane);
-								System.out.println("Point: X: " + p.getX() + " Y: " + p.getY());
-								System.out.println(" Container Point: X: " + ((Point2D) container.getValue("scene_coords")).getX() + " Y: " + ((Point2D) container.getValue("scene_coords")).getY());
 								if (timelineLinePane.boundsInLocalProperty().get().contains(p)) {
 									String result=currentSession.addMediaObjectToTimeline(container.getValue("model"), timelineController.getTimelineModel() , ((int)p.getX()*1000)/scaleCoefficient);
-									System.out.println("Result of the drop of mediaObject: " + result);
 									break;
 								}
 							}
@@ -488,8 +474,6 @@ public class AdvancedScreen implements Screen{
 		 */
 		public void addTimeline(){
 			int timelineInt = currentSession.addTimeline();
-			System.out.println(timelineInt);
-			System.out.println("Total number of timelines: "+ currentSession.getTimelines().size());
 			//				TimelineController tempTimeController = new TimelineController();
 			//				timelineControllers.add(tempTimeController);
 			//				addTimelineControllerToScreen(tempTimeController);
@@ -499,7 +483,6 @@ public class AdvancedScreen implements Screen{
 			int timelineInt = currentSession.addTimeline();
 			boolean success = currentSession.duplicateToTimeline(tlm, timelineInt);
 			if(!success){
-				System.out.println("[AdvancedScreen.duplicateTimeline] Could not duplicate the contents to the new timeline");
 			}
 		}
 
@@ -555,7 +538,6 @@ public class AdvancedScreen implements Screen{
 		 */
 		public void initHeader(AdvancedScreenController self){
 			headerController = new HeaderController(self);
-			System.out.println("INITING THE HEADER: ");
 			rootGrid.getChildren().add(headerController.getRoot());
 
 		}
@@ -606,10 +588,8 @@ public class AdvancedScreen implements Screen{
 				break;
 			}
 			case ORDER:{
-				System.out.println("ORDERING");
 				removeAllTimelineControllersFromScreen();
 				ArrayList<Integer> orderedListOfTimelines = currentSession.getTimelineOrder();
-				System.out.println("NEWORDER: " + orderedListOfTimelines);
 
 				//We need to reverse the ordering because we always bring the newest timeline to the top of the view.
 				for(int i=orderedListOfTimelines.size()-1;i>=0;i--){
@@ -741,7 +721,6 @@ public class AdvancedScreen implements Screen{
 
 			//            timelineLineScrollBar.setValue(oldScrollBarPos*scrollBarValueScaleCoeff);
 			timelineLineScrollBar.setValue(timelineBarController.getSeeker().getSeekerPositionMiddle());
-			System.out.println("[Advanced Screen] SEEKER POSITION: "+ timelineBarController.getSeeker().getSeekerPositionMiddle());
 			updateTimelinesPosition();
 		}
 
@@ -768,7 +747,6 @@ public class AdvancedScreen implements Screen{
 				}
 			});
 
-			//            System.out.println(newGlobalTime);
 
 		}
 
@@ -834,23 +812,6 @@ public class AdvancedScreen implements Screen{
 
 
 		public void assignRequest(String display, TimelineModel tlm) {
-
-			//            if(checkedItems.size()>tlm.getAssignedDisplays().size()){
-			//                System.out.println("New display!");
-			//                //NB: only possible with one screen per timeline. Address problem with ghosts
-			//                currentSession.assignTimeline(Integer.parseInt(checkedItems.get(0)), tlm);
-			//            }
-			//            else if(checkedItems.size()<tlm.getAssignedDisplays().size()){
-			//                //TODO: implement the removal of screen if box is unchecked
-			//                System.out.println("RemovedScreen!");
-			//            }
-			//            else if(checkedItems.size()==tlm.getAssignedDisplays().size()){
-			//                for(String dispString:checkedItems){
-			//                    if(!tlm.getAssignedDisplays().contains(Integer.parseInt(dispString))){
-			//                        System.out.println("NEW DISPLAY!?");
-			//                    }
-			//                }
-			//            }
 			currentSession.assignTimeline(Integer.parseInt(display), tlm);
 
 		}
@@ -1034,9 +995,7 @@ public class AdvancedScreen implements Screen{
 			int unitsMoved = 10;
 			//If the seeker is going outside the left side
 			if(checkThisPoint.getX() <= 199 && scrollBarPosition < 0){
-				System.out.println("NR1");
 				if(-scrollBarPosition - unitsMoved > 0){
-					System.out.println("lOLnr1");
 					scrollBarPosition += unitsMoved;
 					timelineLineScrollBar.setValue(-scrollBarPosition);
 				}else{ 
@@ -1047,7 +1006,6 @@ public class AdvancedScreen implements Screen{
 				updateTimelinesPosition();
 
 			}else if(checkThisPoint.getX() > 1188 && -scrollBarPosition < timelineLineScrollBar.getMax()){
-				System.out.println("NR3");
 				if(-scrollBarPosition + unitsMoved < timelineLineScrollBar.getMax()+200){
 					scrollBarPosition -= unitsMoved;
 					timelineLineScrollBar.setValue(-scrollBarPosition);

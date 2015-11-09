@@ -87,14 +87,12 @@ public class TimelineBarController extends Pane {
 		moveSeeker.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Moving seeker");
 				moveSeeker(seekPoint);
 			}
 		});
 		placeStop.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Placing Stop point");
 				StopPointController tempStopPoint = new StopPointController(thisBarController);
 				root.getChildren().add(tempStopPoint);
 				stopPointControllers.add(tempStopPoint);
@@ -110,7 +108,6 @@ public class TimelineBarController extends Pane {
 				//            	parentController.getContextMenu().hide();
 				MouseButton button = event.getButton();
 				if(button==MouseButton.SECONDARY){
-					System.out.println("Right Clicked timelineBar at: "+ event.getScreenX()+ " or scene:"+event.getSceneX());
 					contextMenu.show(root, event.getScreenX(), event.getScreenY());
 					seekPoint = getNewSeekPoint(event);
 				}
@@ -174,12 +171,10 @@ public class TimelineBarController extends Pane {
 	public void scaleChanged(){
 		double oldWidth = root.getPrefWidth();
 		root.setPrefWidth(parentController.getCurrentSession().getSessionLength()*parentController.getScaleCoefficient()+22);
-		System.out.println("TimelineBar: Scaling size From: "+ oldWidth + "to" + root.getPrefWidth());
 		seeker.scaleChanged(parentController.getScaleCoefficient());
 		
 		//Making a scale value based on the difference in root size instead of sending in the new scale
 		double timelineBarValueScaleCoeff = (root.getPrefWidth()-22)/(oldWidth-22);
-		System.out.println("TimelineBar: scaleCoeff: " + timelineBarValueScaleCoeff);
 		for (StopPointController stopPoint : stopPointControllers) {
 //			stopPoint.scaleChanged(parentController.getScaleCoefficient());
 			stopPoint.scaleChangedCoeff(timelineBarValueScaleCoeff, parentController.getScaleCoefficient());

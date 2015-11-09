@@ -92,28 +92,16 @@ public class MainScreen implements Screen {
 		 * @throws InterruptedException 
 		 */
 		@FXML protected void buttonPressed(ActionEvent event) throws InterruptedException {
-			System.out.println("Button has been pressed");
-			
 
 			if(((Button)event.getSource()).getId().equals("advScrBtn")){
-				System.out.println("Pressing advanced screen btn");
 				//If the advanced screen button is pressed the MainGUIController changes the screen to be the advanced screen
 				MainGUIController.getInstance().changeScreen(SCREENTYPE.ADVANCEDSCREEN);
 				
 			}else if(((Button)event.getSource()).getId().equals("optionsBtn")){
-				System.out.println("Pressing options screen btn");
 				MainGUIController.getInstance().changeScreen(SCREENTYPE.OPTIONS);
 				
 			}else if(((Button)event.getSource()).getId().equals("exitBtn")){
 				System.exit(0);
-				//TODO: Figure out how to close a javafx application properly
-//				MainGUIController.getInstance().primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-//				    @Override
-//				    public void handle(WindowEvent event) {
-//				    	MainGUIController.getInstance().primaryStage.close();
-//				    	Platform.exit();
-//				    }
-//				});
 			}
 //			else if(((Button)event.getSource()).getId().equals("testBtn") ){
 //			VLCController vlcc = MainModuleController.getInstance().getVLCController();

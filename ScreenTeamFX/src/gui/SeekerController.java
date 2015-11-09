@@ -108,7 +108,6 @@ public class SeekerController extends Pane{
 	 * @param pointX
 	 */
 	public void moveTo(Point2D pointX){
-		System.out.println("Point: " + pointX);
 		//Moves by -12 to set the pointer to the middle
 		relocateToPoint(new Point2D(pointX.getX()- 12,0));
 		seekerChanged();
@@ -123,16 +122,12 @@ public class SeekerController extends Pane{
 	}
 	
 	public double getSeekerPositionMiddle(){
-//		System.out.println("[SeekerController] parent wiIDTH !! " + parentController.getRoot().getPrefWidth());
 		double tempPos = getSeekerPosition();
 		if(tempPos < 500){
-//			System.out.println("[SeekerController] Less than 500: " + tempPos);
 			return 0;
 		}else if (tempPos > 500 && tempPos < parentController.getRoot().getPrefWidth()-500){
-//			System.out.println("[SeekerController] between 500: " + tempPos);
 			return tempPos - 500;
 		}
-//		System.out.println("[SeekerController] NOTHING !! " + parentController.getRoot().getPrefWidth());
 		return parentController.getRoot().getPrefWidth()-1022;
 	}
 	
@@ -146,7 +141,6 @@ public class SeekerController extends Pane{
 
 			@Override
 			public void handle(DragEvent event) {		
-//				System.out.println("[Seeker] Dragging over root");
 				Pane timelineBarController = parentController.getRoot();
 				Point2D p = timelineBarController.sceneToLocal(event.getSceneX(), event.getSceneY());
 				Bounds mediaControllerRect;
@@ -192,8 +186,6 @@ public class SeekerController extends Pane{
 
 			@Override
 			public void handle (DragEvent event) {
-				System.out.println("[SeekerController] Drag DONE X is: " + localToParent(0,25).getX()/scale);
-
 				parentController.getRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
 				parentController.getRoot().setOnDragOver(null);
 				AdvancedScreen.getInstance().getScreenController().getMasterRoot().removeEventHandler(DragEvent.DRAG_OVER, mContextDragOver);
@@ -219,7 +211,6 @@ public class SeekerController extends Pane{
 
 				/* Drag was detected, start a drag-and-drop gesture */
 				/* allow any transfer mode */
-				System.out.println("[SeekerController] Drag event started");
 
 				AdvancedScreen.getInstance().getScreenController().getMasterRoot().setOnDragOver (mContextDragOver);
 
@@ -229,13 +220,7 @@ public class SeekerController extends Pane{
 
 				//begin drag ops
 				mDragOffset = new Point2D(event.getX(), event.getY());
-				System.out.println("dragOffset with getX: " + mDragOffset);
-
-				//TODO: TEST STUFF:
-				System.out.println("relocate to point with sceneX with getX: " + (new Point2D(event.getSceneX(), event.getSceneY())));
 				Pane timelineLinePane = parentController.getRoot();
-				System.out.println("AnchorPane: getBoundsInLocal " + timelineLinePane.getBoundsInLocal());
-				System.out.println("SeekerController Object: getBounds in parent" + getBoundsInParent());
 
 				//The clipboard contains all content that are to be transfered in the drag
 				ClipboardContent content = new ClipboardContent();
@@ -278,7 +263,6 @@ public class SeekerController extends Pane{
 	 * @param newScale
 	 */
 	public void scaleChanged(int newScale){
-		System.out.println("seeker: scalechanged");
 		this.scale = newScale;
 		root.setLayoutX((AdvancedScreen.getInstance().getScreenController().getGlobalTime()*scale)/1000);
 	}

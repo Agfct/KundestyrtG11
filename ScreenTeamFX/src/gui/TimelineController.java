@@ -172,7 +172,6 @@ public class TimelineController implements FXMLController {
 	 * @param event
 	 */
 	@FXML protected void buttonPressed(ActionEvent event) {
-		System.out.println("TIMELINECONTROLLER:" + event.getSource().toString() + "has been pressed");
 		
 		if(((Button)event.getSource()).getId().equals("removeTimelineBtn") ){
 			//Removes the timeline from the AdvanceScreen Children list
