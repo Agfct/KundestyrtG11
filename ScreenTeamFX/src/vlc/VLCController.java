@@ -1,155 +1,405 @@
 package vlc;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 import com.sun.jna.NativeLibrary;
-import com.sun.media.sound.InvalidFormatException;
 
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 public class VLCController {
-	private ArrayList<VLCMediaPlayer> mediaPlayerList = new ArrayList<VLCMediaPlayer>();
+	private Map<Integer, VLCMediaPlayer> mediaPlayerList = new HashMap<Integer, VLCMediaPlayer>();
+	private Map<Integer, Integer> mediaPlayerDisplayConnections = new HashMap<Integer, Integer>();
+	private ArrayList<Integer> displays = new ArrayList<Integer>();
 	private ArrayList<Integer> availableDisplays = new ArrayList<Integer>();
-	private Map<VLCMediaPlayer, Integer> mediaPlayerDisplayConnections = new HashMap<VLCMediaPlayer, Integer>();
-	private GraphicsDevice[] displays;
-	private String vlcPath;
+	private boolean vlcPathSet = false;
 	private VLCMediaPlayer prerunCheckPlayer;
 	
 	/**
-	 * Creates a new VLC controller and opens a file chooser to select the 64bit VLC path.
-	 * Searches for all displays available on the computer and adds them to an ArratList.
+	 * Creates a VLC controller. Java version is checked and the corresponding version on VLC is loaded.
 	 */
-	public VLCController(){
-		vlcPath = "C:\\Program Files\\VideoLAN\\VLC64";
-		//vlcPath = new FileChooser().selectVLCPath();
-		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), vlcPath);
-		prerunCheckPlayer = new VLCMediaPlayer();
-		findDisplays();
+	public VLCController(ArrayList<Integer> displays){
+		if(Integer.parseInt(System.getProperty("sun.arch.data.model")) == 32){
+			NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "\\VLC\\VLC32");
+		}
+		else if(Integer.parseInt(System.getProperty("sun.arch.data.model")) == 64){
+			NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "\\VLC\\VLC64");
+		}
+		try{
+			prerunCheckPlayer = new VLCMediaPlayer();
+			vlcPathSet = true;
+		}
+		catch(Exception e){
+			System.out.println("Can't find VLC native library. You need VLC " + System.getProperty("sun.arch.data.model") + "-bit.");
+	
+		}
+		this.displays = displays;
+		availableDisplays = displays;
 	}
 	
-	private void findDisplays(){
-	    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	    GraphicsDevice[] gs = ge.getScreenDevices();
-	    for(int i = 0; i < gs.length; i++){
-	    	availableDisplays.add(i);
-	    }
-	    displays = gs;
+	public void updateDisplays(ArrayList<Integer> displays){
+		for(Integer d : this.displays){
+			if(!displays.contains(d)){
+				if(availableDisplays.contains(d)){
+					availableDisplays.remove(d);
+				}
+
+			}
+		}
+		for(Integer i : displays){
+			if(!this.displays.contains(i)){
+				availableDisplays.add(i);
+			}
+		}
+		this.displays = displays;
+		VLCMediaPlayer.updateDisplays();
 	}
 	
-	/** * Create a VLC instance to be displayed on the specified display * @param display */
-	public VLCMediaPlayer createMediaPlayer(int display){
-		if(availableDisplays.contains((Integer)display)){
-			VLCMediaPlayer mp = new VLCMediaPlayer(display);
-			mediaPlayerList.add(mp);
-			availableDisplays.remove((Integer)display);
-			mediaPlayerDisplayConnections.put(mp, display);
+	/** 
+	 * * Create a VLC media player. ID is linked to a timeline. 
+	 * @param ID */
+	public VLCMediaPlayer createMediaPlayer(int ID, String[] options){
+		if(vlcPathSet){
+			VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
+			mediaPlayerList.put(ID, mp);
 			return mp;
+		}
+		else{
+			System.out.println("Can't create a VLC media player. VLC path not set");
 		}
 		return null;
 	}
 	
+	/**
+	 * Deletes a media player and frees all its resources. 
+	 * @param mp */
+	public void deleteMediaPlayer(int mp){
+		if(mediaPlayerList.containsKey((Integer)mp)){
+			toPlayer(mp).close();
+			mediaPlayerList.remove(mp);
+			if(mediaPlayerDisplayConnections.containsKey(mp)){
+				availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
+				mediaPlayerDisplayConnections.remove(mp);
+			}
+		}
+	}
+	
+//	public void updateMediaPlayer(Integer ID, String[] options){
+//		VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
+//		VLCMediaPlayer oldmp = mediaPlayerList.put(ID, mp);
+//		oldmp.close();
+//		if(mediaPlayerDisplayConnections.containsKey(ID)){
+//			Integer dis = oldmp.getDisplay();
+//			availableDisplays.add(mediaPlayerDisplayConnections.get(ID));
+//			mediaPlayerDisplayConnections.remove(oldmp.getID());
+//			assignDisplay(ID,dis);
+//		}
+//	}
+//	
+//	public void updateOptions(String[] options){
+//		for(Integer mp : mediaPlayerList.keySet()){
+//			updateMediaPlayer(mp,options);
+//		}
+//	}
+	public void updateMediaPlayer(int mp, String[] options){
+		int ID = toPlayer(mp).getID();
+		int display = toPlayer(mp).getDisplay();
+		deleteMediaPlayer(mp);
+		createMediaPlayer(ID, options);
+		if(display > -1){
+			assignDisplay(ID, display);
+		}
+	}
+	
+	public void updateOptions(String[] options){
+		ArrayList<Integer> mps = new ArrayList<Integer>();
+		for(int mp : mediaPlayerList.keySet()){
+			mps.add(mp);
+		}
+		for(int mp : mps){
+			updateMediaPlayer(mp, options);
+		}
+	}
 	
 	/**
-	 * Display mp on the display only if display is not already in use * @param mp * @param display */
-	public boolean setDisplay(VLCMediaPlayer mp, int display){
+	 * Display mp on the display only if display is not already in use.
+	 * Returns true if a display was set
+	 * @param mp 
+	 * @param display */
+	public boolean assignDisplay(int mp, int display){
 		if(availableDisplays.contains((Integer)display)){
-			availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
-			availableDisplays.remove(display);
-			mediaPlayerDisplayConnections.remove(mp);
+			if(mediaPlayerDisplayConnections.containsKey(mp)){
+				availableDisplays.add(mediaPlayerDisplayConnections.get(mp));
+				mediaPlayerDisplayConnections.remove(mp);
+			}
+			availableDisplays.remove((Integer)display);
 			mediaPlayerDisplayConnections.put(mp, display);
-			mp.setDisplay(display);
+			VLCMediaPlayer vlcmp = toPlayer(mp);
+			if(System.getProperty("os.name").startsWith("Windows 8")){
+				vlcmp.setDisplayWin8(display);
+			}
+			else{
+				vlcmp.setDisplay(display);
+				if(vlcmp.getTime() > 0){
+					long time = vlcmp.getTime();
+					vlcmp.setMedia(vlcmp.getMediaPath());
+					vlcmp.seek(time);
+				}	
+			}
 			return true;
 		}
 		return false;
 	}
 	
-	public void setMedia(VLCMediaPlayer mp, String mediaPath){
-		mp.setMedia(mediaPath);
+	public void unassignDisplay(int mp){
+		if(mediaPlayerDisplayConnections.containsKey(mp)){
+			availableDisplays.add(mediaPlayerDisplayConnections.remove(mp));
+			toPlayer(mp).removeDisplay();
+		}
 	}
 	
-	public void seek(VLCMediaPlayer mp, long time){
-		mp.seek(time);
+	/**
+	 * Returns the media player associated with ID.
+	 * @param ID
+	 * @return */
+	private VLCMediaPlayer toPlayer(int ID){
+		return mediaPlayerList.get(ID);
 	}
 	
-	/** * Plays one specific media player. mp corresponds to a time line * @param mp */
-	public void playOne(VLCMediaPlayer mp){
-		mp.play();
+	public void setMedia(int mp, String mediaPath){
+		toPlayer(mp).setMedia(mediaPath);
 	}
 	
-	/** * Pauses one specific media player. mp corresponds to a time line * @param mp */
-	public void pauseOne(VLCMediaPlayer mp){
-		mp.pause();
+	
+	/** * Seek to time and then play the media player. Seeks only if time not equal 0.
+	 * @param mp
+	 * @param time */
+	public void playOne(int mp, long time){
+		if(time != 0){
+			toPlayer(mp).seek(time);
+		}
+		toPlayer(mp).play();
+		while(!toPlayer(mp).isPlaying()){
+			toPlayer(mp).play();
+		}
+	}
+
+	/** * Pauses one specific media player. 
+	 * * @param mp */
+	public void pauseOne(int mp){
+		toPlayer(mp).pause();
 	}
 	
-	/** * Play all the media of all media players from their current time 
+	/**
+	 * Seeks to time in the specified media player.
+	 * @param mp
+	 * @param time
+	 */
+	public void seekOne(int mp, long time){
+		toPlayer(mp).seek(time);
+	}
+	
+	public void stopOne(int mp){
+		toPlayer(mp).stop();
+	}
+	
+	/** * Play all the media of all media players at the exact same time.
 	 * @throws BrokenBarrierException 
 	 * @throws InterruptedException */	
-	public void playAll(){
-		final CyclicBarrier gate = new CyclicBarrier(mediaPlayerList.size() + 1);
-		for(VLCMediaPlayer mp: mediaPlayerList){
-			Thread t = new Thread(){
-				public void run(){
-					try {
-						gate.await();
-					} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
-					mp.play();
-				}
-			};
-			t.start();
+	public synchronized void playAll() throws InterruptedException{
+		if(mediaPlayerDisplayConnections.size()>0){
+			ArrayList<Thread> threads = new ArrayList<Thread>();
+			final CyclicBarrier gate = new CyclicBarrier(mediaPlayerDisplayConnections.size());
+			for(int mp : mediaPlayerDisplayConnections.keySet()){
+				Thread t = new Thread(){
+					public void run(){
+						try {
+							gate.await();
+							toPlayer(mp).play();
+						} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+					}
+				};
+				t.start();
+				threads.add(t);
+			}
+	//		try {
+	//			gate.await();
+	//		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+			for(int i= 0; i < threads.size(); i++){
+				threads.get(i).join();
+			}
 		}
-		try {
-			gate.await();
-		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
 	}
 	
-	/** * Pause all the media players. 
+	/** * Pause all the media players at the exact same time. 
 	 * @throws BrokenBarrierException 
 	 * @throws InterruptedException */
-	public void pauseAll(){
-		final CyclicBarrier gate = new CyclicBarrier(mediaPlayerList.size() + 1);
-		for(VLCMediaPlayer mp: mediaPlayerList){
-			Thread t = new Thread(){
-				public void run(){
-					try {
-						gate.await();
-					} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
-					mp.pause();
-				}
-			};
-			t.start();
+	public synchronized void pauseAll() throws InterruptedException{
+		if(mediaPlayerList.size()>0){
+			ArrayList<Thread> threads1 = new ArrayList<Thread>();
+			final CyclicBarrier gate = new CyclicBarrier(mediaPlayerList.size());
+			for(int mp : mediaPlayerList.keySet()){
+				Thread t1 = new Thread(){
+					public void run(){
+						try {
+							gate.await();
+							toPlayer(mp).pause();
+						} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+						
+					}
+				};
+				t1.start();
+				threads1.add(t1);
+			}
+	//		try {
+	//			gate.await();
+	//		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+			for(int i= 0; i < threads1.size(); i++){
+				threads1.get(i).join();
+			}
 		}
-		try {
-			gate.await();
-		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
 	}
 	
-	public boolean prerunCheck(String mediaPath){
-		try{
-			if(prerunCheckPlayer.isPlayable(mediaPath)){
-				return true;
+	/**
+	 * Takes a map of media players and times. 
+	 * Seeks to that time for each media player at the exact same time
+	 * @param map
+	 * @throws InterruptedException */
+	public synchronized void SeekMultiple(Map<Integer, Long> map) throws InterruptedException{
+		if(mediaPlayerDisplayConnections.size()>0){
+			ArrayList<Thread> threads = new ArrayList<Thread>();
+			final CyclicBarrier gate = new CyclicBarrier(map.size());
+			for(int mp : map.keySet()){
+				Thread t = new Thread(){
+					public void run(){
+						try {
+							gate.await();
+							toPlayer(mp).seek(map.get(mp));
+						} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+					}
+				};
+				t.start();
+				threads.add(t);
 			}
-			return false;
+	//		try {
+	//			gate.await();
+	//		} catch (InterruptedException | BrokenBarrierException e) {e.printStackTrace();}
+			for(int i= 0; i < threads.size(); i++){
+				threads.get(i).join();
+			}
+		}
+	}
+	
+	public void mute(int mp, boolean mute){
+		if(mute){
+			toPlayer(mp).mute();
+		}
+		else{
+			toPlayer(mp).unmute();
+		}
+	}
+	
+	public void hide(int mp, boolean hide){
+		if(hide){
+			toPlayer(mp).hide();
+		}
+		else{
+			toPlayer(mp).show();
+		}
+	}
+	
+	public void maximize(int mp){
+		toPlayer(mp).maximize();
+	}
+		
+	
+	public void showmp(int mp,boolean show){
+		toPlayer(mp).showhide(show);
+	}
+	
+	public void identifyDisplays(){
+		GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+		
+		Thread t = new Thread(){
+			public void run(){
+				ArrayList<JFrame> frames = new ArrayList<JFrame>();
+				for(int i = 0; i < gs.length; i++){
+					int textSize = gs[i].getDisplayMode().getHeight()/2;
+					JLabel label = new JLabel("" + i);
+					label.setForeground(Color.WHITE);
+					label.setBackground(Color.BLACK);
+					label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, textSize));
+					label.setOpaque(true);
+					label.setHorizontalAlignment(JLabel.CENTER);
+				    label.setVerticalAlignment(JLabel.CENTER);
+					JFrame frame = new JFrame(gs[i].getDefaultConfiguration());
+					frame.setUndecorated(true);
+					frame.getContentPane().add(label);
+					frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+					frame.setVisible(true);
+					frames.add(frame);
+				}
+				try {
+					sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				for(int j = 0; j < gs.length; j++){
+					frames.get(j).dispose();
+				}
+				for(Integer mp : mediaPlayerList.keySet()){
+					if(mediaPlayerDisplayConnections.containsKey(mp)){
+						toPlayer(mp).maximize();
+					}
+				}
+			}		
+		};
+		t.start();
+	}
+	
+	
+	/**
+	 * Returns true if mediaPath is a valid path and is playable.
+	 * @param mediaPath
+	 * @return */
+	public long prerunCheck(String mediaPath){
+		try{
+			long length = prerunCheckPlayer.isPlayable(mediaPath);
+			if(length != 0){
+				return length;
+			}
+			return 0;
 		}
 		catch(Exception e) {
-			return false;
+			return 0;
 		}
 		finally {
 			prerunCheckPlayer.close();
 		}
 	}
 	
-	public ArrayList<Integer> getAvailableDisplays(){
-		return availableDisplays;
+	public String getJavaVersion(){
+		return System.getProperty("sun.arch.data.model");
 	}
 	
-	public ArrayList<VLCMediaPlayer> getMediaPlayers(){
+	public String getVLCVersion(){
+		return RuntimeUtil.getLibVlcLibraryName();
+	}
+
+	public Map<Integer, VLCMediaPlayer> getMediaPlayerList() {
 		return mediaPlayerList;
 	}
+	
+	
 }
