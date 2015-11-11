@@ -43,12 +43,6 @@ public class TimelineLineController implements FXMLController{
     private final ContextMenu contextMenu = new ContextMenu();
 
 
-    //Drag&drop
-//	private MediaObjectIcon mDragOverIcon = null;
-//	private EventHandler<DragEvent> mIconDragOverRoot = null;
-//	private EventHandler<DragEvent> mIconDragDropped = null;
-
-    //TODO: dummy list ? should it be this way ?
     private ArrayList<MediaObjectController> mediaObjectControllers;
     private ArrayList<TimelineMediaObject> timelineMediaObjectModels;
     private HashMap<TimelineMediaObject,MediaObjectController> mediaObjectToControllerMap;
@@ -161,7 +155,7 @@ public class TimelineLineController implements FXMLController{
      * @param p
      */
     public void addMediaObject(MediaObjectController node, Point2D p) {
-        rootPane.getChildren().add(node); //TODO: REMOVE TEMPorarly fix
+        rootPane.getChildren().add(node);
         mediaObjectControllers.add(node);
         node.setParentController(this);
         node.relocateToPoint(p);
@@ -170,9 +164,8 @@ public class TimelineLineController implements FXMLController{
 
     }
 
-    //TODO: REVISIT TESTING ATM
     public void removeMediaObject(MediaObjectController node) {
-        rootPane.getChildren().remove(node); //TODO: REMOVE TEMPorarly fix
+        rootPane.getChildren().remove(node);
         mediaObjectControllers.remove(node);
         mediaObjectToControllerMap.remove(node);
 

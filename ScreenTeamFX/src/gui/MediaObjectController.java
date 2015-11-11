@@ -248,7 +248,6 @@ public class MediaObjectController extends GridPane{
 		mContextDragOver = new EventHandler <DragEvent>() {
 
 			//dragover to handle dragging the MediaObject
-			//TODO: needs to add correct coords and movement of the mouse (only left and right)
 			@Override
 			public void handle(DragEvent event) {		
 				AnchorPane timelineLinePane = parentController.getRoot();
@@ -354,7 +353,6 @@ public class MediaObjectController extends GridPane{
 		this.parentController = parentController;
 	}
 	
-	//TODO: Add propper width
 	private double getMediaObjectWidth(){
 		return mediaObjectActualWidth;
 	}
@@ -366,15 +364,5 @@ public class MediaObjectController extends GridPane{
 	public TimelineMediaObject getTimelineMediaObject(){
 		return timelineMediaObject;
 	}
-	
-	//Shoud this be a controller ? or shoud it be a Pane ? or other ?
-	
-	/**
-	 * Controller: pros are standard FX pros. 
-	 * Cons are that if you drag and drop the media object the controller wont be "moved" 
-	 * so you always have to ask controller where the object is.
-	 * 
-	 * Java has a built in drag and drop, but in order to use this one need to have a proper system of nodes.
-	 * is that possible and still get the "snap on seconds" and such?
-	 */
+
 }

@@ -61,8 +61,6 @@ public class TimelineModel implements Serializable{
 	 * if there is available space where the TimelineMediaObject starts, the duration may be shorted down
 	 * to make it fit. The return string says something about the result of trying to fit in the 
 	 * TimelineMediaObject.
-	 * TODO: Consider if the implemented way of squeezing in the TimelineMediaObject makes sense and is
-	 * user friendly.
 	 * @param m
 	 * @return
 	 */
@@ -199,7 +197,7 @@ public class TimelineModel implements Serializable{
 	 * @param newStart
 	 * @param newDuration
 	 * @return
-	 */ //TODO: Do the check with the dummy object, and change the actual object instead. This fucks up the pointers when editing on a timeline
+	 */
 	public String timelineMediaObjectChanged( TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){	
 		if(!timelineMediaObjects.remove(tlmo)){
 			return "TimelineMediaObject not found on timeline";

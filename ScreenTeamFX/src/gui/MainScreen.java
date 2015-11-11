@@ -40,7 +40,7 @@ public class MainScreen implements Screen {
 		screenController = new MainScreenController();
 		
 		//Setting the root of the controller to the scene
-		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700); //TODO: Get size from global size ?
+		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700);
 	}
 	
 	public static MainScreen getInstance() {

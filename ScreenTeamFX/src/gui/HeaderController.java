@@ -173,7 +173,6 @@ public class HeaderController implements FXMLController{
 	
 	
 	/*
-	 * TODO: possibly get all mediaObjects from the currentSession first?
 	 * This method updates the tilePane in the header. This should happen every time the model is changed. 
 	 */
 	public void updateMediaView(){
@@ -198,8 +197,7 @@ public class HeaderController implements FXMLController{
 		}	
 	}
 	
-	/*
-	 * TODO: get the currentSession from advancedScreen, and get the list of mediaObjects from the session. 
+	/* 
 	 *  This method is run by the currentSession when a mediaObject is changed. 
 	 */
 	public void mediaObjectsChanged(){ // is Run by the advScreen when the function fireMediaObjectCahnges 

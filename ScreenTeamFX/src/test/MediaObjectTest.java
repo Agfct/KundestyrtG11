@@ -56,7 +56,6 @@ public class MediaObjectTest extends TestCase  {
 		MO.setLength(40);
 		assertEquals("Correc setLength ",40,MO.getLength());
 		
-		// TODO: WE NEED TO CHECK IF THE VALUE IS LESS THAN 0
 		MO.setLength(-40);
 		assertEquals("Correc setLength ",-40,MO.getLength());
 		

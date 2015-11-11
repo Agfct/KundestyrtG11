@@ -32,8 +32,6 @@ public class MainModuleController {
 	private MainModuleController(){
 		FileController.initialize();
 		this.storageController = StorageController.getInstance();
-		//TODO check if storage loads last session without problem, if so set timelinemodule to last session
-		//this.timelinemodule = this.storage.gettimelineModule
 		this.ioModule = new IOModule();
 		this.wdi = new WindowDisplay(ioModule.getDisplays().size());
 		this.vlc = new VLCController(ioModule.getDisplays());

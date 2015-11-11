@@ -221,20 +221,8 @@ public class MediaObjectIcon extends GridPane{
 				event.consume();
 			}
 		};
-		//close button click
-		//	close_button.setOnMouseClicked( new EventHandler <MouseEvent> () {
-		//
-		//		@Override
-		//		public void handle(MouseEvent event) {
-		//			AnchorPane parent  = (AnchorPane) self.getParent();
-		//			parent.getChildren().remove(self);
-		//		}
-		//		
-		//	});
 
 		//drag detection for node dragging
-		//TODO: use like a title bar for dragging ? not dragging the whole ting ?
-		//	title_bar.setOnDragDetected ( new EventHandler <MouseEvent> () {
 		setOnDragDetected ( new EventHandler <MouseEvent> () {
 
 			@Override

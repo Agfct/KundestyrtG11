@@ -40,8 +40,7 @@ public class LoadingScreen implements Screen {
 			e.printStackTrace();
 		}
 		
-		screenScene = new Scene(rootPane,600,400); //TODO: Get size from global size ?
-//		screenScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		screenScene = new Scene(rootPane,600,400);
 	}
 	
 	

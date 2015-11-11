@@ -74,7 +74,6 @@ public class StorageController {
 				f_out_stream.close();
 				obj_out_stream.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -122,7 +121,6 @@ public class StorageController {
 				f_in_stream.close();
 				obj_in_stream.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -157,7 +155,7 @@ public class StorageController {
 					}
 					
 					if ( k==sm.getMediaObjects().size()-1 ) {
-						// Have found no parent!
+						// Have found no parent! Should not be possible
 						// TODO: handle this. maybe add the parent to the media objects?
 					}
 				}

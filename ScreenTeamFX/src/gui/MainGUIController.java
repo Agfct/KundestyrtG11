@@ -125,7 +125,6 @@ public class MainGUIController {
 	}
 
 	public void updateSession(SessionModule sm) {
-		// TODO Auto-generated method stub
 		AdvancedScreen.getInstance().getScreenController().fireMediaObjectListChanged();
 		AdvancedScreen.getInstance().getScreenController().rebuildTimelines();
 		AdvancedScreen.getInstance().getScreenController().fireGlobalTimeChanged(sm.getGlobalTime());

@@ -155,7 +155,6 @@ public class SeekerController extends Pane{
 				if (timelineBarController.getBoundsInLocal().contains(mediaControllerRect)) {
 					event.acceptTransferModes(TransferMode.MOVE);
 					relocateToPoint(new Point2D(mediaControllerRect.getMinX(),mediaControllerRect.getMinY()));
-					//TODO: Local point in advanced sceen
 					AdvancedScreen.getInstance().getScreenController().moveSeekerPopup(localToScene(0,25));
 					AdvancedScreen.getInstance().getScreenController().ifSeekerIsOutsideThenScroll(localToScene(0,25));
 				}
