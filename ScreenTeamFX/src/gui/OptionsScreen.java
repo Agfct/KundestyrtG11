@@ -40,7 +40,7 @@ public class OptionsScreen implements Screen {
 		screenController = new OptionsScreenController();
 		
 		//Setting the root of the controller to the scene
-		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700); //TODO: Get size from global size ?
+		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700);
 	}
 	
 	public static OptionsScreen getInstance() {

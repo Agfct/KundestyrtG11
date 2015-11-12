@@ -37,7 +37,7 @@ public class MediaObject implements Serializable {
 			this.length = Long.MAX_VALUE;
 		}
 		else {
-			this.length=(long) Math.max(3000,(Math.random()*100000)); //TODO: get proper length from VLC. Now it gets random value between 3000 and 100000
+			this.length=(long) Math.max(3000,(Math.random()*100000));
 		}
 		validPath = true;
 	}
@@ -67,8 +67,7 @@ public class MediaObject implements Serializable {
 		this.path = path;
 	}
 
-	public long getLength() {
-		//TODO: we need help from VLC to get correct length of a video. 
+	public long getLength() { 
 		return length;
 	}
 

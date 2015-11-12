@@ -13,10 +13,7 @@ public class Event implements Comparable<Event>, Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -2678309540724062674L;
-	/**
-	 * TODO: should 'time' be from the start of the performance (00:00) or from where the it starts when
-	 * 	the user presses play?
-	 */
+
 	private long time;
 	private int timelineid;
 	private Action action;

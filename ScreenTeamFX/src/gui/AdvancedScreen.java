@@ -74,8 +74,8 @@ public class AdvancedScreen implements Screen{
 		//Creating a new controller for use in the fxml
 		screenController = new AdvancedScreenController();
 
-		//			screenScene = new Scene(rootPane,1200,700); //TODO: Get size from global size ?
-		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700); //TODO: Get size from global size ?
+		//			screenScene = new Scene(rootPane,1200,700);
+		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700);
 	}
 
 	public static AdvancedScreen getInstance() {
@@ -225,7 +225,6 @@ public class AdvancedScreen implements Screen{
 		/**
 		 * initializes the Scroll bar and its listener
 		 * The listener moves the timelineLines.
-		 * TODO: Keep current scroll value to update newly added timlines, also make shure the scroll does not cover the info window.
 		 */
 		private void initializeScrollBar() {
 
@@ -314,7 +313,6 @@ public class AdvancedScreen implements Screen{
 					ClipboardContent content = new ClipboardContent();
 					MediaObjectContainer container = new MediaObjectContainer();
 					//						
-					//TODO: add all advanced information about the MediaObject is added here (seperate method ? )
 					container.addData ("model", icn.getMediaObject());
 
 					//Container is put onto the clipboard
@@ -356,26 +354,6 @@ public class AdvancedScreen implements Screen{
 				}
 			};
 
-			//TODO: NOT USED ? REVISIT
-			//				mIconDragOverTimeline = new EventHandler <DragEvent> () {
-			//
-			//					@Override
-			//					public void handle(DragEvent event) {
-			//
-			//						event.acceptTransferModes(TransferMode.ANY);
-			//						
-			//						//convert the mouse coordinates to scene coordinates,
-			//						//then convert back to coordinates that are relative to 
-			//						//the parent of mDragIcon.  Since mDragIcon is a child of the root
-			//						//pane, coodinates must be in the root pane's coordinate system to work
-			//						//properly.
-			//						mDragOverIcon.relocateToPoint(
-			//										new Point2D(event.getSceneX(), event.getSceneY())
-			//						);
-			//						event.consume();
-			//					}
-			//				};
-
 			/**
 			 * When the mediaObjectIcon is dropped onto a timeline this handler
 			 * gets the drop point and adds it to a new mediaObjectContainer which is set as the
@@ -389,7 +367,7 @@ public class AdvancedScreen implements Screen{
 					MediaObjectContainer container =
 							(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.AddNode);
 
-					//TODO: TESTING REMOVE THE pk point and sysout
+
 					Point2D pk = new Point2D(event.getSceneX(),event.getSceneY());
 
 					//Adds the coordinates where the icon was dropped to the MediaObjectContainer
@@ -470,13 +448,9 @@ public class AdvancedScreen implements Screen{
 		 * Adds a new timeline to the advancedScreen
 		 * First adding the TimelineController to the advanceScreen controller list
 		 * then adding the GridPane of the TimelineController to the VBox container.
-		 * TODO: add arguments and java models
 		 */
 		public void addTimeline(){
 			int timelineInt = currentSession.addTimeline();
-			//				TimelineController tempTimeController = new TimelineController();
-			//				timelineControllers.add(tempTimeController);
-			//				addTimelineControllerToScreen(tempTimeController);
 		}
 
 		public void duplicateTimeline(TimelineModel tlm) {
@@ -575,7 +549,6 @@ public class AdvancedScreen implements Screen{
 				break;
 			}
 			case MODIFIED:{
-				//TODO: find out what the modification was: addedMediaObject, removedMediaOBject or replaced mediaobject.
 				TimelineController timelineControllerToBeModified=null;
 				for(TimelineController timelineController: idTimlineControllerMap.keySet()){
 					if(idTimlineControllerMap.get(timelineController).equals(timeLineModel.getID())){
@@ -834,14 +807,13 @@ public class AdvancedScreen implements Screen{
 		 * NB! A canvas cannot be very large (max 4k)
 		 */
 		public void paintTimelineBarCanvas(){
-			//TODO: This method needs to repaint when you move the scrollbar, and it needs to keep track of where you are on the timeline.
 
 			gc.setLineWidth(1.0);
 			//x = 12 to start the first line ontop of the center of the seeker
 			int k = 5;
 			for (int x = 12; x < 1000; x+=10) {
 				double x1 = 0;
-				x1 = x; //TODO: The 0.5 is to get a clean (not blurry) line, but it might mean that x width should be +1 more pixel
+				x1 = x;
 				gc.setFont(new Font(8));
 				if(k == 5){
 					k = 0;
@@ -869,39 +841,8 @@ public class AdvancedScreen implements Screen{
 					gc.lineTo(x1, 18);
 					gc.stroke();
 				}
-				//			            gc.strokeText("1", x1, 12);
+
 			}
-
-
-			//				root.getChildren().removeAll(currentListOfCanvases);
-			//				currentListOfCanvases.clear();
-			//				//11 is the added length because the bar needs to be centered when starting and stopping
-			//				long barScaledSessionLength = (parentController.getCurrentSession().getSessionLength()*parentController.getScaleCoefficient())+11;
-			//				long widthBetweenLines = 10;
-			//
-			//				//Canvas are not scalable by default and can only have a length of 2-4k so we make 2k canvases and draws upon them.
-			//				for (int i = 0; i < Math.ceil(barScaledSessionLength/2000); i++) {
-			//					Canvas timelineBarCanvas = new Canvas(2000, 25);
-			//					root.getChildren().add(timelineBarCanvas);
-			//					currentListOfCanvases.add(timelineBarCanvas);
-			//				}
-			//				for (Canvas canvas : currentListOfCanvases) {
-			//					GraphicsContext gc = canvas.getGraphicsContext2D();
-			//					gc.setLineWidth(1.0);
-			//					//x = 12 to start the first line ontop of the center of the seeker
-			//				     for (int x = 12; x < barScaledSessionLength; x+=widthBetweenLines) {
-			//				            double x1 ;
-			//				            x1 = x + 0.5; //TODO: The 0.5 is to get a clean (not blurry) line, but it might mean that x width should be +1 more pixel
-			//				            gc.moveTo(x1, 25);
-			//				            gc.lineTo(x1, 15);
-			//				            gc.stroke();
-			//				            gc.setFont(new Font(8));
-			//				            gc.fillText("1", x1+1, 12);
-			////				            gc.strokeText("1", x1, 12);
-			//				        }
-			//				}
-
-
 
 		}
 
@@ -1023,7 +964,6 @@ public class AdvancedScreen implements Screen{
 
 		public void fireTimelinebarChanged() {
 			// TODO: update timelinebar
-			// Implement to use mvc correctly, currently hacked
 		}
 		
 		public void repaintTimelinebarBreakpoints(){

@@ -471,8 +471,7 @@ public class SessionModule implements Serializable {
     private void buildPerformance(){
         //Add all Events to list, then sort it
         performancestack = new ArrayList<Event>();
-        //TODO change to only the timelines that is assigned to a display??
-        // maybe for (Integer dis : displays.keyset())
+
         for(Integer dis : displays.keySet()){
             if (displays.get(dis) != null){
                 for(Event ev2 : displays.get(dis).getTimelineStack()){
@@ -515,8 +514,7 @@ public class SessionModule implements Serializable {
                     }
                     else if(ev.getTimelineMediaObject().getParent().getType()==MediaSourceType.STREAM){
                         /**
-                         * TODO: Handle streams here. (Do they have both a start and end time? Might want to change between
-                         * two streams on one timeline??
+                         * TODO: Handle streams here.
                          */
                         System.out.println("Adding events for streams is not implemented in TimelineModule.java: buildPerformance() yet.");
                     }
@@ -580,7 +578,6 @@ public class SessionModule implements Serializable {
                 t1.join();
                 globalTimeTicker.join();
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             performancestack.clear();
@@ -671,7 +668,6 @@ public class SessionModule implements Serializable {
             	//call the pauseAll function to pause the videos that are playing
                 vlccontroller.pauseAll();
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             paused = true;
@@ -1005,7 +1001,6 @@ public class SessionModule implements Serializable {
     	}
     }
 
-    //TODO: we need to specify which mediaobject has been changed.
     private void mediaObjectsChanged(){
         for(SessionListener listener: listeners){
             listener.fireMediaObjectListChanged();
@@ -1024,7 +1019,7 @@ public class SessionModule implements Serializable {
 
 
     public void changeOrderOfTimelines(int timelineID, int newPos ){
-        //TODO: Change order of tha timelines
+        //TODO: Change order of the timelines
         //This means sending the new order to the GUI,and the GUI must clear all controllers from the timelineContainer. And then reAdd them in the order specified by the timelineOrder
     }
 
