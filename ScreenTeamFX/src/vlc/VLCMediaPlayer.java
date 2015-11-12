@@ -59,7 +59,7 @@ public class VLCMediaPlayer{
 	
 	public void play(){
 		System.out.println("[PLAY]");
-		if(display > -1){
+		if(display > -1 && !isPlaying()){
 			if(mediaChanged){
 				System.out.println("[mediaChanged!]");
 				mediaPlayerComponent.getMediaPlayer().startMedia(mediaPath);
@@ -67,7 +67,7 @@ public class VLCMediaPlayer{
 			}
 			else if(getTime() > -1){
 				System.out.println("[getTime>-1]");
-				mediaPlayerComponent.getMediaPlayer().start();
+				mediaPlayerComponent.getMediaPlayer().play();
 			}
 			else{
 				System.out.println("No video attached");
