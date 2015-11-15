@@ -43,6 +43,7 @@
 		<children>
 			<Text styleClass="header-smal" GridPane.columnIndex="1"
 				GridPane.halignment="CENTER"> Options</Text>
+				<Button fx:id="changeBackground" onAction="#buttonPressed" GridPane.columnIndex="2" GridPane.halignment="CENTER" style="-fx-font: 4 Arial" ></Button>
 			<GridPane GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.rowSpan="2" gridLinesVisible="false">
 				<columnConstraints>
 					<ColumnConstraints percentWidth="100" />

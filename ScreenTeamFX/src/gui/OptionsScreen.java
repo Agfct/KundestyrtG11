@@ -4,6 +4,7 @@
 package gui;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import com.sun.org.apache.xpath.internal.operations.Equals;
 
@@ -29,6 +30,7 @@ public class OptionsScreen implements Screen {
 
 	//Singleton:
 	private static OptionsScreen optionScreen;
+	private boolean blackBackground  = false;
 	
 
 	Scene screenScene;
@@ -158,6 +160,27 @@ public class OptionsScreen implements Screen {
 				AdvancedScreen.getInstance().getScreenController().getCurrentSession().setVLCConfiguration(newVlcConfig);
 				AdvancedScreen.getInstance().getScreenController().getCurrentSession().updateMediaPlayers();
 				paintVLCConfigValues();
+			}else if(((Button)event.getSource()).getId().equals("changeBackground")){
+				//If the background is default (not black)
+				if(!blackBackground){
+					blackBackground = true;
+					rootPane.getStyleClass().removeAll("background-main");
+					rootPane.getStyleClass().add("background-main-black");
+					MainScreen.getInstance().getScreenController().getRoot().getStyleClass().removeAll("background-main");
+					MainScreen.getInstance().getScreenController().getRoot().getStyleClass().add("background-main-black");
+					AdvancedScreen.getInstance().getScreenController().getRoot().getStyleClass().removeAll("background-main");
+					AdvancedScreen.getInstance().getScreenController().getRoot().getStyleClass().add("background-main-black");
+					
+				}else{
+					blackBackground = false;
+					rootPane.getStyleClass().removeAll("background-main-black");
+					rootPane.getStyleClass().add("background-main");
+					MainScreen.getInstance().getScreenController().getRoot().getStyleClass().removeAll("background-main-black");
+					MainScreen.getInstance().getScreenController().getRoot().getStyleClass().add("background-main");
+					AdvancedScreen.getInstance().getScreenController().getRoot().getStyleClass().removeAll("background-main-black");
+					AdvancedScreen.getInstance().getScreenController().getRoot().getStyleClass().add("background-main");
+				}
+				System.out.println(rootPane.getStyleClass());
 			}
 		}
 		

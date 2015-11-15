@@ -113,19 +113,18 @@
 	-fx-background-size: cover;
 }
 
-.background-advancedScreen {
-	-fx-background-image: url("../../resources/background_dokkhuset.png");
-	-fx-background-repeat: no-repeat;
-	-fx-background-size: cover;
-}
-
-
 .background-transparent {
 	-fx-background-color:rgba(0,100, 100, 0.5);
 }
 
 .background-main {
 	-fx-background-image: url("../../resources/background_dokkhuset.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+}
+
+.background-main-black {
+	-fx-background-image: url("../../resources/background_black.png");
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: cover;
 }

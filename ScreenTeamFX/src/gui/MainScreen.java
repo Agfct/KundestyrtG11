@@ -59,13 +59,17 @@ public class MainScreen implements Screen {
 		return screenScene;
 	}
 	
+	public MainScreenController getScreenController(){
+		return screenController;
+	}
+	
 	/**
 	 * 
 	 * @author Anders Lunde
 	 * The controller for the FXML of the mainScreen.
 	 * The MainScreenController listens to all the input from the objects (buttons, textFields, mouseClicks) in the fxml scene.
 	 */
-	private class MainScreenController implements FXMLController {
+	public class MainScreenController implements FXMLController {
 		
 		private FXMLLoader fxmlLoader;
 		private AnchorPane rootPane;
@@ -131,8 +135,12 @@ public class MainScreen implements Screen {
 			return fxmlLoader;
 		}
 		
+		public AnchorPane getRoot(){
+			return rootPane;
+		}
+		
 
 		
-	}
+	}// Main screen controller ends
 
 }
