@@ -40,7 +40,7 @@ public class MainScreen implements Screen {
 		screenController = new MainScreenController();
 		
 		//Setting the root of the controller to the scene
-		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700); //TODO: Get size from global size ?
+		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700); //TODO: Make a global size instead of 1200,700
 	}
 	
 	public static MainScreen getInstance() {
@@ -110,14 +110,6 @@ public class MainScreen implements Screen {
 				
 			}else if(((Button)event.getSource()).getId().equals("exitBtn")){
 				System.exit(0);
-				//TODO: Figure out how to close a javafx application properly
-//				MainGUIController.getInstance().primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-//				    @Override
-//				    public void handle(WindowEvent event) {
-//				    	MainGUIController.getInstance().primaryStage.close();
-//				    	Platform.exit();
-//				    }
-//				});
 			}
 //			else if(((Button)event.getSource()).getId().equals("testBtn") ){
 //			VLCController vlcc = MainModuleController.getInstance().getVLCController();

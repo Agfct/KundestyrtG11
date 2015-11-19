@@ -7,7 +7,7 @@ import javafx.scene.control.TextField;
 
 /**
  * @author Anders Lunde
- *
+ * A textField that only allowes numbers as input.
  */
 public class NumberTextField extends TextField
 {

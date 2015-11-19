@@ -215,7 +215,6 @@ public class ModalController implements FXMLController {
 			//TODO: a new object is made each time something is changed. See the TODO on line 172 in timelineModel.java This means the function only works one time.
 			//This line get the currentSession, and sends a request to change the value of the timelinemediaObject
 			String result = AdvancedScreen.getInstance().getScreenController().getCurrentSession().timelineMediaObjectChanged(currentMediaObjectController.getParentController().getParentController().getTimelineModel(),currentMediaObjectController.getTimelineMediaObject(), (int)temp_start, (int)temp_startPoint, (int)temp_duration);
-			//TODO: it would be nice to display this result somewhere. Maybe another popup? or some field on the screen that can be used. 		
 			System.out.println("timelinemediaObject changed: " + result);
 			this.setInfo(); // Update the info from the model. It is possible that the values inputted was rejected. 
 		}else if(((Button)event.getSource()).getId().equals("okBtn")){

@@ -38,7 +38,7 @@ import modules.TimelineModel;
  * 
  * @author Anders Lunde
  * The TimelineController is the controller of everything you see in a single timeline.
- * It contains fxml for the timeline info (left side) and the timeline with videos (right side)
+ * It contains fxml for the timeline info (left side) and a TimelineLineController that has the timeline with videos (right side)
  */
 public class TimelineController implements FXMLController {
 	
