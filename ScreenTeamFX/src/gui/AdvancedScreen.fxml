@@ -52,7 +52,7 @@
 							vgrow="NEVER" />
 					</rowConstraints>
 					<children>
-						<Label fx:id="timelineBarGlobalTime" text="Time: " >
+						<Label fx:id="timelineBarGlobalTime" style="-fx-text-fill: black" text="Time: " >
 						<GridPane.margin>
 							<Insets left="10.0" />
 						</GridPane.margin>
