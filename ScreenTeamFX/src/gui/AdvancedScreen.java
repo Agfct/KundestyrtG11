@@ -7,19 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
-import com.sun.webkit.dom.KeyboardEventImpl;
 
 import javafx.application.Platform;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,15 +29,12 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -102,25 +91,29 @@ public class AdvancedScreen implements Screen{
 
 
 	/**
-	 *
 	 * @author Anders Lunde, Magnus Gundersen
 	 * The controller for the FXML of the advancedScreen.
 	 * The AdvancedScreenController is the main controller for all of the GUI, and almost all information flows through here.
-	 * This controller has all the GUI controllers as its children and can access them all. 
-	 * Controllers in order of apperance in the User Interface (from top to bottom)
-	 * HeaderController (Contains buttons for adding timelines, save, load, ...)
-	 * TimelineBarController (Contains the timelineBar.fxml and the seekerController and stopPointController)
-	 * TimelineControllers (An array of every Timeline, that is: Every TimelineController)
+	 * This controller has all the GUI controllers as its children and can access them all.
+	 * 
+	 * Controllers in order of appearance in the User Interface (from top to bottom):
+	 * HeaderController			-	(Contains buttons for adding timelines, save, load, ...)
+	 * TimelineBarController 	-	(Contains the timelineBar.fxml and the seekerController and stopPointController)
+	 * TimelineControllers 		-	(An array of every Timeline, that is: Every TimelineController)
 	 */
 	public class AdvancedScreenController implements FXMLController, SessionListener {
 
-
-		//List of all TimelineControllers within the advancedScreen
-		private ArrayList<TimelineController> timelineControllers;
-		private TimelineBarController timelineBarController;
+		//Child Controllers of advanceScreenController:
 		private HeaderController headerController;
+		private TimelineBarController timelineBarController;
+		private ArrayList<TimelineController> timelineControllers;
+		
+		//The current session from modules
 		private SessionModule currentSession;
+		
 		private double scrollBarPosition = 0;
+		
+		//Stages that are shown in sessionBuilder (pop up windows):
 		private Stage modalDialog;
 		private Stage windowChooser; // stage for the windowChooser
 
@@ -131,6 +124,7 @@ public class AdvancedScreen implements Screen{
 		private int minScale = 1;
 		private double scrollBarDefaultValue = 0;
 
+		//FXML Loader and RootPanes
 		private FXMLLoader fxmlLoader;
 		private AnchorPane rootPane;
 		@FXML private GridPane rootGrid;
@@ -145,7 +139,7 @@ public class AdvancedScreen implements Screen{
 		private EventHandler<DragEvent> mIconDragOverTimeline = null;
 		private SeekerPopupController seekerPopup = null;
 
-		// Pointers to the fx:id in the fxml
+		// Pointers to the fx:id in the FXML
 		@FXML private VBox timelineContainer;
 		@FXML private Button testButton;
 		@FXML private ListView fileListView;
@@ -222,7 +216,9 @@ public class AdvancedScreen implements Screen{
 			timelineScrollPane.addEventFilter(KeyEvent.ANY,new EventHandler<KeyEvent>() {
 		        @Override
 		        public void handle(KeyEvent event) {
-		        	//Consumes the event if the arrowKeys are pressed. This is to avoid destruction of the scrollpane
+		        	//Consumes the event if the arrowKeys are pressed. 
+		        	//This is to prevent the user from manually scrolling the scrollPane left and right
+		        	//TODO: This does not prevent touchPads from scrolling left and right, need a different solution.
 		        	KeyCode keyCode = event.getCode();
 		        	if(keyCode==KeyCode.UP || keyCode==KeyCode.DOWN || keyCode==KeyCode.LEFT || keyCode==KeyCode.RIGHT){
 		        		event.consume();
@@ -243,9 +239,7 @@ public class AdvancedScreen implements Screen{
 				public void changed(ObservableValue<? extends Number> ov,
 						Number old_val, Number new_val) {
 					scrollBarDefaultValue = new_val.doubleValue()/scaleCoefficient;
-					System.out.println("Scrolling: Old value: "+ old_val.doubleValue()+" NewValue: "+ new_val.doubleValue());
 					scrollBarPosition = -new_val.doubleValue();
-					System.out.println("Scroll default value" + scrollBarDefaultValue);
 					updateTimelinesPosition();
 				}
 			});

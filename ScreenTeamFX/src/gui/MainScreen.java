@@ -1,29 +1,20 @@
 package gui;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.WindowEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import modules.MainModuleController;
-import vlc.VLCController;
-import vlc.VLCMediaPlayer;
 
 /**
  * @author Anders Lunde, Magnus Gunde
  * Singleton  class
  * MainScreen is the handler for the main screen in the software.
- * Main screen is the first screen the user sees when he/she starts the software.
+ * Main screen is the second screen (loading screen is first) the user sees when he/she starts the software 
+ * and its where you navigate yourself to the other screens.
  */
 public class MainScreen implements Screen {
 	

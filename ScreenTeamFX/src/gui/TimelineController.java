@@ -3,16 +3,12 @@ package gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Optional;
-
-import org.controlsfx.control.CheckComboBox;
 
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,14 +19,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
-import modules.MainModuleController;
 import modules.TimelineModel;
 
 
@@ -82,8 +76,6 @@ public class TimelineController implements FXMLController {
 	 */
 	public TimelineController (TimelineModel timelineModel){
 		this.timelineModel=timelineModel;
-			//TODO: Add clipping on anchorPane ??
-//		timelineLineContainer.setClip(value);
 		
 		//Fetches the parent controller. In this case it is the controller in the advancedScreen class.'
 		parentController = AdvancedScreen.getInstance().getScreenController();
@@ -105,7 +97,6 @@ public class TimelineController implements FXMLController {
 		//Creates the actual timeline line (right side of the timeline) using this controller as parent controller
 		childController = new TimelineLineController(this);
 		
-		//TODO: Sets the timeline to the current scrollbar position
 		getTimelineLineController().moveTimeline(parentController.getScrollBarPosition());
 		
 		initializeTimelineInfo();

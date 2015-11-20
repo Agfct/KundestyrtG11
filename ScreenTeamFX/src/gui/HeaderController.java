@@ -7,19 +7,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import gui.AdvancedScreen.AdvancedScreenController;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
 import javafx.stage.FileChooser;

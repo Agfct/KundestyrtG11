@@ -4,10 +4,6 @@
 package gui;
 
 import java.io.IOException;
-import java.util.Collections;
-
-import com.sun.org.apache.xpath.internal.operations.Equals;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,15 +12,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import modules.MainModuleController;
 import vlc.VLCController;
 
 /**
- * @author Anders, Magnus
+ * @author Anders Lunde, Magnus Gundersen
  * Singleton  class
+ * The Options screen is a screen where you can modify VLC options, make the background black and see the credits.
  */
 public class OptionsScreen implements Screen {
 
@@ -71,7 +67,6 @@ public class OptionsScreen implements Screen {
 		private FXMLLoader fxmlLoader;
 		private AnchorPane rootPane;
 		private AnchorPane creditsRootPane;
-		private boolean credits = false;
 		private VLCController vlc_controller;
 		private String temp_vlcCommands = "";
 		
