@@ -13,7 +13,7 @@ import javafx.scene.layout.BorderPane;
 
 /**
  * @author Anders Lunde
- *
+ * Controls the popup that appears when the user drags the seeker on the timelineBar.
  */
 public class SeekerPopupController extends BorderPane {
 	

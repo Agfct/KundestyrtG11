@@ -5,20 +5,14 @@ package gui;
 
 import java.io.IOException;
 
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import modules.SessionModule;
-import modules.TimeLineChanges;
 
 /**
  * @author Anders Lunde, Magnus Gundersen.
  *Singleton.
- *This class controls the controllers for each fxml, 
- *and is the access point for everything that is needed from the GUI
+ *This class controls which Screen that is shown. It fetches the scene inside every Screen class and puts in onto the primaryStage.
  */
 public class MainGUIController {
 	
@@ -35,15 +29,16 @@ public class MainGUIController {
 	OptionsScreen optionsScreen;
 	
 	//Screen size
-	
+	//TODO: make a global screen size?
+
 	
 	/**
 	 * 
 	 * @param primaryStage
 	 * @throws IOException
 	 * 
-	 * The constructor of the MainGUIController starts by creating an instance of the mainScreen.
-	 * The mainScreen is the first window the user sees when he starts the application.
+	 * The constructor of the MainGUIController starts by creating an instance of the loadingScreen.
+	 * The loadingScreen is the first window the user sees when he starts the application.
 	 */
 	private MainGUIController(Stage primaryStage) throws IOException{
 		this.primaryStage = primaryStage;
@@ -115,7 +110,7 @@ public class MainGUIController {
 			
 			initialized = true;
 		}
-		//If initialized is true nothin happens
+		//If initialized is true nothing happens
 		
 	}
 	
@@ -125,7 +120,6 @@ public class MainGUIController {
 	}
 
 	public void updateSession(SessionModule sm) {
-		// TODO Auto-generated method stub
 		AdvancedScreen.getInstance().getScreenController().fireMediaObjectListChanged();
 		AdvancedScreen.getInstance().getScreenController().rebuildTimelines();
 		AdvancedScreen.getInstance().getScreenController().fireGlobalTimeChanged(sm.getGlobalTime());

@@ -20,7 +20,10 @@ import javafx.scene.layout.Pane;
 
 /**
  * @author Anders Lunde
- *
+ *Controls the StopPoint.fxml . 
+ *This is the red "pause"/"breakpoint" that appears in the timelineBar when the user right clicks and selects add stop point.
+ *This class handles the rightClick for removing the stopPoint and also contains default methods for scaling itself when scale changes.
+ *The stop point has the timelineBarController as its parent.
  */
 public class StopPointController extends Pane{
 	private FXMLLoader fxmlLoader;
@@ -37,7 +40,23 @@ public class StopPointController extends Pane{
 
 	private final ContextMenu contextMenu = new ContextMenu();
 	private Point2D seekPoint;
-
+	
+	//Hardcoded values
+	//Values are taken from the StopPoint.fxml which default is 5x25
+	private final int WIDTH = 5;
+	private final int HEIGTH = 25;
+	
+	//The time in the modules is in miliseconds (int value) so we need to divide and multiply by 1000 to scale things right.
+	private final int milisecs = 1000;
+	
+	//The point where the time is 0 (zero) is at pixel nr 13. The center of the stop pointer is at pixel nr 3.
+	//So to calculate the time we always move the stopPointer 10 (13-3) pixels to the left.
+	private final int PIXELSFROMCENTER = 10;
+	
+	//Using default of 5 in WIDTH the center is 3, 
+	//so the stop pointer needs to go -2 to the left from where you put the mouse, 
+	//this will put the 3rd pixel where your mouse is
+	private final int CENTERING = 2;
 
 	public StopPointController(TimelineBarController parent){
 		parentController = parent;
@@ -58,19 +77,23 @@ public class StopPointController extends Pane{
 		initializeTooltip();
 	}
 
+	/**
+	 * Sets the position of the stopPoint based on a point given by the TimelineBarController.
+	 * This point is usually a mouse rightClick.
+	 * @param point
+	 */
 	public void setStopPosition(Point2D point){
-		//		Point2D localXY = parentToLocal(point.getX(), point.getY());
-		relocateToPoint(new Point2D((point.getX()- 2),0));
+		relocateToPoint(new Point2D((point.getX()- CENTERING),0));
 		initializeTooltip();
 		System.out.println("Stop point point: " + this.getLayoutX());
-		System.out.println("StopPoint, ToScale: "+ localToParent(-10,25).getX()/scale);
-		long time = (long)(((getLayoutX()-10)/scale)*1000);
+		System.out.println("StopPoint, ToScale: "+ localToParent(-PIXELSFROMCENTER,HEIGTH).getX()/scale);
+		long time = (long)(((getLayoutX()-PIXELSFROMCENTER)/scale)*milisecs);
 		parentController.getAdvancedScreenController().getCurrentSession().addBreakpoint(time);
 
 	}
 	
 	public void setStopPosition(long time){
-		relocateToPoint(new Point2D((((time/1000))*scale+10),0));
+		relocateToPoint(new Point2D((((time/milisecs))*scale+PIXELSFROMCENTER),0));
 		initializeTooltip();
 	}
 	
@@ -101,7 +124,7 @@ public class StopPointController extends Pane{
 			public void handle(ActionEvent event) {
 				System.out.println("Removing Stop point");
 				parentController.removeStopPoint(thisStopPoint);
-				long time = (long)(((getLayoutX()-10)/scale)*1000);
+				long time = (long)(((getLayoutX()-PIXELSFROMCENTER)/scale)*milisecs);
 				parentController.getAdvancedScreenController().getCurrentSession().removeBreakpoint(time);
 			}
 		});
@@ -134,21 +157,8 @@ public class StopPointController extends Pane{
 				);
 	}
 	public long getStopPointPosition(){
-		return (long)((getLayoutX()-10)/scale);
+		return (long)((getLayoutX()-PIXELSFROMCENTER)/scale);
 	}
-
-//	/**
-//	 * When the scale changes we move the Stop to the new scaled location
-//	 * @param newScale
-//	 */
-//	public void scaleChanged(int newScale){
-//		System.out.println("StopPoint: scalechanged" );
-//		this.scale = newScale;
-//		System.out.println("StopPoint new GlobalTime: " + AdvancedScreen.getInstance().getScreenController().getGlobalTime() + " New Scale: " + newScale + " Gives you: " + (AdvancedScreen.getInstance().getScreenController().getGlobalTime()*scale)/1000);
-//		System.out.println("StopPoint: layoutX*scale = "+ getLayoutX()*scale);
-//		root.setLayoutX(((getLayoutX()-10)*scale)); //TODO: FIX
-//		initializeTooltip();
-//	}
 	
 	/**
 	 * This method was made because stopPoint had no saved value in modules so it has to rescale based on a legth coeff from timelineBarController.
@@ -156,11 +166,7 @@ public class StopPointController extends Pane{
 	 */
 	public void scaleChangedCoeff(double newScaleCoeff, int newScale){
 		this.scale = newScale;
-		System.out.println("StopPoint, OldX: "+ root.getLayoutX()+ " NewX: "+ (getLayoutX()-10)*newScaleCoeff);
-		System.out.println("StopPoint, OldToScale: "+ localToParent(-10,25).getX()/scale);
-		//The reason for the +-10 is because the stopPoint has to be 10 longer in the GUI (610 in GUI is 600 seconds, cause we start 0 at 10)
-		root.setLayoutX(((getLayoutX()-10)*newScaleCoeff)+10);
-		System.out.println("StopPoint, NewToScale: "+ localToParent(-10,25).getX()/scale + " NewLayoutX " + getLayoutX());
+		root.setLayoutX(((getLayoutX()-PIXELSFROMCENTER)*newScaleCoeff)+PIXELSFROMCENTER);
 		initializeTooltip();
 	}
 	private String getStartTimeAsText(){

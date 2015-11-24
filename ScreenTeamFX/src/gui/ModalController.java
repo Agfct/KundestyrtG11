@@ -1,17 +1,11 @@
 package gui;
 
 import java.io.IOException;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableObjectValue;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import modules.MediaSourceType;
 
@@ -63,12 +57,28 @@ public class ModalController implements FXMLController {
 			System.out.println("Failed to load Media Object modal FXML");
 			e.printStackTrace();
 		}
-
+		
+		//Disable offset on Images + Windows
+		disableOffset();
+		
+		//Sets the values of the start_time and other fields.
 		setInfo();
+		
+		//Add listeners to fields
 		initializeMediaObjectToModal();
 
 	}
 
+	/**
+	 * Disables offset if the media is an image or window.
+	 */
+	private void disableOffset(){
+		if(currentMediaObjectController.getType() == MediaSourceType.IMAGE){
+			offsetField.setDisable(true);
+		}else if(currentMediaObjectController.getType() == MediaSourceType.WINDOW){
+			offsetField.setDisable(true);
+		}
+	}
 
 	/**
 	 * This function gets the info from the model, and sets the fields. It is run every time the user does some changes to the values that are displayed. 
@@ -110,8 +120,8 @@ public class ModalController implements FXMLController {
 		return String.format("%02dh : %02dm : %02ds : %02dms", hours, minutes, seconds,milliseconds);
 	}
 
-	//This method is needed because when we set the value of hours, the value of mintues and seconds ect are not set yet.
-	//But the lisner is still tirgered
+	//This method is needed because when we set the value of hours, the value of minutes and seconds etc are not set yet.
+	//But the listener is still triggered
 	private long checkValue(NumberTextField field){
 		long tempValue = 0;
 		try {
@@ -125,6 +135,7 @@ public class ModalController implements FXMLController {
 	}
 	/**
 	 * Maps the info in the media object to the modal for editing.
+	 * Adds listeners to all the different fields.
 	 */
 	private void initializeMediaObjectToModal(){
 		// Handle TextField text changes.
@@ -215,7 +226,6 @@ public class ModalController implements FXMLController {
 			//TODO: a new object is made each time something is changed. See the TODO on line 172 in timelineModel.java This means the function only works one time.
 			//This line get the currentSession, and sends a request to change the value of the timelinemediaObject
 			String result = AdvancedScreen.getInstance().getScreenController().getCurrentSession().timelineMediaObjectChanged(currentMediaObjectController.getParentController().getParentController().getTimelineModel(),currentMediaObjectController.getTimelineMediaObject(), (int)temp_start, (int)temp_startPoint, (int)temp_duration);
-			//TODO: it would be nice to display this result somewhere. Maybe another popup? or some field on the screen that can be used. 		
 			System.out.println("timelinemediaObject changed: " + result);
 			this.setInfo(); // Update the info from the model. It is possible that the values inputted was rejected. 
 		}else if(((Button)event.getSource()).getId().equals("okBtn")){

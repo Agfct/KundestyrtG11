@@ -5,36 +5,23 @@ package gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import modules.Event;
-import modules.MainModuleController;
 
 /**
  * @author Anders Lunde
- *
+ * The timelineBar is the Bar that is between the header and the scrollpain containing the timelines.
+ * The timelineBar has both stopPointController and SeekerController as its children.
  */
 public class TimelineBarController extends Pane {
 
@@ -47,8 +34,7 @@ public class TimelineBarController extends Pane {
 
 	//Last pressed rightClick on timelineBar
 	private Point2D seekPoint;
-	private ArrayList<Canvas> currentListOfCanvases = new ArrayList<Canvas>();
-
+	
 	private SeekerController seeker;
 	private final ContextMenu contextMenu = new ContextMenu();
 
@@ -140,6 +126,13 @@ public class TimelineBarController extends Pane {
 		}
 	}
 
+	/**
+	 * Returns a new seek point based on a mouse click event.
+	 * The seek point will be in the TimelineBarController's own local x,y coordinates
+	 * and will always be placed on the top (y = 0). 
+	 * @param event
+	 * @return
+	 */
 	public Point2D getNewSeekPoint(MouseEvent event){
 		return root.sceneToLocal(event.getSceneX(),0);
 	}

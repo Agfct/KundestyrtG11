@@ -19,7 +19,7 @@
 		prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0"
 		AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
 		AnchorPane.topAnchor="0.0"
-		gridLinesVisible="true">
+		gridLinesVisible="false">
 		<columnConstraints>
 			<ColumnConstraints hgrow="NEVER" percentWidth="25"
 				minWidth="10.0" prefWidth="135.0" />
@@ -43,7 +43,8 @@
 		<children>
 			<Text styleClass="header-smal" GridPane.columnIndex="1"
 				GridPane.halignment="CENTER"> Options</Text>
-			<GridPane GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.rowSpan="2" gridLinesVisible="true">
+				<Button fx:id="changeBackground" onAction="#buttonPressed" GridPane.columnIndex="2" GridPane.halignment="CENTER" style="-fx-font: 4 Arial" ></Button>
+			<GridPane GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.rowSpan="2" gridLinesVisible="false">
 				<columnConstraints>
 					<ColumnConstraints percentWidth="100" />
 				</columnConstraints>
@@ -85,7 +86,7 @@
 						onAction="#buttonPressed"  />
 				</children>
 			</GridPane>
-			<GridPane GridPane.rowIndex="1" GridPane.columnIndex="2" GridPane.rowSpan="2" gridLinesVisible="true">
+			<GridPane GridPane.rowIndex="1" GridPane.columnIndex="2" GridPane.rowSpan="2" gridLinesVisible="false">
 			<columnConstraints>
 					<ColumnConstraints percentWidth="50" />
 					<ColumnConstraints percentWidth="50" />
@@ -105,7 +106,7 @@
 			<Button id="mainMenuBtn" onAction="#buttonPressed" alignment="CENTER"
 				mnemonicParsing="false" text="MainMenu" GridPane.columnIndex="1"
 				GridPane.rowIndex="2" GridPane.halignment="CENTER" />
-			<TextFlow GridPane.columnIndex="2" GridPane.rowIndex="4"
+			<TextFlow GridPane.columnIndex="2" GridPane.rowIndex="3"
 				GridPane.halignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
 				minHeight="-Infinity" minWidth="-Infinity" textAlignment="CENTER">
 				<children>
