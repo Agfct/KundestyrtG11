@@ -55,7 +55,8 @@ public class SessionModule implements Serializable {
     private final long WINDOW_DURATION = 30000;
     
     //configuration for the vlc. 
-    String[] vlcConfiguration = {};
+    String[] vlcConfiguration = {"--vout=directdraw", "--no-overlay"};
+    
 
 
     public SessionModule(VLCController vlc, WindowDisplay wdi) {
@@ -82,6 +83,7 @@ public class SessionModule implements Serializable {
         this.shownwindows = new ArrayList<String>();
         this.numberOfAvailableDisplays = -1;
         this.timelinebarStopEvents = new ArrayList<Event>();
+
     }
 
     /**
