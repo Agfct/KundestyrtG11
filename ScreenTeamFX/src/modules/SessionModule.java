@@ -31,6 +31,7 @@ public class SessionModule implements Serializable {
     private ArrayList<Event> performancestack;
     //counter for the id of the timelineModels
     private int tlmID;
+    //booleans to check what state the program is in (playing, paused)
     private boolean pausing;
     private boolean paused;
     private boolean inter;
@@ -57,7 +58,11 @@ public class SessionModule implements Serializable {
     //configuration for the vlc. 
     String[] vlcConfiguration = {};
 
-
+    /**
+     * Creates a new SessionModule, which correspond to a session the user can alter as the want
+     * @param vlc: The vlccontroller that controls the frames and mediaplayers the program us 
+     * @param wdi: The windowDisplay that controls windows open on the computer
+     */
     public SessionModule(VLCController vlc, WindowDisplay wdi) {
         this.timelines = new HashMap<Integer,TimelineModel>();
 //		this.timelines.put(0,new TimelineModel(0));
@@ -85,8 +90,7 @@ public class SessionModule implements Serializable {
     }
 
     /**
-     * add a new timeline to the list of timelines
-     * @param tlm
+     * add a new timeline object to the list of timelines for this session
      */
     public int addTimeline(){
         tlmID +=1;
@@ -98,9 +102,10 @@ public class SessionModule implements Serializable {
         return tlmID;
     }
 
-    /*
+    /**
      * This function removes the timeline from the modules.
      * It then sends the removed object back to the GUI, in order for all pointers to the timeline to be removed.
+     * @param id: The id of the timeline to be removed
      */
     public void removeTimeline(int id){
         // Find the timeline in the timelines list and remove it
@@ -112,6 +117,9 @@ public class SessionModule implements Serializable {
         timelineChanged(TimeLineChanges.REMOVED,tlm );
     }
 
+    /**
+     * removes all the timelines and all associations with mediaplayers
+     */
     public void removeAllTimlines(){
         // Create copy of the IDs that shall be remove (all)
         ArrayList<Integer> timelineIDs = new ArrayList<Integer>();
@@ -127,7 +135,7 @@ public class SessionModule implements Serializable {
 
     /**
      * goes through all displays and removes tlm if it is assigned to said display
-     * @param tlm
+     * @param tlm: the timeline to be unassigned from displays
      */
     public void unassignTimeline(TimelineModel tlm){
         if(displays.isEmpty()){
@@ -149,8 +157,8 @@ public class SessionModule implements Serializable {
 
     /**
      * Assigns a timeline to be played on a display
-     * @param display
-     * @param tlm the timeline that is to be assigned to the display
+     * @param display: The Integer corresponding to a display
+     * @param tlm: the timeline that is to be assigned to the display
      */
     public void assignTimeline(Integer display, TimelineModel tlm){
         if(!displays.containsKey(display)){
@@ -174,13 +182,19 @@ public class SessionModule implements Serializable {
     /**
      * adds a display to the list of possible displays.
      * to be used by mainmodulecontroller if i/o module finds a new display
-     * @param display
+     * @param display: The Integer corresponding to a display
      */
     public void addDisplay(Integer display){
         displays.put(display, null);
         //vlccontroller.addDisplay(Integer display);
     }
 
+    
+    /**
+     * Goes through all the connected display, check if any is added or removed since last update within the session and add/remove 
+     * them from the session. Called from mainmodulecontroller when it gets the list from iomodules.
+     * @param displays: a list of the Integers corresponding to all the connected displays
+     */
     public void updateDisplays(ArrayList<Integer> displays){
         for(Integer d : displays){
             if(!this.displays.containsKey(d)){
@@ -199,8 +213,8 @@ public class SessionModule implements Serializable {
 
     /**
      * removes a display from the list of possible displays
-     * to be used if I/O module detects that a display dissapears.
-     * @param display
+     * to be used if I/O module detects that a display disapears.
+     * @param display: The Integer corresponding to a display
      */
     public void removeDisplay(Integer display){
         if(!displays.containsKey(display)){
@@ -217,13 +231,20 @@ public class SessionModule implements Serializable {
         return numberOfAvailableDisplays;
     }
     
-    
+    /**
+     * Mute a unmuted timeline or unmute a muted timeline so that the sound is or is not heard (video is unaffected)
+     * @param tlm: The timeline that should be muted/unmuted
+     */
     public void muteTimeline(TimelineModel tlm){
     	tlm.pressMuteButton();
     	vlccontroller.mute(tlm.getID(), tlm.getMuted());
     	timelineChanged(TimeLineChanges.MODIFIED,tlm);
     }
     
+    /**
+     * Hide a shown timeline or show a hidden timeline so that the video is or is not seen. (sound is unaffected)
+     * @param tlm: The timeline that should be shown/hidden
+     */
     public void hideTimeline(TimelineModel tlm){
     	tlm.pressHideButton();
     	vlccontroller.hide(tlm.getID(), tlm.getHidden());
@@ -235,15 +256,12 @@ public class SessionModule implements Serializable {
     
     /**
      * calls a method in vlccontroller that recreates all media players with new settings specified in options.
-     * @param options the new set of options
      */
     public void updateMediaPlayers(){
     	vlccontroller.updateOptions(vlcConfiguration);
     }
     /**
-     * first draft of playing the whole performance. this happens when
-     * the button to play all timelines is pushed.
-     * @param gbltime where the cursor is at when play all is pushed (0 if at start of the timelines)
+     * Playing the whole performance as it is set up. creates the threads tALL and globalTimeTicker then start them
      */
     public void playAll(){
         if(paused){
@@ -278,7 +296,7 @@ public class SessionModule implements Serializable {
     /**
      * creates a thread That every second updates the globaltime
      * @param globalTimeAtStart
-     * @return the thread
+     * @return the thread so that it can be started somewhere else
      */
     private synchronized Thread tickGlobalTime(long globalTimeAtStart){
         Thread globalTicker = new Thread(){
@@ -306,8 +324,8 @@ public class SessionModule implements Serializable {
 
 
     /**
-     * creates a thread to go through the performancestack and tell vlccontroller when and what
-     * to play and stop.
+     * creates a thread to go through the performancestack and tell vlccontroller and windowdisplay when and what
+     * to play and stop, show and hide.
      * @param glbtime the global point the timeline begins, 0 is start 1000 is one second in.
      * @return the thread created, to be started elsewhere
      */
@@ -580,10 +598,9 @@ public class SessionModule implements Serializable {
     }
 
     /**
-     * first draft of going through the stack and telling the vlccontroller what to do.
-     * This method runs when the user pushes play on one timeline.
-     * @param display the display should be played
-     * @param glbtime current position of the cursor (0 if at beginning of timeline).
+     * an unfinished method to play only one timeline. it gets the timelinestack for the timeline and creates a thread much like playAll()
+     * but it only plays the specified timeline
+     * @param timeline: the id of the timeline to be played
      */
     public void playOne(Integer timeline){
         if(pausing){
@@ -631,7 +648,7 @@ public class SessionModule implements Serializable {
     }
 
     /**
-     * creates a thread used for playOne that tells vlccontroller when and what to play and stop
+     * unfinished method that creates a thread used for playOne that tells vlccontroller when and what to play and stop
      * @param glbtime the startpoint of the whole program
      *
      */
@@ -694,8 +711,8 @@ public class SessionModule implements Serializable {
     }
 
     /**
-     * pause the one timeline that is played with playOne()
-     * @param display
+     * unfinished method to pause the one timeline that is played with playOne() redundant, you can only call pauseAll() for the same result
+     * @param timelineid: the id of the timeline to be paused
      */
     public void pauseOne(Integer timelineid){
         pausing = true;
