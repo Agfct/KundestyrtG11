@@ -499,7 +499,6 @@ public class SessionModule implements Serializable {
         System.out.println("BUILD PERFORMANCE");
         //Add all Events to list, then sort it
         performancestack = new ArrayList<Event>();
-        //TODO change to only the timelines that is assigned to a display??
         // maybe for (Integer dis : displays.keyset())
         System.out.println("Displays: "+ displays.keySet());
         for(Integer dis : displays.keySet()){
@@ -720,7 +719,6 @@ public class SessionModule implements Serializable {
         globalTimeTicker.interrupt();
         vlccontroller.pauseOne(timelineid);
         System.out.println("paused");
-        //TODO: Pause the timeline for this display
     }
 
     /**
@@ -898,7 +896,7 @@ public class SessionModule implements Serializable {
                 break;
         }
         String result = timeline.addTimelineMediaObject(tlmo);
-        timelineChanged(TimeLineChanges.MODIFIED,timeline); //TODO: tell the user what was the outcome of the operation
+        timelineChanged(TimeLineChanges.MODIFIED,timeline);
         checkSessionSize(tlmo.getStart(), tlmo.getDuration());
         return result;
     }
