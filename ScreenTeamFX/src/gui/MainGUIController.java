@@ -118,13 +118,6 @@ public class MainGUIController {
         primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
         primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
 	}
-
-	public void updateSession(SessionModule sm) {
-		AdvancedScreen.getInstance().getScreenController().fireMediaObjectListChanged();
-		AdvancedScreen.getInstance().getScreenController().rebuildTimelines();
-		AdvancedScreen.getInstance().getScreenController().fireGlobalTimeChanged(sm.getGlobalTime());
-		AdvancedScreen.getInstance().getScreenController().repaintTimelinebarBreakpoints();
-	}
 	
 	// Needs to rebuild the timelines, since updating the title of the media object should update
 	// title of TimelineMediaObjects.  

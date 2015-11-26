@@ -910,32 +910,10 @@ public class AdvancedScreen implements Screen{
 			}
 		}
 
-		public boolean saveSession() {
-			return MainModuleController.getInstance().saveSession();
-		}
-
-		public boolean saveSession(File saveFile) {
-			return MainModuleController.getInstance().saveSession(saveFile);
-		}
-
-		public void loadSession(File loadFile) {
-			SessionModule sm = MainModuleController.getInstance().loadSession(loadFile);
-			MainModuleController.getInstance().updateSession(sm);
-			currentSession = sm;
-			MainGUIController.getInstance().updateSession(sm);
-			MainModuleController.getInstance().getSession().addListener(this);
-		}
-		
-		public void createNewSession(){
-			SessionModule sm = MainModuleController.getInstance().createNewSession();
-			MainModuleController.getInstance().updateSession(sm);
-			currentSession = sm;
-			MainGUIController.getInstance().updateSession(sm);
-			MainModuleController.getInstance().getSession().addListener(this);
-		}
-
-
-
+		/**
+		 * Rebuilds the timelines. Used when changing the names of mediaobjects.
+		 * TODO: Only go through the labels and update them. This implementation is highly unnecessary.
+		 */
 		public void rebuildTimelines() {
 			removeAllTimelineControllersFromScreen();
 			idTimlineControllerMap = new HashMap<TimelineController, Integer>();
@@ -1020,11 +998,6 @@ public class AdvancedScreen implements Screen{
 		public void fireTimelinebarChanged() {
 			// TODO: update timelinebar
 			// Implement to use mvc correctly, currently hacked
-		}
-		
-		public void repaintTimelinebarBreakpoints(){
-			timelineBarController.removeAllBreakpoints();
-			timelineBarController.repaint();
 		}
 
 
