@@ -1,5 +1,6 @@
 package modules;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import gui.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import vlc.VLCController;
 import vlc.VLCMediaPlayer;
 /**
@@ -489,7 +492,13 @@ public class SessionModule implements Serializable {
     		}
     	}
     }
-
+    
+    public void removeAllBreakpoints(){
+    	while(timelinebarStopEvents.size() > 0){
+    			timelinebarStopEvents.remove(0);
+    			timelinebarChanged();
+    	}
+    }
 
     /**
      * Goes through all timelines assigned to a display, get all their stacks of events and sort them based on when they
@@ -727,15 +736,13 @@ public class SessionModule implements Serializable {
         return timelines;
     }
 
-
-
     /**
      * Creates a new MediaObject and stores it in the this SessionModule. If a MediaObject with the same path already
      * exists, the method will not create a new MediaObject, but return the existing one.
      * @param mst
      * @param path
      */
-    public String createNewMediaObject(MediaSourceType mst, String path){
+    public String createNewMediaObject(MediaSourceType mst, String path, boolean loading){
     	System.out.println("[SESSION module]" + mst);
         // Check if this MediaObject is already stored in the list, by comparing paths
         for (int i=0; i<mediaObjects.size(); i++){
@@ -763,7 +770,9 @@ public class SessionModule implements Serializable {
                     mo.setLength((int)lenght);
                 }
                 else{
-                    return "MediaObject not created, prerunChecker in VLC failed";
+                	if(!loading){
+                		return "MediaObject not created, prerunChecker in VLC failed";
+                	}
                 }
                 break;
             }
@@ -780,7 +789,9 @@ public class SessionModule implements Serializable {
                     mo.setLength((int)lenght);
                 }
                 else{
-                    return "MediaObject not created, prerunChecker in VLC failed";
+                	if(!loading){
+                		return "MediaObject not created, prerunChecker in VLC failed";
+                	}
                 }
                 break;
                 
@@ -856,10 +867,14 @@ public class SessionModule implements Serializable {
     		String name = FileController.getTitle(newPath);
     		mo.setName(name);
     		mo.setValidPath(true);
+    		
     	}
     	
-    	
-    	MainGUIController.getInstance().updateMediaObjects();
+    	this.mediaObjectsChanged();
+    	for(Integer i : timelines.keySet()){
+    		this.timelineChanged(TimeLineChanges.MODIFIED, timelines.get(i));
+    	}
+    	//MainGUIController.getInstance().updateMediaObjects();
     	return true;
     }
     
@@ -991,6 +1006,7 @@ public class SessionModule implements Serializable {
             listener.fireSessionLenghtChanged();
         }
     }
+    
     /**
      *
      * @param tlm
@@ -1038,9 +1054,9 @@ public class SessionModule implements Serializable {
     	}
     }
 
-    //TODO: we need to specify which mediaobject has been changed.
     private void mediaObjectsChanged(){
         for(SessionListener listener: listeners){
+        	
             listener.fireMediaObjectListChanged();
         }
     }
@@ -1128,101 +1144,186 @@ public class SessionModule implements Serializable {
             displays.put(i, null);
         }
     }
-
-    public void reinitialize(VLCController vlc, WindowDisplay wd) {
-        this.displays = new HashMap<Integer,TimelineModel>();
-        this.listeners = new ArrayList<SessionListener>();
-        this.vlccontroller = vlc;
-        this.windowdisplay = wd;
-        this.t1 = new Thread();
-        this.tAll = new Thread();
-        this.globalTimeTicker = new Thread();
-
-        for(Integer i : timelines.keySet()){
-            vlccontroller.createMediaPlayer(i, vlcConfiguration);
-        }
-
-    }
-
-    public ArrayList<SessionListener> removeListeners() {
-        ArrayList<SessionListener> out = listeners;
-        listeners = null;
-        return out;
-    }
-
-    public VLCController removeAndGetVLCController() {
-        VLCController out = vlccontroller;
-        vlccontroller = null;
-        return out;
-    }
-
-    public Thread removeT1() {
-        Thread out = t1;
-        t1 = null;
-        return out;
-    }
-
-    public Thread removeTAll() {
-        Thread out = tAll;
-        tAll = null;
-        return out;
-    }
-
-    public Thread removeGlobalTimeTicker() {
-        Thread out = globalTimeTicker;
-        globalTimeTicker = null;
-        return out;
-    }
-
-    public HashMap<Integer, TimelineModel> removeDisplays() {
-        HashMap<Integer, TimelineModel> out = displays;
-        displays = null;
-        return out;
-    }
     
-    public WindowDisplay removeWindowDisplay(){
-    	WindowDisplay out = windowdisplay;
-    	windowdisplay = null;
-    	return out;
-    }
-
-    public void setListeners(ArrayList<SessionListener> l) {
-        listeners = l;
-    }
-
-    public void setVLCController(VLCController vlcc) {
-        vlccontroller = vlcc;
-    }
-
-    public void setT1(Thread t) {
-        t1 = t;
-    }
-
-    public void setTAll(Thread t) {
-        tAll = t;
-    }
-
-    public void setGlobalTimeTicker(Thread gtt) {
-        globalTimeTicker = gtt;
-    }
-
-    public void setDisplays(HashMap<Integer, TimelineModel> disp) {
-        displays = disp;
-    }
-    
-    public void setWindowDisplay(WindowDisplay wd){
-    	windowdisplay = wd;
-    }
-
-
     /**
-     * Removes all assigned display from all the timelines. Used only when loading, before updating the GUI.
+     * Temporary remove stuff that can't be saved, save, and put stuff back
+     * @param savefile
      */
-    public void removeAllTimlineDisplayAssignments() {
-        for(Integer i : timelines.keySet()){
-            timelines.get(i).removeAllDisplays();
-        }
+    public void saveSession(File savefile){
+    	
+    	// Temporary remove everything that can't be saved (serialized)
+    	VLCController tmpVLCC = this.vlccontroller;
+    	this.vlccontroller = null;
+		Thread tmpT1 = this.t1;
+		this.t1 = null;
+		Thread tmpTAll = this.tAll;
+		this.tAll = null;
+		Thread tmpGTT = this.globalTimeTicker;
+		this.globalTimeTicker = null;
+		HashMap<Integer, TimelineModel> tmpDisp = this.displays;
+		this.displays = null;
+		WindowDisplay tmpWD = this.windowdisplay;
+		this.windowdisplay = null;
+		ArrayList<SessionListener> tmpListeners = this.listeners;
+		this.listeners = null;
+		
+		// The result is true if everything went successfull.
+		// TODO: Could use this information to give userfeedback?
+		boolean result = MainModuleController.getInstance().saveSession(this, savefile);
+		
+		// Put everything back
+		this.vlccontroller = tmpVLCC;
+		this.t1 = tmpT1;
+		this.tAll = tmpTAll;
+		this.globalTimeTicker = tmpGTT;
+		this.displays = tmpDisp;
+		this.windowdisplay = tmpWD;
+		this.listeners = tmpListeners;
     }
+    
+    /**
+     * Loads a session from the specified file. Updates this session with the new values
+     * @param loadFile
+     */
+    public void loadSession(File loadFile){
+    	// Clean the current session
+    	this.createNewSession();
+    	
+    	// Get the loaded session
+    	SessionModule newSession = MainModuleController.getInstance().loadSession(loadFile);
+    	
+    	if(newSession==null){
+    		// TODO: Could be nice to give the user some feedback here
+    		return;
+    	}
+    	
+    	// Add MediaObjects
+    	for(MediaObject loadedMO : newSession.mediaObjects){
+    		MediaSourceType mst = loadedMO.getType();
+    		String path = loadedMO.getPath();
+    		
+    		this.createNewMediaObject(mst, path, true);
+    	}
+    	
+    	// Add timelines
+    	for(int i=newSession.timelineOrder.size()-1; 0<=i; i--){
+    		int thisTL = this.addTimeline();
+    		int otherTL = newSession.timelineOrder.get(i);
+    		
+    		// Set name, and mute and hide states
+    		this.timelines.get(thisTL).setNameOfTimeline(newSession.timelines.get(otherTL).getNameOfTimeline());
+    		
+    		// IF YOU WANT TO LOAD MUTE AND HIDE STATES YOU MUST ALSO ENSURE THAT THE VLCPLAYER GETS
+    		// UPDATED CORRECTLY AS WELL
+    		/*
+    		boolean muted = newSession.timelines.get(otherTL).getMuted();
+    		boolean hidden = newSession.timelines.get(otherTL).getHidden();
+    		if( !muted ){ // Unmuted
+    			this.timelines.get(thisTL).pressMuteButton();
+    		}
+    		if( hidden ){
+    			this.timelines.get(thisTL).pressHideButton();
+    		}*/
+    		this.timelineChanged(TimeLineChanges.MODIFIED, this.timelines.get(thisTL));
+    		
+    		// Add TimelineMediaObjects
+    		TimelineModel loadedTM = newSession.timelines.get(otherTL);
+    		TimelineModel thisTM = this.timelines.get(thisTL);
+    		for(TimelineMediaObject loadedTMO : loadedTM.getTimelineMediaObjects()){
+    			MediaObject mediaObject = loadedTMO.getParent();
+    			int startTime = (int)loadedTMO.getStart();
+    			this.addMediaObjectToTimeline(mediaObject, thisTM, startTime);
+    			
+    			for(TimelineMediaObject thisTMO : thisTM.getTimelineMediaObjects()){
+    				if(thisTMO.getStart()==startTime){
+    					int newStart = (int)loadedTMO.getStart();
+    					int newInternalStart = (int)loadedTMO.getStartPoint();
+    					int newDuration = (int)loadedTMO.getDuration();
+    					this.timelineMediaObjectChanged(thisTM, thisTMO, newStart, newInternalStart, newDuration);
+    				}
+    			}
+    		}
+    		
+    		// Assign displays if the same amount is available
+    		// IF YOU WANT TO USE THIS, REMEMBER THAT THE DISPLAYS MIGHT NOT BE IN THE SAME ORDER AS
+    		// LAST TIME. SO YOU SHOULD ADD SOME FEEDBACK TO THE USER. E.G. ASK IF HE WANTS TO AUTO-
+    		// ASSIGN DISPLAYS, BUT WARN HIM THAT THE ORDER MIGHT BE WRONG
+    		/*
+        	if(numberOfAvailableDisplays == newSession.numberOfAvailableDisplays){
+        		if( !loadedTM.getAssignedDisplays().isEmpty()){
+        			int disp = loadedTM.getAssignedDisplays().get(0);
+        			this.assignTimeline(disp, thisTM);
+        		}
+        	}
+        	*/
+    	}
+    	
+    	// Add breakpoints
+    	for(Event bp : newSession.timelinebarStopEvents){
+    		this.addBreakpoint(bp.getTime());
+    	}
+    	
+    	// Add VLC configurations
+    	//
+    	// IF YOU WANT TO ENABLE LOADING THE VLC OPTIONS YOU SHOULD ALSO IMPLEMENT MVC FOR IT SO THE
+    	// GUI GETS UPDATED
+    	//
+    	// this.setVLCConfiguration(newSession.vlcConfiguration);
+    	    
+    	// Run the PreRunChecker to see if any MediaObjects are not found. Give a warning to the user.
+ 		ArrayList<MediaObject> nonExistingMediaObject = PreRunChecker.getNonExsitingMediaObjects();
+ 		if( 0 < nonExistingMediaObject.size() ){
+ 			String message = "";
+ 			message += "The following media files are missing (not found on the old path):\n\n";
+ 			for(MediaObject mo : nonExistingMediaObject){
+ 				mo.setValidPath(false);
+ 				
+ 				if(mo.getType()==MediaSourceType.WINDOW){
+ 					message += "- Window:   "+ mo.getPath() +"\n";
+ 				}
+ 				else{
+ 					message += "- Media:       "+ mo.getPath() +"\n";
+ 				}
+ 			}
+ 			
+ 			this.mediaObjectsChanged();
+ 			
+ 			message += "\nPlease right-click on these imported windows/medias and choose \"Set path\" to update the paths.\n"
+ 					+ "If, for some reason, you can not set the correct path on some of them, then please right-click and remove them. \n"
+ 					+ "If you try to press \"Play\", whith the wrong path, the program will not work correctly.";			
+ 			
+ 			// JavaFX Information Dialog
+ 			Alert alert = new Alert(AlertType.WARNING);
+ 			alert.setTitle("Warning Dialog");
+ 			alert.setHeaderText("Warning: Media/window not found");
+ 			alert.setContentText(message);
+ 			alert.setResizable(true);
+ 			alert.getDialogPane().setPrefWidth(650);
+ 			alert.showAndWait();
+ 		}
+    }
+    
+    /**
+     * Remove everything to give the user a clean session
+     */
+    public void createNewSession(){
+    	this.removeAllBreakpoints();
+    	
+    	// Removing media objects should also remove the corresponding TimelineMediaObjects
+    	while(0 < mediaObjects.size()){
+    		this.removeMediaObject(mediaObjects.get(0));
+    	}
+    	
+    	// Remove all timelines
+    	this.removeAllTimlines();
+    	    	
+    	this.globaltime = 0;
+    	this.globalTimeChanged();
+    	
+    	this.tlmID = 0;
+    	
+    }
+    
     /**
      * Gets the available windows from the windowDisplay. Then extracts the titles of the windows, and sends it to whoever asks
      * @return

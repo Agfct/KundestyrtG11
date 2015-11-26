@@ -149,7 +149,7 @@ public class TimelineController implements FXMLController {
 		 
 		 
 		 //TextField for editing the name of a timeline
-		 nameOfTimeLineField.setText(nameOfTimeLine);
+		 updateNameOfTimeline();
 		 nameOfTimeLineField.setFocusTraversable(false);
 		 addListenerToNameOfTimelineTextField();
 		
@@ -223,7 +223,11 @@ public class TimelineController implements FXMLController {
 		updateValuesFromModel(); //Gets the updated values from the model
 		updateDisplayList(); // Use the updated values to update the list of the selected screens.
 		updateMutationValues();
-		
+		updateNameOfTimeline();
+	}
+	
+	public void updateNameOfTimeline(){
+		nameOfTimeLineField.setText(nameOfTimeLine);
 	}
 	
 	public void updateMutationValues(){
