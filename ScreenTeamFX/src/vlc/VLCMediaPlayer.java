@@ -63,6 +63,7 @@ public class VLCMediaPlayer{
 		frame.getContentPane().add(mediaPlayerComponent);
 		frame.setSize(0, 0);
 	}
+
 	
 	/**
 	 * If new media has been sent to the media player, it will play the new media from the beginning.
@@ -155,6 +156,7 @@ public class VLCMediaPlayer{
 	}
 	
 	public void maximize(){
+		frame.setState(java.awt.Frame.ICONIFIED);
 		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
