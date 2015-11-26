@@ -756,7 +756,6 @@ public class AdvancedScreen implements Screen{
 				timelineController.getTimelineLineController().getRoot().setPrefWidth(currentSession.getSessionLength()*scaleCoefficient);
 				timelineController.getTimelineLineController().repaint();
 			}
-			fireTimelinebarChanged();
 		}
 
 		public void changeGlobalTime(long i) {
