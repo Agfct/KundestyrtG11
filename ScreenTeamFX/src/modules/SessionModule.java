@@ -1216,13 +1216,19 @@ public class SessionModule implements Serializable {
     				}
     			}
     		}
+    		
     		// Assign displays if the same amount is available
+    		// IF YOU WANT TO USE THIS, REMEMBER THAT THE DISPLAYS MIGHT NOT BE IN THE SAME ORDER AS
+    		// LAST TIME. SO YOU SHOULD ADD SOME FEEDBACK TO THE USER. E.G. ASK IF HE WANTS TO AUTO-
+    		// ASSIGN DISPLAYS, BUT WARN HIM THAT THE ORDER MIGHT BE WRONG
+    		/*
         	if(numberOfAvailableDisplays == newSession.numberOfAvailableDisplays){
         		if( !loadedTM.getAssignedDisplays().isEmpty()){
         			int disp = loadedTM.getAssignedDisplays().get(0);
         			this.assignTimeline(disp, thisTM);
         		}
         	}
+        	*/
     	}
     	
     	// Add breakpoints
