@@ -475,8 +475,8 @@ public class SessionModule implements Serializable {
     }
     
     public void removeAllBreakpoints(){
-    	for(int i=0; i<timelinebarStopEvents.size(); i++){
-    			timelinebarStopEvents.remove(i);
+    	while(timelinebarStopEvents.size() > 0){
+    			timelinebarStopEvents.remove(0);
     			timelinebarChanged();
     	}
     }
@@ -1237,7 +1237,11 @@ public class SessionModule implements Serializable {
     	}
     	
     	// Add VLC configurations
-    	this.setVLCConfiguration(newSession.vlcConfiguration);
+    	//
+    	// IF YOU WANT TO ENABLE LOADING THE VLC OPTIONS YOU SHOULD ALSO IMPLEMENT MVC FOR IT SO THE
+    	// GUI GETS UPDATED
+    	//
+    	// this.setVLCConfiguration(newSession.vlcConfiguration);
     	    
     	// Run the PreRunChecker to see if any MediaObjects are not found. Give a warning to the user.
  		ArrayList<MediaObject> nonExistingMediaObject = PreRunChecker.getNonExsitingMediaObjects();
