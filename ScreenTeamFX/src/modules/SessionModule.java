@@ -848,6 +848,7 @@ public class SessionModule implements Serializable {
     		String name = FileController.getTitle(newPath);
     		mo.setName(name);
     		mo.setValidPath(true);
+    		
     	}
     	
     	
@@ -1031,9 +1032,9 @@ public class SessionModule implements Serializable {
     	}
     }
 
-    //TODO: we need to specify which mediaobject has been changed.
     private void mediaObjectsChanged(){
         for(SessionListener listener: listeners){
+        	
             listener.fireMediaObjectListChanged();
         }
     }
@@ -1189,6 +1190,10 @@ public class SessionModule implements Serializable {
     		
     		// Set name, and mute and hide states
     		this.timelines.get(thisTL).setNameOfTimeline(newSession.timelines.get(otherTL).getNameOfTimeline());
+    		
+    		// IF YOU WANT TO LOAD MUTE AND HIDE STATES YOU MUST ALSO ENSURE THAT THE VLCPLAYER GETS
+    		// UPDATED CORRECTLY AS WELL
+    		/*
     		boolean muted = newSession.timelines.get(otherTL).getMuted();
     		boolean hidden = newSession.timelines.get(otherTL).getHidden();
     		if( !muted ){ // Unmuted
@@ -1196,7 +1201,7 @@ public class SessionModule implements Serializable {
     		}
     		if( hidden ){
     			this.timelines.get(thisTL).pressHideButton();
-    		}
+    		}*/
     		this.timelineChanged(TimeLineChanges.MODIFIED, this.timelines.get(thisTL));
     		
     		// Add TimelineMediaObjects
