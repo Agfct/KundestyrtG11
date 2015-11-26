@@ -102,6 +102,7 @@ public class MediaObjectController extends GridPane{
 	}
 	
 	public void updateValuesFromModel(){
+		this.nameOfFile.setText(timelineMediaObject.getParent().getName());
 		setMediaObjectWidth();
 		
 		//Updates the text of the tooltip

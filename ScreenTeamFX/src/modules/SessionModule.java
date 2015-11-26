@@ -1203,6 +1203,12 @@ public class SessionModule implements Serializable {
     		String path = loadedMO.getPath();
     		
     		this.createNewMediaObject(mst, path, true);
+    		
+    		for(MediaObject mo : mediaObjects){
+    			if(mo.getPath().equals(path)){
+    				mo.setLength(loadedMO.getLength());
+    			}
+    		}
     	}
     	
     	// Add timelines
@@ -1230,7 +1236,20 @@ public class SessionModule implements Serializable {
     		TimelineModel loadedTM = newSession.timelines.get(otherTL);
     		TimelineModel thisTM = this.timelines.get(thisTL);
     		for(TimelineMediaObject loadedTMO : loadedTM.getTimelineMediaObjects()){
-    			MediaObject mediaObject = loadedTMO.getParent();
+    			String loadedPath = loadedTMO.getParent().getPath();
+    			
+    			MediaObject mediaObject = null;
+    			for(MediaObject mo : this.mediaObjects){
+    				if (mo.getPath().equals(loadedPath)){
+    					mediaObject = mo;
+    				}
+    			}
+    			
+    			if(mediaObject==null){
+    				// Something went wrong. Should never happen.
+    				return;
+    			}
+    			
     			int startTime = (int)loadedTMO.getStart();
     			this.addMediaObjectToTimeline(mediaObject, thisTM, startTime);
     			
