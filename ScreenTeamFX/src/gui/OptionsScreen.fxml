@@ -63,7 +63,7 @@
 						
 						<children><!-- The innermost gridpane with the options in it -->
 							<Label text="Video output" GridPane.columnIndex="0"	GridPane.rowIndex="0" GridPane.halignment="CENTER" />
-							<ComboBox fx:id ="vOutputComboBox" GridPane.columnIndex="1"	GridPane.rowIndex="2"></ComboBox>							
+							<ComboBox fx:id ="vOutputComboBox" GridPane.columnIndex="1"	GridPane.rowIndex="0"></ComboBox>							
 							
 							<Label text="HW-overlay" GridPane.columnIndex="0"	GridPane.rowIndex="1" GridPane.halignment="CENTER" />
 							<CheckBox fx:id="hwOverlay" GridPane.columnIndex="1"	GridPane.rowIndex="1"></CheckBox>
