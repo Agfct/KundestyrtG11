@@ -1281,6 +1281,7 @@ public class SessionModule implements Serializable {
     	for(Event bp : newSession.timelinebarStopEvents){
     		this.addBreakpoint(bp.getTime());
     	}
+    	AdvancedScreen.getInstance().getScreenController().repaintTimelineBarController();
     	
     	// Add VLC configurations
     	//
@@ -1327,6 +1328,7 @@ public class SessionModule implements Serializable {
      */
     public void createNewSession(){
     	this.removeAllBreakpoints();
+    	AdvancedScreen.getInstance().getScreenController().repaintTimelineBarController();
     	
     	// Removing media objects should also remove the corresponding TimelineMediaObjects
     	while(0 < mediaObjects.size()){

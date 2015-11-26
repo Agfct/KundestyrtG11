@@ -128,6 +128,7 @@ public class HeaderController implements FXMLController{
 			this.saveSession();
 		}
 		else if(((Button)event.getSource()).getId().equals("loadSession")){
+			parentController.increaseScale();
 			this.loadSession();
 		}
 	
