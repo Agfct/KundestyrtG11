@@ -54,7 +54,6 @@ public class HeaderController implements FXMLController{
 	
 	public HeaderController(AdvancedScreenController AdvParentController) {
 		this.parentController=AdvParentController;
-		System.out.println("HEADERCONST");
 	
 		
 //		 Trying to fetch the FXML

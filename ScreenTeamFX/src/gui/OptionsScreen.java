@@ -201,7 +201,11 @@ public class OptionsScreen implements Screen {
 				}
 			}				
 		}
-		
+		/*
+		 * Set the alternatives for the options. 
+		 * NB: The alternatives should be collected from the modules, not set here
+		 * TODO: have a list of available options in the sessionModule
+		 */
 		public void setVLCConfigAlternatives(){
 			vOutputComboBox.getItems().addAll(
 					"Auto",
