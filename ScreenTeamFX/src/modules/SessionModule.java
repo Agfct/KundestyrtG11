@@ -148,7 +148,6 @@ public class SessionModule implements Serializable {
                     vlccontroller.unassignDisplay(tlm.getID());
                     vlccontroller.stopOne(tlm.getID());
                     tlm.removeDisplay(i);
-                    System.out.println(i);
                     timelineChanged(TimeLineChanges.MODIFIED, tlm);
                 }
             }
@@ -269,27 +268,26 @@ public class SessionModule implements Serializable {
             paused = false;
             //waiting for the threads to finish if paused earlier
             try {
-            	System.out.println("nononononono");
+            	System.out.println("start waiting for old tALL to finish");
                 tAll.join();
-                System.out.println("yeyeyyeyyyeye");
+                System.out.println("Old tALL finished");
                 globalTimeTicker.join();
             } catch (InterruptedException e) {
                 System.out.println("interrupted waiting for tAll and/or the globalTimeTicker to die");
             }
             //rebuilds the performance in case of changes or new startpoint/globaltime
             buildPerformance();
-            System.out.println("built");
+            System.out.println("built performance for this session");
             //creates the thread for excecuting the performance
             tAll = allPlay(globaltime);
-            System.out.println("created");
+            System.out.println("created new tALL");
             //creates the thread for increasing the globaltime
             globalTimeTicker=tickGlobalTime(globaltime);
             pausing = false;
             tAllCalledPause = false;
             //starts the threads
             tAll.start();
-            System.out.println("started");
-//            globalTimeTicker.start();
+            System.out.println("started tALL");
         }
     }
 
@@ -334,7 +332,7 @@ public class SessionModule implements Serializable {
         Thread tAll1 = new Thread(){
             public void run(){
                 System.out.println("RUN ALLPLAY");
-                System.out.println(performancestack.size());
+//                System.out.println(performancestack.size());
                 //set startp and playp to get a view on real time seconds
                 long startp = System.currentTimeMillis();
                 long playp = System.currentTimeMillis();
@@ -500,7 +498,7 @@ public class SessionModule implements Serializable {
         //Add all Events to list, then sort it
         performancestack = new ArrayList<Event>();
         // maybe for (Integer dis : displays.keyset())
-        System.out.println("Displays: "+ displays.keySet());
+        System.out.println("Displays used: "+ displays.keySet());
         for(Integer dis : displays.keySet()){
             if (displays.get(dis) != null){
                 for(Event ev2 : displays.get(dis).getTimelineStack()){
@@ -610,7 +608,7 @@ public class SessionModule implements Serializable {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            System.out.println("playing");
+            System.out.println("playing one timeline");
             performancestack.clear();
             ArrayList<Event> tempstack = timelines.get(timeline).getTimelineStack();
             for (Event ev2 : tempstack){
@@ -636,7 +634,6 @@ public class SessionModule implements Serializable {
             t1 = new Thread(){
                 public void run(){
                     onePlay(globaltime);
-//				System.out.println("im done");
                 }
             };
             globalTimeTicker=tickGlobalTime(globaltime);
@@ -674,9 +671,9 @@ public class SessionModule implements Serializable {
             //thread sleeping if its long until next event
             if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp)){
                 try {
-//					System.out.println("night night");
+//					System.out.println("tAll is sleeping");
                     Thread.sleep((performancestack.get(0).getTime()-glbtime)-(playp-startp)-1500);
-//					System.out.println("wake up");
+//					System.out.println("tAll woke up");
                 } catch (InterruptedException e) {
                 }
             }
@@ -718,7 +715,7 @@ public class SessionModule implements Serializable {
         t1.interrupt();
         globalTimeTicker.interrupt();
         vlccontroller.pauseOne(timelineid);
-        System.out.println("paused");
+        System.out.println("paused one timeline");
     }
 
     /**
