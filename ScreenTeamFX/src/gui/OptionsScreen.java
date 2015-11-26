@@ -178,7 +178,11 @@ public class OptionsScreen implements Screen {
 				System.out.println(rootPane.getStyleClass());
 			}
 		}
-		
+		/*
+		 * Method for painting the correct VLC-configs
+		 * NB: should be greatly revised to facilitate future development
+		 * 
+		 */
 		public void paintVLCConfigValues(){
 			vlcConfig = AdvancedScreen.getInstance().getScreenController().getCurrentSession().getVLCConfiguration();
 			System.out.println("VLCCONFIG: " + vlcConfig);
