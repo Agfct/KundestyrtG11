@@ -87,13 +87,13 @@ public class StopPointController extends Pane{
 		initializeTooltip();
 		System.out.println("Stop point point: " + this.getLayoutX());
 		System.out.println("StopPoint, ToScale: "+ localToParent(-PIXELSFROMCENTER,HEIGTH).getX()/scale);
-		long time = (long)(((getLayoutX()-PIXELSFROMCENTER)/scale)*milisecs);
+		long time = (long)((((getLayoutX()-PIXELSFROMCENTER)*milisecs)/scale));
 		parentController.getAdvancedScreenController().getCurrentSession().addBreakpoint(time);
 
 	}
 	
 	public void setStopPosition(long time){
-		relocateToPoint(new Point2D((((time/milisecs))*scale+PIXELSFROMCENTER),0));
+		relocateToPoint(new Point2D((((time*scale)/milisecs)+PIXELSFROMCENTER),0));
 		initializeTooltip();
 	}
 	
