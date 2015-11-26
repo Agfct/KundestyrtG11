@@ -4,12 +4,7 @@
 package gui;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Optional;
-import java.util.Random;
 
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.ActionEvent;
@@ -28,20 +23,19 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Rectangle;
 import modules.MediaSourceType;
 import modules.TimelineMediaObject;
 
 /**
  * @author Anders Lunde, Magnus Gundersen
- * This is the visual representation of the MediaObject (Movie, Sound)
+ * This is the visual representation of the MediaObject (Movie, Sound, etc)
+ * It contains its own timelineMediaObject which is the real model from the modules.
+ * The class also handles the drag&drop of the MediaObject
  */
 public class MediaObjectController extends GridPane{
 
@@ -54,7 +48,6 @@ public class MediaObjectController extends GridPane{
 	private Tooltip mediaTooltip = new Tooltip();
 
 	//Variables used for dragging/dropping
-	private AnchorPane masterRootPane;
 	private EventHandler <DragEvent> mContextDragOver;
 	private EventHandler <DragEvent> mContextDragDone;
 	private EventHandler <DragEvent> mContextDragDropped;
@@ -63,8 +56,10 @@ public class MediaObjectController extends GridPane{
 	//Model corresponding to this controller
 	private TimelineMediaObject timelineMediaObject;
 	
-	//Width of the mediaObject
-	private double mediaObjectActualWidth=1000;
+	//Width and height of the mediaObject, the width is changed by the modules.
+	//Height is based on the mediaObject.fxml height.
+	private double mediaObjectActualWidth = 1000;
+	private double mediaObjectHeigth = 70;
 	
 	private @FXML Label nameOfFile;
 	
@@ -83,18 +78,14 @@ public class MediaObjectController extends GridPane{
 			e.printStackTrace();
 		}
 		
-		//initialize drag&drop NB: THIS IS NOW DISABLED: NO DRAG/DROP INSIDE OF TIMELINE. OUTCOMMENT TO ENABLE
+		//initialize drag&drop
 		initializeMouse();
 		
-		//Sets the master root pane for drag and drop
-		masterRootPane = AdvancedScreen.getInstance().getScreenController().getMasterRoot();
 	}
 	
 	/**
 	 * Extracts the information from the container and adds it to the mediaObjectController
 	 * @param container
-	 * TODO: remove this? It was only useful before the modules was integrated into the program 
-	 * NB! IS BEEING USED DO NOT REMOVE
 	 */
 	public void initializeMediaObject(){
 		this.nameOfFile.setText(timelineMediaObject.getParent().getName());
@@ -111,6 +102,7 @@ public class MediaObjectController extends GridPane{
 	}
 	
 	public void updateValuesFromModel(){
+		this.nameOfFile.setText(timelineMediaObject.getParent().getName());
 		setMediaObjectWidth();
 		
 		//Updates the text of the tooltip
@@ -147,7 +139,6 @@ public class MediaObjectController extends GridPane{
 	 */
 	@FXML
 	private void initialize() {
-		//NB: DRAG INSIDE A TIMELINE IS NOW DISABLED! OUTCOMMENT TO ENABLE
 		buildNodeDragHandlers();
 	}
 	
@@ -212,6 +203,9 @@ public class MediaObjectController extends GridPane{
 		}
 	
 	public void relocateToPoint (Point2D p) {
+
+		//relocates the object to a point that has been converted to
+		//scene coordinates
 		relocate ( 
 		(int) (p.getX()),
 		(int) (p.getY())
@@ -318,7 +312,6 @@ public class MediaObjectController extends GridPane{
 
                 //begin drag ops
                 mDragOffset = new Point2D(event.getX(), event.getY());
-                AnchorPane timelineLinePane = parentController.getRoot();
                 
                 //The clipboard contains all content that are to be transfered in the drag
                 ClipboardContent content = new ClipboardContent();
@@ -358,11 +351,10 @@ public class MediaObjectController extends GridPane{
 	}
 	
 	private double getMediaObjectHeigth(){
-		return 70;
+		return mediaObjectHeigth;
 	}
 	
 	public TimelineMediaObject getTimelineMediaObject(){
 		return timelineMediaObject;
 	}
-
 }

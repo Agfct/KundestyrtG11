@@ -1,5 +1,6 @@
 package modules;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import gui.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import vlc.VLCController;
 import vlc.VLCMediaPlayer;
 /**
@@ -31,6 +34,7 @@ public class SessionModule implements Serializable {
     private ArrayList<Event> performancestack;
     //counter for the id of the timelineModels
     private int tlmID;
+    //booleans to check what state the program is in (playing, paused)
     private boolean pausing;
     private boolean paused;
     private boolean inter;
@@ -55,9 +59,14 @@ public class SessionModule implements Serializable {
     private final long WINDOW_DURATION = 30000;
     
     //configuration for the vlc. 
-    String[] vlcConfiguration = {};
+    String[] vlcConfiguration = {"--vout=directdraw", "--no-overlay"};
+    
 
-
+    /**
+     * Creates a new SessionModule, which correspond to a session the user can alter as the want
+     * @param vlc: The vlccontroller that controls the frames and mediaplayers the program us 
+     * @param wdi: The windowDisplay that controls windows open on the computer
+     */
     public SessionModule(VLCController vlc, WindowDisplay wdi) {
         this.timelines = new HashMap<Integer,TimelineModel>();
 //		this.timelines.put(0,new TimelineModel(0));
@@ -82,11 +91,11 @@ public class SessionModule implements Serializable {
         this.shownwindows = new ArrayList<String>();
         this.numberOfAvailableDisplays = -1;
         this.timelinebarStopEvents = new ArrayList<Event>();
+
     }
 
     /**
-     * add a new timeline to the list of timelines
-     * @param tlm
+     * add a new timeline object to the list of timelines for this session
      */
     public int addTimeline(){
         tlmID +=1;
@@ -98,9 +107,10 @@ public class SessionModule implements Serializable {
         return tlmID;
     }
 
-    /*
+    /**
      * This function removes the timeline from the modules.
      * It then sends the removed object back to the GUI, in order for all pointers to the timeline to be removed.
+     * @param id: The id of the timeline to be removed
      */
     public void removeTimeline(int id){
         // Find the timeline in the timelines list and remove it
@@ -112,6 +122,9 @@ public class SessionModule implements Serializable {
         timelineChanged(TimeLineChanges.REMOVED,tlm );
     }
 
+    /**
+     * removes all the timelines and all associations with mediaplayers
+     */
     public void removeAllTimlines(){
         // Create copy of the IDs that shall be remove (all)
         ArrayList<Integer> timelineIDs = new ArrayList<Integer>();
@@ -127,7 +140,7 @@ public class SessionModule implements Serializable {
 
     /**
      * goes through all displays and removes tlm if it is assigned to said display
-     * @param tlm
+     * @param tlm: the timeline to be unassigned from displays
      */
     public void unassignTimeline(TimelineModel tlm){
         if(displays.isEmpty()){
@@ -148,8 +161,8 @@ public class SessionModule implements Serializable {
 
     /**
      * Assigns a timeline to be played on a display
-     * @param display
-     * @param tlm the timeline that is to be assigned to the display
+     * @param display: The Integer corresponding to a display
+     * @param tlm: the timeline that is to be assigned to the display
      */
     public void assignTimeline(Integer display, TimelineModel tlm){
         if(!displays.containsKey(display)){
@@ -173,13 +186,19 @@ public class SessionModule implements Serializable {
     /**
      * adds a display to the list of possible displays.
      * to be used by mainmodulecontroller if i/o module finds a new display
-     * @param display
+     * @param display: The Integer corresponding to a display
      */
     public void addDisplay(Integer display){
         displays.put(display, null);
         //vlccontroller.addDisplay(Integer display);
     }
 
+    
+    /**
+     * Goes through all the connected display, check if any is added or removed since last update within the session and add/remove 
+     * them from the session. Called from mainmodulecontroller when it gets the list from iomodules.
+     * @param displays: a list of the Integers corresponding to all the connected displays
+     */
     public void updateDisplays(ArrayList<Integer> displays){
         for(Integer d : displays){
             if(!this.displays.containsKey(d)){
@@ -198,8 +217,8 @@ public class SessionModule implements Serializable {
 
     /**
      * removes a display from the list of possible displays
-     * to be used if I/O module detects that a display dissapears.
-     * @param display
+     * to be used if I/O module detects that a display disapears.
+     * @param display: The Integer corresponding to a display
      */
     public void removeDisplay(Integer display){
         if(!displays.containsKey(display)){
@@ -216,13 +235,20 @@ public class SessionModule implements Serializable {
         return numberOfAvailableDisplays;
     }
     
-    
+    /**
+     * Mute a unmuted timeline or unmute a muted timeline so that the sound is or is not heard (video is unaffected)
+     * @param tlm: The timeline that should be muted/unmuted
+     */
     public void muteTimeline(TimelineModel tlm){
     	tlm.pressMuteButton();
     	vlccontroller.mute(tlm.getID(), tlm.getMuted());
     	timelineChanged(TimeLineChanges.MODIFIED,tlm);
     }
     
+    /**
+     * Hide a shown timeline or show a hidden timeline so that the video is or is not seen. (sound is unaffected)
+     * @param tlm: The timeline that should be shown/hidden
+     */
     public void hideTimeline(TimelineModel tlm){
     	tlm.pressHideButton();
     	vlccontroller.hide(tlm.getID(), tlm.getHidden());
@@ -234,15 +260,12 @@ public class SessionModule implements Serializable {
     
     /**
      * calls a method in vlccontroller that recreates all media players with new settings specified in options.
-     * @param options the new set of options
      */
     public void updateMediaPlayers(){
     	vlccontroller.updateOptions(vlcConfiguration);
     }
     /**
-     * first draft of playing the whole performance. this happens when
-     * the button to play all timelines is pushed.
-     * @param gbltime where the cursor is at when play all is pushed (0 if at start of the timelines)
+     * Playing the whole performance as it is set up. creates the threads tALL and globalTimeTicker then start them
      */
     public void playAll(){
         if(paused){
@@ -264,14 +287,13 @@ public class SessionModule implements Serializable {
             tAllCalledPause = false;
             //starts the threads
             tAll.start();
-//            globalTimeTicker.start();
         }
     }
 
     /**
      * creates a thread That every second updates the globaltime
      * @param globalTimeAtStart
-     * @return the thread
+     * @return the thread so that it can be started somewhere else
      */
     private synchronized Thread tickGlobalTime(long globalTimeAtStart){
         Thread globalTicker = new Thread(){
@@ -299,8 +321,8 @@ public class SessionModule implements Serializable {
 
 
     /**
-     * creates a thread to go through the performancestack and tell vlccontroller when and what
-     * to play and stop.
+     * creates a thread to go through the performancestack and tell vlccontroller and windowdisplay when and what
+     * to play and stop, show and hide.
      * @param glbtime the global point the timeline begins, 0 is start 1000 is one second in.
      * @return the thread created, to be started elsewhere
      */
@@ -462,7 +484,13 @@ public class SessionModule implements Serializable {
     		}
     	}
     }
-
+    
+    public void removeAllBreakpoints(){
+    	while(timelinebarStopEvents.size() > 0){
+    			timelinebarStopEvents.remove(0);
+    			timelinebarChanged();
+    	}
+    }
 
     /**
      * Goes through all timelines assigned to a display, get all their stacks of events and sort them based on when they
@@ -471,7 +499,6 @@ public class SessionModule implements Serializable {
     private void buildPerformance(){
         //Add all Events to list, then sort it
         performancestack = new ArrayList<Event>();
-
         for(Integer dis : displays.keySet()){
             if (displays.get(dis) != null){
                 for(Event ev2 : displays.get(dis).getTimelineStack()){
@@ -567,10 +594,9 @@ public class SessionModule implements Serializable {
     }
 
     /**
-     * first draft of going through the stack and telling the vlccontroller what to do.
-     * This method runs when the user pushes play on one timeline.
-     * @param display the display should be played
-     * @param glbtime current position of the cursor (0 if at beginning of timeline).
+     * an unfinished method to play only one timeline. it gets the timelinestack for the timeline and creates a thread much like playAll()
+     * but it only plays the specified timeline
+     * @param timeline: the id of the timeline to be played
      */
     public void playOne(Integer timeline){
         if(pausing){
@@ -615,7 +641,7 @@ public class SessionModule implements Serializable {
     }
 
     /**
-     * creates a thread used for playOne that tells vlccontroller when and what to play and stop
+     * unfinished method that creates a thread used for playOne that tells vlccontroller when and what to play and stop
      * @param glbtime the startpoint of the whole program
      *
      */
@@ -642,7 +668,9 @@ public class SessionModule implements Serializable {
             //thread sleeping if its long until next event
             if (!performancestack.isEmpty() && performancestack.get(0).getTime()-glbtime> 1500+(playp-startp)){
                 try {
+//					System.out.println("tAll is sleeping");
                     Thread.sleep((performancestack.get(0).getTime()-glbtime)-(playp-startp)-1500);
+//					System.out.println("tAll woke up");
                 } catch (InterruptedException e) {
                 }
             }
@@ -675,8 +703,8 @@ public class SessionModule implements Serializable {
     }
 
     /**
-     * pause the one timeline that is played with playOne()
-     * @param display
+     * unfinished method to pause the one timeline that is played with playOne() redundant, you can only call pauseAll() for the same result
+     * @param timelineid: the id of the timeline to be paused
      */
     public void pauseOne(Integer timelineid){
         pausing = true;
@@ -692,15 +720,13 @@ public class SessionModule implements Serializable {
         return timelines;
     }
 
-
-
     /**
      * Creates a new MediaObject and stores it in the this SessionModule. If a MediaObject with the same path already
      * exists, the method will not create a new MediaObject, but return the existing one.
      * @param mst
      * @param path
      */
-    public String createNewMediaObject(MediaSourceType mst, String path){
+    public String createNewMediaObject(MediaSourceType mst, String path, boolean loading){
         // Check if this MediaObject is already stored in the list, by comparing paths
         for (int i=0; i<mediaObjects.size(); i++){
             if (mediaObjects.get(i).getPath().equals(path)) {
@@ -727,7 +753,9 @@ public class SessionModule implements Serializable {
                     mo.setLength((int)lenght);
                 }
                 else{
-                    return "MediaObject not created, prerunChecker in VLC failed";
+                	if(!loading){
+                		return "MediaObject not created, prerunChecker in VLC failed";
+                	}
                 }
                 break;
             }
@@ -744,7 +772,9 @@ public class SessionModule implements Serializable {
                     mo.setLength((int)lenght);
                 }
                 else{
-                    return "MediaObject not created, prerunChecker in VLC failed";
+                	if(!loading){
+                		return "MediaObject not created, prerunChecker in VLC failed";
+                	}
                 }
                 break;
                 
@@ -820,10 +850,14 @@ public class SessionModule implements Serializable {
     		String name = FileController.getTitle(newPath);
     		mo.setName(name);
     		mo.setValidPath(true);
+    		
     	}
     	
-    	
-    	MainGUIController.getInstance().updateMediaObjects();
+    	this.mediaObjectsChanged();
+    	for(Integer i : timelines.keySet()){
+    		this.timelineChanged(TimeLineChanges.MODIFIED, timelines.get(i));
+    	}
+    	//MainGUIController.getInstance().updateMediaObjects();
     	return true;
     }
     
@@ -859,7 +893,7 @@ public class SessionModule implements Serializable {
                 break;
         }
         String result = timeline.addTimelineMediaObject(tlmo);
-        timelineChanged(TimeLineChanges.MODIFIED,timeline); //TODO: tell the user what was the outcome of the operation
+        timelineChanged(TimeLineChanges.MODIFIED,timeline);
         checkSessionSize(tlmo.getStart(), tlmo.getDuration());
         return result;
     }
@@ -954,6 +988,7 @@ public class SessionModule implements Serializable {
             listener.fireSessionLenghtChanged();
         }
     }
+    
     /**
      *
      * @param tlm
@@ -1003,6 +1038,7 @@ public class SessionModule implements Serializable {
 
     private void mediaObjectsChanged(){
         for(SessionListener listener: listeners){
+        	
             listener.fireMediaObjectListChanged();
         }
     }
@@ -1090,101 +1126,207 @@ public class SessionModule implements Serializable {
             displays.put(i, null);
         }
     }
-
-    public void reinitialize(VLCController vlc, WindowDisplay wd) {
-        this.displays = new HashMap<Integer,TimelineModel>();
-        this.listeners = new ArrayList<SessionListener>();
-        this.vlccontroller = vlc;
-        this.windowdisplay = wd;
-        this.t1 = new Thread();
-        this.tAll = new Thread();
-        this.globalTimeTicker = new Thread();
-
-        for(Integer i : timelines.keySet()){
-            vlccontroller.createMediaPlayer(i, vlcConfiguration);
-        }
-
-    }
-
-    public ArrayList<SessionListener> removeListeners() {
-        ArrayList<SessionListener> out = listeners;
-        listeners = null;
-        return out;
-    }
-
-    public VLCController removeAndGetVLCController() {
-        VLCController out = vlccontroller;
-        vlccontroller = null;
-        return out;
-    }
-
-    public Thread removeT1() {
-        Thread out = t1;
-        t1 = null;
-        return out;
-    }
-
-    public Thread removeTAll() {
-        Thread out = tAll;
-        tAll = null;
-        return out;
-    }
-
-    public Thread removeGlobalTimeTicker() {
-        Thread out = globalTimeTicker;
-        globalTimeTicker = null;
-        return out;
-    }
-
-    public HashMap<Integer, TimelineModel> removeDisplays() {
-        HashMap<Integer, TimelineModel> out = displays;
-        displays = null;
-        return out;
-    }
     
-    public WindowDisplay removeWindowDisplay(){
-    	WindowDisplay out = windowdisplay;
-    	windowdisplay = null;
-    	return out;
-    }
-
-    public void setListeners(ArrayList<SessionListener> l) {
-        listeners = l;
-    }
-
-    public void setVLCController(VLCController vlcc) {
-        vlccontroller = vlcc;
-    }
-
-    public void setT1(Thread t) {
-        t1 = t;
-    }
-
-    public void setTAll(Thread t) {
-        tAll = t;
-    }
-
-    public void setGlobalTimeTicker(Thread gtt) {
-        globalTimeTicker = gtt;
-    }
-
-    public void setDisplays(HashMap<Integer, TimelineModel> disp) {
-        displays = disp;
-    }
-    
-    public void setWindowDisplay(WindowDisplay wd){
-    	windowdisplay = wd;
-    }
-
-
     /**
-     * Removes all assigned display from all the timelines. Used only when loading, before updating the GUI.
+     * Temporary remove stuff that can't be saved, save, and put stuff back
+     * @param savefile
      */
-    public void removeAllTimlineDisplayAssignments() {
-        for(Integer i : timelines.keySet()){
-            timelines.get(i).removeAllDisplays();
-        }
+    public void saveSession(File savefile){
+    	
+    	// Temporary remove everything that can't be saved (serialized)
+    	VLCController tmpVLCC = this.vlccontroller;
+    	this.vlccontroller = null;
+		Thread tmpT1 = this.t1;
+		this.t1 = null;
+		Thread tmpTAll = this.tAll;
+		this.tAll = null;
+		Thread tmpGTT = this.globalTimeTicker;
+		this.globalTimeTicker = null;
+		HashMap<Integer, TimelineModel> tmpDisp = this.displays;
+		this.displays = null;
+		WindowDisplay tmpWD = this.windowdisplay;
+		this.windowdisplay = null;
+		ArrayList<SessionListener> tmpListeners = this.listeners;
+		this.listeners = null;
+		
+		// The result is true if everything went successfull.
+		// TODO: Could use this information to give userfeedback?
+		boolean result = MainModuleController.getInstance().saveSession(this, savefile);
+		
+		// Put everything back
+		this.vlccontroller = tmpVLCC;
+		this.t1 = tmpT1;
+		this.tAll = tmpTAll;
+		this.globalTimeTicker = tmpGTT;
+		this.displays = tmpDisp;
+		this.windowdisplay = tmpWD;
+		this.listeners = tmpListeners;
     }
+    
+    /**
+     * Loads a session from the specified file. Updates this session with the new values
+     * @param loadFile
+     */
+    public void loadSession(File loadFile){
+    	// Clean the current session
+    	this.createNewSession();
+    	
+    	// Get the loaded session
+    	SessionModule newSession = MainModuleController.getInstance().loadSession(loadFile);
+    	
+    	if(newSession==null){
+    		// TODO: Could be nice to give the user some feedback here
+    		return;
+    	}
+    	
+    	// Add MediaObjects
+    	for(MediaObject loadedMO : newSession.mediaObjects){
+    		MediaSourceType mst = loadedMO.getType();
+    		String path = loadedMO.getPath();
+    		
+    		this.createNewMediaObject(mst, path, true);
+    		
+    		for(MediaObject mo : mediaObjects){
+    			if(mo.getPath().equals(path)){
+    				mo.setLength(loadedMO.getLength());
+    			}
+    		}
+    	}
+    	
+    	// Add timelines
+    	for(int i=newSession.timelineOrder.size()-1; 0<=i; i--){
+    		int thisTL = this.addTimeline();
+    		int otherTL = newSession.timelineOrder.get(i);
+    		
+    		// Set name, and mute and hide states
+    		this.timelines.get(thisTL).setNameOfTimeline(newSession.timelines.get(otherTL).getNameOfTimeline());
+    		
+    		// IF YOU WANT TO LOAD MUTE AND HIDE STATES YOU MUST ALSO ENSURE THAT THE VLCPLAYER GETS
+    		// UPDATED CORRECTLY AS WELL
+    		/*
+    		boolean muted = newSession.timelines.get(otherTL).getMuted();
+    		boolean hidden = newSession.timelines.get(otherTL).getHidden();
+    		if( !muted ){ // Unmuted
+    			this.timelines.get(thisTL).pressMuteButton();
+    		}
+    		if( hidden ){
+    			this.timelines.get(thisTL).pressHideButton();
+    		}*/
+    		this.timelineChanged(TimeLineChanges.MODIFIED, this.timelines.get(thisTL));
+    		
+    		// Add TimelineMediaObjects
+    		TimelineModel loadedTM = newSession.timelines.get(otherTL);
+    		TimelineModel thisTM = this.timelines.get(thisTL);
+    		for(TimelineMediaObject loadedTMO : loadedTM.getTimelineMediaObjects()){
+    			String loadedPath = loadedTMO.getParent().getPath();
+    			
+    			MediaObject mediaObject = null;
+    			for(MediaObject mo : this.mediaObjects){
+    				if (mo.getPath().equals(loadedPath)){
+    					mediaObject = mo;
+    				}
+    			}
+    			
+    			if(mediaObject==null){
+    				// Something went wrong. Should never happen.
+    				return;
+    			}
+    			
+    			int startTime = (int)loadedTMO.getStart();
+    			this.addMediaObjectToTimeline(mediaObject, thisTM, startTime);
+    			
+    			for(TimelineMediaObject thisTMO : thisTM.getTimelineMediaObjects()){
+    				if(thisTMO.getStart()==startTime){
+    					int newStart = (int)loadedTMO.getStart();
+    					int newInternalStart = (int)loadedTMO.getStartPoint();
+    					int newDuration = (int)loadedTMO.getDuration();
+    					this.timelineMediaObjectChanged(thisTM, thisTMO, newStart, newInternalStart, newDuration);
+    				}
+    			}
+    		}
+    		
+    		// Assign displays if the same amount is available
+    		// IF YOU WANT TO USE THIS, REMEMBER THAT THE DISPLAYS MIGHT NOT BE IN THE SAME ORDER AS
+    		// LAST TIME. SO YOU SHOULD ADD SOME FEEDBACK TO THE USER. E.G. ASK IF HE WANTS TO AUTO-
+    		// ASSIGN DISPLAYS, BUT WARN HIM THAT THE ORDER MIGHT BE WRONG
+    		/*
+        	if(numberOfAvailableDisplays == newSession.numberOfAvailableDisplays){
+        		if( !loadedTM.getAssignedDisplays().isEmpty()){
+        			int disp = loadedTM.getAssignedDisplays().get(0);
+        			this.assignTimeline(disp, thisTM);
+        		}
+        	}
+        	*/
+    	}
+    	
+    	// Add breakpoints
+    	for(Event bp : newSession.timelinebarStopEvents){
+    		this.addBreakpoint(bp.getTime());
+    	}
+    	AdvancedScreen.getInstance().getScreenController().repaintTimelineBarController();
+    	
+    	// Add VLC configurations
+    	//
+    	// IF YOU WANT TO ENABLE LOADING THE VLC OPTIONS YOU SHOULD ALSO IMPLEMENT MVC FOR IT SO THE
+    	// GUI GETS UPDATED
+    	//
+    	// this.setVLCConfiguration(newSession.vlcConfiguration);
+    	    
+    	// Run the PreRunChecker to see if any MediaObjects are not found. Give a warning to the user.
+ 		ArrayList<MediaObject> nonExistingMediaObject = PreRunChecker.getNonExsitingMediaObjects();
+ 		if( 0 < nonExistingMediaObject.size() ){
+ 			String message = "";
+ 			message += "The following media files are missing (not found on the old path):\n\n";
+ 			for(MediaObject mo : nonExistingMediaObject){
+ 				mo.setValidPath(false);
+ 				
+ 				if(mo.getType()==MediaSourceType.WINDOW){
+ 					message += "- Window:   "+ mo.getPath() +"\n";
+ 				}
+ 				else{
+ 					message += "- Media:       "+ mo.getPath() +"\n";
+ 				}
+ 			}
+ 			
+ 			this.mediaObjectsChanged();
+ 			
+ 			message += "\nPlease right-click on these imported windows/medias and choose \"Set path\" to update the paths.\n"
+ 					+ "If, for some reason, you can not set the correct path on some of them, then please right-click and remove them. \n"
+ 					+ "If you try to press \"Play\", whith the wrong path, the program will not work correctly.";			
+ 			
+ 			// JavaFX Information Dialog
+ 			Alert alert = new Alert(AlertType.WARNING);
+ 			alert.setTitle("Warning Dialog");
+ 			alert.setHeaderText("Warning: Media/window not found");
+ 			alert.setContentText(message);
+ 			alert.setResizable(true);
+ 			alert.getDialogPane().setPrefWidth(650);
+ 			alert.showAndWait();
+ 		}
+    }
+    
+    /**
+     * Remove everything to give the user a clean session
+     */
+    public void createNewSession(){
+    	this.removeAllBreakpoints();
+    	AdvancedScreen.getInstance().getScreenController().repaintTimelineBarController();
+    	
+    	// Removing media objects should also remove the corresponding TimelineMediaObjects
+    	while(0 < mediaObjects.size()){
+    		this.removeMediaObject(mediaObjects.get(0));
+    	}
+    	
+    	// Remove all timelines
+    	this.removeAllTimlines();
+    	    	
+    	this.globaltime = 0;
+    	this.globalTimeChanged();
+    	
+    	this.tlmID = 0;
+    	
+    }
+    
     /**
      * Gets the available windows from the windowDisplay. Then extracts the titles of the windows, and sends it to whoever asks
      * @return

@@ -15,7 +15,7 @@
 <?import javafx.scene.control.Label?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
-	stylesheets="@application.css" styleClass="background-advancedScreen"
+	stylesheets="@application.css" styleClass="background-main"
 	minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
 	prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
 	<children>
@@ -52,7 +52,7 @@
 							vgrow="NEVER" />
 					</rowConstraints>
 					<children>
-						<Label fx:id="timelineBarGlobalTime" text="Time: " >
+						<Label fx:id="timelineBarGlobalTime" style="-fx-text-fill: black" text="Time: " >
 						<GridPane.margin>
 							<Insets left="10.0" />
 						</GridPane.margin>

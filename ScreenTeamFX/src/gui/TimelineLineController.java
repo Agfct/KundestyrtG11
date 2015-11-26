@@ -7,32 +7,24 @@ import java.util.HashMap;
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import modules.MainModuleController;
-import modules.MediaSourceType;
 import modules.TimelineMediaObject;
 import modules.TimelineModel;
-import uk.co.caprica.vlcj.binding.internal.media_duration_changed;
-import java.util.Collection;
 
 /**
  *
  * @author Anders Lunde, Magnus Gundersen
  * The TimelineLineController is the controller of the line you see at the right side, 
  * containing all the media objects.
- * The controller handles all internal drag and drop operations
+ * It handles the repainting of all the MediaObjects when a mediaObject changes
  */
 public class TimelineLineController implements FXMLController{
 
@@ -41,7 +33,6 @@ public class TimelineLineController implements FXMLController{
     private TimelineController parentController;
     private AnchorPane rootPane;
     private final ContextMenu contextMenu = new ContextMenu();
-
 
     private ArrayList<MediaObjectController> mediaObjectControllers;
     private ArrayList<TimelineMediaObject> timelineMediaObjectModels;
@@ -96,7 +87,7 @@ public class TimelineLineController implements FXMLController{
         duplicate.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                AdvancedScreenController asc = AdvancedScreen.getInstance().getInstance().getInstance().getInstance().getScreenController();
+                AdvancedScreenController asc = AdvancedScreen.getInstance().getScreenController();
                 TimelineModel tlm = parentController.getTimelineModel();
                 asc.duplicateTimeline(tlm);
             }

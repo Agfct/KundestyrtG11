@@ -7,19 +7,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import gui.AdvancedScreen.AdvancedScreenController;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
 import javafx.stage.FileChooser;
@@ -129,44 +121,14 @@ public class HeaderController implements FXMLController{
 			parentController.identifyDisplays();
 		}else if(((Button)event.getSource()).getId().equals("newSession")){
 			// If the user clicks the new Session button
-			parentController.getCurrentSession().pauseAll();
-			parentController.createNewSession();
+			this.createNewSession();
 		}
 		else if(((Button)event.getSource()).getId().equals("saveSession")){
-			parentController.getCurrentSession().pauseAll();
-			// Opens the file chooser so that the user can save the session as a .stdata
-			FileChooser fileChooser = new FileChooser();
-			fileChooser.setTitle("Save file");
-			
-			String filetype = MainModuleController.getInstance().getSaveFiletype();
-			fileChooser.setInitialFileName("cribrum_session." + filetype);
-			
-			File saveFile = fileChooser.showSaveDialog(MainGUIController.getInstance().primaryStage);
-			if( saveFile == null ){
-				// Happens when the user closes the dialog wihtout choosing a file
-				//TODO: User did not choose a save file. Give the user a message or something? Probably OK to don't do anything, he know what he did.
-			}
-			else{
-				this.parentController.saveSession(saveFile);
-			}
+			this.saveSession();
 		}
 		else if(((Button)event.getSource()).getId().equals("loadSession")){
-			// If the user clicks the import media button, he will get a windows file-chooser
-			FileChooser fileChooser = new FileChooser();
-			String filetype = MainModuleController.getInstance().getSaveFiletype();
-			
-			// Set extension filter
-			ExtensionFilter filter = new ExtensionFilter("CRIBRUM files (*"+filetype+")", "*."+filetype);
-			fileChooser.getExtensionFilters().add(filter);
-			
-			// Show open file dialog
-			File loadFile = fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
-			if(loadFile==null){
-				// The user closed the window. TODO: Give some message? Probably not.
-			}
-			else{
-				this.parentController.loadSession(loadFile);
-			}
+			parentController.increaseScale();
+			this.loadSession();
 		}
 	
 	}
@@ -193,11 +155,11 @@ public class HeaderController implements FXMLController{
 			System.out.println("The file was neither a video nor a sound: " + FileController.getFileExtension(file));
 		}
 		else{
-			parentController.getCurrentSession().createNewMediaObject(mst,path);
+			parentController.getCurrentSession().createNewMediaObject(mst,path, false);
 		}	
 	}
 	
-	/* 
+	/*
 	 *  This method is run by the currentSession when a mediaObject is changed. 
 	 */
 	public void mediaObjectsChanged(){ // is Run by the advScreen when the function fireMediaObjectCahnges 
@@ -254,6 +216,62 @@ public class HeaderController implements FXMLController{
         //Opens an windowsChooser
         AdvancedScreen.getInstance().getScreenController().showWindowChooser();
 
+    }
+    
+    /**
+     * Lets the user specify where to save and the name of the savefile.
+     */
+    private void saveSession(){
+    	// Pause to avoid some problems that can occour.
+    	parentController.getCurrentSession().pauseAll();
+    		
+    	// Opens the file chooser so that the user can save the session as a .stdata
+    	FileChooser fileChooser = new FileChooser();
+    	fileChooser.setTitle("Save file");
+    				
+    	String filetype = MainModuleController.getInstance().getSaveFiletype();
+    	fileChooser.setInitialFileName("cribrum_session." + filetype);
+    				
+    	File saveFile = fileChooser.showSaveDialog(MainGUIController.getInstance().primaryStage);
+    	if( saveFile == null ){
+    		// Happens when the user closes the dialog wihtout choosing a file
+    		//TODO: User did not choose a save file. Give the user a message or something? Probably OK to don't do anything, he know what he did.
+    	}
+    	else{
+    		this.parentController.getCurrentSession().saveSession(saveFile);
+    	}
+    }
+    
+    /**
+     * Lets the user choose a file to load.
+     */
+    private void loadSession(){
+    	// Pause just to avoid some potential problems. And doesn't make sense to play when loading anyways.
+    	parentController.getCurrentSession().pauseAll();
+    	// If the user clicks the import media button, he will get a windows file-chooser
+    	FileChooser fileChooser = new FileChooser();
+    	String filetype = MainModuleController.getInstance().getSaveFiletype();
+    				
+    	// Set extension filter
+    	ExtensionFilter filter = new ExtensionFilter("CRIBRUM files (*"+filetype+")", "*."+filetype);
+    	fileChooser.getExtensionFilters().add(filter);
+    			
+    	// Show open file dialog
+    	File loadFile = fileChooser.showOpenDialog(MainGUIController.getInstance().primaryStage);
+    	if(loadFile==null){
+    		// The user closed the window. TODO: Give some message? Probably not.
+    	}
+    	else{
+    		this.parentController.getCurrentSession().loadSession(loadFile);
+    	}
+    }
+    
+    /**
+     * Tells the SessionModule to create a new empty session.
+     */
+    private void createNewSession(){
+    	parentController.getCurrentSession().pauseAll();
+		parentController.getCurrentSession().createNewSession();
     }
 
 	

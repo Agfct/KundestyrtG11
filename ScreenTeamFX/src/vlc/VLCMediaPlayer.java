@@ -37,7 +37,7 @@ public class VLCMediaPlayer{
 	private int ID;
 	private String[] libvlcOptions;
 	private boolean mediaChanged = false;
-	protected static final String[] DEFAULT_FACTORY_ARGUMENTS = {
+	protected static final String[] DEFAULT_FACTORY_ARGUMENTS_2 = {
 	        "--video-title=vlcj video output",
 	        "--no-snapshot-preview",
 	        "--quiet-synchro",
@@ -45,6 +45,12 @@ public class VLCMediaPlayer{
 	        "--intf=dummy"
 	    }; 
 	
+	/**
+	 * Creates a new media player and adds the default factory arguments plus an optional list of options to it.
+	 * 
+	 * @param ID
+	 * @param options
+	 */
 	public VLCMediaPlayer(int ID, String[] options){
 		this.ID = ID;
 		mediaPlayerComponent = new EmbeddedMediaPlayerComponent() {
@@ -66,14 +72,20 @@ public class VLCMediaPlayer{
 	}
 	
 	/**
-	 * Constructor for prerunChecker. */	
+	 * Constructor for prerunChecker. Size is set to 0*0 because the frame must be displayed to start any media.	
+	 */
 	public VLCMediaPlayer(){
 		mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 		frame.setUndecorated(true);
 		frame.getContentPane().add(mediaPlayerComponent);
 		frame.setSize(0, 0);
 	}
+
 	
+	/**
+	 * If new media has been sent to the media player, it will play the new media from the beginning.
+	 * If some media is already in the media player and is paused it will play from where it is paused.
+	 */
 	public void play(){
 		if(display > -1 && !isPlaying()){
 			if(mediaChanged){
@@ -95,6 +107,13 @@ public class VLCMediaPlayer{
 		}
 	}
 	
+	/**
+	 * If new media has been sent to the media player, 
+	 * the media player will first start the new media and then seek to the point time and pause it.
+	 * If some media is already in the media player,
+	 * the media player will seek to the point time and pause it.
+	 * @param time
+	 */
 	public void seek(long time){
 		if(mediaChanged){
 			mediaPlayerComponent.getMediaPlayer().startMedia(mediaPath);
@@ -112,6 +131,11 @@ public class VLCMediaPlayer{
 		while(isPlaying());
 	}	
 	
+	/**
+	 * Removes any media from the media player, turning the media player black.
+	 * Some times the frame would become white afterwards and in order to fix this 
+	 * the frame is simply minimized and then maximized again.
+	 */
 	public void stop(){
 		mediaPath = "";
 		mediaPlayerComponent.getMediaPlayer().stop();
@@ -119,6 +143,11 @@ public class VLCMediaPlayer{
 		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
+	/**
+	 * Sends some new media to the media player.
+	 * The old media will continue to play until play or seek it called.
+	 * @param mediaPath
+	 */
 	public void setMedia(String mediaPath){
 		mediaPlayerComponent.getMediaPlayer().stop();
 		mediaPlayerComponent.getMediaPlayer().prepareMedia(mediaPath);
@@ -126,6 +155,9 @@ public class VLCMediaPlayer{
 		mediaChanged = true;
 	}
 	
+	/**
+	 * Mute the sound from the media. A video will still show.
+	 */
 	public void mute(){
 		mediaPlayerComponent.getMediaPlayer().mute(true);
 	}
@@ -135,28 +167,42 @@ public class VLCMediaPlayer{
 	}
 	
 	public void maximize(){
+		frame.setState(java.awt.Frame.ICONIFIED);
 		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
+	/**
+	 * Hide the video. Sound will still play.
+	 */
 	public void hide(){
 		mediaPlayerComponent.setVisible(false);
 		frame.setState(java.awt.Frame.ICONIFIED);
 		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
+	/**
+	 * Show the video again after hiding it.
+	 */
 	public void show(){
 		mediaPlayerComponent.setVisible(true);
 		frame.setState(java.awt.Frame.ICONIFIED);
 		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
+	/**
+	 * 
+	 * @param show
+	 */
 	public void showhide(boolean show){
 		frame.setVisible(show);
 	}
 	
 	/**
-	 * Creates a new Jframe on a new graphicsDevice. Must use setMedia before media can be played again. 
-	 * @param display */
+	 * Binds a GraphicsDevice (representing a display connected to your computer) to a JFrame.
+	 * This will bring up the media player on the display, initially showing just the black background.
+	 * In order to find out which display corresponds to which number, call the identify function in VLCController.
+	 * @param display
+	 */
 	public void setDisplay(int display){
 		this.display = display;
 		frame.getContentPane().remove(mediaPlayerComponent);
@@ -172,7 +218,9 @@ public class VLCMediaPlayer{
 	}
 	
 	/**
-	 * Preferred method for changing displays. Only works on Windows 8.
+	 * This method does the same as the one above, but is more sophisticated. 
+	 * It allows for media players to change display almost instantaneously during runtime.
+	 * Sadly it will not work on Windows 7 or 10. So far it is only confirmed to work on Windows 8.
 	 * @param display */
 	public void setDisplayWin8(int display){
 		this.display = display;
@@ -180,6 +228,9 @@ public class VLCMediaPlayer{
         frame.setVisible(true);
 	}
 	
+	/**
+	 * Frees the display from the media player.
+	 */
 	public void removeDisplay(){
 		if(System.getProperty("os.name").startsWith("Windows 8")){
 			gs[display].setFullScreenWindow(null);
@@ -199,6 +250,10 @@ public class VLCMediaPlayer{
 		return this.display;
 	}
 	
+	/**
+	 * Returns true if a video or audio is currently playing on the media player.
+	 * @return
+	 */
 	public boolean isPlaying(){
 		return mediaPlayerComponent.getMediaPlayer().isPlaying();
 	}
@@ -219,17 +274,30 @@ public class VLCMediaPlayer{
 		return mediaPlayerComponent.getMediaPlayer().getTime();
 	}
 	
+	/**
+	 * Used to check if a media file is valid and returns its length.
+	 * @param mediaPath
+	 * @return
+	 */
 	public long isPlayable(String mediaPath){
 		frame.setVisible(true);
 		mediaPlayerComponent.getMediaPlayer().startMedia(mediaPath);
 		return mediaPlayerComponent.getMediaPlayer().getLength();
 	}
 	
+	/**
+	 * Disposes the JFrame that the media player is attached to, deleting it in the process.
+	 */
 	public void close(){
 		mediaPlayerComponent.getMediaPlayer().stop();
 		frame.dispose();
 	}
 	
+	/**
+	 * Used in the constructor to merge the default options with those passed as argument.
+	 * @param arrays
+	 * @return
+	 */
 	static String[] concat(String[]... arrays) {
 	    int length = 0;
 	    for (String[] array : arrays) {

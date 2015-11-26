@@ -45,7 +45,8 @@ public class VLCController {
 	private VLCMediaPlayer prerunCheckPlayer;
 	
 	/**
-	 * Creates a VLC controller. Java version is checked and the corresponding version on VLC is loaded.
+	 * Creates a VLC controller.
+	 * Java version is checked and the corresponding version on VLC is loaded.
 	 */
 	public VLCController(ArrayList<Integer> displays){
 		if(Integer.parseInt(System.getProperty("sun.arch.data.model")) == 32){
@@ -66,6 +67,11 @@ public class VLCController {
 		availableDisplays = displays;
 	}
 	
+	/**
+	 * Update the list of displays.
+	 * Currently this method is not called from anywhere.
+	 * @param displays
+	 */
 	public void updateDisplays(ArrayList<Integer> displays){
 		for(Integer d : this.displays){
 			if(!displays.contains(d)){
@@ -84,9 +90,13 @@ public class VLCController {
 		VLCMediaPlayer.updateDisplays();
 	}
 	
-	/** 
-	 * * Create a VLC media player. ID is linked to a timeline. 
-	 * @param ID */
+	/**
+	 * Creates a media player and passes the options to it.
+	 * The ID is the same as a timeline. 
+	 * @param ID
+	 * @param options
+	 * @return
+	 */
 	public VLCMediaPlayer createMediaPlayer(int ID, String[] options){
 		if(vlcPathSet){
 			VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
@@ -100,8 +110,9 @@ public class VLCController {
 	}
 	
 	/**
-	 * Deletes a media player and frees all its resources. 
-	 * @param mp */
+	 * Deletes a media player and frees the display from it.
+	 * @param mp
+	 */
 	public void deleteMediaPlayer(int mp){
 		if(mediaPlayerList.containsKey((Integer)mp)){
 			toPlayer(mp).close();
@@ -113,23 +124,11 @@ public class VLCController {
 		}
 	}
 	
-//	public void updateMediaPlayer(Integer ID, String[] options){
-//		VLCMediaPlayer mp = new VLCMediaPlayer(ID, options);
-//		VLCMediaPlayer oldmp = mediaPlayerList.put(ID, mp);
-//		oldmp.close();
-//		if(mediaPlayerDisplayConnections.containsKey(ID)){
-//			Integer dis = oldmp.getDisplay();
-//			availableDisplays.add(mediaPlayerDisplayConnections.get(ID));
-//			mediaPlayerDisplayConnections.remove(oldmp.getID());
-//			assignDisplay(ID,dis);
-//		}
-//	}
-//	
-//	public void updateOptions(String[] options){
-//		for(Integer mp : mediaPlayerList.keySet()){
-//			updateMediaPlayer(mp,options);
-//		}
-//	}
+	/**
+	 * Used by updateOptions.
+	 * @param mp
+	 * @param options
+	 */
 	public void updateMediaPlayer(int mp, String[] options){
 		int ID = toPlayer(mp).getID();
 		int display = toPlayer(mp).getDisplay();
@@ -140,6 +139,12 @@ public class VLCController {
 		}
 	}
 	
+	/**
+	 * Update all the media players with some new options.
+	 * The media players need to be paused before they can display something again.
+	 * This is because new media players are created as some options can only be added at the creation of the media player.
+	 * @param options
+	 */
 	public void updateOptions(String[] options){
 		ArrayList<Integer> mps = new ArrayList<Integer>();
 		for(int mp : mediaPlayerList.keySet()){
@@ -151,10 +156,11 @@ public class VLCController {
 	}
 	
 	/**
-	 * Display mp on the display only if display is not already in use.
-	 * Returns true if a display was set
-	 * @param mp 
-	 * @param display */
+	 * Assigns a display to media player.
+	 * @param mp
+	 * @param display
+	 * @return
+	 */
 	public boolean assignDisplay(int mp, int display){
 		if(availableDisplays.contains((Integer)display)){
 			if(mediaPlayerDisplayConnections.containsKey(mp)){
@@ -180,6 +186,10 @@ public class VLCController {
 		return false;
 	}
 	
+	/**
+	 * Unassigns a display from a media player.
+	 * @param mp
+	 */
 	public void unassignDisplay(int mp){
 		if(mediaPlayerDisplayConnections.containsKey(mp)){
 			availableDisplays.add(mediaPlayerDisplayConnections.remove(mp));
@@ -195,6 +205,12 @@ public class VLCController {
 		return mediaPlayerList.get(ID);
 	}
 	
+	/**
+	 * Sends new media to a media player.
+	 * Old media will continue to play until the media player plays or seeks again.
+	 * @param mp
+	 * @param mediaPath
+	 */
 	public void setMedia(int mp, String mediaPath){
 		toPlayer(mp).setMedia(mediaPath);
 	}
@@ -220,7 +236,7 @@ public class VLCController {
 	}
 	
 	/**
-	 * Seeks to time in the specified media player.
+	 * Seeks to point time in the specified media player.
 	 * @param mp
 	 * @param time
 	 */
@@ -228,13 +244,18 @@ public class VLCController {
 		toPlayer(mp).seek(time);
 	}
 	
+	/**
+	 * Stops a media player, removing any media from it and turns it black.
+	 * @param mp
+	 */
 	public void stopOne(int mp){
 		toPlayer(mp).stop();
 	}
 	
-	/** * Play all the media of all media players at the exact same time.
-	 * @throws BrokenBarrierException 
-	 * @throws InterruptedException */	
+	/**
+	 * Plays all media players at the exact same time.
+	 * @throws InterruptedException
+	 */
 	public synchronized void playAll() throws InterruptedException{
 		if(mediaPlayerDisplayConnections.size()>0){
 			ArrayList<Thread> threads = new ArrayList<Thread>();
@@ -260,9 +281,10 @@ public class VLCController {
 		}
 	}
 	
-	/** * Pause all the media players at the exact same time. 
-	 * @throws BrokenBarrierException 
-	 * @throws InterruptedException */
+	/**
+	 * Pauses all media players at the exact same time
+	 * @throws InterruptedException
+	 */
 	public synchronized void pauseAll() throws InterruptedException{
 		if(mediaPlayerList.size()>0){
 			ArrayList<Thread> threads1 = new ArrayList<Thread>();
@@ -291,7 +313,7 @@ public class VLCController {
 	
 	/**
 	 * Takes a map of media players and times. 
-	 * Seeks to that time for each media player at the exact same time
+	 * Seeks to that time for each media player at the exact same time.
 	 * @param map
 	 * @throws InterruptedException */
 	public synchronized void SeekMultiple(Map<Integer, Long> map) throws InterruptedException{
@@ -319,6 +341,11 @@ public class VLCController {
 		}
 	}
 	
+	/**
+	 * Mutes or unmutes a media player.
+	 * @param mp
+	 * @param mute
+	 */
 	public void mute(int mp, boolean mute){
 		if(mute){
 			toPlayer(mp).mute();
@@ -328,6 +355,11 @@ public class VLCController {
 		}
 	}
 	
+	/**
+	 * Shows or ides a media player.
+	 * @param mp
+	 * @param hide
+	 */
 	public void hide(int mp, boolean hide){
 		if(hide){
 			toPlayer(mp).hide();
@@ -346,6 +378,9 @@ public class VLCController {
 		toPlayer(mp).showhide(show);
 	}
 	
+	/**
+	 * Shows a huge number on each display for 5 seconds. Similar to the Windows identify function.
+	 */
 	public void identifyDisplays(){
 		GraphicsDevice[] gs = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 		

@@ -12,8 +12,8 @@
 
 <GridPane styleClass="background-modal"
 	stylesheets="@application.css" fx:id="modalContainer" xmlns:fx="http://javafx.com/fxml/1"
-	xmlns="http://javafx.com/javafx/8.0.40" maxHeight="238" maxWidth="600"
-	minHeight="238" minWidth="600" prefHeight="238" prefWidth="600">
+	xmlns="http://javafx.com/javafx/8.0.40" maxHeight="238" maxWidth="610"
+	minHeight="238" minWidth="610" prefHeight="238" prefWidth="610">
 	<columnConstraints>
 		<ColumnConstraints halignment="CENTER" percentWidth="27" />
 		<ColumnConstraints halignment="CENTER" percentWidth="23" />

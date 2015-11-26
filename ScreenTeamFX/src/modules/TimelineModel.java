@@ -61,6 +61,7 @@ public class TimelineModel implements Serializable{
 	 * if there is available space where the TimelineMediaObject starts, the duration may be shorted down
 	 * to make it fit. The return string says something about the result of trying to fit in the 
 	 * TimelineMediaObject.
+	 * user friendly.
 	 * @param m
 	 * @return
 	 */
@@ -193,10 +194,11 @@ public class TimelineModel implements Serializable{
 	
 	/**
 	 * Try to change TimelineMediaObject to the new start or new duration
-	 * @param tlmo
-	 * @param newStart
-	 * @param newDuration
-	 * @return
+	 * @param tlmo: the timelinemediaobject that has changed
+	 * @param newStart: the new startpoint of the tlmo
+	 * @param newInternalStart: new offset for the tlmo
+	 * @param newDuration: new duration of the tlmo
+	 * @return String message of what happened
 	 */
 	public String timelineMediaObjectChanged( TimelineMediaObject tlmo, int newStart, int newInternalStart, int newDuration){	
 		if(!timelineMediaObjects.remove(tlmo)){
@@ -233,7 +235,7 @@ public class TimelineModel implements Serializable{
 	}
 	
 	/**
-	 * goes through all mediaObjects in the timeline and creates the new stack
+	 * goes through all mediaObjects in the timeline and creates the new stack for the sessionbuilder to use.
 	 * 
 	 */
 	public void timelinechanged(){
@@ -296,8 +298,8 @@ public class TimelineModel implements Serializable{
 	 * Sets the name of the timeline.
 	 * Rejects the request if name is above 50 chars
 	 * NB: this is not proper MVC as it should run fireTimelineChanged() in sessionmodule. It does however not affect any user exp
-	 * @param s
-	 * @return
+	 * @param s: new name of the timeline
+	 * @return boolean if the length of s is valid
 	 */
 	public boolean setNameOfTimeline(String s){
 		if(s.length()<50){

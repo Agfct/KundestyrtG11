@@ -4,6 +4,13 @@
 	 
 }
 
+
+/*
+ * Copyright (c) 1996-2013 VideoLAN. 
+ * This logo or a modified version may be used or modified by anyone to refer to the 
+ * VideoLAN project or any product developed by the VideoLAN team, 
+ * but does not indicate endorsement by the project. 
+ */
 .icon-video {
 	-fx-background-image: url("/VLC_Icon.png");
 	-fx-background-repeat: no-repeat;
@@ -113,19 +120,18 @@
 	-fx-background-size: cover;
 }
 
-.background-advancedScreen {
-	-fx-background-image: url("/background_dokkhuset.png");
-	-fx-background-repeat: no-repeat;
-	-fx-background-size: cover;
-}
-
-
 .background-transparent {
 	-fx-background-color:rgba(0,100, 100, 0.5);
 }
 
 .background-main {
 	-fx-background-image: url("/background_dokkhuset.png");
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+}
+
+.background-main-black {
+	-fx-background-image: url("../../resources/background_black.png");
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: cover;
 }

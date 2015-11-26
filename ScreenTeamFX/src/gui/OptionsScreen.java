@@ -4,9 +4,6 @@
 package gui;
 
 import java.io.IOException;
-
-import com.sun.org.apache.xpath.internal.operations.Equals;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,20 +12,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import modules.MainModuleController;
 import vlc.VLCController;
 
 /**
- * @author Anders, Magnus
+ * @author Anders Lunde, Magnus Gundersen
  * Singleton  class
+ * The Options screen is a screen where you can modify VLC options, make the background black and see the credits.
  */
 public class OptionsScreen implements Screen {
 
 	//Singleton:
 	private static OptionsScreen optionScreen;
+	private boolean blackBackground  = false;
 	
 
 	Scene screenScene;
@@ -40,7 +38,7 @@ public class OptionsScreen implements Screen {
 		screenController = new OptionsScreenController();
 		
 		//Setting the root of the controller to the scene
-		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700);
+		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700); //TODO: Make a global size instead of 1200,700
 	}
 	
 	public static OptionsScreen getInstance() {
@@ -69,7 +67,6 @@ public class OptionsScreen implements Screen {
 		private FXMLLoader fxmlLoader;
 		private AnchorPane rootPane;
 		private AnchorPane creditsRootPane;
-		private boolean credits = false;
 		private VLCController vlc_controller;
 		private String temp_vlcCommands = "";
 		
@@ -149,9 +146,34 @@ public class OptionsScreen implements Screen {
 				AdvancedScreen.getInstance().getScreenController().getCurrentSession().setVLCConfiguration(newVlcConfig);
 				AdvancedScreen.getInstance().getScreenController().getCurrentSession().updateMediaPlayers();
 				paintVLCConfigValues();
+			}else if(((Button)event.getSource()).getId().equals("changeBackground")){
+				//If the background is default (not black)
+				if(!blackBackground){
+					blackBackground = true;
+					rootPane.getStyleClass().removeAll("background-main");
+					rootPane.getStyleClass().add("background-main-black");
+					MainScreen.getInstance().getScreenController().getRoot().getStyleClass().removeAll("background-main");
+					MainScreen.getInstance().getScreenController().getRoot().getStyleClass().add("background-main-black");
+					AdvancedScreen.getInstance().getScreenController().getRoot().getStyleClass().removeAll("background-main");
+					AdvancedScreen.getInstance().getScreenController().getRoot().getStyleClass().add("background-main-black");
+					
+				}else{
+					blackBackground = false;
+					rootPane.getStyleClass().removeAll("background-main-black");
+					rootPane.getStyleClass().add("background-main");
+					MainScreen.getInstance().getScreenController().getRoot().getStyleClass().removeAll("background-main-black");
+					MainScreen.getInstance().getScreenController().getRoot().getStyleClass().add("background-main");
+					AdvancedScreen.getInstance().getScreenController().getRoot().getStyleClass().removeAll("background-main-black");
+					AdvancedScreen.getInstance().getScreenController().getRoot().getStyleClass().add("background-main");
+				}
+				System.out.println(rootPane.getStyleClass());
 			}
 		}
-		
+		/*
+		 * Method for painting the correct VLC-configs
+		 * NB: should be greatly revised to facilitate future development
+		 * 
+		 */
 		public void paintVLCConfigValues(){
 			vlcConfig = AdvancedScreen.getInstance().getScreenController().getCurrentSession().getVLCConfiguration();
 			for(String s: vlcConfig){
@@ -165,7 +187,11 @@ public class OptionsScreen implements Screen {
 				}
 			}				
 		}
-		
+		/*
+		 * Set the alternatives for the options. 
+		 * NB: The alternatives should be collected from the modules, not set here
+		 * TODO: have a list of available options in the sessionModule
+		 */
 		public void setVLCConfigAlternatives(){
 			vOutputComboBox.getItems().addAll(
 					"Auto",

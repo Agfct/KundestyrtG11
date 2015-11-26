@@ -93,7 +93,8 @@ public class WindowChooserController implements FXMLController {
 				String selectedWindow = (String)windowListView.getSelectionModel().getSelectedItem();
 				if(selectedWindow!=null){
 					if(mediaObject == null){
-						String result = parentController.getCurrentSession().createNewMediaObject(MediaSourceType.WINDOW, selectedWindow);
+						String result = parentController.getCurrentSession().createNewMediaObject(MediaSourceType.WINDOW, selectedWindow, false);
+						System.out.println("[WindowChooserController] "+result);
 					}
 					else{
 						parentController.getCurrentSession().changeMediaObject(mediaObject, selectedWindow);

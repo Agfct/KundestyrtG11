@@ -12,8 +12,8 @@ import javafx.util.Pair;
 
 /**
  * @author Anders Lunde
- * Contains all the information a MediaObject needs when beeing dragged
- * By using a container we can drag the media object from one timeline to another
+ * Contains all the information a MediaObject needs when being dragged
+ * By using a container we can drag the media from the fileImport
  */
 public class MediaObjectContainer implements Serializable {
 

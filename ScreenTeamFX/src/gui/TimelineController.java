@@ -3,16 +3,12 @@ package gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Optional;
-
-import org.controlsfx.control.CheckComboBox;
 
 import gui.AdvancedScreen.AdvancedScreenController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,14 +19,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
-import modules.MainModuleController;
 import modules.TimelineModel;
 
 
@@ -38,7 +32,7 @@ import modules.TimelineModel;
  * 
  * @author Anders Lunde
  * The TimelineController is the controller of everything you see in a single timeline.
- * It contains fxml for the timeline info (left side) and the timeline with videos (right side)
+ * It contains fxml for the timeline info (left side) and a TimelineLineController that has the timeline with videos (right side)
  */
 public class TimelineController implements FXMLController {
 	
@@ -155,7 +149,7 @@ public class TimelineController implements FXMLController {
 		 
 		 
 		 //TextField for editing the name of a timeline
-		 nameOfTimeLineField.setText(nameOfTimeLine);
+		 updateNameOfTimeline();
 		 nameOfTimeLineField.setFocusTraversable(false);
 		 addListenerToNameOfTimelineTextField();
 		
@@ -228,7 +222,11 @@ public class TimelineController implements FXMLController {
 		updateValuesFromModel(); //Gets the updated values from the model
 		updateDisplayList(); // Use the updated values to update the list of the selected screens.
 		updateMutationValues();
-		
+		updateNameOfTimeline();
+	}
+	
+	public void updateNameOfTimeline(){
+		nameOfTimeLineField.setText(nameOfTimeLine);
 	}
 	
 	public void updateMutationValues(){

@@ -7,19 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
-import com.sun.webkit.dom.KeyboardEventImpl;
 
 import javafx.application.Platform;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,15 +29,12 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -56,7 +45,9 @@ import modules.*;
  * @author Anders Lunde,  Magnus Gundersen
  * Singleton class
  *The AdvancedScreen class represents the view/Screen where you can create a new session that will be displayed on the screens.
- *This is the most important screen in the application and it will contain most of the applications functionallity.
+ *This is the most important screen in the application and its controller "AdvanceScreenController" (located within this class)
+ *will contain most of the applications functionality. 
+ *Read the explanation (comment) of the AdvanceScreen controller to get a short explanation of the hierarchy of the GUI Controllers.
  */
 public class AdvancedScreen implements Screen{
 
@@ -73,9 +64,7 @@ public class AdvancedScreen implements Screen{
 
 		//Creating a new controller for use in the fxml
 		screenController = new AdvancedScreenController();
-
-		//			screenScene = new Scene(rootPane,1200,700);
-		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700);
+		screenScene = new Scene(screenController.getFXMLLoader().getRoot(),1200,700); //TODO: Make a global size instead of 1200,700
 	}
 
 	public static AdvancedScreen getInstance() {
@@ -102,20 +91,29 @@ public class AdvancedScreen implements Screen{
 
 
 	/**
-	 *
 	 * @author Anders Lunde, Magnus Gundersen
 	 * The controller for the FXML of the advancedScreen.
-	 * The MainScreenController listens to all the input from the objects (buttons, textFields, mouseClicks) in the fxml scene.
+	 * The AdvancedScreenController is the main controller for all of the GUI, and almost all information flows through here.
+	 * This controller has all the GUI controllers as its children and can access them all.
+	 * 
+	 * Controllers in order of appearance in the User Interface (from top to bottom):
+	 * HeaderController			-	(Contains buttons for adding timelines, save, load, ...)
+	 * TimelineBarController 	-	(Contains the timelineBar.fxml and the seekerController and stopPointController)
+	 * TimelineControllers 		-	(An array of every Timeline, that is: Every TimelineController)
 	 */
 	public class AdvancedScreenController implements FXMLController, SessionListener {
 
-
-		//List of all TimelineControllers within the advancedScreen
-		private ArrayList<TimelineController> timelineControllers;
-		private TimelineBarController timelineBarController;
+		//Child Controllers of advanceScreenController:
 		private HeaderController headerController;
+		private TimelineBarController timelineBarController;
+		private ArrayList<TimelineController> timelineControllers;
+		
+		//The current session from modules
 		private SessionModule currentSession;
+		
 		private double scrollBarPosition = 0;
+		
+		//Stages that are shown in sessionBuilder (pop up windows):
 		private Stage modalDialog;
 		private Stage windowChooser; // stage for the windowChooser
 
@@ -126,6 +124,7 @@ public class AdvancedScreen implements Screen{
 		private int minScale = 1;
 		private double scrollBarDefaultValue = 0;
 
+		//FXML Loader and RootPanes
 		private FXMLLoader fxmlLoader;
 		private AnchorPane rootPane;
 		@FXML private GridPane rootGrid;
@@ -140,7 +139,7 @@ public class AdvancedScreen implements Screen{
 		private EventHandler<DragEvent> mIconDragOverTimeline = null;
 		private SeekerPopupController seekerPopup = null;
 
-		// Pointers to the fx:id in the fxml
+		// Pointers to the fx:id in the FXML
 		@FXML private VBox timelineContainer;
 		@FXML private Button testButton;
 		@FXML private ListView fileListView;
@@ -151,7 +150,8 @@ public class AdvancedScreen implements Screen{
 		// Hashmap over the timelineIDs from the modules and the timelineControllers of the GUI
 		private HashMap<TimelineController, Integer> idTimlineControllerMap;
 
-		//Canvas
+		//The Canvas that the small timelineBar lines are drawn upon.
+		//Its made in the advanceScreenController to draw it on top of the timelineBar
 		private Canvas timelineBarCanvas = new Canvas(1000, 25);
 		GraphicsContext gc = timelineBarCanvas.getGraphicsContext2D();
 
@@ -206,13 +206,17 @@ public class AdvancedScreen implements Screen{
 
 		}
 		
-		
+		/**
+		 * Initializes the ScrollPane that the timelines will be inside
+		 */
 		private void initializeTimelineScrollPane(){
 			
 			timelineScrollPane.addEventFilter(KeyEvent.ANY,new EventHandler<KeyEvent>() {
 		        @Override
 		        public void handle(KeyEvent event) {
-		        	//Consumes the event if the arrowKeys are pressed. This is to avoid destruction of the scrollpane
+		        	//Consumes the event if the arrowKeys are pressed. 
+		        	//This is to prevent the user from manually scrolling the scrollPane left and right
+		        	//TODO: This does not prevent touchPads from scrolling left and right, need a different solution.
 		        	KeyCode keyCode = event.getCode();
 		        	if(keyCode==KeyCode.UP || keyCode==KeyCode.DOWN || keyCode==KeyCode.LEFT || keyCode==KeyCode.RIGHT){
 		        		event.consume();
@@ -245,9 +249,7 @@ public class AdvancedScreen implements Screen{
 
 
 		/**
-		 * Initializes a dummy icon that will be displayed when dragging
-		 * accross panes.
-		 *
+		 * Initializes a dummy icon that will be displayed when dragging across panes.
 		 */
 		private void initializeDrag(){
 
@@ -260,9 +262,8 @@ public class AdvancedScreen implements Screen{
 		}
 
 		/**
-		 * Initializes a dummy icon that will be displayed when dragging
-		 * the seeker.
-		 *
+		 * Initializes a popup that will be displayed when dragging the seeker.
+		 * This popup shows the seekers current position.
 		 */
 		private void initializeSeekerPopup(){
 
@@ -287,12 +288,7 @@ public class AdvancedScreen implements Screen{
 					// Telling the root how to handle the dragIcon
 					rootPane.setOnDragOver(mIconDragOverRoot);
 					rootPane.setOnDragDone(mIconDragDone);
-					//						
-					//Get timelines and add dragBehavior
-					//						for (FXMLController timelineController : timelineControllers) {
-					//							((TimelineController)timelineController).getTimelineLineController().setRootOnDragOver(mIconDragOverTimeline);
-					//						}
-					//						//Get timelines and add dropBehavior
+					
 					for (FXMLController timelineController : timelineControllers) {
 						((TimelineController)timelineController).getTimelineLineController().setRootOnDropped(mIconDragDropped);
 					}
@@ -302,7 +298,7 @@ public class AdvancedScreen implements Screen{
 
 
 					//Sets the type of the drag icon based on the icon of the triggering MediaObject (Video/Sound)
-					//Here one can alternativly set text that shoud be displayed on the icon while you drag it.
+					//Here one can alternatively set text that should be displayed on the icon while you drag it.
 					mDragOverIcon.setType(icn.getType());
 
 
@@ -312,7 +308,9 @@ public class AdvancedScreen implements Screen{
 					//Creates a javafx clipboard and creates a new DragContainer for the mediaObject
 					ClipboardContent content = new ClipboardContent();
 					MediaObjectContainer container = new MediaObjectContainer();
-					//						
+
+					//All advanced information about the MediaObject is added here
+					//We simply add the entire mediaObject model
 					container.addData ("model", icn.getMediaObject());
 
 					//Container is put onto the clipboard
@@ -367,9 +365,6 @@ public class AdvancedScreen implements Screen{
 					MediaObjectContainer container =
 							(MediaObjectContainer) event.getDragboard().getContent(MediaObjectContainer.AddNode);
 
-
-					Point2D pk = new Point2D(event.getSceneX(),event.getSceneY());
-
 					//Adds the coordinates where the icon was dropped to the MediaObjectContainer
 					container.addData("scene_coords",
 							new Point2D(event.getSceneX(), event.getSceneY()));
@@ -397,9 +392,7 @@ public class AdvancedScreen implements Screen{
 					rootPane.removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverRoot);
 					rootPane.setOnDragOver(null);
 					rootPane.setOnDragDone(null);
-					//						for (FXMLController timelineController : timelineControllers) {
-					//							((TimelineController)timelineController).getTimelineLineController().getRoot().removeEventHandler(DragEvent.DRAG_OVER, mIconDragOverTimeline);
-					//						}
+
 					for (FXMLController timelineController : timelineControllers) {
 						((TimelineController)timelineController).getTimelineLineController().getRoot().removeEventHandler(DragEvent.DRAG_DROPPED, mIconDragDropped);
 						((TimelineController)timelineController).getTimelineLineController().getRoot().setOnDragDropped(null);
@@ -413,13 +406,6 @@ public class AdvancedScreen implements Screen{
 					if (container != null) {
 						//If the drop is inside the view
 						if (container.getValue("scene_coords") != null) {
-
-							//								MediaObjectController node = new MediaObjectController();
-
-							//Sends the container containing all the information about the mediaObject
-							//To the newly created MediaObject for initialization
-							//								node.initializeMediaObject(container);
-
 
 							//We need to check which timeline the container is dropped upon
 							for (TimelineController timelineController : timelineControllers) {
@@ -445,12 +431,12 @@ public class AdvancedScreen implements Screen{
 
 
 		/**
-		 * Adds a new timeline to the advancedScreen
-		 * First adding the TimelineController to the advanceScreen controller list
-		 * then adding the GridPane of the TimelineController to the VBox container.
+		 * Adds a new timeline to the advancedScreen by running it through the sessionModule
 		 */
 		public void addTimeline(){
 			int timelineInt = currentSession.addTimeline();
+			System.out.println(timelineInt);
+			System.out.println("Total number of timelines: "+ currentSession.getTimelines().size());
 		}
 
 		public void duplicateTimeline(TimelineModel tlm) {
@@ -496,19 +482,17 @@ public class AdvancedScreen implements Screen{
 		}
 
 		/**
-		 * Removes the TimelineControllers GridPane from the VBox container
-		 * and the TimelineController from the advanceScreens controller list.
-		 * @param timeline
+		 * Removes the given timeline from the current session
+		 * @param timelineController
 		 */
 		public void removeTimeline(TimelineController timelineController){
-			//				timelineContainer.getChildren().remove(timeline.getRoot());
-			//				timelineControllers.remove(timeline);
 			currentSession.removeTimeline(idTimlineControllerMap.get(timelineController));
 		}
 
 
-		/*
-		 * Initializes the header
+		/**
+		 * Initializes the HeaderController
+		 * @param self
 		 */
 		public void initHeader(AdvancedScreenController self){
 			headerController = new HeaderController(self);
@@ -618,7 +602,7 @@ public class AdvancedScreen implements Screen{
 			modalDialog.initModality(Modality.APPLICATION_MODAL);
 			modalDialog.initOwner(MainGUIController.getInstance().primaryStage);
 			ModalController mediaObjectModal = new ModalController(mediaObject);
-			Scene dialogScene = new Scene(mediaObjectModal.getRoot(), 600, 230);
+			Scene dialogScene = new Scene(mediaObjectModal.getRoot(), 610, 230);
 			modalDialog.setScene(dialogScene);
 			modalDialog.show();
 		}
@@ -663,13 +647,6 @@ public class AdvancedScreen implements Screen{
 			return currentSession.getAvailableWindows();
 		}
 
-
-
-
-
-
-
-
 		/**
 		 * @return the scrollBarPosition
 		 */
@@ -682,6 +659,7 @@ public class AdvancedScreen implements Screen{
 		 * It also moves the scrollparPosition to fit the new scale.
 		 */
 		public void refreshScrollBarSize() {
+			//These three values are only used if one want to zoom without zooming inn on the seeker position.
 			double oldScrollBarMax = timelineLineScrollBar.getMax();
 			double oldScrollBarPos = timelineLineScrollBar.getValue();
 			double scrollBarValueScaleCoeff = 0;
@@ -692,7 +670,7 @@ public class AdvancedScreen implements Screen{
 			timelineLineScrollBar.setMax((currentSession.getSessionLength()*scaleCoefficient) - 1000);
 			scrollBarValueScaleCoeff = timelineLineScrollBar.getMax()/oldScrollBarMax;
 
-			//            timelineLineScrollBar.setValue(oldScrollBarPos*scrollBarValueScaleCoeff);
+			//timelineLineScrollBar.setValue(oldScrollBarPos*scrollBarValueScaleCoeff); //Zoom on timeline without seeker
 			timelineLineScrollBar.setValue(timelineBarController.getSeeker().getSeekerPositionMiddle());
 			updateTimelinesPosition();
 		}
@@ -793,8 +771,11 @@ public class AdvancedScreen implements Screen{
 		}
 
 
+		/**
+		 * Repaints the numbers on the canvas when you rescale.
+		 */
 		public void repaintTimelineBarCanvas(){
-			//NB! Clearing only top rect to reduce lag
+			//NB! Clearing only top rect of canvas to reduce lag
 			gc.clearRect(0, 0, 200, 12);
 			if(scaleCoefficient == 1){
 				gc.fillText("1 min", 72+1, 12);
@@ -802,14 +783,17 @@ public class AdvancedScreen implements Screen{
 				gc.fillText("6 sec", 72+1, 12);
 			}
 		}
+		
 		/**
 		 * Paints the timelineBar lines and numbers according to scale
 		 * NB! A canvas cannot be very large (max 4k)
+		 * x = 12 because the timelinebar is 11 pixels wider than the timelines itself. So 12 is the first visible pixel of the timelinebar.
+		 * and 0.5 is added to x1 before line is drawn (seeker center is 12.5 when the seeker is 25 pixels wide).
+		 * So essensialy pixel nr 13 is where the line will be drawn, but software wise its 12.5.
 		 */
 		public void paintTimelineBarCanvas(){
 
 			gc.setLineWidth(1.0);
-			//x = 12 to start the first line ontop of the center of the seeker
 			int k = 5;
 			for (int x = 12; x < 1000; x+=10) {
 				double x1 = 0;
@@ -858,32 +842,10 @@ public class AdvancedScreen implements Screen{
 			}
 		}
 
-		public boolean saveSession() {
-			return MainModuleController.getInstance().saveSession();
-		}
-
-		public boolean saveSession(File saveFile) {
-			return MainModuleController.getInstance().saveSession(saveFile);
-		}
-
-		public void loadSession(File loadFile) {
-			SessionModule sm = MainModuleController.getInstance().loadSession(loadFile);
-			MainModuleController.getInstance().updateSession(sm);
-			currentSession = sm;
-			MainGUIController.getInstance().updateSession(sm);
-			MainModuleController.getInstance().getSession().addListener(this);
-		}
-		
-		public void createNewSession(){
-			SessionModule sm = MainModuleController.getInstance().createNewSession();
-			MainModuleController.getInstance().updateSession(sm);
-			currentSession = sm;
-			MainGUIController.getInstance().updateSession(sm);
-			MainModuleController.getInstance().getSession().addListener(this);
-		}
-
-
-
+		/**
+		 * Rebuilds the timelines. Used when changing the names of mediaobjects.
+		 * TODO: Only go through the labels and update them. This implementation is highly unnecessary.
+		 */
 		public void rebuildTimelines() {
 			removeAllTimelineControllersFromScreen();
 			idTimlineControllerMap = new HashMap<TimelineController, Integer>();
@@ -963,12 +925,11 @@ public class AdvancedScreen implements Screen{
 		}
 
 		public void fireTimelinebarChanged() {
-			// TODO: update timelinebar
 		}
 		
-		public void repaintTimelinebarBreakpoints(){
-			timelineBarController.removeAllBreakpoints();
-			timelineBarController.repaint();
+		public void repaintTimelineBarController(){
+			this.timelineBarController.removeAllBreakpoints();
+			this.timelineBarController.repaint();
 		}
 
 
