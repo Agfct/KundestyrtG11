@@ -14,7 +14,7 @@ Anders Lunde
 
 Baptiste Masselin
 
-Kristian Midtgård
+Kristian MidtgÃ¥rd
 
 Magnus Gundersen
 Eirik Zimmer Wold
@@ -23,6 +23,9 @@ Ole Steinar L. Skrede
 
 
 ###The Software:
-Cribrum is a multi-video displaying software which enables you to 
-load, arrange and play multiple videos simultaneously on multiple screens.
+Cribrum is a multi-media displaying software which enables you to 
+load, arrange and play multiple videos/images simultaneously on multiple screens.
+The software is also capable of playing sound and moving Windows windows.
+
+![ScreenTeam](https://github.com/Agfct/KundestyrtG11/blob/Develop/ScreenTeamFX/resources/Cribrum_full.png?raw=true)
 
