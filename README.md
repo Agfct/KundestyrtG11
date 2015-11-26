@@ -17,6 +17,7 @@ Baptiste Masselin
 Kristian Midtgård
 
 Magnus Gundersen
+
 Eirik Zimmer Wold
 
 Ole Steinar L. Skrede
