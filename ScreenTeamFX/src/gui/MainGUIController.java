@@ -122,10 +122,10 @@ public class MainGUIController {
 	// Needs to rebuild the timelines, since updating the title of the media object should update
 	// title of TimelineMediaObjects.  
 	// TODO: There might be a way to just update the labels?
-	public void updateMediaObjects(){
-		AdvancedScreen.getInstance().getScreenController().fireMediaObjectListChanged();
-		AdvancedScreen.getInstance().getScreenController().rebuildTimelines();
-	}
+//	public void updateMediaObjects(){
+//		AdvancedScreen.getInstance().getScreenController().fireMediaObjectListChanged();
+//		AdvancedScreen.getInstance().getScreenController().rebuildTimelines();
+//	}
 
 
 }

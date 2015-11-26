@@ -157,7 +157,7 @@ public class HeaderController implements FXMLController{
 			System.out.println("The file was neither a video nor a sound: " + FileController.getFileExtension(file));
 		}
 		else{
-			parentController.getCurrentSession().createNewMediaObject(mst,path);
+			parentController.getCurrentSession().createNewMediaObject(mst,path, false);
 		}	
 	}
 	

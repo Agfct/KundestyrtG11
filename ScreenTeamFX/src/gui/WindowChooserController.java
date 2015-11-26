@@ -96,7 +96,7 @@ public class WindowChooserController implements FXMLController {
 				System.out.println(selectedWindow);
 				if(selectedWindow!=null){
 					if(mediaObject == null){
-						String result = parentController.getCurrentSession().createNewMediaObject(MediaSourceType.WINDOW, selectedWindow);
+						String result = parentController.getCurrentSession().createNewMediaObject(MediaSourceType.WINDOW, selectedWindow, false);
 						System.out.println("[WindowChooserController] "+result);
 					}
 					else{

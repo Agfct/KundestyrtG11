@@ -727,7 +727,7 @@ public class SessionModule implements Serializable {
      * @param mst
      * @param path
      */
-    public String createNewMediaObject(MediaSourceType mst, String path){
+    public String createNewMediaObject(MediaSourceType mst, String path, boolean loading){
     	System.out.println("[SESSION module]" + mst);
         // Check if this MediaObject is already stored in the list, by comparing paths
         for (int i=0; i<mediaObjects.size(); i++){
@@ -755,7 +755,9 @@ public class SessionModule implements Serializable {
                     mo.setLength((int)lenght);
                 }
                 else{
-                    return "MediaObject not created, prerunChecker in VLC failed";
+                	if(!loading){
+                		return "MediaObject not created, prerunChecker in VLC failed";
+                	}
                 }
                 break;
             }
@@ -772,7 +774,9 @@ public class SessionModule implements Serializable {
                     mo.setLength((int)lenght);
                 }
                 else{
-                    return "MediaObject not created, prerunChecker in VLC failed";
+                	if(!loading){
+                		return "MediaObject not created, prerunChecker in VLC failed";
+                	}
                 }
                 break;
                 
@@ -851,8 +855,11 @@ public class SessionModule implements Serializable {
     		
     	}
     	
-    	
-    	MainGUIController.getInstance().updateMediaObjects();
+    	this.mediaObjectsChanged();
+    	for(Integer i : timelines.keySet()){
+    		this.timelineChanged(TimeLineChanges.MODIFIED, timelines.get(i));
+    	}
+    	//MainGUIController.getInstance().updateMediaObjects();
     	return true;
     }
     
@@ -1180,7 +1187,7 @@ public class SessionModule implements Serializable {
     		MediaSourceType mst = loadedMO.getType();
     		String path = loadedMO.getPath();
     		
-    		this.createNewMediaObject(mst, path);
+    		this.createNewMediaObject(mst, path, true);
     	}
     	
     	// Add timelines
