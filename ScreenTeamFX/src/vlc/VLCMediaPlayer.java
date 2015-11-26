@@ -56,6 +56,7 @@ public class VLCMediaPlayer{
 		frame.getContentPane().add(mediaPlayerComponent);
 		frame.setSize(0, 0);
 	}
+
 	
 	public void play(){
 		System.out.println("[PLAY]");
@@ -125,6 +126,7 @@ public class VLCMediaPlayer{
 	}
 	
 	public void maximize(){
+		frame.setState(java.awt.Frame.ICONIFIED);
 		frame.setState(java.awt.Frame.NORMAL);
 	}
 	
