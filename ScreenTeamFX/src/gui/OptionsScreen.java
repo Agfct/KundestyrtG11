@@ -75,6 +75,7 @@ public class OptionsScreen implements Screen {
 		@FXML private GridPane rootGrid;
 		@FXML private Label vlc_version;
 		@FXML private Label java_version;
+		@FXML private Label software_version;
 //		@FXML private TextField vlc_commandField;
 		@FXML private CheckBox hwDecoding;
 		@FXML private CheckBox hwOverlay;
@@ -105,6 +106,7 @@ public class OptionsScreen implements Screen {
 			vlc_controller = MainModuleController.getInstance().getVLCController();
 			java_version.setText(vlc_controller.getJavaVersion());
 			vlc_version.setText(vlc_controller.getVLCVersion());
+			software_version.setText("1.0"); //TODO: Get version from somewhere
 			
 			setVLCConfigAlternatives();
 			paintVLCConfigValues();

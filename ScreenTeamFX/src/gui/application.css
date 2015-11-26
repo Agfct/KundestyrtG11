@@ -131,7 +131,7 @@
 }
 
 .background-main-black {
-	-fx-background-image: url("../../resources/background_black.png");
+	-fx-background-image: url("/background_black.png");
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: cover;
 }

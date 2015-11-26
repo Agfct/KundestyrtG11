@@ -2,6 +2,8 @@
 Cribrum. A program for playing video, audio, and images, and showing windows on multiple displays.
 Copyright (C) 2015  Anders Lunde, Baptiste Masselin, Kristian Midtgård, Magnus Gundersen, Eirik Zimmer Wold, and Ole Steinar L. Skrede
 
+Version 1.0
+
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 2

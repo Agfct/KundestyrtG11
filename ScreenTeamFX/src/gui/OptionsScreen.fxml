@@ -101,6 +101,11 @@
 						GridPane.halignment="CENTER" />
 					<Label fx:id="java_version" GridPane.columnIndex="1"
 						GridPane.rowIndex="2" />
+						
+					<Label text="Software Version: " GridPane.rowIndex="3"
+						GridPane.halignment="CENTER" />
+					<Label fx:id="software_version" GridPane.columnIndex="1"
+						GridPane.rowIndex="3" />
 				</children>
 			</GridPane>
 			<Button id="mainMenuBtn" onAction="#buttonPressed" alignment="CENTER"
