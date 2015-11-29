@@ -3,9 +3,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Label?>
 
-<fx:root fx:id="root_pane" style="-fx-border-color: BLACK" stylesheets="@application.css"  maxHeight="70" minHeight="70" minWidth="-Infinity" prefHeight="70"  type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fx:id="root_pane" style="-fx-border-color: BLACK"   maxHeight="70" minHeight="70" minWidth="-Infinity" prefHeight="70"  type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 	<!-- TODO Add Nodes -->
 	<children>
-		<Label fx:id="nameOfFile" style="-fx-padding: 5 0 0 5;" />
+		<Label fx:id="nameOfFile" style="-fx-padding: 5 0 0 5; -fx-text-fill: black;" />
 	</children>
 </fx:root>

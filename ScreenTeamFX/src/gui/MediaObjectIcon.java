@@ -277,8 +277,7 @@ public class MediaObjectIcon extends GridPane{
 
 		mType = type;
 		System.out.println("Media TYPE: " + type);
-		//		getStyleClass().clear();
-		//		getStyleClass().add("dragicon");
+		styleIcon.getStyleClass().clear();
 
 		if(mType == MediaSourceType.VIDEO){
 			styleIcon.getStyleClass().add("icon-video");

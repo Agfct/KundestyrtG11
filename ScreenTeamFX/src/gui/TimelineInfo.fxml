@@ -28,7 +28,7 @@
 	</columnConstraints>
 	<children>
 
-		<GridPane fx:id="timelineInfo" stylesheets="@application.css"
+		<GridPane fx:id="timelineInfo" 
 			styleClass="background-fileimporter" GridPane.columnIndex="0"
 			maxHeight="80" maxWidth="-Infinity" minHeight="80" minWidth="-Infinity"
 			prefHeight="80" prefWidth="200">

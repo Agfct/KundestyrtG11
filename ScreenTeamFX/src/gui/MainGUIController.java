@@ -30,6 +30,9 @@ public class MainGUIController {
 	
 	//Screen size
 	//TODO: make a global screen size?
+	
+	//Stylesheet
+	String stylesheet = "gui/application.css";
 
 	
 	/**
@@ -103,12 +106,14 @@ public class MainGUIController {
 			mainScreen = MainScreen.getInstance();
 			advancedScreen = AdvancedScreen.getInstance();
 			optionsScreen = OptionsScreen.getInstance();
+			setStylesheets();
 			primaryStage.hide();
 			primaryStage.setScene(mainScreen.getScene());
 			primaryStage.show();
 			centerScreen();
 			
 			initialized = true;
+	
 		}
 		//If initialized is true nothing happens
 		
@@ -117,6 +122,24 @@ public class MainGUIController {
 	public void centerScreen(){
         primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
         primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
+	}
+	
+	public void changeStylesheet(){
+		if(stylesheet.equals("gui/application_black.css")){
+			stylesheet = "gui/application.css";
+		}else{
+			stylesheet = "gui/application_black.css";
+		}
+		setStylesheets();
+	}
+	
+	private void setStylesheets(){
+		mainScreen.getScene().getStylesheets().clear();
+		advancedScreen.getScene().getStylesheets().clear();
+		optionsScreen.getScene().getStylesheets().clear();
+		mainScreen.getScene().getStylesheets().add(stylesheet);
+		advancedScreen.getScene().getStylesheets().add(stylesheet);
+		optionsScreen.getScene().getStylesheets().add(stylesheet);
 	}
 	
 	// Needs to rebuild the timelines, since updating the title of the media object should update
