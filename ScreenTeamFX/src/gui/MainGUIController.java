@@ -124,11 +124,15 @@ public class MainGUIController {
         primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
 	}
 	
-	public void changeStylesheet(){
-		if(stylesheet.equals("gui/application_black.css")){
+	public void changeStylesheet(int id){
+		if(id == 0){
 			stylesheet = "gui/application.css";
-		}else{
+		}else if ( id == 1){
 			stylesheet = "gui/application_black.css";
+		}else if (id == 2){
+			stylesheet = "gui/application_pink.css";
+		}else{
+			stylesheet = "gui/application.css";
 		}
 		setStylesheets();
 	}

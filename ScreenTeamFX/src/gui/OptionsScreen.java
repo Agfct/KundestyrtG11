@@ -153,8 +153,12 @@ public class OptionsScreen implements Screen {
 				AdvancedScreen.getInstance().getScreenController().getCurrentSession().setVLCConfiguration(newVlcConfig);
 				AdvancedScreen.getInstance().getScreenController().getCurrentSession().updateMediaPlayers();
 				paintVLCConfigValues();
-			}else if(((Button)event.getSource()).getId().equals("changeBackground")){
-				MainGUIController.getInstance().changeStylesheet();
+			}else if(((Button)event.getSource()).getId().equals("changeBackgroundDefault")){
+				MainGUIController.getInstance().changeStylesheet(0);
+			}else if(((Button)event.getSource()).getId().equals("changeBackgroundBlack")){
+				MainGUIController.getInstance().changeStylesheet(1);
+			}else if(((Button)event.getSource()).getId().equals("changeBackgroundPink")){
+				MainGUIController.getInstance().changeStylesheet(2);
 			}
 		}
 		/*

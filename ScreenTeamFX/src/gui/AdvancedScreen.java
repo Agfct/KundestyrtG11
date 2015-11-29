@@ -302,7 +302,6 @@ public class AdvancedScreen implements Screen{
 
 					//Sets the type of the drag icon based on the icon of the triggering MediaObject (Video/Sound)
 					//Here one can alternatively set text that should be displayed on the icon while you drag it.
-					System.out.println("Type" + icn.getType() + " The whole thing: "+ icn);
 					mDragOverIcon.setType(icn.getType());
 
 
