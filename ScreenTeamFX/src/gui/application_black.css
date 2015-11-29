@@ -208,6 +208,22 @@
    -fx-background-color: transparent;
 }
 
+.icon-background-black{
+	-fx-background-image: url("../../resources/background_black.png");
+	-fx-background-size: 20;
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-padding: 1, 1, 1, 1;
+}
+
+.icon-background-default{
+	-fx-background-image: url("../../resources/background_dokkhuset.png");
+	-fx-background-size: 20;
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-padding: 1, 1, 1, 1;
+}
+
 /* Extra Black modified Content */
 
 .menu-item .label{

@@ -125,7 +125,7 @@
 }
 
 .background-main {
-	-fx-background-image: url("../../resources/background_dokkhuset.png");
+	-fx-background-image: url("../../resources/background_pink.png");
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: cover;
 }
@@ -223,4 +223,15 @@
 	-fx-background-position: center;
 	-fx-padding: 1, 1, 1, 1;
 }
+
+/* Extra Pink modified Content */
+
+.menu-item .label{
+	-fx-text-fill: BLACK;
+}
+
+.label {
+	-fx-text-fill: WHITE;
+}
+
 

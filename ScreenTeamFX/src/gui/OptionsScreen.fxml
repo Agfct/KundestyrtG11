@@ -9,17 +9,17 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
+<?import javafx.scene.control.Button?>
 
-<AnchorPane  styleClass="background-main"
-	maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-	minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
-	xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
+<AnchorPane styleClass="background-main" maxHeight="-Infinity"
+	maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+	prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
+	xmlns="http://javafx.com/javafx/8.0.40">
 
 	<GridPane fx:id="rootGrid" layoutX="163.0" layoutY="62.0"
 		prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0"
 		AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-		AnchorPane.topAnchor="0.0"
-		gridLinesVisible="false">
+		AnchorPane.topAnchor="0.0" gridLinesVisible="false">
 		<columnConstraints>
 			<ColumnConstraints hgrow="NEVER" percentWidth="25"
 				minWidth="10.0" prefWidth="135.0" />
@@ -43,8 +43,30 @@
 		<children>
 			<Text styleClass="header-smal" GridPane.columnIndex="1"
 				GridPane.halignment="CENTER"> Options</Text>
-				<Button fx:id="changeBackground" onAction="#buttonPressed" GridPane.columnIndex="2" GridPane.halignment="CENTER" style="-fx-font: 4 Arial" ></Button>
-			<GridPane GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.rowSpan="2" gridLinesVisible="false">
+				<Button fx:id="changeBackgroundPink" onAction="#buttonPressed"
+						style="-fx-font: 2 Arial; -fx-background-color: transparent;"  GridPane.columnIndex="2"
+						GridPane.halignment="CENTER" />
+			<GridPane GridPane.rowIndex="3" GridPane.columnIndex="0"
+				gridLinesVisible="false">
+				<columnConstraints>
+					<ColumnConstraints percentWidth="50" />
+					<ColumnConstraints percentWidth="50" />
+				</columnConstraints>
+				<children>
+					<Label text="Background Color" GridPane.halignment="CENTER"
+						GridPane.columnSpan="2" />
+					<Button fx:id="changeBackgroundDefault" onAction="#buttonPressed"
+						styleClass="icon-background-default" GridPane.columnIndex="0"
+						GridPane.rowIndex="1" GridPane.halignment="CENTER" prefWidth="32"
+						prefHeight="16" />
+					<Button fx:id="changeBackgroundBlack" onAction="#buttonPressed"
+						styleClass="icon-background-black" GridPane.columnIndex="1"
+						GridPane.rowIndex="1" prefWidth="32" prefHeight="16"
+						GridPane.halignment="CENTER" />
+				</children>
+			</GridPane>
+			<GridPane GridPane.rowIndex="1" GridPane.columnIndex="0"
+				GridPane.rowSpan="2" gridLinesVisible="false">
 				<columnConstraints>
 					<ColumnConstraints percentWidth="100" />
 				</columnConstraints>
@@ -60,43 +82,50 @@
 							<RowConstraints minHeight="10.0" prefHeight="30.0" />
 
 						</rowConstraints>
-						
+
 						<children><!-- The innermost gridpane with the options in it -->
-							<Label text="Video output" GridPane.columnIndex="0"	GridPane.rowIndex="0" GridPane.halignment="CENTER" />
-							<ComboBox fx:id ="vOutputComboBox" GridPane.columnIndex="1"	GridPane.rowIndex="0"></ComboBox>							
-							
-							<Label text="HW-overlay" GridPane.columnIndex="0"	GridPane.rowIndex="1" GridPane.halignment="CENTER" />
-							<CheckBox fx:id="hwOverlay" GridPane.columnIndex="1"	GridPane.rowIndex="1"></CheckBox>
-							<!--  
-							<Label text="HW-decoding(auto)" GridPane.columnIndex="0"	GridPane.rowIndex="0" GridPane.halignment="CENTER" />
-							<CheckBox fx:id="hwDecoding" GridPane.columnIndex="1"	GridPane.rowIndex="0"></CheckBox>
-							<Label text="YUV -> RGB" GridPane.columnIndex="0"	GridPane.rowIndex="3" GridPane.halignment="CENTER" />
-							<CheckBox fx:id="yuvToRGB" GridPane.columnIndex="1"	GridPane.rowIndex="3"></CheckBox>
-							
-							<Label text="Cache?" GridPane.columnIndex="0"	GridPane.rowIndex="4" GridPane.halignment="CENTER" />
-							-->
+							<Label text="Video output" GridPane.columnIndex="0"
+								GridPane.rowIndex="0" GridPane.halignment="CENTER" />
+							<ComboBox fx:id="vOutputComboBox" GridPane.columnIndex="1"
+								GridPane.rowIndex="0"></ComboBox>
+
+							<Label text="HW-overlay" GridPane.columnIndex="0"
+								GridPane.rowIndex="1" GridPane.halignment="CENTER" />
+							<CheckBox fx:id="hwOverlay" GridPane.columnIndex="1"
+								GridPane.rowIndex="1"></CheckBox>
+							<!-- <Label text="HW-decoding(auto)" GridPane.columnIndex="0" GridPane.rowIndex="0" 
+								GridPane.halignment="CENTER" /> <CheckBox fx:id="hwDecoding" GridPane.columnIndex="1" 
+								GridPane.rowIndex="0"></CheckBox> <Label text="YUV -> RGB" GridPane.columnIndex="0" 
+								GridPane.rowIndex="3" GridPane.halignment="CENTER" /> <CheckBox fx:id="yuvToRGB" 
+								GridPane.columnIndex="1" GridPane.rowIndex="3"></CheckBox> <Label text="Cache?" 
+								GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.halignment="CENTER" 
+								/> -->
 							<!-- Here it will be a checkBOX -->
-							
+
 						</children>
 					</GridPane>
 
-					
-					<Button text='Apply' fx:id="applyVLCconfig" GridPane.columnIndex="0"
-						GridPane.rowIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" 
-						onAction="#buttonPressed"  />
+
+					<Button text='Apply' fx:id="applyVLCconfig"
+						GridPane.columnIndex="0" GridPane.rowIndex="5"
+						GridPane.columnSpan="2" GridPane.halignment="CENTER" onAction="#buttonPressed" />
 				</children>
 			</GridPane>
-			<GridPane GridPane.rowIndex="1" GridPane.columnIndex="2" GridPane.rowSpan="2" gridLinesVisible="false">
-			<columnConstraints>
+			<GridPane GridPane.rowIndex="1" GridPane.columnIndex="2"
+				GridPane.rowSpan="2" gridLinesVisible="false">
+				<columnConstraints>
 					<ColumnConstraints percentWidth="50" />
 					<ColumnConstraints percentWidth="50" />
-			</columnConstraints>
+				</columnConstraints>
 				<children>
-					<Label text="Software information " GridPane.halignment="CENTER" GridPane.columnSpan="2" />
-					
-					<Label text="VLC version: " GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-					<Label fx:id="vlc_version" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-					
+					<Label text="Software information " GridPane.halignment="CENTER"
+						GridPane.columnSpan="2" />
+
+					<Label text="VLC version: " GridPane.halignment="CENTER"
+						GridPane.rowIndex="1" />
+					<Label fx:id="vlc_version" GridPane.columnIndex="1"
+						GridPane.rowIndex="1" />
+
 					<Label text="Java version: " GridPane.rowIndex="2"
 						GridPane.halignment="CENTER" />
 					<Label fx:id="java_version" GridPane.columnIndex="1"
