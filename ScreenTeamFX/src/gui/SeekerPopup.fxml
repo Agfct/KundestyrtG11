@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.control.Label?>
 
-<fx:root fx:id="root_pane" stylesheets="@application.css"
+<fx:root fx:id="root_pane" 
 	styleClass="background-seekerpopup" maxHeight="25" minHeight="25"
 	minWidth="150" prefHeight="25" prefWidth="150" maxWidth="150"
 	type="javafx.scene.layout.BorderPane" xmlns="http://javafx.com/javafx/8"
